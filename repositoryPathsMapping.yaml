@@ -1,0 +1,67 @@
+repositoryPaths:
+  - repositoryPath: $application/src/cobol
+    artifactsType: "Program"
+    fileExtension: cbl
+    toLowerCase: true
+    encoding: IBM-1047
+    mvsMapping:
+      datasetLastLevelQualifiers:
+          - COBOL
+          - CBL
+      types:
+          - CBLCICSDB2
+          - CBLCICS
+  - repositoryPath: $application/src/cobol
+    artifactsType: "Program"
+    fileExtension: cbl
+    toLowerCase: true
+    encoding: IBM-1047
+    mvsMapping:
+      datasetLastLevelQualifiers:
+          - SRC
+      types:
+          - CBLCICSDB2
+          - CBLCICS
+  - repositoryPath: $application/src/copy
+    artifactsType: "Include File"
+    fileExtension: cpy
+    toLowerCase: true
+    encoding: IBM-1047
+    mvsMapping:
+      datasetLastLevelQualifiers:
+        - COPY
+  - repositoryPath: $application/src/pli
+    artifactsType: "Program"
+    fileExtension: cbl
+    toLowerCase: true
+    encoding: IBM-1047
+    mvsMapping:
+      datasetLastLevelQualifiers:
+        - SRC
+      types:
+        - PLICICSDB2
+        - PLICICS
+  - repositoryPath: $application/src/asm
+    artifactsType: "Program"
+    fileExtension: asm
+    toLowerCase: true
+    encoding: IBM-1047
+    mvsMapping:
+      datasetLastLevelQualifiers:
+        - ASM
+  - repositoryPath: $application/src/bms
+    artifactsType: "Program"
+    fileExtension: bms
+    toLowerCase: true
+    encoding: IBM-1047
+    mvsMapping:
+      datasetLastLevelQualifiers:
+        - BMS
+  - repositoryPath: $application/src/link
+    artifactsType: "Other"
+    fileExtension: lnk
+    toLowerCase: true
+    encoding: IBM-1047
+    mvsMapping:
+      datasetLastLevelQualifiers:
+        - LINK
