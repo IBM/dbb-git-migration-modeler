@@ -63,12 +63,14 @@ def readApplicationDescriptor(File yamlFile){
  */
 def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationDescriptor){
 	// Sort source groups and files by name before writing to YAML file
-	applicationDescriptor.sources.sort {
-		it.name
-	}
-	applicationDescriptor.sources.each() { source ->
-		source.files.sort {
+	if (applicationDescriptor.sources) {
+		applicationDescriptor.sources.sort {
 			it.name
+		}
+		applicationDescriptor.sources.each() { source ->
+			source.files.sort {
+				it.name
+			}
 		}
 	} 
 
