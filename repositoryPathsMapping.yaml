@@ -1,6 +1,8 @@
 repositoryPaths:
   - repositoryPath: $application/src/cobol
     artifactsType: "Program"
+    sourceGroup: "cobol"
+    languageProcessor: "Cobol.groovy"
     fileExtension: cbl
     toLowerCase: true
     encoding: IBM-1047
@@ -13,6 +15,8 @@ repositoryPaths:
           - CBLCICS
   - repositoryPath: $application/src/cobol
     artifactsType: "Program"
+    sourceGroup: "cobol"
+    languageProcessor: "Cobol.groovy"
     fileExtension: cbl
     toLowerCase: true
     encoding: IBM-1047
@@ -24,6 +28,8 @@ repositoryPaths:
           - CBLCICS
   - repositoryPath: $application/src/copy
     artifactsType: "Include File"
+    sourceGroup: "copy"
+    languageProcessor: "none"
     fileExtension: cpy
     toLowerCase: true
     encoding: IBM-1047
@@ -32,6 +38,8 @@ repositoryPaths:
         - COPY
   - repositoryPath: $application/src/pli
     artifactsType: "Program"
+    sourceGroup: "pli"
+    languageProcessor: "PLI.groovy"
     fileExtension: cbl
     toLowerCase: true
     encoding: IBM-1047
@@ -43,6 +51,8 @@ repositoryPaths:
         - PLICICS
   - repositoryPath: $application/src/asm
     artifactsType: "Program"
+    sourceGroup: "asm"
+    languageProcessor: "Assembler.groovy"
     fileExtension: asm
     toLowerCase: true
     encoding: IBM-1047
@@ -51,6 +61,8 @@ repositoryPaths:
         - ASM
   - repositoryPath: $application/src/bms
     artifactsType: "Program"
+    sourceGroup: "bms"
+    languageProcessor: "BMS.groovy"
     fileExtension: bms
     toLowerCase: true
     encoding: IBM-1047
@@ -59,6 +71,8 @@ repositoryPaths:
         - BMS
   - repositoryPath: $application/src/link
     artifactsType: "Other"
+    sourceGroup: "link"
+    languageProcessor: "LinkEdit.groovy"
     fileExtension: lnk
     toLowerCase: true
     encoding: IBM-1047
