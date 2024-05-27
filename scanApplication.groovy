@@ -86,8 +86,13 @@ def scanFiles(fileList) {
 	fileList.each{ file ->
 		DependencyScanner scanner = new DependencyScanner()
 		logger.logMessage "\t Scanning file $file "
-		logicalFile = scanner.scan(file, props.workspace)
-		logicalFiles.add(logicalFile)
+		try {
+			logicalFile = scanner.scan(file, props.workspace)
+			logicalFiles.add(logicalFile)
+		} catch (Exception e) {
+			logger.logMessage "\t\tSomething went wrong when scanning this file."
+			logger.logMessage(e.getMessage())
+		}
 	}
 	return logicalFiles
 }
