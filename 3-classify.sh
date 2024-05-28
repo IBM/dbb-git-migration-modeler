@@ -14,34 +14,46 @@ then
 else
 	# Environment variables setup
 	. ./0-environment.sh
+	
+	# Build Metadatastore
+	if [ -d $DBB_MODELER_METADATA_STORE ] 
+    then
+        rm -rf $DBB_MODELER_METADATA_STORE
+    fi
+    
+    if [ ! -d $DBB_MODELER_METADATA_STORE ] 
+    then
+        mkdir -p $DBB_MODELER_METADATA_STORE
+    fi
 
-	cd $DBB_MODELER_APPCONFIGS
-	for mappingFile in `ls *.mapping`
+    # Scan files
+	cd $DBB_MODELER_APPLICATIONS
+	for applicationDir in `ls`
 	do
-		application=`echo $mappingFile | awk -F. '{ print $1 }'`
 		echo "*******************************************************************"
-		echo "Scan application directory $DBB_MODELER_APPLICATIONS/$application"
+		echo "Scan application directory $DBB_MODELER_APPLICATIONS/$applicationDir"
 		echo "*******************************************************************"
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/scanApplication.groovy \
 			-w $DBB_MODELER_APPLICATIONS \
-			-a $application \
-			-l $DBB_MODELER_LOGS/3-$application-scan.log"
+			-a $applicationDir \
+			-m $DBB_MODELER_METADATA_STORE \
+			-l $DBB_MODELER_LOGS/3-$application-scan.log"	
 		$CMD "$@"
 	done
 
-	cd $DBB_MODELER_APPCONFIGS
-	for mappingFile in `ls *.mapping`
+    cd $DBB_MODELER_APPLICATIONS
+    for applicationDir in `ls`
 	do
-		application=`echo $mappingFile | awk -F. '{ print $1 }'`
 		echo "*******************************************************************"
-		echo "Assess Include files & Programs usage for $application"
+		echo "Assess Include files & Programs usage for $applicationDir"
 		echo "*******************************************************************"
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/assessUsage.groovy \
 			--workspace $DBB_MODELER_APPLICATIONS \
-			--application $application \
 			--configurations $DBB_MODELER_APPCONFIGS \
+			--metadatastore $DBB_MODELER_METADATA_STORE \
+			--application $applicationDir \
 			--moveFiles \
-			--logFile $DBB_MODELER_LOGS/3-$application-assessUsage.log"
+			--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
 		$CMD "$@"
 	done
 fi

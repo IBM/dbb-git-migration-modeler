@@ -219,6 +219,26 @@ def addApplicationConsumer(ApplicationDescriptor applicationDescriptor, String c
 	} 
 }
 
+/**
+ * Method to drop the source entries
+ */
+
+def resetAllSourceGroups(ApplicationDescriptor applicationDescriptor) {
+	applicationDescriptor.sources = new ArrayList<Source>()
+}
+
+/**
+ * Method to drop the source entries
+ */
+
+def resetConsumersAndDependencies(ApplicationDescriptor applicationDescriptor) {
+	applicationDescriptor.consumers = new ArrayList<Source>()
+	applicationDescriptor.dependencies = new ArrayList<Source>()
+}
+
+/**
+ * Method to create an empty application descriptor object 
+ */
 def createEmptyApplicationDescriptor(){
     ApplicationDescriptor applicationDescriptor = new ApplicationDescriptor()
     applicationDescriptor.sources = new ArrayList<Source>()

@@ -51,9 +51,9 @@ if (props.logFile) {
 }
 
 // create metadatastore
-metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.workspace}/.dbb")
+metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.metadatastore}")
 if (!metadataStore) {
-	logger.logMessage("!* Error: Failed to initialize the DBB File Metatadastore at ${props.workspace}/.dbb");
+	logger.logMessage("!* Error: Failed to initialize the DBB File Metatadastore at ${props.metadatastore}");
 } 
 
 logger.logMessage("** Getting the list of files of 'Include File' type.")
@@ -334,8 +334,9 @@ def parseArgs(String[] args) {
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
 	cli.w(longOpt:'workspace', args:1, 'Absolute path to workspace (root) directory containing all required source directories')
+	cli.d(longOpt:'metadatastore', args:1, 'Absolute path to DBB Dependency Metadatastore used by the modeler')
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name.')
-	cli.c(longOpt:'configurations', args:1, required:true, 'Path of the directory containing Application Configurations YAML files.')
+	cli.c(longOpt:'configurations', args:1, required:false, 'Path of the directory containing Application Configurations YAML files.')
 	cli.m(longOpt:'moveFiles', args:0, 'Flag to move files when usage is assessed.')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 
@@ -345,6 +346,7 @@ def parseArgs(String[] args) {
 	}
 
 	if (opts.w) props.workspace = opts.w
+	if (opts.d) props.metadatastore = opts.d
 	if (opts.a) props.application = opts.a
 	if (opts.c) props.configurationsDirectory = opts.c
 	if (opts.m) {

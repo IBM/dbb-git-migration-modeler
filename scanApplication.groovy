@@ -102,6 +102,7 @@ def parseArgs(String[] args) {
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
 	cli.w(longOpt:'workspace', args:1, 'Absolute path to workspace (root) directory containing all required source directories')
+	cli.m(longOpt:'metadatastore', args:1, 'Absolute path to DBB Metadatastore used by the modeler')
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name ')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 
@@ -111,6 +112,7 @@ def parseArgs(String[] args) {
 	}
 
 	if (opts.w) props.workspace = opts.w
+	if (opts.m) props.metadatastore = opts.m
 	if (opts.a) props.application = opts.a
 	if (opts.l) {
 		props.logFile = opts.l
@@ -130,7 +132,7 @@ def initScriptParameters() {
 		System.exit(1)
 	}
 	
-	metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.workspace}/.dbb")
+	metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.metadatastore}")
 }
 
 /*

@@ -8,7 +8,8 @@
 # Contract with IBM Corp. 
 #*******************************************************************************
 
-export DBB_MODELER_HOME=/u/mdalbin/Migration-Modeler
-export DBB_MODELER_APPCONFIGS=$DBB_MODELER_HOME/work-configs
-export DBB_MODELER_APPLICATIONS=$DBB_MODELER_HOME/work-applications
-export DBB_MODELER_LOGS=$DBB_MODELER_HOME/work-logs
+export DBB_MODELER_HOME=/u/dbehm/git/dbb-git-migration-modeler
+export DBB_MODELER_APPCONFIGS=/u/dbehm/git/dbb-git-migration-modeler-work/work-configs
+export DBB_MODELER_APPLICATIONS=/u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+export DBB_MODELER_LOGS=/u/dbehm/git/dbb-git-migration-modeler-work/work-logs
+export DBB_MODELER_METADATA_STORE=/u/dbehm/git/dbb-git-migration-modeler-work/work-metadatastore
