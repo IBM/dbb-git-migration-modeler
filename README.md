@@ -64,6 +64,9 @@ At the application level, file-level overrides are also generated and inserted i
 * Relevant information to plan the migration of all applications.
 * Ready-to-use configuration files based on the originating SCM's knowledge base
 
+### Refresh Application Descriptor files
+
+For applications that are migrated to Git, the Modeler provides a functionality to generate Application Descriptor files. Please see section [Refresh Application Descriptors](README.md#refresh-application-descriptors)
 
 ## Terminology and description of configuration files
 
@@ -156,9 +159,9 @@ In the sample walkthrough below, all COBOL programs files of all applications ar
 The Migration-Modeler utility is a set of shell scripts that are wrapping groovy scripts.
 The scripts are using DBB APIs and groovy APIs to scan the datasets members, classify them into applications and generate output configuration files.
 
-### A 4-step process
+### A 4-step process facilitating the migration process
 
-The utility is made of 3 scripts which are meant to be run in the following sequence:
+The utility is made of 4 scripts which are meant to be run in the following sequence:
 
 1. [Extract Applications script (1-extractApplication.sh)](./1-extractApplications.sh): this script scans the content of the provided datasets and assesses each member based on the provided input files.
 For each member found, it searches in the Applications Mapping YAML file if a naming convention, after being applied as a filter, matches the member name:
@@ -188,12 +191,12 @@ The outcome of this script are subfolders created in the *work-applications* fol
 The script uses the type of each artifact to generate (or reuse if already existing) Language Configurations defined in *dbb-zAppBuild*, as configured in the [Types Configurations file](./typesConfigurations.yaml).  
 The outcome is property files defined for each application's *application-conf* folder and Language Configuration files defined in a custom *dbb-zAppBuild* folder.
 
-### Running the utility
+#### Running the utility
 
 To facilitate the execution and provide a sample canvas, a [Helper script](./Helper.sh) is provided to showcase how the scripts should be invoked.
 This Helper script requires to be customized to meet with your installation (environment variables and datasets to analyze).
 
-#### Extracting members from datasets into applications
+##### Extracting members from datasets into applications
 
 The [Extract Applications script (1-extractApplication.sh)](./1-extractApplications.sh) requires to pass as input a comma-separated list of datasets to analyze.
 
@@ -355,7 +358,7 @@ Execution of the command:
 ~~~~
 </details>
 
-#### Migrating the members from MVS datasets to USS folders
+##### Migrating the members from MVS datasets to USS folders
 
 The [Run Migrations script (2-runMigrations.sh)](./2-runMigrations.sh) doesn't require any parameter.
 It will search for all the DBB Migration mapping files located in the *work-configs* directory, and will process them in sequence.
@@ -512,7 +515,7 @@ Copying [DBEHM.MIG.COPY, PAYDBCR] to UNASSIGNED/src/copy/paydbcr.cpy using IBM-1
 ~~~~
 </details>
 
-#### Assessing the usage of Include Files
+##### Assessing the usage of Include Files
 
 The [Classification script (3-classify.sh)](./3-classify) doesn't require any parameter.
 
@@ -1370,7 +1373,7 @@ Adding dependency to application GenApp
 ~~~~
 </details>
 
-#### Generating Property files
+##### Generating Property files
 
 The [Property Generation script](./4-generateProperties.sh) requires two parameters:
 * The path to the [Types Configurations file](./typesConfigurations.yaml)
@@ -1446,6 +1449,1265 @@ Generate properties for application 'UNASSIGNED'
 ~~~~
 </details>
 
+### Refresh Application Descriptors
+
+When applications got migrated to Git and development teams leverage the pipeline, source files will be modified, added, or deleted. It's expected, that the list of elements of an application and cross application dependencies change over time. To reflect these changes in the **Application Descriptor** file, it needs to be refreshed. 
+
+Additionally, if applications are already migrated to Git and use pipelines, but don't have an Application Descriptor file yet, and the development teams want to leverage it benefits, follow this process.
+
+The Migration Modeler is equipped with a utility to recreate the application's Application Descriptor files which reside in a Git repository. The refresh of the Application Descriptor files must occur on the entire code base like the on initial assessment process.
+
+[The recreate Application Descriptor script (./5-refreshApplicationDescriptors.sh)](./5-refreshApplicationDescriptors.sh) facilitates the refresh process by rescanning of the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications.
+
+The script calls three groovy scripts ([scanApplications.groovy](./scanApplications.sh), [recreateApplicationDescriptor.groovy](./recreateApplicationDescriptor.groovy) and [assessUsage.groovy](./assessUsage.groovy)) to  scan the files of the applications using the DBB scanner, initialize application descriptors based on the files present in the working directories, and assess how Include Files and Programs are used across the application landscape:
+
+   * For the scanning phase, the script iterates through the files located within the work directory. It uses the DBB scanner to understand the dependencies for each artifacts.
+   This information is stored in a local, temporary DBB metadatastore on the USS filesystem, that holds the dependencies information.
+
+   * The second phase, the application descriptors are initialized. If an application descriptor is found, the source groups and dependencies/consumer information are reset. If no application descriptor is found, a new application descriptor is created. For each application descriptor, the present files in the working folders are documented and grouped according to the `applicationRepositoryMapping.yaml` file. It no mapping is found, the files are not added into the application descriptor.
+
+   * The third phase of the process uses the dependency information to understand how Include Files and Programs are used across all applications and classify the Include Files in three categories (Private, Public or Shared) and Programs in three categories ("main", "internal submodule", "service submodule") and updates the Application Descriptor accordingly.
+
+   * **Outputs**
+      * For each application a refreshed application descriptor is created at the root directory of the application repository.
+
+Recommended usage:
+
+Recreating the Application Descriptor files requires to scan all files and might be time and resource consuming based on the size of the application landscape. Consider this process on a regular basis, like once a week. Please set up a pipeline, that checks out all Git repositories to a work space, then leverage the Recreate Application Descriptor script to execute the 3 phases. Then update the Application Descriptor files within the Git repositories and push the updates back to the central Git provider.
+
+<details>
+  <summary>Output example</summary>
+Execution of the command:
+`./5-refreshApplicationDescriptors.sh`
+
+
+*******************************************************************
+Scan application directory /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA
+*******************************************************************
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   metadatastore -> /u/dbehm/git/dbb-git-migration-modeler-work/work-metadatastore
+   application -> CBSA
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3--scan.log
+   dbb.DependencyScanner.controlTransfers -> true
+** Scanning the files.
+	 Scanning file CBSA/CBSA/application-conf/DBDgen.properties 
+	 Scanning file CBSA/CBSA/src/cobol/getscode.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/bnk1cca.cbl 
+	 Scanning file CBSA/CBSA/src/copy/contdb2.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/bnk1cac.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/updcust.cbl 
+	 Scanning file CBSA/CBSA/src/copy/bnk1dcm.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/xfrfun.cbl 
+	 Scanning file CBSA/CBSA/src/copy/consent.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/bnk1ccs.cbl 
+	 Scanning file CBSA/CBSA/application-conf/ZunitConfig.properties 
+	 Scanning file CBSA/CBSA/src/copy/sortcode.cpy 
+	 Scanning file CBSA/CBSA/application-conf/file.properties 
+	 Scanning file CBSA/CBSA/src/copy/custctrl.cpy 
+	 Scanning file CBSA/CBSA/application-conf/PLI.properties 
+	 Scanning file CBSA/CBSA/src/cobol/crdtagy1.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/bankdata.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/crecust.cbl 
+	 Scanning file CBSA/CBSA.yaml 
+	 Scanning file CBSA/CBSA/src/copy/delacc.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/dpayapi.cbl 
+	 Scanning file CBSA/CBSA/src/copy/constapi.cpy 
+	 Scanning file CBSA/CBSA/src/copy/bnk1cam.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/consttst.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/crdtagy3.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/delcus.cbl 
+	 Scanning file CBSA/CBSA/application-conf/Assembler.properties 
+	 Scanning file CBSA/CBSA/src/cobol/accoffl.cbl 
+	 Scanning file CBSA/CBSA/src/copy/updacc.cpy 
+	 Scanning file CBSA/.gitattributes 
+	 Scanning file CBSA/CBSA/src/copy/datastr.cpy 
+	 Scanning file CBSA/CBSA/application-conf/application.properties 
+	 Scanning file CBSA/CBSA/src/cobol/crdtagy4.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/accload.cbl 
+	 Scanning file CBSA/CBSA/application-conf/Transfer.properties 
+	 Scanning file CBSA/CBSA/src/copy/bnk1ccm.cpy 
+	 Scanning file CBSA/CBSA/application-conf/Cobol.properties 
+	 Scanning file CBSA/CBSA/application-conf/CRB.properties 
+	 Scanning file CBSA/CBSA/application-conf/bind.properties 
+	 Scanning file CBSA/CBSA/src/cobol/inqacc.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/bnk1dac.cbl 
+	 Scanning file CBSA/CBSA/src/copy/customer.cpy 
+	 Scanning file CBSA/CBSA/src/copy/crecust.cpy 
+	 Scanning file CBSA/CBSA/src/copy/creacc.cpy 
+	 Scanning file CBSA/CBSA/application-conf/languageConfigurationMapping.properties 
+	 Scanning file CBSA/CBSA/application-conf/LinkEdit.properties 
+	 Scanning file CBSA/CBSA/src/cobol/dbcrfun.cbl 
+	 Scanning file CBSA/CBSA/src/copy/bnk1acc.cpy 
+	 Scanning file CBSA/CBSA/src/copy/bnk1uam.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/abndproc.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/zunitcic.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/acctctrl.cbl 
+	 Scanning file CBSA/CBSA/src/copy/procdb2.cpy 
+	 Scanning file CBSA/CBSA/application-conf/ACBgen.properties 
+	 Scanning file CBSA/CBSA/application-conf/MFS.properties 
+	 Scanning file CBSA/CBSA/application-conf/reports.properties 
+	 Scanning file CBSA/CBSA/src/copy/abndinfo.cpy 
+	 Scanning file CBSA/CBSA/src/copy/xfrfun.cpy 
+	 Scanning file CBSA/CBSA/application-conf/PSBgen.properties 
+	 Scanning file CBSA/CBSA/src/cobol/inqcust.cbl 
+	 Scanning file CBSA/CBSA/src/copy/constdb2.cpy 
+	 Scanning file CBSA/CBSA/src/copy/getcompy.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/consent.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/crdtagy2.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/delacc.cbl 
+	 Scanning file CBSA/CBSA/application-conf/REXX.properties 
+	 Scanning file CBSA/CBSA/src/copy/inqacccu.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/bnk1tfn.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/proload.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/inqacccu.cbl 
+	 Scanning file CBSA/CBSA/src/copy/bnk1cdm.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/dpaytst.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/bnk1cra.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/prooffl.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/updacc.cbl 
+	 Scanning file CBSA/CBSA/src/copy/acctctrl.cpy 
+	 Scanning file CBSA/CBSA/src/copy/delcus.cpy 
+	 Scanning file CBSA/CBSA/src/copy/proctran.cpy 
+	 Scanning file CBSA/CBSA/src/copy/updcust.cpy 
+	 Scanning file CBSA/CBSA/src/copy/getscode.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/creacc.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/crdtagy5.cbl 
+	 Scanning file CBSA/CBSA/src/copy/account.cpy 
+	 Scanning file CBSA/CBSA/src/copy/bnk1dam.cpy 
+	 Scanning file CBSA/CBSA/src/copy/paydbcr.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/getcompy.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/custctrl.cbl 
+	 Scanning file CBSA/CBSA/src/copy/accdb2.cpy 
+	 Scanning file CBSA/CBSA/application-conf/BMS.properties 
+	 Scanning file CBSA/CBSA/src/copy/inqacc.cpy 
+	 Scanning file CBSA/CBSA/src/copy/bnk1mai.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/bnk1dcs.cbl 
+	 Scanning file CBSA/CBSA/src/cobol/bnk1uac.cbl 
+	 Scanning file CBSA/CBSA/src/copy/lgcmared.cpy 
+	 Scanning file CBSA/CBSA/src/cobol/bnkmenu.cbl 
+	 Scanning file CBSA/CBSA/application-conf/README.md 
+	 Scanning file CBSA/CBSA/src/copy/inqcust.cpy 
+	 Scanning file CBSA/CBSA/src/copy/bnk1tfm.cpy 
+** Storing results in the 'CBSA' DBB Collection.
+** Build finished
+*******************************************************************
+Scan application directory /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp
+*******************************************************************
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   metadatastore -> /u/dbehm/git/dbb-git-migration-modeler-work/work-metadatastore
+   application -> GenApp
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3--scan.log
+   dbb.DependencyScanner.controlTransfers -> true
+** Scanning the files.
+	 Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
+	 Scanning file GenApp/GenApp/application-conf/languageConfigurationMapping.properties 
+	 Scanning file GenApp/GenApp/application-conf/Assembler.properties 
+	 Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
+	 Scanning file GenApp/GenApp.yaml 
+	 Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
+	 Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
+	 Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
+	 Scanning file GenApp/GenApp/application-conf/REXX.properties 
+	 Scanning file GenApp/.gitattributes 
+	 Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
+	 Scanning file GenApp/GenApp/application-conf/Cobol.properties 
+	 Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
+	 Scanning file GenApp/GenApp/application-conf/CRB.properties 
+	 Scanning file GenApp/GenApp/application-conf/DBDgen.properties 
+	 Scanning file GenApp/GenApp/application-conf/application.properties 
+	 Scanning file GenApp/GenApp/application-conf/BMS.properties 
+	 Scanning file GenApp/GenApp/application-conf/PSBgen.properties 
+	 Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
+	 Scanning file GenApp/GenApp/application-conf/Transfer.properties 
+	 Scanning file GenApp/GenApp/src/bms/ssmap.bms 
+	 Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
+	 Scanning file GenApp/GenApp/application-conf/bind.properties 
+	 Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
+	 Scanning file GenApp/GenApp/application-conf/reports.properties 
+	 Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
+	 Scanning file GenApp/GenApp/application-conf/ZunitConfig.properties 
+	 Scanning file GenApp/GenApp/application-conf/MFS.properties 
+	 Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
+	 Scanning file GenApp/GenApp/application-conf/LinkEdit.properties 
+	 Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
+	 Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
+	 Scanning file GenApp/GenApp/application-conf/PLI.properties 
+	 Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
+	 Scanning file GenApp/GenApp/application-conf/ACBgen.properties 
+	 Scanning file GenApp/GenApp/application-conf/file.properties 
+	 Scanning file GenApp/GenApp/application-conf/README.md 
+** Storing results in the 'GenApp' DBB Collection.
+** Build finished
+*******************************************************************
+Scan application directory /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/RetirementCalculator
+*******************************************************************
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   metadatastore -> /u/dbehm/git/dbb-git-migration-modeler-work/work-metadatastore
+   application -> RetirementCalculator
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3--scan.log
+   dbb.DependencyScanner.controlTransfers -> true
+** Scanning the files.
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/MFS.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/src/copy/linput2.cpy 
+	 Scanning file RetirementCalculator/RetirementCalculator/src/copy/linput.cpy 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/application.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/Cobol.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/ACBgen.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator.yaml 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/bind.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/PLI.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/reports.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/Assembler.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/ZunitConfig.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/src/cobol/ebud03.cbl 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/file.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/README.md 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/CRB.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/DBDgen.properties 
+	 Scanning file RetirementCalculator/.gitattributes 
+	 Scanning file RetirementCalculator/RetirementCalculator/src/cobol/ebud02.cbl 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/BMS.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/PSBgen.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/languageConfigurationMapping.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/REXX.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/Transfer.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/application-conf/LinkEdit.properties 
+	 Scanning file RetirementCalculator/RetirementCalculator/src/cobol/ebud01.cbl 
+	 Scanning file RetirementCalculator/RetirementCalculator/src/cobol/ebud0run.cbl 
+** Storing results in the 'RetirementCalculator' DBB Collection.
+** Build finished
+*******************************************************************
+Scan application directory /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/UNASSIGNED
+*******************************************************************
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   metadatastore -> /u/dbehm/git/dbb-git-migration-modeler-work/work-metadatastore
+   application -> UNASSIGNED
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3--scan.log
+   dbb.DependencyScanner.controlTransfers -> true
+** Scanning the files.
+	 Scanning file UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/reports.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/PSBgen.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/ZunitConfig.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/LinkEdit.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/REXX.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/file.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/CRB.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED.yaml 
+	 Scanning file UNASSIGNED/UNASSIGNED/src/bms/epsmlis.bms 
+	 Scanning file UNASSIGNED/UNASSIGNED/src/bms/epsmort.bms 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/README.md 
+	 Scanning file UNASSIGNED/.gitattributes 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/Assembler.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/application.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/PLI.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/languageConfigurationMapping.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/src/cobol/flemssub.cbl 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/Transfer.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/Cobol.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/src/cobol/flemsmai.cbl 
+	 Scanning file UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/ACBgen.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/bind.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/BMS.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/DBDgen.properties 
+	 Scanning file UNASSIGNED/UNASSIGNED/application-conf/MFS.properties 
+** Storing results in the 'UNASSIGNED' DBB Collection.
+** Build finished
+*******************************************************************
+Reset Application Descriptor for CBSA
+*******************************************************************
+/usr/lpp/dbb/v2r0/bin/groovyz /u/dbehm/git/dbb-git-migration-modeler/recreateApplicationDescriptor.groovy --workspace /u/dbehm/git/dbb-git-migration-modeler-work/work-applications --application CBSA --repositoryPathsMapping /u/dbehm/git/dbb-git-migration-modeler/repositoryPathsMapping.yaml --logFile /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-CBSA-createApplicationDescriptor.log
+** Recreate Application Descriptor process started. 
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   application -> CBSA
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-CBSA-createApplicationDescriptor.log
+   repositoryPathsMappingFilePath -> /u/dbehm/git/dbb-git-migration-modeler/repositoryPathsMapping.yaml
+** Reading the Repository Layout Mapping definition. 
+* Importing existing Application Descriptor and reset source groups, dependencies and consumers.
+* Getting List of files /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA
+*! A hidden file found (.gitattributes). Skipped.
+* Adding file CBSA/src/cobol/bnk1ccs.cbl to Application Descriptor into source group cobol.
+*! The file (CBSA/application-conf/BMS.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/cobol/zunitcic.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/updcust.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/delacc.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/bnk1uam.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/bnk1cac.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/delacc.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/crdtagy5.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/bnk1cca.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/creacc.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/bnkmenu.cbl to Application Descriptor into source group cobol.
+*! The file (CBSA/application-conf/Transfer.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (CBSA/application-conf/CRB.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/copy/customer.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/sortcode.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/datastr.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/custctrl.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/custctrl.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/bnk1cdm.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/bnk1mai.cpy to Application Descriptor into source group copy.
+*! The file (CBSA/application-conf/PSBgen.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/copy/lgcmared.cpy to Application Descriptor into source group copy.
+*! The file (CBSA.yaml) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/cobol/abndproc.cbl to Application Descriptor into source group cobol.
+*! The file (CBSA/application-conf/LinkEdit.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/copy/proctran.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/crdtagy3.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/xfrfun.cpy to Application Descriptor into source group copy.
+*! The file (CBSA/application-conf/bind.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/cobol/bnk1dcs.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/bnk1uac.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/updcust.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/acctctrl.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/bnk1tfm.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/acctctrl.cpy to Application Descriptor into source group copy.
+*! The file (CBSA/application-conf/MFS.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/cobol/crdtagy1.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/paydbcr.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/inqcust.cbl to Application Descriptor into source group cobol.
+*! The file (CBSA/application-conf/PLI.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/copy/account.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/creacc.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/getscode.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/getscode.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/bnk1dam.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/bnk1tfn.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/proload.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/bnk1cam.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/getcompy.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/updacc.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/delcus.cpy to Application Descriptor into source group copy.
+*! The file (CBSA/application-conf/README.md) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/cobol/bankdata.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/dbcrfun.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/dpaytst.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/prooffl.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/updacc.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/consent.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/inqcust.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/inqacccu.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/abndinfo.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/accdb2.cpy to Application Descriptor into source group copy.
+*! The file (CBSA/application-conf/application.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (CBSA/application-conf/file.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/cobol/xfrfun.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/bnk1dac.cbl to Application Descriptor into source group cobol.
+*! The file (CBSA/application-conf/ACBgen.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (CBSA/application-conf/Assembler.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/copy/consent.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/inqacccu.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/crdtagy2.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/getcompy.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/constapi.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/crecust.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/constdb2.cpy to Application Descriptor into source group copy.
+*! The file (CBSA/application-conf/ZunitConfig.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/cobol/inqacc.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/procdb2.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/bnk1dcm.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/crdtagy4.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/bnk1acc.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/inqacc.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/consttst.cbl to Application Descriptor into source group cobol.
+*! The file (CBSA/application-conf/Cobol.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/copy/crecust.cpy to Application Descriptor into source group copy.
+*! The file (CBSA/application-conf/REXX.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (CBSA/application-conf/languageConfigurationMapping.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (CBSA/application-conf/reports.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file CBSA/src/cobol/bnk1cra.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/delcus.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/accoffl.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/cobol/dpayapi.cbl to Application Descriptor into source group cobol.
+* Adding file CBSA/src/copy/contdb2.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/copy/bnk1ccm.cpy to Application Descriptor into source group copy.
+* Adding file CBSA/src/cobol/accload.cbl to Application Descriptor into source group cobol.
+*! The file (CBSA/application-conf/DBDgen.properties) did not match any rule defined in the repository path mapping configuration.
+* Created Application Description file /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml
+** Build finished
+*******************************************************************
+Reset Application Descriptor for GenApp
+*******************************************************************
+/usr/lpp/dbb/v2r0/bin/groovyz /u/dbehm/git/dbb-git-migration-modeler/recreateApplicationDescriptor.groovy --workspace /u/dbehm/git/dbb-git-migration-modeler-work/work-applications --application GenApp --repositoryPathsMapping /u/dbehm/git/dbb-git-migration-modeler/repositoryPathsMapping.yaml --logFile /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-GenApp-createApplicationDescriptor.log
+** Recreate Application Descriptor process started. 
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   application -> GenApp
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-GenApp-createApplicationDescriptor.log
+   repositoryPathsMappingFilePath -> /u/dbehm/git/dbb-git-migration-modeler/repositoryPathsMapping.yaml
+** Reading the Repository Layout Mapping definition. 
+* Importing existing Application Descriptor and reset source groups, dependencies and consumers.
+* Getting List of files /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp
+* Adding file GenApp/src/cobol/lgucdb01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgicdb01.cbl to Application Descriptor into source group cobol.
+*! A hidden file found (.gitattributes). Skipped.
+* Adding file GenApp/src/cobol/lgipol01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgtestc1.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgupol01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgupdb01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgipvs01.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/file.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (GenApp/application-conf/languageConfigurationMapping.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (GenApp/application-conf/README.md) did not match any rule defined in the repository path mapping configuration.
+*! The file (GenApp/application-conf/application.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/cobol/lgdpdb01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgucvs01.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/Cobol.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/cobol/lgtestp2.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/reports.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/cobol/lgicvs01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgsetup.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp.yaml) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/cobol/lgipdb01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgtestp1.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgapol01.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/CRB.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/cobol/lgupvs01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgacdb02.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/DBDgen.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (GenApp/application-conf/ACBgen.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/cobol/lgtestp4.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgapvs01.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/bind.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (GenApp/application-conf/REXX.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (GenApp/application-conf/BMS.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (GenApp/application-conf/LinkEdit.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/copy/lgcmarea.cpy to Application Descriptor into source group copy.
+* Adding file GenApp/src/cobol/lgdpvs01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgacus01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgastat1.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/PSBgen.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/cobol/lgtestp3.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/ZunitConfig.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/bms/ssmap.bms to Application Descriptor into source group bms.
+* Adding file GenApp/src/cobol/lgucus01.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/MFS.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/cobol/lgicus01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgapdb01.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgwebst5.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgstsq.cbl to Application Descriptor into source group cobol.
+* Adding file GenApp/src/cobol/lgacvs01.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/Transfer.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/copy/lgpolicy.cpy to Application Descriptor into source group copy.
+* Adding file GenApp/src/cobol/lgacdb01.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/PLI.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file GenApp/src/cobol/lgdpol01.cbl to Application Descriptor into source group cobol.
+*! The file (GenApp/application-conf/Assembler.properties) did not match any rule defined in the repository path mapping configuration.
+* Created Application Description file /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml
+** Build finished
+*******************************************************************
+Reset Application Descriptor for RetirementCalculator
+*******************************************************************
+/usr/lpp/dbb/v2r0/bin/groovyz /u/dbehm/git/dbb-git-migration-modeler/recreateApplicationDescriptor.groovy --workspace /u/dbehm/git/dbb-git-migration-modeler-work/work-applications --application RetirementCalculator --repositoryPathsMapping /u/dbehm/git/dbb-git-migration-modeler/repositoryPathsMapping.yaml --logFile /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-RetirementCalculator-createApplicationDescriptor.log
+** Recreate Application Descriptor process started. 
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   application -> RetirementCalculator
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-RetirementCalculator-createApplicationDescriptor.log
+   repositoryPathsMappingFilePath -> /u/dbehm/git/dbb-git-migration-modeler/repositoryPathsMapping.yaml
+** Reading the Repository Layout Mapping definition. 
+* Importing existing Application Descriptor and reset source groups, dependencies and consumers.
+* Getting List of files /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/RetirementCalculator
+*! The file (RetirementCalculator/application-conf/Cobol.properties) did not match any rule defined in the repository path mapping configuration.
+*! A hidden file found (.gitattributes). Skipped.
+*! The file (RetirementCalculator/application-conf/application.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/ACBgen.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/PLI.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/BMS.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file RetirementCalculator/src/copy/linput2.cpy to Application Descriptor into source group copy.
+*! The file (RetirementCalculator/application-conf/CRB.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/reports.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/languageConfigurationMapping.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file RetirementCalculator/src/cobol/ebud01.cbl to Application Descriptor into source group cobol.
+* Adding file RetirementCalculator/src/cobol/ebud0run.cbl to Application Descriptor into source group cobol.
+*! The file (RetirementCalculator/application-conf/REXX.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/Assembler.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/README.md) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/file.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/PSBgen.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/Transfer.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/ZunitConfig.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/MFS.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator.yaml) did not match any rule defined in the repository path mapping configuration.
+* Adding file RetirementCalculator/src/cobol/ebud02.cbl to Application Descriptor into source group cobol.
+* Adding file RetirementCalculator/src/copy/linput.cpy to Application Descriptor into source group copy.
+*! The file (RetirementCalculator/application-conf/LinkEdit.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file RetirementCalculator/src/cobol/ebud03.cbl to Application Descriptor into source group cobol.
+*! The file (RetirementCalculator/application-conf/DBDgen.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (RetirementCalculator/application-conf/bind.properties) did not match any rule defined in the repository path mapping configuration.
+* Created Application Description file /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/RetirementCalculator/RetirementCalculator.yaml
+** Build finished
+*******************************************************************
+Reset Application Descriptor for UNASSIGNED
+*******************************************************************
+/usr/lpp/dbb/v2r0/bin/groovyz /u/dbehm/git/dbb-git-migration-modeler/recreateApplicationDescriptor.groovy --workspace /u/dbehm/git/dbb-git-migration-modeler-work/work-applications --application UNASSIGNED --repositoryPathsMapping /u/dbehm/git/dbb-git-migration-modeler/repositoryPathsMapping.yaml --logFile /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-UNASSIGNED-createApplicationDescriptor.log
+** Recreate Application Descriptor process started. 
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   application -> UNASSIGNED
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-UNASSIGNED-createApplicationDescriptor.log
+   repositoryPathsMappingFilePath -> /u/dbehm/git/dbb-git-migration-modeler/repositoryPathsMapping.yaml
+** Reading the Repository Layout Mapping definition. 
+* Importing existing Application Descriptor and reset source groups, dependencies and consumers.
+* Getting List of files /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/UNASSIGNED
+*! The file (UNASSIGNED/application-conf/ZunitConfig.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/CRB.properties) did not match any rule defined in the repository path mapping configuration.
+*! A hidden file found (.gitattributes). Skipped.
+*! The file (UNASSIGNED/application-conf/README.md) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/REXX.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file UNASSIGNED/src/cobol/flemsmai.cbl to Application Descriptor into source group cobol.
+*! The file (UNASSIGNED/application-conf/reports.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/LinkEdit.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/PSBgen.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/BMS.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/Cobol.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED.yaml) did not match any rule defined in the repository path mapping configuration.
+* Adding file UNASSIGNED/src/cobol/oldacdb2.cbl to Application Descriptor into source group cobol.
+*! The file (UNASSIGNED/application-conf/languageConfigurationMapping.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/DBDgen.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/PLI.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/application.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file UNASSIGNED/src/bms/epsmort.bms to Application Descriptor into source group bms.
+*! The file (UNASSIGNED/application-conf/Transfer.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/MFS.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file UNASSIGNED/src/cobol/flemssub.cbl to Application Descriptor into source group cobol.
+*! The file (UNASSIGNED/application-conf/bind.properties) did not match any rule defined in the repository path mapping configuration.
+* Adding file UNASSIGNED/src/cobol/oldacdb1.cbl to Application Descriptor into source group cobol.
+* Adding file UNASSIGNED/src/bms/epsmlis.bms to Application Descriptor into source group bms.
+*! The file (UNASSIGNED/application-conf/ACBgen.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/file.properties) did not match any rule defined in the repository path mapping configuration.
+*! The file (UNASSIGNED/application-conf/Assembler.properties) did not match any rule defined in the repository path mapping configuration.
+* Created Application Description file /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/UNASSIGNED/UNASSIGNED.yaml
+** Build finished
+*******************************************************************
+Assess Include files & Programs usage for CBSA
+*******************************************************************
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   metadatastore -> /u/dbehm/git/dbb-git-migration-modeler-work/work-metadatastore
+   application -> CBSA
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-CBSA-assessUsage.log
+   applicationDir -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA
+   moveFiles -> false
+** Getting the list of files of 'Include File' type.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/datastr.cpy'.
+	Files depending on 'CBSA/src/copy/datastr.cpy' :
+	'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in 'CBSA' application context
+	==> 'datastr' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'datastr' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1ccm.cpy'.
+	Files depending on 'CBSA/src/copy/bnk1ccm.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in 'CBSA' application context
+	==> 'bnk1ccm' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'bnk1ccm' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/lgcmared.cpy'.
+	Files depending on 'CBSA/src/copy/lgcmared.cpy' :
+	'CBSA/CBSA/src/cobol/zunitcic.cbl' in 'CBSA' application context
+	==> 'lgcmared' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'lgcmared' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dam.cpy'.
+	Files depending on 'CBSA/src/copy/bnk1dam.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
+	==> 'bnk1dam' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'bnk1dam' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/paydbcr.cpy'.
+	Files depending on 'CBSA/src/copy/paydbcr.cpy' :
+	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
+	==> 'paydbcr' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'paydbcr' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cam.cpy'.
+	Files depending on 'CBSA/src/copy/bnk1cam.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
+	==> 'bnk1cam' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'bnk1cam' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/creacc.cpy'.
+	Files depending on 'CBSA/src/copy/creacc.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	==> 'creacc' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'creacc' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dcm.cpy'.
+	Files depending on 'CBSA/src/copy/bnk1dcm.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	==> 'bnk1dcm' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'bnk1dcm' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/procdb2.cpy'.
+	Files depending on 'CBSA/src/copy/procdb2.cpy' :
+	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	==> 'procdb2' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'procdb2' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constdb2.cpy'.
+	Files depending on 'CBSA/src/copy/constdb2.cpy' :
+	'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
+	==> 'constdb2' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'constdb2' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/abndinfo.cpy'.
+	Files depending on 'CBSA/src/copy/abndinfo.cpy' :
+	'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/acctctrl.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnkmenu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/abndproc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/custctrl.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in 'CBSA' application context
+	==> 'abndinfo' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'abndinfo' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1tfm.cpy'.
+	Files depending on 'CBSA/src/copy/bnk1tfm.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in 'CBSA' application context
+	==> 'bnk1tfm' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'bnk1tfm' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1acc.cpy'.
+	Files depending on 'CBSA/src/copy/bnk1acc.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in 'CBSA' application context
+	==> 'bnk1acc' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'bnk1acc' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/proctran.cpy'.
+	Files depending on 'CBSA/src/copy/proctran.cpy' :
+	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	==> 'proctran' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'proctran' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/sortcode.cpy'.
+	Files depending on 'CBSA/src/copy/sortcode.cpy' :
+	'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/acctctrl.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/getscode.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/custctrl.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in 'CBSA' application context
+	==> 'sortcode' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'sortcode' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/acctctrl.cpy'.
+	Files depending on 'CBSA/src/copy/acctctrl.cpy' :
+	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/acctctrl.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	==> 'acctctrl' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'acctctrl' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/custctrl.cpy'.
+	Files depending on 'CBSA/src/copy/custctrl.cpy' :
+	'CBSA/CBSA/src/cobol/custctrl.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
+	==> 'custctrl' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'custctrl' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/xfrfun.cpy'.
+	Files depending on 'CBSA/src/copy/xfrfun.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
+	==> 'xfrfun' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'xfrfun' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/crecust.cpy'.
+	Files depending on 'CBSA/src/copy/crecust.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
+	==> 'crecust' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'crecust' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacccu.cpy'.
+	Files depending on 'CBSA/src/copy/inqacccu.cpy' :
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	==> 'inqacccu' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'inqacccu' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cdm.cpy'.
+	Files depending on 'CBSA/src/copy/bnk1cdm.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in 'CBSA' application context
+	==> 'bnk1cdm' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'bnk1cdm' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getscode.cpy'.
+	Files depending on 'CBSA/src/copy/getscode.cpy' :
+	'CBSA/CBSA/src/cobol/getscode.cbl' in 'CBSA' application context
+	==> 'getscode' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'getscode' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/consent.cpy'.
+	Files depending on 'CBSA/src/copy/consent.cpy' :
+	'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
+	==> 'consent' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'consent' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1mai.cpy'.
+	Files depending on 'CBSA/src/copy/bnk1mai.cpy' :
+	'CBSA/CBSA/src/cobol/bnkmenu.cbl' in 'CBSA' application context
+	==> 'bnk1mai' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'bnk1mai' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constapi.cpy'.
+	Files depending on 'CBSA/src/copy/constapi.cpy' :
+	'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/consttst.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
+	==> 'constapi' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'constapi' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delacc.cpy'.
+	Files depending on 'CBSA/src/copy/delacc.cpy' :
+	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
+	==> 'delacc' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'delacc' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delcus.cpy'.
+	Files depending on 'CBSA/src/copy/delcus.cpy' :
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	==> 'delcus' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'delcus' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getcompy.cpy'.
+	Files depending on 'CBSA/src/copy/getcompy.cpy' :
+	'CBSA/CBSA/src/cobol/getcompy.cbl' in 'CBSA' application context
+	==> 'getcompy' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'getcompy' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/accdb2.cpy'.
+	Files depending on 'CBSA/src/copy/accdb2.cpy' :
+	'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	==> 'accdb2' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'accdb2' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/contdb2.cpy'.
+	Files depending on 'CBSA/src/copy/contdb2.cpy' :
+	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
+	==> 'contdb2' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'contdb2' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqcust.cpy'.
+	Files depending on 'CBSA/src/copy/inqcust.cpy' :
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	==> 'inqcust' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'inqcust' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updacc.cpy'.
+	Files depending on 'CBSA/src/copy/updacc.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
+	==> 'updacc' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'updacc' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacc.cpy'.
+	Files depending on 'CBSA/src/copy/inqacc.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
+	==> 'inqacc' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'inqacc' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updcust.cpy'.
+	Files depending on 'CBSA/src/copy/updcust.cpy' :
+	'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	==> 'updcust' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'updcust' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1uam.cpy'.
+	Files depending on 'CBSA/src/copy/bnk1uam.cpy' :
+	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
+	==> 'bnk1uam' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'bnk1uam' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/account.cpy'.
+	Files depending on 'CBSA/src/copy/account.cpy' :
+	'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	==> 'account' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'account' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/customer.cpy'.
+	Files depending on 'CBSA/src/copy/customer.cpy' :
+	'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	==> 'customer' is owned by the 'CBSA' application
+	==> Updating usage of Include File 'customer' to 'private' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Getting the list of files of 'Program' type.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cac.cbl'.
+	The Program 'bnk1cac' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/proload.cbl'.
+	The Program 'proload' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/zunitcic.cbl'.
+	The Program 'zunitcic' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dac.cbl'.
+	The Program 'bnk1dac' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpayapi.cbl'.
+	The Program 'dpayapi' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpaytst.cbl'.
+	The Program 'dpaytst' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accoffl.cbl'.
+	The Program 'accoffl' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy5.cbl'.
+	The Program 'crdtagy5' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/creacc.cbl'.
+	Files depending on 'CBSA/src/cobol/creacc.cbl' :
+	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
+	==> 'creacc' is called from the 'CBSA' application
+	==> Updating usage of Program 'creacc' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy4.cbl'.
+	The Program 'crdtagy4' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnkmenu.cbl'.
+	The Program 'bnkmenu' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bankdata.cbl'.
+	The Program 'bankdata' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/prooffl.cbl'.
+	The Program 'prooffl' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1tfn.cbl'.
+	The Program 'bnk1tfn' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cca.cbl'.
+	The Program 'bnk1cca' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dbcrfun.cbl'.
+	Files depending on 'CBSA/src/cobol/dbcrfun.cbl' :
+	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in 'CBSA' application context
+	==> 'dbcrfun' is called from the 'CBSA' application
+	==> Updating usage of Program 'dbcrfun' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/acctctrl.cbl'.
+	The Program 'acctctrl' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/custctrl.cbl'.
+	The Program 'custctrl' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/xfrfun.cbl'.
+	Files depending on 'CBSA/src/cobol/xfrfun.cbl' :
+	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
+	==> 'xfrfun' is called from the 'CBSA' application
+	==> Updating usage of Program 'xfrfun' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crecust.cbl'.
+	Files depending on 'CBSA/src/cobol/crecust.cbl' :
+	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in 'CBSA' application context
+	==> 'crecust' is called from the 'CBSA' application
+	==> Updating usage of Program 'crecust' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacccu.cbl'.
+	Files depending on 'CBSA/src/cobol/inqacccu.cbl' :
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	==> 'inqacccu' is called from the 'CBSA' application
+	==> Updating usage of Program 'inqacccu' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getscode.cbl'.
+	The Program 'getscode' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consent.cbl'.
+	The Program 'consent' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy3.cbl'.
+	The Program 'crdtagy3' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delacc.cbl'.
+	Files depending on 'CBSA/src/cobol/delacc.cbl' :
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	==> 'delacc' is called from the 'CBSA' application
+	==> Updating usage of Program 'delacc' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delcus.cbl'.
+	Files depending on 'CBSA/src/cobol/delcus.cbl' :
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	==> 'delcus' is called from the 'CBSA' application
+	==> Updating usage of Program 'delcus' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dcs.cbl'.
+	The Program 'bnk1dcs' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy2.cbl'.
+	The Program 'crdtagy2' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/abndproc.cbl'.
+	The Program 'abndproc' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1ccs.cbl'.
+	The Program 'bnk1ccs' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy1.cbl'.
+	The Program 'crdtagy1' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cra.cbl'.
+	The Program 'bnk1cra' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getcompy.cbl'.
+	The Program 'getcompy' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accload.cbl'.
+	The Program 'accload' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqcust.cbl'.
+	Files depending on 'CBSA/src/cobol/inqcust.cbl' :
+	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	==> 'inqcust' is called from the 'CBSA' application
+	==> Updating usage of Program 'inqcust' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1uac.cbl'.
+	The Program 'bnk1uac' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updacc.cbl'.
+	Files depending on 'CBSA/src/cobol/updacc.cbl' :
+	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
+	==> 'updacc' is called from the 'CBSA' application
+	==> Updating usage of Program 'updacc' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consttst.cbl'.
+	The Program 'consttst' is not called by any other program.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacc.cbl'.
+	Files depending on 'CBSA/src/cobol/inqacc.cbl' :
+	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
+	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
+	==> 'inqacc' is called from the 'CBSA' application
+	==> Updating usage of Program 'inqacc' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updcust.cbl'.
+	Files depending on 'CBSA/src/cobol/updcust.cbl' :
+	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
+	==> 'updcust' is called from the 'CBSA' application
+	==> Updating usage of Program 'updcust' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA/CBSA.yaml'.
+** Build finished
+*******************************************************************
+Assess Include files & Programs usage for GenApp
+*******************************************************************
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   metadatastore -> /u/dbehm/git/dbb-git-migration-modeler-work/work-metadatastore
+   application -> GenApp
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-GenApp-assessUsage.log
+   applicationDir -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp
+   moveFiles -> false
+** Getting the list of files of 'Include File' type.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgpolicy.cpy'.
+	Files depending on 'GenApp/src/copy/lgpolicy.cpy' :
+	'GenApp/GenApp/src/cobol/lgapdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgacus01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgipol01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgacdb02.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgupdb01.cbl' in 'GenApp' application context
+	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in 'UNASSIGNED' application context
+	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgucdb01.cbl' in 'GenApp' application context
+	'CBSA/CBSA/src/cobol/zunitcic.cbl' in 'CBSA' application context
+	'GenApp/GenApp/src/cobol/lgicus01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgipdb01.cbl' in 'GenApp' application context
+	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in 'UNASSIGNED' application context
+	==> 'lgpolicy' referenced by multiple applications - [UNASSIGNED, CBSA, GenApp] 
+	==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmarea.cpy'.
+	Files depending on 'GenApp/src/copy/lgcmarea.cpy' :
+	'GenApp/GenApp/src/cobol/lgapol01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgupvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgdpvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgdpdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgucus01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgupol01.cbl' in 'GenApp' application context
+	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in 'UNASSIGNED' application context
+	'GenApp/GenApp/src/cobol/lgtestp4.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgucdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgicus01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgipdb01.cbl' in 'GenApp' application context
+	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in 'UNASSIGNED' application context
+	'GenApp/GenApp/src/cobol/lgapdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgacus01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgastat1.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgdpol01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgacvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgipol01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgapvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgupdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgucvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in 'GenApp' application context
+	==> 'lgcmarea' referenced by multiple applications - [UNASSIGNED, GenApp] 
+	==> Updating usage of Include File 'lgcmarea' to 'public' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Getting the list of files of 'Program' type.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicus01.cbl'.
+	Files depending on 'GenApp/src/cobol/lgicus01.cbl' :
+	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in 'GenApp' application context
+	==> 'lgicus01' is called from the 'GenApp' application
+	==> Updating usage of Program 'lgicus01' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpol01.cbl'.
+	Files depending on 'GenApp/src/cobol/lgdpol01.cbl' :
+	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp4.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in 'GenApp' application context
+	==> 'lgdpol01' is called from the 'GenApp' application
+	==> Updating usage of Program 'lgdpol01' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipdb01.cbl'.
+	The Program 'lgipdb01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp3.cbl'.
+	The Program 'lgtestp3' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp4.cbl'.
+	The Program 'lgtestp4' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacvs01.cbl'.
+	The Program 'lgacvs01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgsetup.cbl'.
+	The Program 'lgsetup' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapol01.cbl'.
+	Files depending on 'GenApp/src/cobol/lgapol01.cbl' :
+	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp4.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in 'GenApp' application context
+	==> 'lgapol01' is called from the 'GenApp' application
+	==> Updating usage of Program 'lgapol01' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipvs01.cbl'.
+	The Program 'lgipvs01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupol01.cbl'.
+	Files depending on 'GenApp/src/cobol/lgupol01.cbl' :
+	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in 'GenApp' application context
+	==> 'lgupol01' is called from the 'GenApp' application
+	==> Updating usage of Program 'lgupol01' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb01.cbl'.
+	The Program 'lgacdb01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb02.cbl'.
+	The Program 'lgacdb02' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgstsq.cbl'.
+	Files depending on 'GenApp/src/cobol/lgstsq.cbl' :
+	'GenApp/GenApp/src/cobol/lgapol01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgupvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgdpvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgdpdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgucus01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgupol01.cbl' in 'GenApp' application context
+	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in 'UNASSIGNED' application context
+	'GenApp/GenApp/src/cobol/lgucdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp4.cbl' in 'GenApp' application context
+	'CBSA/CBSA/src/cobol/zunitcic.cbl' in 'CBSA' application context
+	'GenApp/GenApp/src/cobol/lgicus01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgipdb01.cbl' in 'GenApp' application context
+	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in 'UNASSIGNED' application context
+	'GenApp/GenApp/src/cobol/lgapdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgacus01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgdpol01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgacvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgipol01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgapvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgacdb02.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgupdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgucvs01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in 'GenApp' application context
+	==> 'lgstsq' is called by multiple applications - [UNASSIGNED, CBSA, GenApp] 
+	==> Updating usage of Program 'lgstsq' to 'service submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp1.cbl'.
+	The Program 'lgtestp1' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp2.cbl'.
+	The Program 'lgtestp2' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpdb01.cbl'.
+	The Program 'lgdpdb01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucus01.cbl'.
+	Files depending on 'GenApp/src/cobol/lgucus01.cbl' :
+	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in 'GenApp' application context
+	==> 'lgucus01' is called from the 'GenApp' application
+	==> Updating usage of Program 'lgucus01' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapvs01.cbl'.
+	The Program 'lgapvs01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucdb01.cbl'.
+	The Program 'lgucdb01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpvs01.cbl'.
+	The Program 'lgdpvs01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestc1.cbl'.
+	The Program 'lgtestc1' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgastat1.cbl'.
+	The Program 'lgastat1' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapdb01.cbl'.
+	The Program 'lgapdb01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicvs01.cbl'.
+	The Program 'lgicvs01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipol01.cbl'.
+	Files depending on 'GenApp/src/cobol/lgipol01.cbl' :
+	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp4.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in 'GenApp' application context
+	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in 'GenApp' application context
+	==> 'lgipol01' is called from the 'GenApp' application
+	==> Updating usage of Program 'lgipol01' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacus01.cbl'.
+	Files depending on 'GenApp/src/cobol/lgacus01.cbl' :
+	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in 'GenApp' application context
+	==> 'lgacus01' is called from the 'GenApp' application
+	==> Updating usage of Program 'lgacus01' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/GenApp/GenApp.yaml'.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgwebst5.cbl'.
+	The Program 'lgwebst5' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucvs01.cbl'.
+	The Program 'lgucvs01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupdb01.cbl'.
+	The Program 'lgupdb01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/bms/ssmap.bms'.
+	The Program 'ssmap' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicdb01.cbl'.
+	The Program 'lgicdb01' is not called by any other program.
+** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupvs01.cbl'.
+	The Program 'lgupvs01' is not called by any other program.
+** Build finished
+*******************************************************************
+Assess Include files & Programs usage for RetirementCalculator
+*******************************************************************
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   metadatastore -> /u/dbehm/git/dbb-git-migration-modeler-work/work-metadatastore
+   application -> RetirementCalculator
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-RetirementCalculator-assessUsage.log
+   applicationDir -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/RetirementCalculator
+   moveFiles -> false
+** Getting the list of files of 'Include File' type.
+** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/copy/linput2.cpy'.
+	The Include File 'linput2' is not referenced at all.
+** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/copy/linput.cpy'.
+	Files depending on 'RetirementCalculator/src/copy/linput.cpy' :
+	'RetirementCalculator/RetirementCalculator/src/cobol/ebud01.cbl' in 'RetirementCalculator' application context
+	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in 'GenApp' application context
+	'RetirementCalculator/RetirementCalculator/src/cobol/ebud0run.cbl' in 'RetirementCalculator' application context
+	==> 'linput' referenced by multiple applications - [GenApp, RetirementCalculator] 
+	==> Updating usage of Include File 'linput' to 'public' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/RetirementCalculator/RetirementCalculator.yaml'.
+** Getting the list of files of 'Program' type.
+** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/cobol/ebud01.cbl'.
+	Files depending on 'RetirementCalculator/src/cobol/ebud01.cbl' :
+	'CBSA/CBSA/src/cobol/abndproc.cbl' in 'CBSA' application context
+	==> 'ebud01' is called from the 'CBSA' application
+Adding dependency to application CBSA
+	==> Updating usage of Program 'ebud01' to 'service submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/RetirementCalculator/RetirementCalculator.yaml'.
+** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/cobol/ebud03.cbl'.
+	The Program 'ebud03' is not called by any other program.
+** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/cobol/ebud02.cbl'.
+	Files depending on 'RetirementCalculator/src/cobol/ebud02.cbl' :
+	'CBSA/CBSA/src/cobol/abndproc.cbl' in 'CBSA' application context
+	==> 'ebud02' is called from the 'CBSA' application
+Adding dependency to application CBSA
+	==> Updating usage of Program 'ebud02' to 'service submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/RetirementCalculator/RetirementCalculator.yaml'.
+** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/cobol/ebud0run.cbl'.
+	The Program 'ebud0run' is not called by any other program.
+** Build finished
+*******************************************************************
+Assess Include files & Programs usage for UNASSIGNED
+*******************************************************************
+** Script configuration:
+   workspace -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications
+   metadatastore -> /u/dbehm/git/dbb-git-migration-modeler-work/work-metadatastore
+   application -> UNASSIGNED
+   logFile -> /u/dbehm/git/dbb-git-migration-modeler-work/work-logs/3-UNASSIGNED-assessUsage.log
+   applicationDir -> /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/UNASSIGNED
+   moveFiles -> false
+** Getting the list of files of 'Include File' type.
+*** No source found with 'Include File' type.
+** Getting the list of files of 'Program' type.
+** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/cobol/flemssub.cbl'.
+	Files depending on 'UNASSIGNED/src/cobol/flemssub.cbl' :
+	'UNASSIGNED/UNASSIGNED/src/cobol/flemsmai.cbl' in 'UNASSIGNED' application context
+	==> 'flemssub' is called from the 'UNASSIGNED' application
+	==> Updating usage of Program 'flemssub' to 'internal submodule' in '/u/dbehm/git/dbb-git-migration-modeler-work/work-applications/UNASSIGNED/UNASSIGNED.yaml'.
+** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl'.
+	The Program 'oldacdb2' is not called by any other program.
+** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/bms/epsmort.bms'.
+	The Program 'epsmort' is not called by any other program.
+** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl'.
+	The Program 'oldacdb1' is not called by any other program.
+** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/cobol/flemsmai.cbl'.
+	The Program 'flemsmai' is not called by any other program.
+** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/bms/epsmlis.bms'.
+	The Program 'epsmlis' is not called by any other program.
+** Build finished
+
+
+</details>
 
 ## Migrations scenarios
 
