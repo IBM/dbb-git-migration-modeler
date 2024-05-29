@@ -7,22 +7,9 @@ repositoryPaths:
     toLowerCase: true
     encoding: IBM-1047
     mvsMapping:
-      datasetLastLevelQualifiers:
-          - COBOL
-          - CBL
-      types:
-          - CBLCICSDB2
-          - CBLCICS
-  - repositoryPath: $application/src/cobol
-    artifactsType: "Program"
-    sourceGroup: "cobol"
-    languageProcessor: "Cobol.groovy"
-    fileExtension: cbl
-    toLowerCase: true
-    encoding: IBM-1047
-    mvsMapping:
-      datasetLastLevelQualifiers:
-          - SRC
+      scan:
+        language: COB
+        fileType: MAIN
       types:
           - CBLCICSDB2
           - CBLCICS
@@ -36,6 +23,9 @@ repositoryPaths:
     mvsMapping:
       datasetLastLevelQualifiers:
         - COPY
+      scan:
+        language: COB
+        fileType: INCL
   - repositoryPath: $application/src/pli
     artifactsType: "Program"
     sourceGroup: "pli"
@@ -67,8 +57,9 @@ repositoryPaths:
     toLowerCase: true
     encoding: IBM-1047
     mvsMapping:
-      datasetLastLevelQualifiers:
-        - BMS
+      scan:
+        language: ASM
+        fileType: MAP
   - repositoryPath: $application/src/link
     artifactsType: "Other"
     sourceGroup: "link"
