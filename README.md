@@ -200,10 +200,16 @@ This Helper script requires to be customized to meet with your installation (env
 
 The [Extract Applications script (1-extractApplication.sh)](./1-extractApplications.sh) requires to pass as input a comma-separated list of datasets to analyze.
 
-Additionally, the path to the configurations files can be specified. Only the *Repository Paths Mapping* file is required, but other files should be leveraged to have a granular control on the migration process.
+Also, the *Repository Paths Mapping* file is required.
+Although not mandatory, the *Application Mapping* file should be used to identify applications based on naming conventions.
 
-The use of the DBB Scanner is disabled by defult, and must be enabled by passing the `-s/--scanFiles` flag.
-When enabled, each file is scanned to identify its language and file type, and these criterai are used first, to identify which *repository path* the file should be assigned to.
+**Optional configuration parameters of the script**
+
+The *types* and the *Configurations Types* files can be specified to generate correct build properties.
+Typically, these information can be extracted from the SCM solution using reports, and can be manually tailored if necessary.   
+
+The use of the DBB Scanner, to automatically identify the language of a file (Cobol, PLI, etc.), is disabled by default, and must be enabled by passing the `-s/--scanDatasetMembers` flag.
+When enabled, each file is scanned to identify its language and file type, and these criteria are used first, to identify which *repository path* the file should be assigned to.
 When disabled, types and low-level qualifiers of the containing dataset are used, in this order.
 
 
@@ -217,7 +223,7 @@ Execution of the command:
 ** Script configuration:
    outputConfigurationDirectory -> /u/mdalbin/Migration-Modeler-MDLB-work/work-configs
    applicationsMappingFilePath -> /u/mdalbin/Migration-Modeler-MDLB/applicationMappings.yaml
-   scanFiles -> true
+   scanDatasetMembers -> true
    scanEncoding -> IBM-1047
    logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/work-logs/1-extractApplications.log
    outputApplicationDirectory -> /u/mdalbin/Migration-Modeler-MDLB-work/work-applications
