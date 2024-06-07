@@ -24,6 +24,11 @@ import com.ibm.jzos.ZFile;
 import com.ibm.jzos.ZFileConstants;
 import com.ibm.jzos.ZUtil;
 import java.util.Properties;
+import com.ibm.dmh.scan.classify.Dmh5210;
+import com.ibm.dmh.scan.classify.ScanProperties;
+import com.ibm.teamz.classify.ClassifyFileContent;
+import com.ibm.dmh.scan.classify.IncludedFileMetaData;
+import com.ibm.dmh.scan.classify.SingleFilesMetadata;
 
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def applicationsMappingUtils = loadScript(new File("utils/applicationsMappingUtils.groovy"))
@@ -35,6 +40,7 @@ import java.util.Properties;
 // script properties
 @Field Properties props = new Properties()
 @Field repositoryPathsMapping
+@Field Dmh5210 scanner
 
 /**
  * Processing logic
@@ -81,6 +87,10 @@ if (props.applicationsMappingFilePath) {
 	}
 } else {
 	logger.logMessage "!* Warning: no Applications Mapping File defined. All artifacts will be unassigned."
+}
+
+if (props.scanDatasetMembers && props.scanDatasetMembers.toBoolean()) {
+	scanner = initializeScanner()
 }
 
 // Read the Types from file
@@ -136,8 +146,7 @@ datasets.each() { dataset ->
 logger.logMessage "** Generating Applications Configurations files. "
 applicationMappingToDatasetMembers.each() { application, members ->
 	logger.logMessage "** Generating Configuration files for application $application. "
-	generateMappingFile(application)
-	generateApplicationDescriptorFile(application)
+	generateApplicationFiles(application)
 }
 
 
@@ -177,6 +186,8 @@ def parseArgs(String[] args) {
 	cli.r(longOpt:'repositoryPathsMapping', args:1, required:true, 'Path to the Repository Paths Mapping file')
 	cli.t(longOpt:'types', args:1, required:false, 'Path to the Types file')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
+	cli.s(longOpt:'scanDatasetMembers', args:0, required:false, 'Flag to indicate if DBB scanner is used to identify the type of artifacts')
+	cli.se(longOpt:'scanEncoding', args:1, required:false, 'Codepage encoding used for the DBB scanner')
 	
 	def opts = cli.parse(args);
 	if (!args || !opts) {
@@ -223,6 +234,17 @@ def parseArgs(String[] args) {
 	if (opts.l) {
 		props.logFile = opts.l
 	}
+
+	if (opts.s) {
+		props.scanDatasetMembers = opts.s
+		if (opts.se) {
+			props.scanEncoding = opts.se
+		} else {
+			props.scanEncoding = "IBM-1047"
+		}
+	} else {
+		props.scanDatasetMembers = "false"
+	}
 }
 
 def constructPDSForZFileOperation(String PDS) {
@@ -259,7 +281,9 @@ def isFilterOnMemberMatching(String memberName, String filter) {
 	return result.toString().equalsIgnoreCase(expandedFilter);
 }
 
-def generateMappingFile(String application) {
+def generateApplicationFiles(String application) {
+	// If an existing DBB Migration Mapping file already exists in the CONFIG directory,
+	// we read it and store it into a HashMap where the key in the input dataset member 
 	File mappingFile = new File(props.outputConfigurationDirectory + '/' + application + ".mapping");
 	HashMap<String, String> mappings = new HashMap<String, String>()
 	if (mappingFile.exists()) {
@@ -272,12 +296,47 @@ def generateMappingFile(String application) {
 		mappingReader.close()
 	}
 
+	// If an existing Application Descriptor file already exists in the CONFIG directory,
+	// we read it into an Application Descriptor object 
+	File applicationDescriptorFile = new File(props.outputConfigurationDirectory + '/' + application + ".yaml")
+	def applicationDescriptor	
+	if (applicationDescriptorFile.exists()) {
+		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
+	} else {
+		applicationDescriptor = applicationDescriptorUtils.createEmptyApplicationDescriptor()
+	}	
+	
+	// Trying to find information about the application we are dealing with
+	mappedApplication = findMappedApplication(application)
+	if (mappedApplication != null) {
+		applicationDescriptor.application = mappedApplication.application
+		applicationDescriptor.description = mappedApplication.description
+		applicationDescriptor.owner = mappedApplication.owner
+	} else {
+		applicationDescriptor.application = "UNASSIGNED"
+		applicationDescriptor.description = "Unassigned components"
+		applicationDescriptor.owner = "None"
+	}
+
+	// Main loop, iterating through the dataset members assigned to the current application
 	def datasetMembersCollection = applicationMappingToDatasetMembers.get(application)
+	// For each dataset member...
 	datasetMembersCollection.each () { datasetMember ->
-		def (dataset,member) = getDatasetAndMember(datasetMember)
+		// Get the dataset and the member separated
+		def (dataset, member) = getDatasetAndMember(datasetMember)
+		// Using the DBB Scanner if required
+		String scannedLanguage, scannedFileType
+		if (props.scanDatasetMembers && props.scanDatasetMembers.toBoolean()) {
+			(scannedLanguage, scannedFileType) = scanDatasetMember(constructDatasetForZFileOperation(dataset, member))
+		}
 		def lastQualifier = getLastQualifier(dataset)
 		def memberType = getType(member)
+		// Identifying the matching Repository Path
+		// based on 1) the scan result if enabled
+		// 2) the type if set
+		// 3) the last level qualifier of the containing dataset
 		def matchingRepositoryPath = repositoryPathsMapping.repositoryPaths.find {repositoryPath ->
+			(props.scanDatasetMembers && props.scanDatasetMembers.toBoolean() && repositoryPath.mvsMapping.scan ? repositoryPath.mvsMapping.scan.language.equals(scannedLanguage) && repositoryPath.mvsMapping.scan.fileType.equals(scannedFileType) : false) ||
 			(repositoryPath.mvsMapping.types ? repositoryPath.mvsMapping.types.contains(memberType) : false) ||
 			(repositoryPath.mvsMapping.datasetLastLevelQualifiers ? repositoryPath.mvsMapping.datasetLastLevelQualifiers.contains(lastQualifier) : false) 
 		}
@@ -285,29 +344,41 @@ def generateMappingFile(String application) {
 		def targetRepositoryPath
 		def pdsEncoding
 		def fileExtension
+		def artifactsType
+		def sourceGroup
+		def languageProcessor
 		if (matchingRepositoryPath) {
-			fileExtension = (matchingRepositoryPath.fileExtension) ? (matchingRepositoryPath.fileExtension) : lastQualifier
-			member = member + "." + fileExtension 
+			// if Matching Repository Path found, we retrieve the information from the RepositoryPathsMapping file
 			if (matchingRepositoryPath.toLowerCase && matchingRepositoryPath.toLowerCase.toBoolean()) {
 				member = member.toLowerCase()
 				lastQualifier = lastQualifier.toLowerCase()
-				fileExtension = fileExtension.toLowerCase()				
 			}
+			fileExtension = (matchingRepositoryPath.fileExtension) ? (matchingRepositoryPath.fileExtension) : lastQualifier
+			sourceGroup = (matchingRepositoryPath.sourceGroup) ? (matchingRepositoryPath.sourceGroup) : lastQualifier
+			languageProcessor = (matchingRepositoryPath.languageProcessor) ? (matchingRepositoryPath.languageProcessor) : lastQualifier + ".groovy"
 			targetRepositoryPath = (matchingRepositoryPath.repositoryPath) ? matchingRepositoryPath.repositoryPath.replaceAll('\\$application',application) : "$application/$lastQualifier"
 			pdsEncoding = (matchingRepositoryPath.encoding) ? (matchingRepositoryPath.encoding) : "IBM-1047"
+			artifactsType = (matchingRepositoryPath.artifactsType) ? (matchingRepositoryPath.artifactsType) : lastQualifier
+
 		} else {
+			// if Matching Repository Path not found, we set default values based on the last qualifier of the dataset name
 			member = member.toLowerCase()
 			lastQualifier = lastQualifier.toLowerCase()
 			fileExtension = lastQualifier				
-			member = member + "." + fileExtension
+			sourceGroup = lastQualifier
+			languageProcessor = lastQualifier + ".groovy"
 			targetRepositoryPath = "$application/$lastQualifier"
 			pdsEncoding = "IBM-1047"
+			artifactsType = lastQualifier
 		}
+		// Appending the dataset member to the Application Descriptor file
+		applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroup, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, member, memberType, "undefined")
+		// Adding a line into the DBB Migration Mapping file
 		targetRepositoryPath = props.outputApplicationDirectory + "/" + application + "/" + targetRepositoryPath
-		mappings.put(datasetMember, "$targetRepositoryPath/$member pdsEncoding=$pdsEncoding")
+		mappings.put(datasetMember, "$targetRepositoryPath/$member.$fileExtension pdsEncoding=$pdsEncoding")
 	}
-
 	
+	// Writing the DBB Migration Mapping file
 	try {
 		boolean append = false
 		BufferedWriter writer = new BufferedWriter(new FileWriter(mappingFile, append))
@@ -320,66 +391,10 @@ def generateMappingFile(String application) {
 		e.printStackTrace();
 	}
 	logger.logMessage("\tCreated DBB Migration Utility mapping file " + mappingFile.getAbsolutePath());
-}
-
-def generateApplicationDescriptorFile(String application) {
-	File applicationDescriptorFile = new File(props.outputConfigurationDirectory + '/' + application + ".yaml")
-	def applicationDescriptor	
-	if (applicationDescriptorFile.exists()) {
-		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
-	} else {
-		applicationDescriptor = applicationDescriptorUtils.createEmptyApplicationDescriptor()
-	}	
-	
-	mappedApplication = findMappedApplication(application)
-	if (mappedApplication != null) {
-		applicationDescriptor.application = mappedApplication.application
-		applicationDescriptor.description = mappedApplication.description
-		applicationDescriptor.owner = mappedApplication.owner
-	} else {
-		applicationDescriptor.application = "UNASSIGNED"
-		applicationDescriptor.description = "Unassigned components"
-		applicationDescriptor.owner = "None"
-	}
-
-	def datasetMembersCollection = applicationMappingToDatasetMembers.get(application)
-	datasetMembersCollection.each () { datasetMember ->
-		def (dataset,member) = getDatasetAndMember(datasetMember)
-		def lastQualifier = getLastQualifier(dataset)
-		def memberType = getType(member)
-		def matchingRepositoryPath = repositoryPathsMapping.repositoryPaths.find {repositoryPath ->
-			(repositoryPath.mvsMapping.types ? repositoryPath.mvsMapping.types.contains(memberType) : false) ||
-			(repositoryPath.mvsMapping.datasetLastLevelQualifiers ? repositoryPath.mvsMapping.datasetLastLevelQualifiers.contains(lastQualifier) : false) 
-		}
-
-		def targetRepositoryPath
-		def pdsEncoding
-		def fileExtension
-		def artifactsType
-		if (matchingRepositoryPath) {
-			fileExtension = (matchingRepositoryPath.fileExtension) ? (matchingRepositoryPath.fileExtension) : lastQualifier
-			if (matchingRepositoryPath.toLowerCase && matchingRepositoryPath.toLowerCase.toBoolean()) {
-				member = member.toLowerCase()
-				lastQualifier = lastQualifier.toLowerCase()
-				fileExtension = fileExtension.toLowerCase()
-			}
-			artifactsType = (matchingRepositoryPath.artifactsType) ? (matchingRepositoryPath.artifactsType) : lastQualifier
-			targetRepositoryPath = (matchingRepositoryPath.repositoryPath) ? matchingRepositoryPath.repositoryPath.replaceAll('\\$application',application) : "$application/$lastQualifier"
-			pdsEncoding = (matchingRepositoryPath.encoding) ? (matchingRepositoryPath.encoding) : "IBM-1047"
-		} else {
-			member = member.toLowerCase()
-			lastQualifier = lastQualifier.toLowerCase()
-			targetRepositoryPath = "$application/$lastQualifier"
-			pdsEncoding = "IBM-1047"
-			artifactsType = lastQualifier
-			fileExtension = lastQualifier
-		}
-		applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, lastQualifier, lastQualifier + ".groovy", artifactsType, fileExtension, targetRepositoryPath, member, memberType, "undefined")
-	}
+	// Writing the Application Descriptor file
 	applicationDescriptorUtils.writeApplicationDescriptor(applicationDescriptorFile, applicationDescriptor)
 	logger.logMessage("\tCreated Application Description file " + applicationDescriptorFile.getAbsolutePath());
 }
-
 
 def addDatasetMemberToApplication(String application, String datasetMember) {
 	def applicationMap = applicationMappingToDatasetMembers.get(application)
@@ -478,4 +493,21 @@ def getType(String member) {
 			return "UNKNOWN"
 		}
 	}
+}
+
+def initializeScanner() {
+	ScanProperties scanProperties = new ScanProperties();
+	scanProperties.setCodePage(props.scanEncoding);
+	Dmh5210 dmh5210 = new Dmh5210();
+	dmh5210.init(scanProperties);
+	return dmh5210;
+}
+
+def scanDatasetMember(String datasetMemberToScan) {
+	ZFile ZsourceFile = new ZFile(datasetMemberToScan, "r", ZFileConstants.FLAG_DISP_SHR)
+	InputStream ZfileInputStream = ZsourceFile.getInputStream();
+	
+	Object scanMetadata = scanner.processSingleFile(ZfileInputStream);
+	SingleFilesMetadata dmhfile = (SingleFilesMetadata) scanMetadata;
+	return [dmhfile.getLanguageCd(), dmhfile.getFileTypeCd()]
 }

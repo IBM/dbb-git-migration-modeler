@@ -35,6 +35,9 @@ fi
 
 #### Application Extraction step
 ./1-extractApplications.sh -d DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS --applicationMapping $DBB_MODELER_HOME/applicationMappings.yaml --repositoryPathsMapping $DBB_MODELER_HOME/repositoryPathsMapping.yaml --types $DBB_MODELER_HOME/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS -l $DBB_MODELER_LOGS/1-extractApplications.log
+## The following command can be used when datasets contain mixed types of artifacts, the use of the scanDatasetMembers option enables the DBB Scanner to understand the type of artifacts and route them to the right subfolder in USS
+#./1-extractApplications.sh -d DBEHM.MIG.MIXED,DBEHM.MIG.BMS --applicationMapping $DBB_MODELER_HOME/applicationMappings.yaml --repositoryPathsMapping $DBB_MODELER_HOME/repositoryPathsMapping.yaml --types $DBB_MODELER_HOME/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS -l $DBB_MODELER_LOGS/1-extractApplications.log -scanDatasetMembers -scanEncoding IBM-1047
+## The following command can be used when wildcards are used to list the datasets that should be scanned.
 #./1-extractApplications.sh -d GITLAB.CATMAN.**.CO*,DBEHM.MIG.COBOL,DBEHM.MIG.COPY --applicationMapping $DBB_MODELER_HOME/applicationMappings-CATMAN.yaml --repositoryPathsMapping $DBB_MODELER_HOME/repositoryPathsMapping.yaml --types $DBB_MODELER_HOME/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS
 
 echo "Press ENTER to continue or Ctrl+C to quit..."
