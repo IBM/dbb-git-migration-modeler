@@ -318,7 +318,7 @@ def generateApplicationFiles(String application) {
 		applicationDescriptor.owner = "None"
 	}
 
-	// Main loop, iterating through the dataset embers assigned to the current application
+	// Main loop, iterating through the dataset members assigned to the current application
 	def datasetMembersCollection = applicationMappingToDatasetMembers.get(application)
 	// For each dataset member...
 	datasetMembersCollection.each () { datasetMember ->
