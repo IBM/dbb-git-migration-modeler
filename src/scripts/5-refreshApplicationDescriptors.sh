@@ -13,7 +13,8 @@ then
     echo "Environment variable DBB_HOME is not set. Exiting..."
 else
     # Environment variables setup
-    . ./0-environment.sh
+	dir=$(dirname "$0")
+	. $dir/0-environment.sh
     
     #### Build Metadatastore
     if [ -d $DBB_MODELER_METADATA_STORE ] 
@@ -33,7 +34,7 @@ else
         echo "*******************************************************************"
         echo "Scan application directory $DBB_MODELER_APPLICATIONS/$applicationDir"
         echo "*******************************************************************"
-        CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/scanApplication.groovy \
+        CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
             -w $DBB_MODELER_APPLICATIONS \
             -a $applicationDir \
             -m $DBB_MODELER_METADATA_STORE \
@@ -48,7 +49,7 @@ else
         echo "*******************************************************************"
         echo "Reset Application Descriptor for $applicationDir"
         echo "*******************************************************************"
-        CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/recreateApplicationDescriptor.groovy \
+        CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/recreateApplicationDescriptor.groovy \
             --workspace $DBB_MODELER_APPLICATIONS \
             --application $applicationDir \
             --repositoryPathsMapping $DBB_MODELER_HOME/repositoryPathsMapping.yaml \
@@ -63,7 +64,7 @@ else
         echo "*******************************************************************"
         echo "Assess Include files & Programs usage for $applicationDir"
         echo "*******************************************************************"
-        CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/assessUsage.groovy \
+        CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
             --workspace $DBB_MODELER_APPLICATIONS \
             --metadatastore $DBB_MODELER_METADATA_STORE \
             --application $applicationDir \
