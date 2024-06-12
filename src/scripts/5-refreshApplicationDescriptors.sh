@@ -38,7 +38,7 @@ else
             -w $DBB_MODELER_APPLICATIONS \
             -a $applicationDir \
             -m $DBB_MODELER_METADATA_STORE \
-            -l $DBB_MODELER_LOGS/3-$application-scan.log"   
+            -l $DBB_MODELER_LOGS/3-$applicationDir-scan.log"   
         $CMD "$@"
     done
     
