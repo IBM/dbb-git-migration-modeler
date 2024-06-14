@@ -54,7 +54,7 @@ This stage is optional and allows to statically migrate build configuration from
 We encourage customers to use the dynamic scanners in Dependency Based Build to determine the runtime flags for each build file.
 The outputs of this stage becomes relevant when the final migration is taking place.
 
-The purpose of this stage is to generate properties and property files that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework, based on the information gathered in a specific input file, the [Types file](./types.txt), defined later in this documentation.
+The purpose of this stage is to generate properties and property files that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework, based on the information gathered in a specific input file, the [Types file](./samples/types.txt), defined later in this documentation.
 
 This phase will generate the necessary properties and files required to leverage the [Language configuration  mapping](https://github.com/IBM/dbb-zappbuild/blob/develop/docs/FilePropertyManagement.md#language-configuration-mapping) feature available in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/).
 Each composite type will be created (if not already existing) and will combine properties to represent a unique Language Configuration.
@@ -99,13 +99,13 @@ Types can be combined depending on definitions found in the [Types file](./sampl
 
 When running this utility, two main types of files will be created for each application that are discovered:
 * An Application Descriptor file (YAML format): this file is built during the analysis of the datasets members provided as input. It contains the list of artifacts that belong to this application, with properties that are updated when the usage of Include Files and Programs is performed. 
-  * [The Framing phase](#the-framing-phase) stores the files in a shared configuration folder (named *work-configs* by default).
-  * [The Assessment phase](#the-assessment-phase) produces an updated Application Descriptor file, which is stored within the application's folder.
+  * [The Framing phase](README.md#the-framing-phase) stores the files in a shared configuration folder (named *work-configs* by default).
+  * [The Assessment phase](README.md#the-assessment-phase) produces an updated Application Descriptor file, which is stored within the application's folder.
   This allows to compare the Application Descriptor files between the Framing phase and the Assessment phase.
 * A DBB Migration Mapping file (Text format): this file contains instructions on how the DBB Migration utility should operate when running a migration.
 This structure of mapping file and how to invoke the DBB Migration utility with a mapping file is described in [the official DBB documentation](https://www.ibm.com/docs/en/dbb/2.0?topic=migrating-source-files-from-zos-git#running-migration-using-a-mapping-file).
 
-For [the Property Generation phase](#the-property-generation-phase), the following output files are created:
+For [the Property Generation phase](README.md#the-property-generation-phase), the following output files are created:
 * Language Configuration files, containing properties defined for types configurations (as defined in the [Types Configurations file](./samples/typesConfigurations.yaml)).
 These Language Configuration files are stored in a custom *dbb-zAppBuild* instance which is copied from an original *dbb-zAppbuild* folder.
 The location of these files is the [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/develop/build-conf/language-conf) folder in the custom *dbb-zAppBuild* instance.
@@ -140,17 +140,17 @@ If no naming convention is applied for a given application, or if all the member
 However, it is recommended to use the definitions provided in the template, and keep consistent definitions for all applications being migrated.  
 The values provided in the sample file should meet most of the implementations, but these values can be customized if necessary.  
 The file controls how dataset members should be dispatched to target subfolders on USS, depending on the low-level qualifiers of the dataset which hold them, their associated types (if any, as described in the [Types file](./samples/types.txt)) or, if enabled, the scan result provided by the DBB Scanner.  
-For each repository path, the `artifactsType` property is used during [the Assessment phase](#the-assessment-phase), to filter out for each type of artifacts to perform the assessment.
+For each repository path, the `artifactsType` property is used during [the Assessment phase](README.md#the-assessment-phase), to filter out for each type of artifacts to perform the assessment.
 Only artifacts of types `Program` or `Include File` will be included in the analysis.
 It is recommended to keep the current settings defined in the provided [Repository Paths Mapping file](./samples/repositoryPathsMapping.yaml) for the `artifactsType` property.    
 
 * The [Types file](./samples/types.txt) lists their dataset members and their associated type (like a language definition), as described in the legacy SCM tool. This CSV file is optional, and should be built with an SCM-provided utility or from an SCM-provided report.  
-During the [Framing phase](./#the-framing-phase), the *type* information can be used as a criteria to dispatch files.
+During the [Framing phase](README.md#the-framing-phase), the *type* information can be used as a criteria to dispatch files.
 If no type is assigned to a given artifact, this information will not be used to dispatch the file and this element will be of type *UNKNOWN* in the Application Descriptor file.  
-The type assigned to each artifact is used in the [Property Generation phase](./#the-property-generation-phase) to create Language Configuration in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/)'s configuration.
+The type assigned to each artifact is used in the [Property Generation phase](README.md#the-property-generation-phase) to create Language Configuration in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/)'s configuration.
 
 * The [Types Configurations file](./samples/typesConfigurations.yaml) defines the differents types, grouping together related properties.
-This file is only used during the [Property Generation phase](./#the-property-generation-phase).
+This file is only used during the [Property Generation phase](README.md#the-property-generation-phase).
 Each type configuration contains properties used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework.
 
 
@@ -2796,7 +2796,7 @@ PGM002, COBOL, CICSDB2
 PMG003, PLI, IMSDB
 ~~~~
 
-Each type configuration would be defined separately in the [Types Configurations file](./typesConfigurations.yaml), for instance:
+Each type configuration would be defined separately in the [Types Configurations file](./samples/typesConfigurations.yaml), for instance:
 
 ~~~~YAML
 - typeConfiguration: "COBOL"
