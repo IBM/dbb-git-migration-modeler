@@ -182,7 +182,7 @@ def parseArgs(String[] args) {
 	cli.d(longOpt:'datasets', args:1, required:true, 'List of comma-separated datasets to scan');
 	cli.oc(longOpt:'outputConfigurations', args:1, required:true, 'Output folder where Configurations files are written');
 	cli.oa(longOpt:'outputApplications', args:1, required:true, 'Output folder where Applications files will be copied');
-	cli.a(longOpt:'applicationMapping', args:1, required:false, 'Path to the Applications Mapping file')
+	cli.a(longOpt:'applicationsMapping', args:1, required:false, 'Path to the Applications Mapping file')
 	cli.r(longOpt:'repositoryPathsMapping', args:1, required:true, 'Path to the Repository Paths Mapping file')
 	cli.t(longOpt:'types', args:1, required:false, 'Path to the Types file')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
