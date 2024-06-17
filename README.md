@@ -209,12 +209,11 @@ The [Extract Applications script (1-extractApplication.sh)](./src/scripts/1-extr
 Also, the *Repository Paths Mapping* file is required.
 Although not mandatory, the `Applications Mapping` YAML file should be used to identify applications based on naming conventions.
 
-**Optional configuration parameters of the script**
+Optional configuration parameters of the script:
 
-The *types* and the *Configurations Types* files can be specified to generate correct build properties.
-Typically, these information can be extracted from the SCM solution using reports, and can be manually tailored if necessary.   
+* The *types* and the *Configurations Types* files can be specified to generate correct build properties. Typically, these information can be extracted from the SCM solution using reports, and can be manually tailored if necessary.   
 
-The use of the DBB Scanner, to automatically identify the language of a file (Cobol, PLI, etc.), is disabled by default, and must be enabled by passing the `-s/--scanDatasetMembers` flag.
+* The use of the DBB Scanner, to automatically identify the language of a file (Cobol, PLI, etc.), is disabled by default, and must be enabled by passing the `-s/--scanDatasetMembers` flag.
 When enabled, each file is scanned to identify its language and file type, and these criteria are used first, to identify which *repository path* the file should be assigned to.
 When disabled, types and low-level qualifiers of the containing dataset are used, in this order.
 
@@ -222,8 +221,19 @@ When disabled, types and low-level qualifiers of the containing dataset are used
 <details>
   <summary>Output example</summary>
 Execution of the command:
-`./1-extractApplications.sh -d DBEHM.MIG.MIXED,DBEHM.MIG.BMS --applicationsMapping $DBB_MODELER_WORK/applicatiosnMapping.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_WORK/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS -l $DBB_MODELER_LOGS/1-extractApplications.log -s -se IBM-1047`
 
+```
+./1-extractApplications.sh \
+	-d DBEHM.MIG.MIXED,DBEHM.MIG.BMS \
+	--applicationsMapping $DBB_MODELER_WORK/applicatiosnMapping.yaml \
+	--repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml \
+	--types $DBB_MODELER_WORK/types.txt \
+	-oc $DBB_MODELER_APPCONFIGS \
+	-oa $DBB_MODELER_APPLICATIONS \
+	-l $DBB_MODELER_LOGS/1-extractApplications.log -s -se IBM-1047
+```
+
+Output log:
 ~~~~  
 ** Extraction process started.
 ** Script configuration:
@@ -374,8 +384,10 @@ It will search for all the DBB Migration mapping files located in the *work-conf
 <details>
   <summary>Output example</summary>
 Execution of the command:
+
 `./2-runMigrations.sh`
-  
+
+Output log:  
 ~~~~
 ***** Running the DBB Migration Utility for application CBSA using file CBSA.mapping *****
 Messages will be saved in /u/mdalbin/Migration-Modeler-MDLB-work/work-logs/2-CBSA.migration.log
@@ -520,8 +532,10 @@ This script works in 2 phases: the first phase is a scan of all the files found 
 <details>
   <summary>Output example</summary>
 Execution of the command:
+
 `./3-classify.sh`
-  
+
+Output log:
 ~~~~
 *******************************************************************
 Scan application directory /u/mdalbin/Migration-Modeler-MDLB-work/work-applications/CBSA
@@ -1305,8 +1319,10 @@ If configuration was changed, an *INFO* message is shown, explaining that a manu
 <details>
   <summary>Output example</summary>
 Execution of the command:
+	
 `./4-generateProperties.sh`
 
+Output log:
 ~~~~
 *******************************************************************
 Generate properties for application 'CBSA'
@@ -1412,10 +1428,12 @@ The recommendation would be to set up a pipeline, that checks out all Git reposi
 
 <details>
   <summary>Output example</summary>
-Execution of the command:
+Execution of command:
+	
 `./5-refreshApplicationDescriptors.sh`
 
-
+Output log:
+~~~~
 *******************************************************************
 Scan application directory /u/dbehm/git/dbb-git-migration-modeler-work/work-applications/CBSA
 *******************************************************************
@@ -2641,6 +2659,7 @@ Assess Include files & Programs usage for UNASSIGNED
 	The Program 'epsmlis' is not called by any other program.
 ** Build finished
 
+~~~~
 
 </details>
 
