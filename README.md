@@ -6,7 +6,7 @@ This asset provides a guided approach to plan and migrate source codebase from M
 
 An important capability is to understand the usage and dependencies on include files and programs across applications.
 The Migration-Modeler utility performs an assessment to understand how these include files and programs are used by the analyzed applications, if they are shared across applications or dedicated with a private or a public scope.
-Depending on the result of this analysis, the utility suggests the appropriate owning application into which the include files are moved, and documents the source-level and object-level dependencies.
+Depending on the result of this analysis, the utility suggests the appropriate owning application into which the include files are moved, and documents the source-level and object-level application dependencies.
 
 It is also able to automatically create part of the configuration of the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) build framework, by generating property files for the application's artifacts based on provided configuration mappings.
  
@@ -123,17 +123,19 @@ The scripts used by the utility must be configured in order to run properly.
 Each script calls a setup script, the [0-environment.sh script](./src/scripts/0-environment.sh), which exports environment variables.
 
 To configure the Migration-Modeler, the variables defined in the [0-environment.sh script](./src/scripts/0-environment.sh) should be tailored to meet with your installation.
-The `DBB_MODELER_HOME` and `DBB_MODELER_WORK` variables should be customized in priority, to respectively point to the location where the Migration-Modeler utility is installed and the location that will be used for work.
+The `DBB_MODELER_HOME` and `DBB_MODELER_WORK` variables need to be customized, to respectively specify the Migration-Modeler utility installation directory and the work directory that will be used.
+Please make sure the work directory is sized accordingly to contain your entire code base.
 
 ### Tailoring the input files
 
 The configuration files required to use the Migration-Modeler utility are provided in the [samples](./samples/) folder.
-You should copy these configuration files to the **work** directory indicated by the `DBB_MODELER_WORK` environment variable. 
+You must copy these sample configuration files to the working directory indicated by the `DBB_MODELER_WORK` environment variable and use them as templates for your customization.
 
 Four configuration files need to be reviewed and adapted to your installation and your needs, before using the Migration-Modeler: 
 
-* The [Applications Mapping file](./samples/applicationsMapping.yaml) file contains the list of existing applications including the naming convention patterns to define the elements that belong to each application.  
-For a given member analyzed by the utility, if its name doesn't match any of the naming convention, it will be associated to the *UNASSIGNED* application.  
+* The [Applications Mapping file](./samples/applicationsMapping.yaml) file contains the list of existing applications including the naming convention patterns to define the elements that belong to each application.
+Instead of patterns for naming conventions, the file also accepts fully qualified member names that can be extracted from an existing data source or report provided by your legacy tool.  
+Members in the input PDSs libraries that do not match any convention will be associated to the *UNASSIGNED* application and be treated as shared code.  
 If no naming convention is applied for a given application, or if all the members of a given dataset belong to the same application, a naming convention whose value is `........` should be defined.
 
 * The [Repository Paths Mapping file](./samples/repositoryPathsMapping.yaml) file is required and may be tailored to meet with your requirements, in terms of folder layout.

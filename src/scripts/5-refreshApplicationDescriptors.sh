@@ -52,7 +52,7 @@ else
         CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/recreateApplicationDescriptor.groovy \
             --workspace $DBB_MODELER_APPLICATIONS \
             --application $applicationDir \
-            --repositoryPathsMapping $DBB_MODELER_HOME/repositoryPathsMapping.yaml \
+            --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml \
             --logFile $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log"
         echo $CMD
         $CMD "$@"
