@@ -13,7 +13,8 @@ then
 	echo "Environment variable DBB_HOME is not set. Exiting..."
 else
 	# Environment variables setup
-	. ./0-environment.sh
+	dir=$(dirname "$0")
+	. $dir/0-environment.sh
 
 	if [ -d $DBB_MODELER_APPLICATIONS ] 
 	then

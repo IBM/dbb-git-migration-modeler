@@ -13,7 +13,8 @@ then
 	echo "Environment variable DBB_HOME is not set. Exiting..."
 else
 	# Environment variables setup
-	. ./0-environment.sh
+	dir=$(dirname "$0")
+	. $dir/0-environment.sh
 
 	cd $DBB_MODELER_APPCONFIGS
 	for mappingFile in `ls *.mapping`
@@ -22,7 +23,7 @@ else
 		echo "*******************************************************************"
 		echo "Generate properties for application '$application'"
 		echo "*******************************************************************"
-    	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/generateProperties.groovy \
+    	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/generateProperties.groovy \
 			-w $DBB_MODELER_APPLICATIONS \
 			-a $application \
 			-l $DBB_MODELER_LOGS/4-$application-generateProperties.log"
