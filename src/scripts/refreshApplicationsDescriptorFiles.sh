@@ -8,6 +8,33 @@
 # Contract with IBM Corp. 
 #*******************************************************************************
 
+Help() {
+  echo "                                                               "
+  echo " DBB Git Migration Modeler                                     "
+  echo " Release:     $MigrationModelerRelease                         "
+  echo "                                                               "
+  echo " Script:      refreshApplicationDescriptorFiles                "
+  echo "                                                               "
+  echo " Description: The purpose of this script is to help            "
+  echo "              keeping the Application Descriptor files         "
+  echo "              of existing applications up-to-date.             "
+  echo "              The script scans the artifacts belonging to      "
+  echo "              the application, removes existing source groups  "
+  echo "              from the Application Descriptor files and run    "
+  echo "              the usage assessment process again to populate   "
+  echo "              the Application Descriptor files correctly.      "
+  echo "                                                               "
+}
+
+#### Environment variables setup
+dir=$(dirname "$0")
+. $dir/0-environment.sh
+
+if [ "$1" = "?" ]; then
+  Help
+  exit 0
+fi
+
 if [  "$DBB_HOME" = "" ]
 then
     echo "Environment variable DBB_HOME is not set. Exiting..."

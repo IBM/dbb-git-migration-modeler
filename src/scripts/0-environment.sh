@@ -14,3 +14,5 @@ export DBB_MODELER_APPCONFIGS=$DBB_MODELER_WORK/work-configs
 export DBB_MODELER_APPLICATIONS=$DBB_MODELER_WORK/work-applications
 export DBB_MODELER_LOGS=$DBB_MODELER_WORK/work-logs
 export DBB_MODELER_METADATA_STORE=$DBB_MODELER_WORK/work-metadatastore
+
+export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}'`

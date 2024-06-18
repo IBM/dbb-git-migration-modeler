@@ -8,9 +8,30 @@
 # Contract with IBM Corp. 
 #*******************************************************************************
 
+Help() {
+  echo "                                                               "
+  echo " DBB Git Migration Modeler                                     "
+  echo " Release:     $MigrationModelerRelease                         "
+  echo "                                                               "
+  echo " Script:      Migration-Modeler-Start                          "
+  echo "                                                               "
+  echo " Description: The purpose of this script is to facilitate      "
+  echo "              the execution of the 4-step process supported    "
+  echo "              by the DBB Git Migration Modeler.                "
+  echo "              For more information please refer to:            "
+  echo "              https://github.com/IBM/dbb-git-migration-modeler "
+  echo "                                                               "
+}
+
 #### Environment variables setup
 dir=$(dirname "$0")
 . $dir/0-environment.sh
+
+if [ "$1" = "?" ]; then
+  Help
+  exit 0
+fi
+
 
 #### Cleanup output directories
 if [ -d $DBB_MODELER_APPCONFIGS ] 
