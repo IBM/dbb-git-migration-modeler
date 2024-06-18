@@ -9,18 +9,16 @@
 #*******************************************************************************
 
 Help() {
-  echo "                                                               "
-  echo " DBB Git Migration Modeler                                     "
-  echo " Release:     $MigrationModelerRelease                         "
-  echo "                                                               "
-  echo " Script:      Migration-Modeler-Start                          "
-  echo "                                                               "
-  echo " Description: The purpose of this script is to facilitate      "
-  echo "              the execution of the 4-step process supported    "
-  echo "              by the DBB Git Migration Modeler.                "
-  echo "              For more information please refer to:            "
-  echo "              https://github.com/IBM/dbb-git-migration-modeler "
-  echo "                                                               "
+	echo "                                                                                                            "
+	echo " DBB Git Migration Modeler                                                                                  "
+	echo " Release:     $MigrationModelerRelease                                                                      "
+	echo "                                                                                                            "
+	echo " Script:      Migration-Modeler-Start.sh                                                                    "
+	echo "                                                                                                            "
+	echo " Description: The purpose of this script is to facilitate the execution of the 4-step process supported     "
+	echo "              by the DBB Git Migration Modeler.                                                             "
+	echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
+	echo "                                                                                                            "
 }
 
 #### Environment variables setup
@@ -28,8 +26,8 @@ dir=$(dirname "$0")
 . $dir/0-environment.sh
 
 if [ "$1" = "?" ]; then
-  Help
-  exit 0
+	Help
+	exit 0
 fi
 
 
@@ -42,17 +40,16 @@ if [ -d $DBB_MODELER_APPLICATIONS ]
 then
 	rm -rf $DBB_MODELER_APPLICATIONS
 fi
-
 if [ -d $DBB_MODELER_LOGS ] 
 then
-    rm -rf $DBB_MODELER_LOGS
+	rm -rf $DBB_MODELER_LOGS
 fi
 
 
 #### Create work directories
 if [ ! -d $DBB_MODELER_LOGS ] 
 then
-   mkdir -p $DBB_MODELER_LOGS
+	mkdir -p $DBB_MODELER_LOGS
 fi
 
 #### Application Extraction step

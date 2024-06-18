@@ -15,19 +15,19 @@ else
 	# Environment variables setup
 	dir=$(dirname "$0")
 	. $dir/0-environment.sh
-	
-	# Build Metadatastore
-	if [ -d $DBB_MODELER_METADATA_STORE ] 
-    then
-        rm -rf $DBB_MODELER_METADATA_STORE
-    fi
-    
-    if [ ! -d $DBB_MODELER_METADATA_STORE ] 
-    then
-        mkdir -p $DBB_MODELER_METADATA_STORE
-    fi
 
-    # Scan files
+	# Build Metadatastore
+ 	if [ -d $DBB_MODELER_METADATA_STORE ] 
+	then
+		rm -rf $DBB_MODELER_METADATA_STORE
+	fi
+
+	if [ ! -d $DBB_MODELER_METADATA_STORE ] 
+	then
+		mkdir -p $DBB_MODELER_METADATA_STORE
+	fi
+
+	# Scan files
 	cd $DBB_MODELER_APPLICATIONS
 	for applicationDir in `ls`
 	do
@@ -42,8 +42,8 @@ else
 		$CMD "$@"
 	done
 
-    cd $DBB_MODELER_APPLICATIONS
-    for applicationDir in `ls`
+	cd $DBB_MODELER_APPLICATIONS
+	for applicationDir in `ls`
 	do
 		echo "*******************************************************************"
 		echo "Assess Include files & Programs usage for $applicationDir"
