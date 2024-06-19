@@ -30,14 +30,17 @@ Help
 #### Cleanup output directories
 if [ -d $DBB_MODELER_APPCONFIGS ] 
 then
+	echo "[INFO] Removing '${DBB_MODELER_APPCONFIGS}' folder."
 	rm -rf $DBB_MODELER_APPCONFIGS
 fi
 if [ -d $DBB_MODELER_APPLICATIONS ] 
 then
+	echo "[INFO] Removing '${DBB_MODELER_APPLICATIONS}' folder."
 	rm -rf $DBB_MODELER_APPLICATIONS
 fi
 if [ -d $DBB_MODELER_LOGS ] 
 then
+	echo "[INFO] Removing '${DBB_MODELER_LOGS}' folder."
 	rm -rf $DBB_MODELER_LOGS
 fi
 
