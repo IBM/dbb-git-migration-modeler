@@ -8,30 +8,47 @@
 # Contract with IBM Corp. 
 #*******************************************************************************
 
+Help() {
+	echo "                                                                                                            "
+	echo " DBB Git Migration Modeler                                                                                  "
+	echo " Release:     $MigrationModelerRelease                                                                      "
+	echo "                                                                                                            "
+	echo " Script:      Migration-Modeler-Start.sh                                                                    "
+	echo "                                                                                                            "
+	echo " Description: The purpose of this script is to facilitate the execution of the 4-step process supported     "
+	echo "              by the DBB Git Migration Modeler.                                                             "
+	echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
+	echo "                                                                                                            "
+}
+
 #### Environment variables setup
 dir=$(dirname "$0")
 . $dir/0-environment.sh
 
+Help
+
 #### Cleanup output directories
 if [ -d $DBB_MODELER_APPCONFIGS ] 
 then
+	echo "[INFO] Removing '${DBB_MODELER_APPCONFIGS}' folder."
 	rm -rf $DBB_MODELER_APPCONFIGS
 fi
 if [ -d $DBB_MODELER_APPLICATIONS ] 
 then
+	echo "[INFO] Removing '${DBB_MODELER_APPLICATIONS}' folder."
 	rm -rf $DBB_MODELER_APPLICATIONS
 fi
-
 if [ -d $DBB_MODELER_LOGS ] 
 then
-    rm -rf $DBB_MODELER_LOGS
+	echo "[INFO] Removing '${DBB_MODELER_LOGS}' folder."
+	rm -rf $DBB_MODELER_LOGS
 fi
 
 
 #### Create work directories
 if [ ! -d $DBB_MODELER_LOGS ] 
 then
-   mkdir -p $DBB_MODELER_LOGS
+	mkdir -p $DBB_MODELER_LOGS
 fi
 
 #### Application Extraction step
