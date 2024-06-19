@@ -10,23 +10,22 @@
 
 if [  "$DBB_HOME" = "" ]
 then
-	echo "Environment variable DBB_HOME is not set. Exiting..."
+	echo "[ERROR] Environment variable DBB_HOME is not set. Exiting."
 else
 	# Environment variables setup
 	dir=$(dirname "$0")
 	. $dir/0-environment.sh
 
-	cd $DBB_MODELER_APPCONFIGS
-	for mappingFile in `ls *.mapping`
+	cd $DBB_MODELER_APPLICATIONS
+	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		application=`echo $mappingFile | awk -F. '{ print $1 }'`
 		echo "*******************************************************************"
-		echo "Generate properties for application '$application'"
+		echo "Generate properties for application '$applicationDir'"
 		echo "*******************************************************************"
     	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/generateProperties.groovy \
 			-w $DBB_MODELER_APPLICATIONS \
-			-a $application \
-			-l $DBB_MODELER_LOGS/4-$application-generateProperties.log"
-    	$CMD "$@"		
+			-a $applicationDir \
+			-l $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"
+		$CMD "$@"
 	done
 fi

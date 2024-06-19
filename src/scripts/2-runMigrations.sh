@@ -10,7 +10,7 @@
 
 if [  "$DBB_HOME" = "" ]
 then
-	echo "Environment variable DBB_HOME is not set. Exiting..."
+	echo "[ERROR] Environment variable DBB_HOME is not set. Exiting."
 else
 	# Environment variables setup
 	dir=$(dirname "$0")

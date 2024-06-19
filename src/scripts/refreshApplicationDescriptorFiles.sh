@@ -19,6 +19,10 @@ Help() {
 	echo "              applications up-to-date. The script scans the artifacts belonging to the application,         "
 	echo "              removes existing source groups from the Application Descriptor files and run                  "
 	echo "              the usage assessment process again to populate the Application Descriptor files correctly.    "
+	echo "              The script inspects all folders within the referenced 'DBB_MODELER_APPLICATIONS' directory.   "
+	echo "              You must customize the process to your needs if you want to update the Application Descriptor "
+	echo "              files of applications that are already migrated to a central Git provider.                    "
+	echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
 	echo "                                                                                                            "
 }
 
@@ -26,14 +30,11 @@ Help() {
 dir=$(dirname "$0")
 . $dir/0-environment.sh
 
-if [ "$1" = "?" ]; then
-	Help
-	exit 0
-fi
+Help
 
 if [  "$DBB_HOME" = "" ]
 then
-	echo "Environment variable DBB_HOME is not set. Exiting..."
+	echo "[ERROR] Environment variable DBB_HOME is not set. Exiting."
 else
 	#### Build Metadatastore
 	if [ -d $DBB_MODELER_METADATA_STORE ] 
@@ -47,13 +48,13 @@ else
 	fi
 
 	if [ ! -d "$DBB_MODELER_APPLICATIONS" ]; then
-		echo "The folder indicated by the 'DBB_MODELER_APPLICATIONS' does not exist. Exiting."
+		echo "[ERROR] The folder indicated by the 'DBB_MODELER_APPLICATIONS' does not exist. Exiting."
 		exit 1
 	fi
 
 	# Scan files
 	cd $DBB_MODELER_APPLICATIONS
-	for applicationDir in `ls`
+	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
 		echo "*******************************************************************"
 		echo "Scan application directory $DBB_MODELER_APPLICATIONS/$applicationDir"
@@ -68,7 +69,7 @@ else
 
 	# Reset Application Descriptor
 	cd $DBB_MODELER_APPLICATIONS
-	for applicationDir in `ls`
+	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
 		echo "*******************************************************************"
 		echo "Reset Application Descriptor for $applicationDir"
@@ -83,7 +84,7 @@ else
 	done
 
 	cd $DBB_MODELER_APPLICATIONS
-	for applicationDir in `ls`
+	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
 		echo "*******************************************************************"
 		echo "Assess Include files & Programs usage for $applicationDir"

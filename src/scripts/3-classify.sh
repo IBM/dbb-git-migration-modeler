@@ -10,7 +10,7 @@
 
 if [  "$DBB_HOME" = "" ]
 then
-	echo "Environment variable DBB_HOME is not set. Exiting..."
+	echo "[ERROR] Environment variable DBB_HOME is not set. Exiting."
 else
 	# Environment variables setup
 	dir=$(dirname "$0")
@@ -29,7 +29,7 @@ else
 
 	# Scan files
 	cd $DBB_MODELER_APPLICATIONS
-	for applicationDir in `ls`
+	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
 		echo "*******************************************************************"
 		echo "Scan application directory $DBB_MODELER_APPLICATIONS/$applicationDir"
@@ -43,7 +43,7 @@ else
 	done
 
 	cd $DBB_MODELER_APPLICATIONS
-	for applicationDir in `ls`
+	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
 		echo "*******************************************************************"
 		echo "Assess Include files & Programs usage for $applicationDir"

@@ -10,16 +10,16 @@
 
 if [  "$DBB_HOME" = "" ]
 then
-   echo "Environment variable DBB_HOME is not set. Exiting..."
+	echo "[ERROR] Environment variable DBB_HOME is not set. Exiting."
 else
 	# Environment variables setup
 	dir=$(dirname "$0")
 	. $dir/0-environment.sh
-	
+
 	if [ ! -d $DBB_MODELER_APPCONFIGS ] 
 	then
 		mkdir -p $DBB_MODELER_APPCONFIGS
 	fi
-    CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy"
-    $CMD "$@"
+	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy"
+	$CMD "$@"
 fi

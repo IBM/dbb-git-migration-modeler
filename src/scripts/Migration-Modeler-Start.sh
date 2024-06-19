@@ -25,11 +25,7 @@ Help() {
 dir=$(dirname "$0")
 . $dir/0-environment.sh
 
-if [ "$1" = "?" ]; then
-	Help
-	exit 0
-fi
-
+Help
 
 #### Cleanup output directories
 if [ -d $DBB_MODELER_APPCONFIGS ] 
