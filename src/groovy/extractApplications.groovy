@@ -40,6 +40,7 @@ import com.ibm.dmh.scan.classify.SingleFilesMetadata;
 // script properties
 @Field Properties props = new Properties()
 @Field repositoryPathsMapping
+@Field Dmh5210 scanner
 
 /**
  * Processing logic
@@ -494,7 +495,7 @@ def scanDatasetMember(String datasetMemberToScan) {
 	ZFile zFile = new ZFile(datasetMemberToScan, "r", ZFileConstants.FLAG_DISP_SHR)
 	InputStream zFileInputStream = zFile.getInputStream();
 	// Init scanner
-	Dmh5210 scanner = initializeScanner()
+	if (!scanner) scanner = initializeScanner()
 	// Scan file
 	Object scanMetadata = scanner.processSingleFile(zFileInputStream);
 	SingleFilesMetadata dmhfile = (SingleFilesMetadata) scanMetadata;
