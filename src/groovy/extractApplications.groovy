@@ -89,10 +89,6 @@ if (props.applicationsMappingFilePath) {
 	logger.logMessage "!* Warning: no Applications Mapping File defined. All artifacts will be unassigned."
 }
 
-if (props.scanDatasetMembers && props.scanDatasetMembers.toBoolean()) {
-	scanner = initializeScanner()
-}
-
 // Read the Types from file
 logger.logMessage ("** Reading the Type Mapping definition. ")
 if (props.typesFilePath) {
@@ -324,7 +320,7 @@ def generateApplicationFiles(String application) {
 	datasetMembersCollection.each () { datasetMember ->
 		// Get the dataset and the member separated
 		def (dataset, member) = getDatasetAndMember(datasetMember)
-		// Using the DBB Scanner if required
+		// Using the DBB Scanner if activated
 		String scannedLanguage, scannedFileType
 		if (props.scanDatasetMembers && props.scanDatasetMembers.toBoolean()) {
 			(scannedLanguage, scannedFileType) = scanDatasetMember(constructDatasetForZFileOperation(dataset, member))
@@ -495,19 +491,24 @@ def getType(String member) {
 	}
 }
 
+def scanDatasetMember(String datasetMemberToScan) {
+	ZFile zFile = new ZFile(datasetMemberToScan, "r", ZFileConstants.FLAG_DISP_SHR)
+	InputStream zFileInputStream = zFile.getInputStream();
+	// Init scanner
+	if (!scanner) scanner = initializeScanner()
+	// Scan file
+	Object scanMetadata = scanner.processSingleFile(zFileInputStream);
+	SingleFilesMetadata dmhfile = (SingleFilesMetadata) scanMetadata;
+	// Close file allocation	
+	zFile.close()
+
+	return [dmhfile.getLanguageCd(), dmhfile.getFileTypeCd()]
+}
+
 def initializeScanner() {
 	ScanProperties scanProperties = new ScanProperties();
 	scanProperties.setCodePage(props.scanEncoding);
 	Dmh5210 dmh5210 = new Dmh5210();
 	dmh5210.init(scanProperties);
 	return dmh5210;
-}
-
-def scanDatasetMember(String datasetMemberToScan) {
-	ZFile ZsourceFile = new ZFile(datasetMemberToScan, "r", ZFileConstants.FLAG_DISP_SHR)
-	InputStream ZfileInputStream = ZsourceFile.getInputStream();
-	
-	Object scanMetadata = scanner.processSingleFile(ZfileInputStream);
-	SingleFilesMetadata dmhfile = (SingleFilesMetadata) scanMetadata;
-	return [dmhfile.getLanguageCd(), dmhfile.getFileTypeCd()]
 }
