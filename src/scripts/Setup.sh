@@ -14,8 +14,8 @@ DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 # Configure DBB Migration Modeler Home
 echo "[INFO] Configure DBB Migration Modeler environment variables."
 
-echo "  Please specify the DBB Migration Modeler home DBB_MODELER_HOME :"
-echo "  Leave blank to default to $DBB_MODELER_HOME"
+echo "Please specify the DBB Migration Modeler home DBB_MODELER_HOME :"
+echo "Leave blank to default to $DBB_MODELER_HOME"
 read variable
 if [ "$variable" ]; then
     DBB_MODELER_HOME="${variable}"
@@ -24,8 +24,8 @@ echo ""
 
 # Configure DBB Migration Modeler Work Directory
 DBB_MODELER_WORK="${DBB_MODELER_HOME}-work"
-echo "  Please specify the DBB Migration Modeler work directory DBB_MODELER_WORK :"
-echo "  Leave blank to default to $DBB_MODELER_WORK"
+echo "Please specify the DBB Migration Modeler work directory DBB_MODELER_WORK :"
+echo "Leave blank to default to $DBB_MODELER_WORK"
 read variable
 if [ "$variable" ]; then
     DBB_MODELER_WORK="${variable}"
@@ -54,15 +54,17 @@ REPOSITORY_PATH_MAPPING_FILE=$DBB_MODELER_WORK/repositoryPathsMapping.yaml
 APPLICATION_MEMBER_TYPE_MAPPING=$DBB_MODELER_WORK/types.txt
 # Reference to the type configuration file to generate build configuration
 TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/typesConfigurations.yaml
+# Reference to zAppBuild
+DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild_300
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
-config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_METADATA_STORE_DIR DBB_MODELER_DEFAULT_GIT_CONFIG)
-input_array=(APPLICATION_DATASETS APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE)
+path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_METADATA_STORE_DIR DBB_MODELER_DEFAULT_GIT_CONFIG)
+input_array=(APPLICATION_DATASETS APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE DBB_ZAPPBUILD)
 
-# Prompt for configuration parameters 
-for config in ${config_array[@]}; do
-    echo "  Please configure DBB Migration Modeler configuration parameter $config :"
-    echo "  Leave blank to default to ${!config}"
+# Prompt for configuration parameters
+for config in ${path_config_array[@]}; do
+    echo "Please configure DBB Migration Modeler configuration parameter $config :"
+    echo "Leave blank to default to ${!config}"
     read variable
     if [ "$variable" ]; then
         declare ${config}="${variable}"
@@ -70,8 +72,8 @@ for config in ${config_array[@]}; do
 done
 
 # Create work dir
-echo "  [INFO] Create DBB Migration Modeler work directory $DBB_MODELER_WORK"
-echo "  Do you want to create the directory $DBB_MODELER_WORK (Y/n) :"
+echo "[INFO] Create DBB Migration Modeler work directory $DBB_MODELER_WORK"
+echo "Do you want to create the directory $DBB_MODELER_WORK (Y/n) :"
 read variable
 
 if [[ $variable =~ ^[Yy]$ ]]; then
@@ -86,30 +88,49 @@ if [[ $variable =~ ^[Yy]$ ]]; then
 fi
 
 # Copy samples
-echo "  Do you want to copy sample DBB Migration Modeler configuration files to the working directory [$DBB_MODELER_WORK] (Y/n) :"
+echo "Do you want to copy sample DBB Migration Modeler configuration files to the working directory [$DBB_MODELER_WORK] (Y/n) :"
 read variable
 
 if [[ $variable =~ ^[Yy]$ ]]; then
-        cp $DBB_MODELER_HOME/samples/*.* $DBB_MODELER_WORK/
-        rc=$?
+    cp $DBB_MODELER_HOME/samples/*.* $DBB_MODELER_WORK/
+    rc=$?
 fi
 
 # Specify input files
-echo "[INFO] Specify DBB Migration Modeler input files"
+echo "[INFO] Specify DBB Migration Modeler input configuration"
 for config in ${input_array[@]}; do
-    echo "  Please configure DBB Migration Modeler input parameter $config :"
-    echo "  Leave blank to default to ${!config}"
+    echo "Please configure DBB Migration Modeler input parameter $config :"
+    echo "Leave blank to default to ${!config}"
     read variable
     if [ "$variable" ]; then
         declare ${config}="${variable}"
     fi
 done
 
-# debugging
-for config in ${config_array[@]}; do
-    echo "[INFO] ${config}=${!config} "
-done
-for config in ${input_array[@]}; do
-    echo "[INFO] ${config}=${!config} "
+# Save DBB Git Migration Modeler Configuration
+
+echo "[INFO] Save DBB Git Migration Modeler Configuration"
+
+echo "# DBB Git Migration Modeler Configuration Settings " >$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+echo "# Generated at $(date)" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+
+echo "DBB_MODELER_HOME=${DBB_MODELER_HOME} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+
+echo "DBB_MODELER_WORK=${DBB_MODELER_WORK} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+
+for config in ${path_config_array[@]}; do
+    echo "${config}=${!config} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
 done
 
+echo "# DBB Git Migration Modeler Input File References " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+
+for config in ${input_array[@]}; do
+    echo "${config}=${!config} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+done
+
+echo "Saved DBB Git Migration Modeler Configuration to $DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config"
+echo "This file will be imported by the DBB Git Migration Modeler Process"
