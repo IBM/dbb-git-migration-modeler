@@ -80,9 +80,12 @@ fi
 
 # Load DBB Git Migration Modeler Utilities
 if [ $rc -eq 0 ]; then
-  MMS_script=$(cd "$(dirname "$0")" && pwd)
-  if [ -f "$MMS_script/utilities/migrationModelerUtilities.sh" ]; then
-    source $MMS_script/utilities/migrationModelerUtilities.sh
+  if [ -f "$DBB_MODELER_HOME/src/sripts/utils/migrationModelerUtilities.sh" ]; then
+    source "$DBB_MODELER_HOME/src/sripts/utils/migrationModelerUtilities.sh"
+  else 
+    rc=8
+    ERRMSG=$PGM": [ERROR] DBB Git Migration Modeler File Utils not found. rc="$rc
+    echo $ERRMSG
   fi
 fi
 
