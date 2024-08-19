@@ -78,17 +78,6 @@ if [ $rc -eq 0 ]; then
   source $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 fi
 
-# Load DBB Git Migration Modeler Utilities
-if [ $rc -eq 0 ]; then
-  if [ -f "$DBB_MODELER_HOME/src/scripts/utils/migrationModelerUtilities.sh" ]; then
-    source "$DBB_MODELER_HOME/src/scripts/utils/migrationModelerUtilities.sh"
-  else 
-    rc=8
-    ERRMSG=$PGM": [ERROR] DBB Git Migration Modeler File Util ($DBB_MODELER_HOME/src/scripts/utils/migrationModelerUtilities.sh) not found. rc="$rc
-    echo $ERRMSG
-  fi
-fi
-
 if [ $rc -eq 0 ]; then
   echo ""
   echo "[PHASE] Cleanup working directories"
@@ -125,7 +114,25 @@ if [ $rc -eq 0 ]; then
   read variable
 
   if [[ $variable =~ ^[Yy]$ ]]; then
-  	callExtractApplications
+  	
+    #### Application Extraction step
+    CMD="$DBB_MODELER_HOME/src/scripts/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+          -d $APPLICATION_DATASETS \
+          --applicationsMapping $APPLICATION_MAPPING_FILE \
+          --repositoryPathsMapping $REPOSITORY_PATH_MAPPING_FILE \
+          --types $APPLICATION_MEMBER_TYPE_MAPPING \
+          -oc $DBB_MODELER_APPCONFIG_DIR \
+          -oa $DBB_MODELER_APPLICATION_DIR \
+          -l $DBB_MODELER_LOGS/1-extractApplications.log
+      "
+    echo "${CMD}"
+    $CMD
+    ## The following command can be used when datasets contain mixed types of artifacts, the use of the scanDatasetMembers option enables the DBB Scanner to understand the type of artifacts and route them to the right subfolder in USS
+    #$DBB_MODELER_HOME/src/scripts/1-extractApplications.sh -d DBEHM.MIG.MIXED,DBEHM.MIG.BMS --applicationsMapping $DBB_MODELER_WORK/applicationsMapping.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_WORK/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS -l $DBB_MODELER_LOGS/1-extractApplications.log -scanDatasetMembers -scanEncoding IBM-1047
+    ## The following command can be used when wildcards are used to list the datasets that should be scanned.
+    #$DBB_MODELER_HOME/src/scripts/1-extractApplications.sh -d GITLAB.CATMAN.**.CO*,DBEHM.MIG.COBOL,DBEHM.MIG.COPY --applicationsMapping $DBB_MODELER_WORK/applicationsMapping-CATMAN.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_WORK/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS
+
+    
   fi
 fi
 
@@ -137,7 +144,7 @@ if [ $rc -eq 0 ]; then
   read variable
 
   if [[ $variable =~ ^[Yy]$ ]]; then
-    callRunMigrations
+    $DBB_MODELER_HOME/src/scripts/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
   fi
 fi
 
@@ -148,7 +155,7 @@ if [ $rc -eq 0 ]; then
   echo "Do you want to perform dependency assessment and classification process (Y/n) :"
   read variable
   if [[ $variable =~ ^[Yy]$ ]]; then
-    callClassificationAssessment
+    $DBB_MODELER_HOME/src/scripts/3-classify.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
   fi
 fi
 
@@ -159,6 +166,6 @@ if [ $rc -eq 0 ]; then
   echo "Do you want to generate the zAppBuild Build configurations for the applications (Y/n) :"
   read variable
   if [[ $variable =~ ^[Yy]$ ]]; then
-    callPropertyGeneration
+    $DBB_MODELER_HOME/src/scripts/4-generateProperties.sh --typesConfigurations $DBB_MODELER_WORK/typesConfigurations.yaml -z /u/mdalbin/dbb-zappbuild
   fi
 fi
