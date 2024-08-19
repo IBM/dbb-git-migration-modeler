@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 #*******************************************************************************
 # Licensed Materials - Property of IBM
 # (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.
@@ -39,7 +39,7 @@ else
             -a $applicationDir \
             -m $DBB_MODELER_METADATA_STORE_DIR \
             -l $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
-        echo "${CMD}"
+        echo " [INFO] ${CMD}"
         $CMD
     done
 
@@ -56,7 +56,7 @@ else
             --application $applicationDir \
             --moveFiles \
             --logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
-        echo "${CMD}"
+        echo " [INFO] ${CMD}"
         $CMD
     done
 fi

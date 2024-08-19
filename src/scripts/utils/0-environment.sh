@@ -12,7 +12,6 @@
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
 rc=0
-PGM="src/scripts/utils/0-environment.sh"
 
 # Get Options
 if [ $rc -eq 0 ]; then
@@ -26,7 +25,7 @@ if [ $rc -eq 0 ]; then
       nextchar="$(expr substr $argument 1 1)"
       if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
         rc=4
-        ERRMSG=$PGM": [WARNING] Git Repository URL is required. rc="$rc
+        ERRMSG=" [ERROR] DBB Git Migration Modeler Configuration file required. rc="$rc
         echo $ERRMSG
         break
       fi
@@ -42,14 +41,25 @@ validateOptions() {
 
   if [ -z "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
     rc=8
-    ERRMSG=$PGM": [ERROR] Argument to specify DBB Git Migration Modeler File (-c) is required. rc="$rc
+    ERRMSG=" [ERROR] Argument to specify DBB Git Migration Modeler File (-c) is required. rc="$rc
     echo $ERRMSG
   fi
 
   if [ ! -f "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
     rc=8
-    ERRMSG=$PGM": [ERROR] DBB Git Migration Modeler File not found. rc="$rc
+    ERRMSG=" [ERROR] DBB Git Migration Modeler File not found. rc="$rc
     echo $ERRMSG
   fi
 }
 
+# Call validate Options
+if [ $rc -eq 0 ]; then
+  validateOptions
+fi
+#
+# Load DBB Git Migration Modeler config
+if [ $rc -eq 0 ]; then
+  MSG=" [INFO] Loading DBB Git Migration Modeler config file $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE. "
+  echo $MSG 
+  source $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+fi

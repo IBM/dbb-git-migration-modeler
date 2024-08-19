@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 #*******************************************************************************
 # Licensed Materials - Property of IBM
 # (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.
@@ -16,10 +16,28 @@ else
 	dir=$(dirname "$0")
 	. $dir/0-environment.sh "$@"
 
-	if [ ! -d $DBB_MODELER_APPCONFIGS ] 
+	if [ ! -d $DBB_MODELER_APPCONFIG_DIR ] 
 	then
-		mkdir -p $DBB_MODELER_APPCONFIGS
+		mkdir -p $DBB_MODELER_APPCONFIG_DIR
 	fi
 	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy"
-	$CMD "$@"
+	    CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
+          -d $APPLICATION_DATASETS \
+          --applicationsMapping $APPLICATION_MAPPING_FILE \
+          --repositoryPathsMapping $REPOSITORY_PATH_MAPPING_FILE \
+          --types $APPLICATION_MEMBER_TYPE_MAPPING \
+          -oc $DBB_MODELER_APPCONFIG_DIR \
+          -oa $DBB_MODELER_APPLICATION_DIR \
+          -l $DBB_MODELER_LOGS/1-extractApplications.log
+      "
+    if [ "${SCAN_DATASET_MEMBERS}" == "true" ]; then
+       CMD="${CMD} --scanDatasetMembers"
+       
+       if [ ! -z "${SCAN_DATASET_MEMBERS_ENCODING}" ]; then
+            CMD="${CMD} --scanEncoding ${SCAN_DATASET_MEMBERS_ENCODING}"
+       fi
+    fi
+        
+    echo " [INFO] {CMD}"
+    $CMD
 fi

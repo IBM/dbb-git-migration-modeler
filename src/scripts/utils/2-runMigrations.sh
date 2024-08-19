@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 #*******************************************************************************
 # Licensed Materials - Property of IBM
 # (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.
@@ -29,7 +29,7 @@ else
         mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
         cd $DBB_MODELER_APPLICATION_DIR/$application
         CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
-        echo "${CMD}"
+        echo " [INFO] ${CMD}"
         $CMD
     done
 fi

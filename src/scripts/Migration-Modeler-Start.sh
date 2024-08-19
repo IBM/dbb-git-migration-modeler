@@ -28,55 +28,10 @@ DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
 rc=0
 PGM="Migration-Modeler-Start.sh"
 
-# Get Options
-if [ $rc -eq 0 ]; then
-  while getopts "h:c:" opt; do
-    case $opt in
-    h)
-      Prolog
-      ;;
-    c)
-      argument="$OPTARG"
-      nextchar="$(expr substr $argument 1 1)"
-      if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
-        rc=4
-        ERRMSG=$PGM": [WARNING] Git Repository URL is required. rc="$rc
-        echo $ERRMSG
-        break
-      fi
-      DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="$argument"
-      ;;
-    esac
-  done
-fi
-#
 
-# Validate Options
-validateOptions() {
-
-  if [ -z "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
-    rc=8
-    ERRMSG=$PGM": [ERROR] Argument to specify DBB Git Migration Modeler File (-c) is required. rc="$rc
-    echo $ERRMSG
-  fi
-
-  if [ ! -f "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
-    rc=8
-    ERRMSG=$PGM": [ERROR] DBB Git Migration Modeler File not found. rc="$rc
-    echo $ERRMSG
-  fi
-}
-
-# Call validate Options
-if [ $rc -eq 0 ]; then
-  validateOptions
-fi
-#
-
-# Load DBB Git Migration Modeler config
-if [ $rc -eq 0 ]; then
-  source $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-fi
+# Initialize Migration Modeler
+dir=$(dirname "$0")
+. $dir/utils/0-environment.sh "$@"
 
 if [ $rc -eq 0 ]; then
   echo ""
@@ -116,17 +71,12 @@ if [ $rc -eq 0 ]; then
   if [[ $variable =~ ^[Yy]$ ]]; then
   	
     #### Application Extraction step
-    CMD="$DBB_MODELER_HOME/src/scripts/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-          -d $APPLICATION_DATASETS \
-          --applicationsMapping $APPLICATION_MAPPING_FILE \
-          --repositoryPathsMapping $REPOSITORY_PATH_MAPPING_FILE \
-          --types $APPLICATION_MEMBER_TYPE_MAPPING \
-          -oc $DBB_MODELER_APPCONFIG_DIR \
-          -oa $DBB_MODELER_APPLICATION_DIR \
-          -l $DBB_MODELER_LOGS/1-extractApplications.log
-      "
+    CMD="$DBB_MODELER_HOME/src/scripts/utils/1-extractApplications.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE "
     echo "${CMD}"
     $CMD
+    
+    # Note - create multiple Migration Modeler Configuration files, if you want to run the extraction step with different datasets configurations.
+    
     ## The following command can be used when datasets contain mixed types of artifacts, the use of the scanDatasetMembers option enables the DBB Scanner to understand the type of artifacts and route them to the right subfolder in USS
     #$DBB_MODELER_HOME/src/scripts/1-extractApplications.sh -d DBEHM.MIG.MIXED,DBEHM.MIG.BMS --applicationsMapping $DBB_MODELER_WORK/applicationsMapping.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_WORK/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS -l $DBB_MODELER_LOGS/1-extractApplications.log -scanDatasetMembers -scanEncoding IBM-1047
     ## The following command can be used when wildcards are used to list the datasets that should be scanned.
@@ -144,7 +94,7 @@ if [ $rc -eq 0 ]; then
   read variable
 
   if [[ $variable =~ ^[Yy]$ ]]; then
-    $DBB_MODELER_HOME/src/scripts/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+    $DBB_MODELER_HOME/src/scripts/utils/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
   fi
 fi
 
@@ -155,7 +105,7 @@ if [ $rc -eq 0 ]; then
   echo "Do you want to perform dependency assessment and classification process (Y/n) :"
   read variable
   if [[ $variable =~ ^[Yy]$ ]]; then
-    $DBB_MODELER_HOME/src/scripts/3-classify.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+    $DBB_MODELER_HOME/src/scripts/utils/3-classify.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
   fi
 fi
 
@@ -166,6 +116,6 @@ if [ $rc -eq 0 ]; then
   echo "Do you want to generate the zAppBuild Build configurations for the applications (Y/n) :"
   read variable
   if [[ $variable =~ ^[Yy]$ ]]; then
-    $DBB_MODELER_HOME/src/scripts/4-generateProperties.sh --typesConfigurations $DBB_MODELER_WORK/typesConfigurations.yaml -z /u/mdalbin/dbb-zappbuild
+    $DBB_MODELER_HOME/src/scripts/utils/4-generateProperties.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
   fi
 fi

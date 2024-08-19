@@ -64,7 +64,7 @@ DBB_MODELER_SAMPLE_CONFIG="$DBB_MODELER_HOME/samples"
 
 # Migration Modeler Configuration files
 
-# Input files
+# Input files and configuration
 APPLICATION_DATASETS=DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS
 # Reference to the configured application mapping file
 APPLICATION_MAPPING_FILE=$DBB_MODELER_WORK/applicationsMapping.yaml
@@ -74,6 +74,9 @@ REPOSITORY_PATH_MAPPING_FILE=$DBB_MODELER_WORK/repositoryPathsMapping.yaml
 APPLICATION_MEMBER_TYPE_MAPPING=$DBB_MODELER_WORK/types.txt
 # Reference to the type configuration file to generate build configuration
 TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/typesConfigurations.yaml
+# Scanning options 
+SCAN_DATASET_MEMBERS=false
+SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
 # Reference to zAppBuild
 DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild_300
 # Reference to default .gitattributes file
@@ -82,7 +85,7 @@ DBB_MODELER_DEFAULT_GIT_CONFIG="$DBB_MODELER_WORK/git-config"
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_METADATA_STORE_DIR DBB_MODELER_DEFAULT_GIT_CONFIG)
-input_array=(APPLICATION_DATASETS APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE DBB_ZAPPBUILD)
+input_array=(APPLICATION_DATASETS APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING TYPE_CONFIGURATIONS_FILE DBB_ZAPPBUILD)
 
 # Prompt for configuration parameters
 for config in ${path_config_array[@]}; do

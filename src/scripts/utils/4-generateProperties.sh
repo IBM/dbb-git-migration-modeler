@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 #*******************************************************************************
 # Licensed Materials - Property of IBM
 # (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.
@@ -28,7 +28,7 @@ else
             --zAppBuild $DBB_ZAPPBUILD \
             --typesConfigurations $TYPE_CONFIGURATIONS_FILE \
             --logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"
-        echo "${CMD}"
+        echo " [INFO] ${CMD}"
         $CMD
     done
 fi
