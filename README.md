@@ -117,19 +117,35 @@ The location of these files is the [build-conf/language-conf](https://github.com
 
 ## Configuring the Migration-Modeler utility
 
-### Configuring the scripts
+### Installation
 
-The scripts used by the utility must be configured in order to run properly.
-Each script calls a setup script, the [0-environment.sh script](./src/scripts/0-environment.sh), which exports environment variables.
+Install the DBB Git Migration Modeler by cloning the repository to z/OS Unix System Services.
 
-To configure the Migration-Modeler, the variables defined in the [0-environment.sh script](./src/scripts/0-environment.sh) should be tailored to meet with your installation.
-The `DBB_MODELER_HOME` and `DBB_MODELER_WORK` variables need to be customized, to respectively specify the Migration-Modeler utility installation directory and the work directory that will be used.
-Please make sure the work directory is sized accordingly to contain your entire code base.
+### Setup DBB Git Migration Modeler configuration
 
-### Tailoring the input files
+Use a ssh session to USS to execute [Setup.sh](Setup.sh). This script prompts you for the below environment variables and saves them in a configuration file, that is used as an input for the main DBB Git Migration Modeler process. 
 
-The configuration files required to use the Migration-Modeler utility are provided in the [samples](./samples/) folder.
-You must copy these sample configuration files to the working directory indicated by the `DBB_MODELER_WORK` environment variable and use them as templates for your customization.
+| Configuration Parameter | Description | Default Value |
+| --- | --- | --- |
+| DBB_MODELER_HOME  | The home of the DBB Git Migration Modeler project | The current directory of Setup.sh | 
+| DBB_MODELER_WORK  | The working directory for the DBB Git Migration Modeler. Requires to be sized to store the entire copy of all application programs. | `${DBB_MODELER_HOME}-work`| 
+| DBB_MODELER_APPCONFIG_DIR  | Stores the initial version of the Application Descriptor and the generated DBB Migration Mapping files | `$DBB_MODELER_WORK/work-configs`| 
+| DBB_MODELER_APPLICATION_DIR  | Path where the DBB Git Migration Modeler will create the application directories | `$DBB_MODELER_WORK/work-applications` | 
+| DBB_MODELER_LOGS  | Path where the DBB Git Migration Modeler will store the log files of the various steps of Migration Modeler process | `$DBB_MODELER_WORK/work-logs`| 
+| DBB_MODELER_METADATA_STORE_DIR  | Path to create a DBB File Metadatastore. Required for the Assessment phase | `$DBB_MODELER_WORK/work-metadatastore` | 
+| APPLICATION_DATASETS  | The list of input datasets that will be analyzed by the DBB Git Migration Modeler. These datasets need to hold a copy of the code base of your production system | `DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS` | 
+| **DBB Git Migration Modeler Input files** | | | 
+| APPLICATION_MAPPING_FILE  | Application Mapping file containing the existing applications and their naming conventions, elements lists. See tailoring of input files. | `$DBB_MODELER_WORK/applicationsMapping.yaml` | 
+| REPOSITORY_PATH_MAPPING_FILE  | Repository Paths Mapping file map the various types of members to the folder layout in Git. See tailoring of input files. | `$DBB_MODELER_WORK/repositoryPathsMapping.yaml` | 
+| APPLICATION_MEMBER_TYPE_MAPPING  | Member to DBB Type Mapping | `$DBB_MODELER_WORK/types.txt` | 
+| TYPE_CONFIGURATIONS_FILE | Type Configuration to generate zAppBuild Language Configurations to statically preserve existing build configuration | `$DBB_MODELER_WORK/typesConfigurations.yaml` | 
+| DEFAULT_GIT_CONFIG  | Folder containing a default .gitattributes and .gitignore files to initialize a Git repo for the Application repositories | `$DBB_MODELER_WORK/git-config` | 
+| DBB_ZAPPBUILD | Path to your customized zAppBuild for baseline builds | `/var/dbb/dbb-zappbuild_300` | 
+
+
+### Tailor the input files
+
+The configuration files required to use the Migration-Modeler utility are copied by the Setup script from the [samples](./samples/) folder to the working folder that you have provided to the [Setup.sh](Setup.sh) process.
 
 Four configuration files need to be reviewed and adapted to your installation and your needs, before using the Migration-Modeler: 
 
