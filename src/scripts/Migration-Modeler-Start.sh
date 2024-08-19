@@ -80,11 +80,11 @@ fi
 
 # Load DBB Git Migration Modeler Utilities
 if [ $rc -eq 0 ]; then
-  if [ -f "$DBB_MODELER_HOME/src/sripts/utils/migrationModelerUtilities.sh" ]; then
-    source "$DBB_MODELER_HOME/src/sripts/utils/migrationModelerUtilities.sh"
+  if [ -f "$DBB_MODELER_HOME/src/scripts/utils/migrationModelerUtilities.sh" ]; then
+    source "$DBB_MODELER_HOME/src/scripts/utils/migrationModelerUtilities.sh"
   else 
     rc=8
-    ERRMSG=$PGM": [ERROR] DBB Git Migration Modeler File Utils not found. rc="$rc
+    ERRMSG=$PGM": [ERROR] DBB Git Migration Modeler File Util ($DBB_MODELER_HOME/src/scripts/utils/migrationModelerUtilities.sh) not found. rc="$rc
     echo $ERRMSG
   fi
 fi
