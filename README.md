@@ -123,12 +123,12 @@ Install the DBB Git Migration Modeler by cloning the repository to z/OS Unix Sys
 
 ### Setup DBB Git Migration Modeler configuration
 
-Use a ssh session to USS to execute [Setup.sh](Setup.sh). This script prompts you for the below environment variables and saves them in a configuration file, that is used as an input for the main DBB Git Migration Modeler process. 
+Connect to the z/OS Unix System Services of the installation to execute [Setup.sh](Setup.sh). This script prompts you for the below environment variables and saves them in a configuration file, that is used as an input for the main DBB Git Migration Modeler process. 
 
 | Configuration Parameter | Description | Default Value |
 | --- | --- | --- |
 | DBB_MODELER_HOME  | The home of the DBB Git Migration Modeler project | The current directory of Setup.sh | 
-| DBB_MODELER_WORK  | The working directory for the DBB Git Migration Modeler. Requires to be sized to store the entire copy of all application programs. | `${DBB_MODELER_HOME}-work`| 
+| DBB_MODELER_WORK  | The working directory for the DBB Git Migration Modeler. Requires to be sized to store the entire copy of all application programs. | `$DBB_MODELER_HOME-work`| 
 | DBB_MODELER_APPCONFIG_DIR  | Stores the initial version of the Application Descriptor and the generated DBB Migration Mapping files | `$DBB_MODELER_WORK/work-configs`| 
 | DBB_MODELER_APPLICATION_DIR  | Path where the DBB Git Migration Modeler will create the application directories | `$DBB_MODELER_WORK/work-applications` | 
 | DBB_MODELER_LOGS  | Path where the DBB Git Migration Modeler will store the log files of the various steps of Migration Modeler process | `$DBB_MODELER_WORK/work-logs`| 
@@ -180,14 +180,13 @@ In the sample walkthrough below, all COBOL programs files of all applications ar
  
 ## Working with the Migration-Modeler utility
 
-The Migration-Modeler utility is a set of shell scripts that are wrapping groovy scripts.
-The scripts are using DBB APIs and groovy APIs to scan the datasets members, classify them into applications and generate output configuration files.
+The Migration-Modeler utility is a set of shell scripts that are wrapping groovy scripts. The scripts are using DBB APIs and groovy APIs to scan the datasets members, classify them into applications and generate output configuration files.
 
 ### A 4-step process facilitating the migration process
 
 The utility is made of 4 scripts which are meant to be run in the following sequence:
 
-1. [Extract Applications script (1-extractApplication.sh)](./src/scripts/1-extractApplications.sh): this script scans the content of the provided datasets and assesses each member based on the provided input files.
+1. [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh): this script scans the content of the provided datasets and assesses each member based on the provided input files.
 For each member found, it searches in the `Applications Mapping` YAML file if a naming convention, after being applied as a filter, matches the member name:
    * If it's a match, the member is assigned to the application that owns the matching naming convention.
    * If no pattern is found matching, the member is assigned to the *UNASSIGNED* application.

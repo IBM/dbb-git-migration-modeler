@@ -12,7 +12,6 @@
 Prolog() {
   echo "                                                                                                            "
   echo " DBB Git Migration Modeler                                                                                  "
-  echo " Release:     $MigrationModelerRelease                                                                      "
   echo "                                                                                                            "
   echo " Script:      Setup.sh                                                                                      "
   echo "                                                                                                            "
@@ -137,20 +136,19 @@ echo "[INFO] Save DBB Git Migration Modeler Configuration"
 
 echo "# DBB Git Migration Modeler Configuration Settings " >$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
 echo "# Generated at $(date)" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+echo "" >> $DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
 
 echo "DBB_MODELER_HOME=${DBB_MODELER_HOME} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-
 echo "DBB_MODELER_WORK=${DBB_MODELER_WORK} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
 
+echo "" >> $DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+echo "# DBB Git Migration Modeler Working Folders " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
 for config in ${path_config_array[@]}; do
     echo "${config}=${!config} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
 done
 
-echo "# DBB Git Migration Modeler Input File References " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+echo "" >> $DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+echo "# DBB Git Migration Modeler Input files" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
 
 for config in ${input_array[@]}; do
     echo "${config}=${!config} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
