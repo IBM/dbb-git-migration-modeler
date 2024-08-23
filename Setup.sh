@@ -34,7 +34,7 @@ DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 
 # Configure DBB Migration Modeler Home
 echo "[INFO] Configure DBB Git Migration Modeler environment variables."
-read -p "Specify the DBB Migration Modeler Home [default: $DBB_MODELER_HOME]: " variable
+read -p "Specify the DBB Git Migration Modeler Home [default: $DBB_MODELER_HOME]: " variable
 
 if [ "$variable" ]; then
     DBB_MODELER_HOME="${variable}"
