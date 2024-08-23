@@ -1403,7 +1403,7 @@ Generate properties for application 'UNASSIGNED'
 ~~~~
 </details>
 
-### Refresh Application Descriptors
+### Refresh Application Descriptors (Optional)
 
 When applications are migrated to Git and development teams leverage the pipeline, source files will be modified, added, or deleted.
 It's expected that the list of elements of an application and cross-application dependencies will change over time.
@@ -1411,12 +1411,11 @@ To reflect these changes, the **Application Descriptor** file needs to be refres
 
 Additionally, if applications are already migrated to Git and use pipelines, but don't have an Application Descriptor file yet, and the development teams want to leverage its benefits, this creation process should be followed.
 
-A second primary command is shipped for this scenario. The Migration-Modeler is equipped with a script to recreate the applications' Application Descriptor files which reside in Git repositories.
-The refresh of the Application Descriptor files must occur on the entire code base like the on initial assessment process.
+A second primary command is shipped for this workflow. The [Refresh Application Descriptor script (Refresh-Application-Descriptor-Files.sh)](./src/scripts/Refresh-Application-Descriptor-Files.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications. The refresh of the Application Descriptor files must occur on the entire code base like the on initial assessment process.
 
-The [Refresh Application Descriptor script (refreshApplicationDescriptorFiles.sh)](./src/scripts/refreshApplicationDescriptorFiles.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications.
+Like the other scripts, it requires to pass in a DBB-Git-Migration-Modeler configuration file, that can be created with the [Setup](#setup-dbb-git-migration-modeler-configuration) instructions.
 
-The script calls three groovy scripts ([scanApplication.groovy](./src/groovy/scanApplication.groovy), [recreateApplicationDescriptor.groovy](./src/groovy/recreateApplicationDescriptor.groovy) and [assessUsage.groovy](./src/groovy/assessUsage.groovy)) to scan the files of the applications using the DBB Scanner, initialize Application Descriptor files based on the files present in the working directories, and assess how Include Files and Programs are used across the applications landscape:
+The primary script calls three groovy scripts ([scanApplication.groovy](./src/groovy/scanApplication.groovy), [recreateApplicationDescriptor.groovy](./src/groovy/recreateApplicationDescriptor.groovy) and [assessUsage.groovy](./src/groovy/assessUsage.groovy)) to scan the files of the applications using the DBB Scanner, initialize Application Descriptor files based on the files present in the working directories, and assess how Include Files and Programs are used across the applications landscape:
 
    * For the scanning phase, the script iterates through the files located within the work directory.
    It uses the DBB Scanner to understand the dependencies for each artifact.
@@ -1438,13 +1437,13 @@ For each application, a refreshed Application Descriptor is created at the root 
 
 Recreating the Application Descriptor files requires to scan all files and might be time and resource consuming based on the size of the applications landscape.
 Consider using this process on a regular basis, like once a week.
-The recommendation would be to set up a pipeline, that checks out all Git repositories to a working sandbox, and executes the `Recreate Application Descriptor` script. Once the Application Descriptor files updated within the Git repositories, the pipeline can automatically commit and push the updates back to the central Git provider.
+The recommendation would be to set up a pipeline, that checks out all Git repositories to a working sandbox, and executes the `Recreate Application Descriptor` script. Once the Application Descriptor files updated within the Git repositories, the pipeline can be enabled to automatically commit and push the updates back to the central Git provider.
 
 <details>
   <summary>Output example</summary>
 Execution of command:
 	
-`./refreshApplicationDescriptorFiles.sh`
+`./Refresh-Application-Descriptor-Files.sh -c /u/dbehm/git/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
 Output log:
 ~~~~
