@@ -36,8 +36,7 @@ dir=$(dirname "$0")
 if [ $rc -eq 0 ]; then
   echo ""
   echo "[PHASE] Cleanup working directories"
-  echo "Do you want to clean the working directory $DBB_MODELER_WORK (Y/n) :"
-  read variable
+  read -p "Do you want to clean the working directory $DBB_MODELER_WORK (Y/n): " variable
   
   if [[ $variable =~ ^[Yy]$ ]]; then
 
@@ -65,8 +64,7 @@ fi
 if [ $rc -eq 0 ]; then
   echo ""
   echo "[PHASE] Extract applications from $APPLICATION_DATASETS based on application mappings in $APPLICATION_MAPPING_FILE"
-  echo "Do you want run the application extraction (Y/n) :"
-  read variable
+  read -p "Do you want run the application extraction (Y/n): " variable
 
   if [[ $variable =~ ^[Yy]$ ]]; then
   	
@@ -90,8 +88,7 @@ if [ $rc -eq 0 ]; then
   #### Migration execution step
   echo ""
   echo "[PHASE] Execute Migrations"
-  echo "Do you want to execute the DBB migration scripts in $DBB_MODELER_APPCONFIG_DIR (Y/n) :"
-  read variable
+  read -p "Do you want to execute the DBB migration scripts in $DBB_MODELER_APPCONFIG_DIR (Y/n): " variable
 
   if [[ $variable =~ ^[Yy]$ ]]; then
     $DBB_MODELER_HOME/src/scripts/utils/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
@@ -102,8 +99,8 @@ if [ $rc -eq 0 ]; then
   #### Classification step
   echo ""
   echo "[PHASE] Execute Dependency Assessment and Classification"
-  echo "Do you want to perform dependency assessment and classification process (Y/n) :"
-  read variable
+  read -p "Do you want to perform dependency assessment and classification process (Y/n): " variable
+
   if [[ $variable =~ ^[Yy]$ ]]; then
     $DBB_MODELER_HOME/src/scripts/utils/3-classify.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
   fi
@@ -113,8 +110,8 @@ if [ $rc -eq 0 ]; then
   #### Property Generation step
   echo ""
   echo "[PHASE] Generate Build Configuration"
-  echo "Do you want to generate the zAppBuild Build configurations for the applications (Y/n) :"
-  read variable
+  read -p "Do you want to generate the zAppBuild Build configurations for the applications (Y/n): " variable
+  
   if [[ $variable =~ ^[Yy]$ ]]; then
     $DBB_MODELER_HOME/src/scripts/utils/4-generateProperties.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
   fi
