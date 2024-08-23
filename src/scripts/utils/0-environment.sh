@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/sh
 #*******************************************************************************
 # Licensed Materials - Property of IBM
 # (c) Copyright IBM Corporation 2018, 2019. All Rights Reserved.
@@ -61,5 +61,5 @@ fi
 if [ $rc -eq 0 ]; then
   MSG=" [INFO] Loading DBB Git Migration Modeler config file $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE. "
   echo $MSG 
-  source $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+  . $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 fi
