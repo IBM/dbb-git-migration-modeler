@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 #*******************************************************************************
 # Licensed Materials - Property of IBM
 # (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.
@@ -25,6 +25,7 @@ Prolog() {
 	echo $PGM":              files of applications that are already migrated to a central Git provider.                    "
 	echo $PGM":              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
 	echo $PGM":                                                                                                            "
+	echo ""
 }
 
 # Internal variables
@@ -45,7 +46,7 @@ then
 	echo $PGM":[ERROR] Environment variable DBB_HOME is not set. Exiting."
 else
 	#### Build Metadatastore
-	echo $PGM":[ERROR] Initializing DBB Metadatastore at $DBB_MODELER_METADATA_STORE_DIR."
+	echo $PGM":[INFO] Initializing DBB Metadatastore at $DBB_MODELER_METADATA_STORE_DIR."
 	if [ -d $DBB_MODELER_METADATA_STORE_DIR ] 
 	then
 		rm -rf $DBB_MODELER_METADATA_STORE_DIR
