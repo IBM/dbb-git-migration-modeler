@@ -35,7 +35,7 @@ DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 # Configure DBB Migration Modeler Home
 echo "[INFO] Configure DBB Migration Modeler environment variables."
 
-echo "Please specify the DBB Migration Modeler home DBB_MODELER_HOME :"
+echo "Specify the DBB Migration Modeler Home [$DBB_MODELER_HOME] :"
 echo "Leave blank to default to $DBB_MODELER_HOME"
 read variable
 if [ "$variable" ]; then
