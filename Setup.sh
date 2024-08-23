@@ -89,8 +89,8 @@ for config in ${path_config_array[@]}; do
 done
 
 # Create work dir
-echo "[INFO] Create DBB Migration Modeler work directory $DBB_MODELER_WORK and copy DBB Migration Modeler configuration files to it"
-read -p "Do you want to create the directory $DBB_MODELER_WORK and copy the DBB Migration Modeler configuration file to it (Y/n) :" variable
+echo "[INFO] Create DBB Git Migration Modeler work directory $DBB_MODELER_WORK and copy DBB Migration Modeler configuration files to it"
+read -p "Do you want to create the directory $DBB_MODELER_WORK and copy the DBB Git Migration Modeler configuration file to it (Y/n): " variable
 
 if [[ $variable =~ ^[Yy]$ ]]; then
     if [ -d "${DBB_MODELER_WORK}" ]; then
