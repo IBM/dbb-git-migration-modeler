@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 #*******************************************************************************
 # Licensed Materials - Property of IBM
 # (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.
@@ -33,24 +33,19 @@ Prolog
 DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 
 # Configure DBB Migration Modeler Home
-echo "[INFO] Configure DBB Migration Modeler environment variables."
+echo "[INFO] Configure DBB Git Migration Modeler environment variables."
+read -p "Specify the DBB Migration Modeler Home [default: $DBB_MODELER_HOME]: " variable
 
-echo "Specify the DBB Migration Modeler Home [$DBB_MODELER_HOME] :"
-read variable
 if [ "$variable" ]; then
     DBB_MODELER_HOME="${variable}"
 fi
-echo ""
 
 # Configure DBB Migration Modeler Work Directory
 DBB_MODELER_WORK="${DBB_MODELER_HOME}-work"
-echo "Please specify the DBB Migration Modeler work directory DBB_MODELER_WORK :"
-echo "Leave blank to default to $DBB_MODELER_WORK"
-read variable
+read -p "Specify the DBB Git Migration Modeler work directory [default: $DBB_MODELER_WORK]: " variable
 if [ "$variable" ]; then
     DBB_MODELER_WORK="${variable}"
 fi
-echo ""
 
 # Default environment variables
 DBB_MODELER_APPCONFIG_DIR="$DBB_MODELER_WORK/work-configs"
@@ -87,9 +82,7 @@ input_array=(APPLICATION_DATASETS APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPI
 
 # Prompt for configuration parameters
 for config in ${path_config_array[@]}; do
-    echo "Please configure DBB Migration Modeler configuration parameter $config :"
-    echo "Leave blank to default to ${!config}"
-    read variable
+    read -p "Specify configuration parameter $config [default: ${!config}]: " variable
     if [ "$variable" ]; then
         declare ${config}="${variable}"
     fi
@@ -97,8 +90,7 @@ done
 
 # Create work dir
 echo "[INFO] Create DBB Migration Modeler work directory $DBB_MODELER_WORK and copy DBB Migration Modeler configuration files to it"
-echo "Do you want to create the directory $DBB_MODELER_WORK and copy the DBB Migration Modeler configuration file to it (Y/n) :"
-read variable
+read -p "Do you want to create the directory $DBB_MODELER_WORK and copy the DBB Migration Modeler configuration file to it (Y/n) :" variable
 
 if [[ $variable =~ ^[Yy]$ ]]; then
     if [ -d "${DBB_MODELER_WORK}" ]; then
@@ -120,9 +112,7 @@ if [ $rc -eq 0 ]; then
     # Specify input files
     echo "[INFO] Specify DBB Migration Modeler input configuration"
     for config in ${input_array[@]}; do
-        echo "Please configure DBB Migration Modeler input parameter $config :"
-        echo "Leave blank to default to ${!config}"
-        read variable
+        read -p "Specify input parameter $config [default: ${!config}]: " variable
         if [ "$variable" ]; then
             declare ${config}="${variable}"
         fi
