@@ -15,7 +15,7 @@ Prolog() {
   echo "                                                                                                            "
   echo " Script:      Setup.sh                                                                                      "
   echo "                                                                                                            "
-  echo " Description: This script is setting up a work folder including an configuration file that is leveraged     "
+  echo " Description: This script is setting up a work folder including an configuration file that is used          "
   echo "              by the DBB Git Migration Modeler process.                                                     "
   echo "                                                                                                            "
   echo "              The user will be prompted for several configuration parameters that are saved                 "
