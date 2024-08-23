@@ -20,7 +20,7 @@ Prolog() {
   echo "                                                                                                            "
   echo "              The user will be prompted for several configuration parameters that are saved                 "
   echo "              into a configuration file within the work folder.                                             "
-  echo "              The configuration file is passed to the Migration Modeler as a required                       "
+  echo "              The configuration file is passed to the DBB Git Migration Modeler as a required                  "
   echo "              input parameter.                                                                              "
   echo "                                                                                                            "
   echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
