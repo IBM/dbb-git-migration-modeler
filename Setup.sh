@@ -29,6 +29,10 @@ Prolog() {
 #
 Prolog
 
+# internal variables
+rc=0          # return code management
+CONFIG_DIR="" # Path to store the DBB_GIT_MIGRATION_MODELER.config
+
 # Default is the root of the Git Repo
 DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 
@@ -90,9 +94,9 @@ done
 
 # Create work dir
 echo "[INFO] Create DBB Git Migration Modeler work directory $DBB_MODELER_WORK and copy DBB Migration Modeler configuration files to it"
-read -p "Do you want to create the directory $DBB_MODELER_WORK and copy the DBB Git Migration Modeler configuration file to it (Y/n): " variable
+read -p "Do you want to create the directory $DBB_MODELER_WORK and copy the DBB Git Migration Modeler configuration files to it (Y/n): " variable
 
-if [[ $variable =~ ^[Yy]$ ]]; then
+if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
     if [ -d "${DBB_MODELER_WORK}" ]; then
         rc=4
         ERRMSG="[ERROR] Directory '$DBB_MODELER_WORK' already exists. rc="$rc
@@ -122,28 +126,44 @@ fi
 # Save DBB Git Migration Modeler Configuration
 if [ $rc -eq 0 ]; then
     echo "[INFO] Save DBB Git Migration Modeler Configuration"
+    read -p "Specify directory where the DBB_GIT_MIGRATION_MODELER.config file should be saved [default: $DBB_MODELER_WORK]: " variable
+    if [ "$variable" ]; then
+        CONFIG_DIR="${variable}"
+    fi
 
-    echo "# DBB Git Migration Modeler Configuration Settings " >$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-    echo "# Generated at $(date)" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-    echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+    #Check that CONFIG DIR exists
+    if [ ! -d $CONFIG_DIR ]; then
+        rc=4
+        ERRMSG="[ERROR] Specified directory '$CONFIG_DIR' to save DBB Git Migration Modeler Configuration does not exist. rc="$rc
+        echo $ERRMSG
+    fi
+fi
 
-    echo "DBB_MODELER_HOME=${DBB_MODELER_HOME} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-    echo "DBB_MODELER_WORK=${DBB_MODELER_WORK} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+if [ $rc -eq 0 ]; then
 
-    echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-    echo "# DBB Git Migration Modeler Working Folders " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+    CONFIG_FILE="${CONFIG_DIR}/DBB_GIT_MIGRATION_MODELER.config"
+
+    echo "# DBB Git Migration Modeler Configuration Settings " >$CONFIG_FILE
+    echo "# Generated at $(date)" >>$CONFIG_FILE
+    echo "" >>$CONFIG_FILE
+
+    echo "DBB_MODELER_HOME=${DBB_MODELER_HOME} " >>$CONFIG_FILE
+    echo "DBB_MODELER_WORK=${DBB_MODELER_WORK} " >>$CONFIG_FILE
+
+    echo "" >>$CONFIG_FILE
+    echo "# DBB Git Migration Modeler Working Folders " >>$CONFIG_FILE
     for config in ${path_config_array[@]}; do
-        echo "${config}=${!config} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+        echo "${config}=${!config} " >>$CONFIG_FILE
     done
 
-    echo "" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
-    echo "# DBB Git Migration Modeler Input files" >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+    echo "" >>$CONFIG_FILE
+    echo "# DBB Git Migration Modeler Input files" >>$CONFIG_FILE
 
     for config in ${input_array[@]}; do
-        echo "${config}=${!config} " >>$DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config
+        echo "${config}=${!config} " >>$CONFIG_FILE
     done
 
-    echo "Saved DBB Git Migration Modeler Configuration to $DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config"
+    echo "Saved DBB Git Migration Modeler Configuration to $CONFIG_FILE"
     echo "This file will be imported by the DBB Git Migration Modeler process"
     echo ""
     echo "Tailor the following input files for the DBB Git Migration Modeler"
@@ -152,6 +172,6 @@ if [ $rc -eq 0 ]; then
     echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional) "
     echo "  - $TYPE_CONFIGURATIONS_FILE (optional) "
     echo "before you start DBB Git Migration Modeler process by running"
-    echo " '$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config'"
+    echo " '$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $CONFIG_FILE'"
 
 fi
