@@ -117,19 +117,37 @@ The location of these files is the [build-conf/language-conf](https://github.com
 
 ## Configuring the Migration-Modeler utility
 
-### Configuring the scripts
+### Installation
 
-The scripts used by the utility must be configured in order to run properly.
-Each script calls a setup script, the [0-environment.sh script](./src/scripts/0-environment.sh), which exports environment variables.
+Install the DBB Git Migration Modeler by cloning the repository to z/OS Unix System Services.
 
-To configure the Migration-Modeler, the variables defined in the [0-environment.sh script](./src/scripts/0-environment.sh) should be tailored to meet with your installation.
-The `DBB_MODELER_HOME` and `DBB_MODELER_WORK` variables need to be customized, to respectively specify the Migration-Modeler utility installation directory and the work directory that will be used.
-Please make sure the work directory is sized accordingly to contain your entire code base.
+### Setup DBB Git Migration Modeler configuration
 
-### Tailoring the input files
+Connect to the z/OS Unix System Services of the installation to execute [Setup.sh](Setup.sh). This script prompts you for the below environment variables and saves them in a configuration file, that is used as an input for the main DBB Git Migration Modeler process. 
 
-The configuration files required to use the Migration-Modeler utility are provided in the [samples](./samples/) folder.
-You must copy these sample configuration files to the working directory indicated by the `DBB_MODELER_WORK` environment variable and use them as templates for your customization.
+| Configuration Parameter | Description | Default Value |
+| --- | --- | --- |
+| DBB_MODELER_HOME  | The home of the DBB Git Migration Modeler project | The current directory of Setup.sh | 
+| DBB_MODELER_WORK  | The working directory for the DBB Git Migration Modeler. Requires to be sized to store the entire copy of all application programs. | `$DBB_MODELER_HOME-work`| 
+| DBB_MODELER_APPCONFIG_DIR  | Stores the initial version of the Application Descriptor and the generated DBB Migration Mapping files | `$DBB_MODELER_WORK/work-configs`| 
+| DBB_MODELER_APPLICATION_DIR  | Path where the DBB Git Migration Modeler will create the application directories | `$DBB_MODELER_WORK/work-applications` | 
+| DBB_MODELER_LOGS  | Path where the DBB Git Migration Modeler will store the log files of the various steps of Migration Modeler process | `$DBB_MODELER_WORK/work-logs`| 
+| DBB_MODELER_METADATA_STORE_DIR  | Path to create a DBB File Metadatastore. Required for the Assessment phase | `$DBB_MODELER_WORK/work-metadatastore` | 
+| APPLICATION_DATASETS  | The list of input datasets that will be analyzed by the DBB Git Migration Modeler. These datasets need to hold a copy of the code base of your production system | `DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS` | 
+| **DBB Git Migration Modeler Input files** | | | 
+| APPLICATION_MAPPING_FILE  | Application Mapping file containing the existing applications and their naming conventions, elements lists. See tailoring of input files. | `$DBB_MODELER_WORK/applicationsMapping.yaml` | 
+| REPOSITORY_PATH_MAPPING_FILE  | Repository Paths Mapping file map the various types of members to the folder layout in Git. See tailoring of input files. | `$DBB_MODELER_WORK/repositoryPathsMapping.yaml` | 
+| APPLICATION_MEMBER_TYPE_MAPPING  | Member to Type mapping | `$DBB_MODELER_WORK/types.txt` | 
+| SCAN_DATASET_MEMBERS | Flag to determine if application extraction process should scan each member to identify source type. | `false` |
+| SCAN_DATASET_MEMBERS_ENCODING | PDS encoding for scanner when determining the source type | `IBM-1047` |
+| TYPE_CONFIGURATIONS_FILE | Type Configuration to generate zAppBuild Language Configurations to statically preserve existing build configuration | `$DBB_MODELER_WORK/typesConfigurations.yaml` |
+| DEFAULT_GIT_CONFIG  | Folder containing a default .gitattributes and .gitignore files to initialize a Git repo for the Application repositories | `$DBB_MODELER_WORK/git-config` |
+| DBB_ZAPPBUILD | Path to your customized zAppBuild for baseline builds | `/var/dbb/dbb-zappbuild_300` |
+
+
+### Tailor the input files
+
+The configuration files required to use the Migration-Modeler utility are copied by the Setup script from the [samples](./samples/) folder to the working folder that you have provided to the [Setup.sh](Setup.sh) process.
 
 Four configuration files need to be reviewed and adapted to your installation and your needs, before using the Migration-Modeler: 
 
@@ -164,14 +182,13 @@ In the sample walkthrough below, all COBOL programs files of all applications ar
  
 ## Working with the Migration-Modeler utility
 
-The Migration-Modeler utility is a set of shell scripts that are wrapping groovy scripts.
-The scripts are using DBB APIs and groovy APIs to scan the datasets members, classify them into applications and generate output configuration files.
+The Migration-Modeler utility is a set of shell scripts that are wrapping groovy scripts. The scripts are using DBB APIs and groovy APIs to scan the datasets members, classify them into applications and generate output configuration files.
 
 ### A 4-step process facilitating the migration process
 
-The utility is made of 4 scripts which are meant to be run in the following sequence:
+The utility is made of 4 scripts which are meant to be run in the following sequence. All scripts require to pass in the Migration Modeler configuration file via the cli argument `-c <Migration-Modeler-Configuration.config>'.
 
-1. [Extract Applications script (1-extractApplication.sh)](./src/scripts/1-extractApplications.sh): this script scans the content of the provided datasets and assesses each member based on the provided input files.
+1. [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh): this script scans the content of the provided datasets and assesses each member based on the provided input files.
 For each member found, it searches in the `Applications Mapping` YAML file if a naming convention, after being applied as a filter, matches the member name:
    * If it's a match, the member is assigned to the application that owns the matching naming convention.
    * If no pattern is found matching, the member is assigned to the *UNASSIGNED* application.
@@ -179,7 +196,7 @@ For each member found, it searches in the `Applications Mapping` YAML file if a 
       * An initial Application Descriptor file.
       * DBB Migration mapping file depending on the definitions in the *Repository Paths* mapping file.
 
-2. [Run Migrations script (2-runMigrations.sh)](./src/scripts/2-runMigrations.sh): this script executes the DBB Migration utility for each application with the generated DBB Migration Mapping files created by the Extract Applications script. 
+2. [Run Migrations script (2-runMigrations.sh)](./src/scripts/utils/2-runMigrations.sh): this script executes the DBB Migration utility for each application with the generated DBB Migration Mapping files created by the Extract Applications script. 
 It will copy all the files assigned to the given applications subfolders. Unassigned members are migrated into an *UNASSIGNED* application.
 The outcome of this script are subfolders created in the *work-applications* folder for each application. A side outcome of this step is the documentation about non-roundtripable and non-printable characters for each application. 
 
@@ -201,21 +218,21 @@ The outcome is property files defined for each application's *application-conf* 
 
 #### Running the utility
 
-To facilitate the execution and provide a sample canvas, a [Helper script](./src/scripts/Helper.sh) is provided to showcase how the scripts should be invoked.
-This Helper script requires to be customized to meet with your installation (environment variables and datasets to analyze).
+To facilitate the execution and provide a sample canvas, the [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) is provided to guide the user through the multiple steps.
+
+Invoke the Migration-Modeler-Start script by supplying the Migration Modeler configuration file that contains the input parameters to the process. 
 
 ##### Extracting members from datasets into applications
 
-The [Extract Applications script (1-extractApplication.sh)](./src/scripts/1-extractApplications.sh) requires to pass as input a comma-separated list of datasets to analyze.
+The [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils//1-extractApplications.sh) requires to pass the following required configuration parameters:
 
-Also, the *Repository Paths Mapping* file is required.
-Although not mandatory, the `Applications Mapping` YAML file should be used to identify applications based on naming conventions.
+The *Repository Paths Mapping* file (references via `REPOSITORY_PATH_MAPPING_FILE`) is required.
 
 Optional configuration parameters of the script:
 
-* The *types* and the *Configurations Types* files can be specified to generate correct build properties. Typically, these information can be extracted from the SCM solution using reports, and can be manually tailored if necessary.   
+*  The *types* (`APPLICATION_MEMBER_TYPE_MAPPING`) and the *Types Configuration* (` TYPE_CONFIGURATIONS_FILE`) files can be specified to generate correct build properties. Typically, these information can be extracted from the SCM solution using reports, or can be manually tailored if necessary.
 
-* The use of the DBB Scanner, to automatically identify the language of a file (Cobol, PLI, etc.), is disabled by default, and must be enabled by passing the `-s/--scanDatasetMembers` flag.
+*  The use of the DBB Scanner (controlled via `SCAN_DATASET_MEMBERS`), to automatically identify the language of a file (Cobol, PLI, etc.), is disabled by default, and must be enabled through the setup of the Configuration files.
 When enabled, each file is scanned to identify its language and file type, and these criteria are used first, to identify which *repository path* the file should be assigned to.
 When disabled, types and low-level qualifiers of the containing dataset are used, in this order.
 
@@ -225,14 +242,7 @@ When disabled, types and low-level qualifiers of the containing dataset are used
 Execution of the command:
 
 ```
-./1-extractApplications.sh \
-	-d DBEHM.MIG.MIXED,DBEHM.MIG.BMS \
-	--applicationsMapping $DBB_MODELER_WORK/applicatiosnMapping.yaml \
-	--repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml \
-	--types $DBB_MODELER_WORK/types.txt \
-	-oc $DBB_MODELER_APPCONFIGS \
-	-oa $DBB_MODELER_APPLICATIONS \
-	-l $DBB_MODELER_LOGS/1-extractApplications.log -s -se IBM-1047
+./1-extractApplications.sh -c /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
 ```
 
 Output log:
@@ -380,14 +390,14 @@ Output log:
 
 ##### Migrating the members from MVS datasets to USS folders
 
-The [Run Migrations script (2-runMigrations.sh)](./src/scripts/2-runMigrations.sh) doesn't require any parameter.
+The [Run Migrations script (2-runMigrations.sh)](./src/scripts/2-runMigrations.sh) only requires the parameter to DBB Migration Modeler configuration file to locate the work directories (controlled via `DBB_MODELER_APPLICATION_DIR`).
 It will search for all the DBB Migration mapping files located in the *work-configs* directory, and will process them in sequence.
 
 <details>
   <summary>Output example</summary>
 Execution of the command:
 
-`./2-runMigrations.sh`
+`./2-runMigrations.sh -c /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config`
 
 Output log:  
 ~~~~
@@ -526,16 +536,16 @@ Copying [DBEHM.MIG.BMS, EPSMLIS] to /u/mdalbin/Migration-Modeler-MDLB-work/work-
 
 ##### Assessing the usage of Include Files
 
-The [Classification script (3-classify.sh)](./src/scripts/3-classify.sh) doesn't require any parameter.
+The [Classification script (3-classify.sh)](./src/scripts/3-classify.sh) only requires the parameter to DBB Migration Modeler configuration file to locate the work directories.
 
 It will search for all DBB Migration mapping files located in the *work-configs* folder and will process application definitions found in this folder.
-This script works in 2 phases: the first phase is a scan of all the files found in the application subfoler, and the second phase is an analysis of how the different Include Files and Programs are used by all the known applications. 
+This script works in 2 phases: the first phase is a scan of all the files found in the application subfolders, and the second phase is an analysis of how the different Include Files and Programs are used by all the known applications. 
 
 <details>
   <summary>Output example</summary>
 Execution of the command:
 
-`./3-classify.sh`
+`./3-classify.sh -c /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config`
 
 Output log:
 ~~~~
@@ -1306,7 +1316,9 @@ Assess Include files & Programs usage for UNASSIGNED
 
 ##### Generating Property files
 
-The [Property Generation script (4-generateProperties.sh)](./src/scripts/4-generateProperties.sh) requires two parameters:
+The [Property Generation script (4-generateProperties.sh)](./src/scripts/4-generateProperties.sh) requires the parameter to DBB Migration Modeler configuration file.
+
+It retrieves the configiration for 
 * The path to the [Types Configurations file](./samples/typesConfigurations.yaml)
 * The path to an original *dbb-zAppBuild* instance, that will be copied and customized during this phase
 
@@ -1322,7 +1334,7 @@ If configuration was changed, an *INFO* message is shown, explaining that a manu
   <summary>Output example</summary>
 Execution of the command:
 	
-`./4-generateProperties.sh`
+`./4-generateProperties.sh  -c /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config`
 
 Output log:
 ~~~~
@@ -1391,20 +1403,19 @@ Generate properties for application 'UNASSIGNED'
 ~~~~
 </details>
 
-### Refresh Application Descriptors
+### Refresh Application Descriptors (Optional)
 
 When applications are migrated to Git and development teams leverage the pipeline, source files will be modified, added, or deleted.
 It's expected that the list of elements of an application and cross-application dependencies will change over time.
-To reflect these changes, the **Application Descriptor** file needs to be refreshed. 
+To reflect these changes, the **Application Descriptor** file needs to be refreshed.
 
 Additionally, if applications are already migrated to Git and use pipelines, but don't have an Application Descriptor file yet, and the development teams want to leverage its benefits, this creation process should be followed.
 
-The Migration-Modeler is equipped with a script to recreate the applications' Application Descriptor files which reside in Git repositories.
-The refresh of the Application Descriptor files must occur on the entire code base like the on initial assessment process.
+A second primary command is shipped for this workflow. The [Refresh Application Descriptor script (Refresh-Application-Descriptor-Files.sh)](./src/scripts/Refresh-Application-Descriptor-Files.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications. The refresh of the Application Descriptor files must occur on the entire code base like the on initial assessment process.
 
-The [Refresh Application Descriptor script (5-refreshApplicationDescriptors.sh)](./src/scripts/5-refreshApplicationDescriptors.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications.
+Like the other scripts, it requires to pass in a DBB-Git-Migration-Modeler configuration file, that can be created with the [Setup](#setup-dbb-git-migration-modeler-configuration) instructions.
 
-The script calls three groovy scripts ([scanApplication.groovy](./src/groovy/scanApplication.groovy), [recreateApplicationDescriptor.groovy](./src/groovy/recreateApplicationDescriptor.groovy) and [assessUsage.groovy](./src/groovy/assessUsage.groovy)) to scan the files of the applications using the DBB Scanner, initialize Application Descriptor files based on the files present in the working directories, and assess how Include Files and Programs are used across the applications landscape:
+The primary script calls three groovy scripts ([scanApplication.groovy](./src/groovy/scanApplication.groovy), [recreateApplicationDescriptor.groovy](./src/groovy/recreateApplicationDescriptor.groovy) and [assessUsage.groovy](./src/groovy/assessUsage.groovy)) to scan the files of the applications using the DBB Scanner, initialize Application Descriptor files based on the files present in the working directories, and assess how Include Files and Programs are used across the applications landscape:
 
    * For the scanning phase, the script iterates through the files located within the work directory.
    It uses the DBB Scanner to understand the dependencies for each artifact.
@@ -1426,13 +1437,13 @@ For each application, a refreshed Application Descriptor is created at the root 
 
 Recreating the Application Descriptor files requires to scan all files and might be time and resource consuming based on the size of the applications landscape.
 Consider using this process on a regular basis, like once a week.
-The recommendation would be to set up a pipeline, that checks out all Git repositories to a working sandbox, and executes the `Recreate Application Descriptor` script. Once the Application Descriptor files updated within the Git repositories, the pipeline can automatically commit and push the updates back to the central Git provider.
+The recommendation would be to set up a pipeline, that checks out all Git repositories to a working sandbox, and executes the `Recreate Application Descriptor` script. Once the Application Descriptor files updated within the Git repositories, the pipeline can be enabled to automatically commit and push the updates back to the central Git provider.
 
 <details>
   <summary>Output example</summary>
 Execution of command:
 	
-`./5-refreshApplicationDescriptors.sh`
+`./Refresh-Application-Descriptor-Files.sh -c /u/dbehm/git/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
 Output log:
 ~~~~
@@ -2669,11 +2680,10 @@ Assess Include files & Programs usage for UNASSIGNED
 
 ### A group of datasets belongs to the same application
 
-In this situation, a group of datasets contains artifacts that belong to the same application.
-These identified artifacts can be spread across multiples libraries but you are certain they are all owned by the same application.
+In this situation, a group of datasets already contain all artifacts that belong to the application. These identified artifacts can be spread across multiples libraries but you are certain they are all owned by the same application.
 
-To limit the scope of the extraction, this list of datasets to analyze must be passed to the [Extract Applications script (1-extractApplication.sh)](./src/scripts/1-extractApplications.sh).
-In this use case, a specific `Applications Mapping` YAML file should be passed to the [Extract Applications script](./src/scripts/1-extractApplications.sh), with a universal filter being used as naming convention.
+To limit the scope of the extraction, this list of datasets to analyze must be passed to the [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh).
+In this use case, a specific `Applications Mapping` YAML file for each application should be passed to the [Extract Applications script](./src/scripts/utils/1-extractApplications.sh) via the Migration Modeler configuration file, with a universal filter being used as naming convention.
 
 The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
 ~~~~YAML
@@ -2688,7 +2698,14 @@ applications:
 To extract the files, a sample command like the following should be used:
 
 ~~~~
-./1-extractApplications.sh -d GITLAB.CATMAN.RELEASE.COBOL,GITLAB.CATMAN.RELEASE.COPY,GITLAB.CATMAN.RELEASE.ASM,GITLAB.CATMAN.RELEASE.BMS,GITLAB.CATMAN.RELEASE.LINK --applicationsMapping $DBB_MODELER_WORK/applicationsMapping-CATMAN.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_HOME/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS
+./1-extractApplications.sh -c /u/dbehm/git/dbb-git-migration-modeler-mathieu/DBB_GIT_MIGRATION_MODELER-CATMAN.config
+~~~~
+
+While the `DBB_GIT_MIGRATION_MODELER-CATMAN.config` contains the CATMAN specific datasets:
+~~~~
+...
+APPLICATION_DATASETS=GITLAB.CATMAN.RELEASE.COBOL,GITLAB.CATMAN.RELEASE.COPY,GITLAB.CATMAN.RELEASE.ASM,GITLAB.CATMAN.RELEASE.BMS,GITLAB.CATMAN.RELEASE.LINK
+...
 ~~~~
 
 The result of this command is an Application Descriptor file that documents all the artifacts contained in the list of the given datasets, and a DBB Migration mapping file to manages all the members found.
@@ -2760,14 +2777,15 @@ applications:
 
 ### Combining use cases
 
-There can be situations where scenarios must be combined. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications.
+There can be situations where scenarios must be combined to extract the applications. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply different naming conventions patterns for copybooks. 
 
-In that case, the solution is to run the [Extract Applications script (1-extractApplication.sh)](./src/scripts/1-extractApplications.sh) multiple times with different input configuration files.
-The [Helper script (Helper.sh)](./src/scripts/Helper.sh) can be customized in this way to contain multiple extractions:
+In that case, the solution is to run the [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh) multiple times with different input configuration files: The [Migration-Modeler-Start.sh](./src/scripts/Migration-Modeler-Start.sh) can be customized in this way to contain multiple extractions:
 
 ~~~~bash
-./1-extractApplications.sh -d DBEHM.MIG.COBOL,DBEHM.MIG.COPY --applicationsMapping $DBB_MODELER_HOME/applicationsMapping.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_WORK/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS
-./1-extractApplications.sh -d GITLAB.CATMAN.RELEASE.COBOL,GITLAB.CATMAN.RELEASE.COPY,GITLAB.CATMAN.RELEASE.ASM,GITLAB.CATMAN.RELEASE.BMS,GITLAB.CATMAN.RELEASE.LINK --applicationsMapping $DBB_MODELER_WORK/applicationsMapping-CATMAN.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_HOME/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS
+# Configuration specifies an applictionMappings file for CATMAN and the CATMAN PDS libraries
+./1-extractApplications.sh -c /u/dbehm/git/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER-CATMAN.config
+# Configuration specifies an applictionMappings file the perceived SHARED components
+./1-extractApplications.sh -c /u/dbehm/git/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER-SHARED.config
 ~~~~
 
 ### Generating properties
@@ -2807,7 +2825,7 @@ Where *COBBATCH*, *COBCICSD* and *PLIIMSDB* represent configurations with specif
   isDLI: true
 ~~~~
 
-With this configuration, the [Property Generation script](./src/scripts/4-generateProperties.sh) will generate Language Configurations for each of these types.
+With this configuration, the [Property Generation script](./src/scripts/utils//4-generateProperties.sh) will generate Language Configurations for each of these types.
 
 #### Advanced scenario
 In more sophisticated scenarios, which depend on how properties are set in the legacy SCM tool, multiple types can be assigned to an artifact:
@@ -2838,7 +2856,7 @@ Each type configuration would be defined separately in the [Types Configurations
   isDLI: true
 ~~~~
 
-In this configuration, the [Property Generation script](./src/scripts/4-generateProperties.sh) will generate composite Language Configurations files in *dbb-zAppbuild*'s [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/develop/build-conf/language-conf) folder.
+In this configuration, the [Property Generation script](./src/scripts/utils/4-generateProperties.sh) will generate composite Language Configurations files in *dbb-zAppbuild*'s [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/develop/build-conf/language-conf) folder.
 In this example, 3 files would be created:
 * *BATCH-COBOL.properties* which combines properties from the *BATCH* and the *COBOL* types
 * *CICSDB2-COBOL.properties*, which combines properties from the *CICSDB2* and the *COBOL* types
