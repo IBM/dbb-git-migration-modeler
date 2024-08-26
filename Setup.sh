@@ -144,7 +144,7 @@ if [ $rc -eq 0 ]; then
     done
 
     echo "Saved DBB Git Migration Modeler Configuration to $DBB_MODELER_WORK/DBB_GIT_MIGRATION_MODELER.config"
-    echo "This file will be imported by the DBB Git Migration Modeler Process"
+    echo "This file will be imported by the DBB Git Migration Modeler process"
     echo ""
     echo "Tailor the following input files for the DBB Git Migration Modeler"
     echo "  - $APPLICATION_MAPPING_FILE "
