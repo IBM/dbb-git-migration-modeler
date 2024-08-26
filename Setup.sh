@@ -110,7 +110,7 @@ fi
 if [ $rc -eq 0 ]; then
 
     # Specify input files
-    echo "[INFO] Specify DBB Migration Modeler input configuration"
+    echo "[INFO] Specify DBB Git Migration Modeler input configuration"
     for config in ${input_array[@]}; do
         read -p "Specify input parameter $config [default: ${!config}]: " variable
         if [ "$variable" ]; then
