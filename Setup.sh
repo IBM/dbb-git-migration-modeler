@@ -52,10 +52,10 @@ if [ "$variable" ]; then
 fi
 
 # Default environment variables
-DBB_MODELER_APPCONFIG_DIR="$DBB_MODELER_WORK/work-configs"
-DBB_MODELER_APPLICATION_DIR="$DBB_MODELER_WORK/work-applications"
-DBB_MODELER_LOGS="$DBB_MODELER_WORK/work-logs"
-DBB_MODELER_METADATA_STORE_DIR="$DBB_MODELER_WORK/work-metadatastore"
+DBB_MODELER_APPCONFIG_DIR="$DBB_MODELER_WORK/modeler-configs"
+DBB_MODELER_APPLICATION_DIR="$DBB_MODELER_WORK/applications"
+DBB_MODELER_LOGS="$DBB_MODELER_WORK/logs"
+DBB_MODELER_METADATA_STORE_DIR="$DBB_MODELER_WORK/dbb-metadatastore"
 
 # Internal variables
 DBB_MODELER_SAMPLE_CONFIG="$DBB_MODELER_HOME/samples"
@@ -75,14 +75,16 @@ TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/typesConfigurations.yaml
 # Scanning options
 SCAN_DATASET_MEMBERS=false
 SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
-# Reference to zAppBuild
-DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild_300
 # Reference to default .gitattributes file
 DBB_MODELER_DEFAULT_GIT_CONFIG="$DBB_MODELER_WORK/git-config"
+# Reference to zAppBuild
+DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild_300
+# Reference to DBB Community Repo
+DBB_COMMUNITY_REPO=/var/dbb/extensions/dbb20
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_METADATA_STORE_DIR DBB_MODELER_DEFAULT_GIT_CONFIG)
-input_array=(APPLICATION_DATASETS APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING TYPE_CONFIGURATIONS_FILE DBB_ZAPPBUILD)
+input_array=(APPLICATION_DATASETS APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING TYPE_CONFIGURATIONS_FILE DBB_MODELER_DEFAULT_GIT_CONFIG DBB_ZAPPBUILD DBB_COMMUNITY_REPO)
 
 # Prompt for configuration parameters
 for config in ${path_config_array[@]}; do
@@ -108,6 +110,15 @@ if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
             cp $DBB_MODELER_HOME/samples/*.* $DBB_MODELER_WORK/
             rc=$?
         fi
+        
+        if [ $rc -eq 0 ]; then
+            if [ ! -d "${DBB_MODELER_DEFAULT_GIT_CONFIG}" ]; then
+             mkdir -p $DBB_MODELER_DEFAULT_GIT_CONFIG
+            fi
+        
+           cp $DBB_MODELER_HOME/samples/git-config/.* $DBB_MODELER_DEFAULT_GIT_CONFIG/
+           rc=$?
+        fi
     fi
 fi
 
@@ -124,6 +135,7 @@ if [ $rc -eq 0 ]; then
 fi
 
 # Save DBB Git Migration Modeler Configuration
+CONFIG_DIR="$DBB_MODELER_WORK"
 if [ $rc -eq 0 ]; then
     echo "[INFO] Save DBB Git Migration Modeler Configuration"
     read -p "Specify directory where the DBB_GIT_MIGRATION_MODELER.config file should be saved [default: $DBB_MODELER_WORK]: " variable
