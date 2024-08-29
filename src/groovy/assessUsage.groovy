@@ -89,7 +89,7 @@ def getIncludeFilesFromApplicationDescriptor() {
 	if (matchingSources) {
 		matchingSources.each() { matchingSource ->
 			matchingSource.files.each() { file ->
-				def impactSearchRule = 	"search:${props.workspace}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
+				def impactSearchRule = 	"search:[:COPY]${props.workspace}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
 				HashMap<String, String> properties = new HashMap<String, String>()
 				properties.put("impactSearchRule", impactSearchRule)
 				properties.put("repositoryPath", matchingSource.repositoryPath)
@@ -114,7 +114,8 @@ def getProgramsFromApplicationDescriptor() {
 	if (matchingSources) {
 		matchingSources.each() { matchingSource ->
 			matchingSource.files.each() { file ->
-				def impactSearchRule = 	"search:[:LINK,CALL]${props.workspace}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
+				// run impact analysis and only look for Static CALL dependencies
+				def impactSearchRule = 	"search:[:CALL]${props.workspace}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
 				HashMap<String, String> properties = new HashMap<String, String>()
 				properties.put("impactSearchRule", impactSearchRule)
 				properties.put("repositoryPath", matchingSource.repositoryPath)
