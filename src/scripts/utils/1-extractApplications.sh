@@ -38,6 +38,6 @@ else
        fi
     fi
         
-    echo " [INFO] {CMD}"
+    echo " [INFO] ${CMD}"
     $CMD
 fi
