@@ -53,12 +53,15 @@ if [ $rc -eq 0 ]; then
       echo "[INFO] Removing '${DBB_MODELER_LOGS}' folder."
       rm -rf $DBB_MODELER_LOGS
     fi
+  fi
+fi
 
+if [ $rc -eq 0 ]; then
     #### Create work directories
     if [ ! -d $DBB_MODELER_LOGS ]; then
       mkdir -p $DBB_MODELER_LOGS
+      echo "[INFO] Created '${DBB_MODELER_LOGS}' folder."
     fi
-  fi
 fi
 
 if [ $rc -eq 0 ]; then

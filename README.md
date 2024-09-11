@@ -142,7 +142,10 @@ Connect to the z/OS Unix System Services of the installation to execute [Setup.s
 | SCAN_DATASET_MEMBERS_ENCODING | PDS encoding for scanner when determining the source type | `IBM-1047` |
 | TYPE_CONFIGURATIONS_FILE | Type Configuration to generate zAppBuild Language Configurations to statically preserve existing build configuration | `$DBB_MODELER_WORK/typesConfigurations.yaml` |
 | DEFAULT_GIT_CONFIG  | Folder containing a default .gitattributes and .gitignore files to initialize a Git repo for the Application repositories | `$DBB_MODELER_WORK/git-config` |
-| DBB_ZAPPBUILD | Path to your customized zAppBuild for baseline builds | `/var/dbb/dbb-zappbuild_300` |
+| DBB_ZAPPBUILD | Path to your customized [zAppBuild repository](https://github.com/IBM/dbb-zappbuild) on z/OS Unix System Services for baseline builds | `/var/dbb/dbb-zappbuild` |
+| DBB_COMMUNITY_REPO (*) | Path to your customized [DBB community repository](https://github.com/IBM/dbb) on z/OS Unix System Services | `/var/dbb/dbb` |
+
+(*) Indicate optional configuration parameters.
 
 
 ### Tailor the input files
@@ -182,11 +185,23 @@ In the sample walkthrough below, all COBOL programs files of all applications ar
  
 ## Working with the Migration-Modeler utility
 
-The Migration-Modeler utility is a set of shell scripts that are wrapping groovy scripts. The scripts are using DBB APIs and groovy APIs to scan the datasets members, classify them into applications and generate output configuration files.
+The Migration-Modeler utility is a set of shell scripts that are wrapping groovy scripts. The scripts are using DBB APIs and groovy APIs.
 
-### A 4-step process facilitating the migration process
+There are 3 primary command scripts located at `/src/scripts` :
 
-The utility is made of 4 scripts which are meant to be run in the following sequence. All scripts require to pass in the Migration Modeler configuration file via the cli argument `-c <Migration-Modeler-Configuration.config>'.
+* [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) facilitates the extraction, migration, classification, and generating build configuration.
+* [Init-Application-Repositories script](./src/scripts/Init-Application-Repositories.sh) initializes the application repositories with a default gitattributes file that can then be pushed to the preferred Git provider, performs a dbb-zappbuild full build with preview option, and creates a baseline package.
+* [Refresh-Application-Descriptor-Files script](./src/scripts/Refresh-Application-Descriptor-Files.sh) to re-create Application Descriptors for existing applications that are already managed in git.
+
+The below sections explain the different primary command scripts.
+
+### Migration Modeler Start
+
+To facilitate the the extraction, migration, classification, and generating build configuration a sample canvas, the [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) is provided to guide the user through the multiple steps.
+
+Invoke the Migration-Modeler-Start script by supplying the Migration Modeler configuration file that contains the input parameters to the process. 
+
+The Migration-Modeler-Start script takes you through the below stages, that uses additional scripts under the covers. All scripts require to pass in the Migration Modeler configuration file via the cli argument `-c <Migration-Modeler-Configuration.config>'.
 
 1. [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh): this script scans the content of the provided datasets and assesses each member based on the provided input files.
 For each member found, it searches in the `Applications Mapping` YAML file if a naming convention, after being applied as a filter, matches the member name:
@@ -214,15 +229,9 @@ The outcome of this script are subfolders created in the *work-applications* fol
 
 4. [Property Generation script (4-generateProperties.sh)](./src/scripts/4-generateProperties.sh): this script generates build properties for [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/).
 The script uses the type of each artifact to generate (or reuse if already existing) Language Configurations defined in *dbb-zAppBuild*, as configured in the [Types Configurations file](./samples/typesConfigurations.yaml).  
-The outcome is property files defined for each application's *application-conf* folder and Language Configuration files defined in a custom *dbb-zAppBuild* folder.
+The outcome is property files defined for each application's *application-conf* folder and Language Configuration files defined in a custom *dbb-zAppBuild* folder. This step is optional. 
 
-#### Running the utility
-
-To facilitate the execution and provide a sample canvas, the [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) is provided to guide the user through the multiple steps.
-
-Invoke the Migration-Modeler-Start script by supplying the Migration Modeler configuration file that contains the input parameters to the process. 
-
-##### Extracting members from datasets into applications
+#### Extracting members from datasets into applications
 
 The [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils//1-extractApplications.sh) requires to pass the following required configuration parameters:
 
@@ -388,7 +397,7 @@ Output log:
 ~~~~
 </details>
 
-##### Migrating the members from MVS datasets to USS folders
+#### Migrating the members from MVS datasets to USS folders
 
 The [Run Migrations script (2-runMigrations.sh)](./src/scripts/2-runMigrations.sh) only requires the parameter to DBB Migration Modeler configuration file to locate the work directories (controlled via `DBB_MODELER_APPLICATION_DIR`).
 It will search for all the DBB Migration mapping files located in the *work-configs* directory, and will process them in sequence.
@@ -534,7 +543,7 @@ Copying [DBEHM.MIG.BMS, EPSMLIS] to /u/mdalbin/Migration-Modeler-MDLB-work/work-
 ~~~~
 </details>
 
-##### Assessing the usage of Include Files
+#### Assessing the usage of Include Files
 
 The [Classification script (3-classify.sh)](./src/scripts/3-classify.sh) only requires the parameter to DBB Migration Modeler configuration file to locate the work directories.
 
@@ -1314,7 +1323,7 @@ Assess Include files & Programs usage for UNASSIGNED
 ~~~~
 </details>
 
-##### Generating Property files
+#### Generating Property files
 
 The [Property Generation script (4-generateProperties.sh)](./src/scripts/4-generateProperties.sh) requires the parameter to DBB Migration Modeler configuration file.
 
@@ -1403,7 +1412,11 @@ Generate properties for application 'UNASSIGNED'
 ~~~~
 </details>
 
-### Refresh Application Descriptors (Optional)
+### Initialize Application Git Repositories
+
+
+
+### Refresh Application Descriptors
 
 When applications are migrated to Git and development teams leverage the pipeline, source files will be modified, added, or deleted.
 It's expected that the list of elements of an application and cross-application dependencies will change over time.
