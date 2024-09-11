@@ -136,6 +136,7 @@ fi
 
 # Save DBB Git Migration Modeler Configuration
 CONFIG_DIR="$DBB_MODELER_WORK"
+
 if [ $rc -eq 0 ]; then
     echo "[INFO] Save DBB Git Migration Modeler Configuration"
     read -p "Specify directory where the DBB_GIT_MIGRATION_MODELER.config file should be saved [default: $DBB_MODELER_WORK]: " variable

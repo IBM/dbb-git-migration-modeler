@@ -143,9 +143,7 @@ Connect to the z/OS Unix System Services of the installation to execute [Setup.s
 | TYPE_CONFIGURATIONS_FILE | Type Configuration to generate zAppBuild Language Configurations to statically preserve existing build configuration | `$DBB_MODELER_WORK/typesConfigurations.yaml` |
 | DEFAULT_GIT_CONFIG  | Folder containing a default .gitattributes and .gitignore files to initialize a Git repo for the Application repositories | `$DBB_MODELER_WORK/git-config` |
 | DBB_ZAPPBUILD | Path to your customized [zAppBuild repository](https://github.com/IBM/dbb-zappbuild) on z/OS Unix System Services for baseline builds | `/var/dbb/dbb-zappbuild` |
-| DBB_COMMUNITY_REPO (*) | Path to your customized [DBB community repository](https://github.com/IBM/dbb) on z/OS Unix System Services | `/var/dbb/dbb` |
-
-(*) Indicate optional configuration parameters.
+| DBB_COMMUNITY_REPO | Path to your customized [DBB community repository](https://github.com/IBM/dbb) on z/OS Unix System Services | `/var/dbb/dbb` |
 
 
 ### Tailor the input files
