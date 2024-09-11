@@ -1414,7 +1414,420 @@ Generate properties for application 'UNASSIGNED'
 
 ### Initialize Application Git Repositories
 
+After running through the extraction, migration, classification stages, the next stage is about getting the application directories ready to be pushed to your central Git provider. 
+The [Init-Application-Repositories script](./src/scripts/Init-Application-Repositories.sh) is provided to guide the user through the below steps:
 
+1. Initialize the Git repository for each application folder using a default `.gitattributes` file.
+2. (Optional) Perform a dbb-zappbuild full build with the preview option (no files will be built) as a preview of the expected outcomes.
+3. (Preview/Optional) Create a baseline package using the PackageBuildOutputs.groovy script based on the previous build preview reports to package up the existing build outputs (loads, dbrms, jobs, etc) that correspond with the version of the migrated source code.
+
+Invoke the Init-Application-Repositories script by supplying the Migration Modeler configuration file that contains the input parameters to the process.
+
+<details>
+  <summary> Execution example</summary>
+Execution of command:
+	
+`/u/dbehm/git/dbb-git-migration-modeler/src/scripts/Init-Application-Repositories.sh -c /u/dbehm/git/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
+
+~~~~
+DBEHM:/u/dbehm/git: >/u/dbehm/git/dbb-git-migration-modeler/src/scripts/Init-Application-Repositories.sh -c /u/dbehm/git/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+[INFO] Loading DBB Git Migration Modeler config file /u/dbehm/git/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config.
+
+ DBB Git Migration Modeler
+ Release:
+
+ Script:      InitApplicationRepositories.sh
+
+ Description: The purpose of this script is to initialize the Git repositories, by adding a default
+              .gitattributes file. It additionally performs build preview that generates and initial
+              DBB Build Report that can be examined by the application team.
+
+              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler
+
+Do you want to initialize the Git repositories for the applications in /u/dbehm/git/dbb-git-migration-modeler-work/applications (Y/n): Y
+*******************************************************************
+[STAGE] Initialize Git Repositories
+*******************************************************************
+[APPLICATION] Initialize Git Repo for /u/dbehm/git/dbb-git-migration-modeler-work/applications/CBSA
+/u/dbehm/git/dbb-git-migration-modeler/src/scripts/Init-Application-Repositories.sh: line 62: [: ==: unary operator expected
+[INFO] Initialize Git Repository for application CBSA
+[CMD] git init --initial-branch=main
+Initialized empty Git repository in /u/dbehm/git/dbb-git-migration-modeler-work/applications/CBSA/.git/
+[INFO] Setting file tag for CBSA.yaml
+[CMD] chtag -c IBM-1047 -t CBSA.yaml
+[INFO] Updating Git configuration files (.gitattributes)
+[CMD] rm .gitattributes
+[CMD] cp /u/dbehm/git/dbb-git-migration-modeler-work/git-config/.gitattributes .gitattributes
+[INFO] Prepare initial commit
+[CMD] git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.gitattributes
+	CBSA.yaml
+	CBSA/
+
+nothing added to commit but untracked files present (use "git add" to track)
+[CMD] git add --all
+[INFO] Commit files to new Git repository
+[CMD] git commit -m 'Initial Commit'
+[main (root-commit) d290217] Initial Commit
+ 97 files changed, 35342 insertions(+)
+ create mode 100644 .gitattributes
+ create mode 100644 CBSA.yaml
+ create mode 100644 CBSA/application-conf/ACBgen.properties
+ create mode 100644 CBSA/application-conf/Assembler.properties
+ create mode 100644 CBSA/application-conf/BMS.properties
+ create mode 100644 CBSA/application-conf/CRB.properties
+ create mode 100644 CBSA/application-conf/Cobol.properties
+ create mode 100644 CBSA/application-conf/DBDgen.properties
+ create mode 100644 CBSA/application-conf/Easytrieve.properties
+ create mode 100644 CBSA/application-conf/LinkEdit.properties
+ create mode 100644 CBSA/application-conf/MFS.properties
+ create mode 100644 CBSA/application-conf/PLI.properties
+ create mode 100644 CBSA/application-conf/PSBgen.properties
+ create mode 100644 CBSA/application-conf/README.md
+ create mode 100644 CBSA/application-conf/REXX.properties
+ create mode 100644 CBSA/application-conf/Transfer.properties
+ create mode 100755 CBSA/application-conf/ZunitConfig.properties
+ create mode 100644 CBSA/application-conf/application.properties
+ create mode 100644 CBSA/application-conf/bind.properties
+ create mode 100644 CBSA/application-conf/file.properties
+ create mode 100644 CBSA/application-conf/languageConfigurationMapping.properties
+ create mode 100644 CBSA/application-conf/reports.properties
+ create mode 100644 CBSA/src/cobol/abndproc.cbl
+ create mode 100644 CBSA/src/cobol/accload.cbl
+ create mode 100644 CBSA/src/cobol/accoffl.cbl
+ create mode 100644 CBSA/src/cobol/acctctrl.cbl
+ create mode 100644 CBSA/src/cobol/bankdata.cbl
+ create mode 100644 CBSA/src/cobol/bnk1cac.cbl
+ create mode 100644 CBSA/src/cobol/bnk1cca.cbl
+ create mode 100644 CBSA/src/cobol/bnk1ccs.cbl
+ create mode 100644 CBSA/src/cobol/bnk1cra.cbl
+ create mode 100644 CBSA/src/cobol/bnk1dac.cbl
+ create mode 100644 CBSA/src/cobol/bnk1dcs.cbl
+ create mode 100644 CBSA/src/cobol/bnk1tfn.cbl
+ create mode 100644 CBSA/src/cobol/bnk1uac.cbl
+ create mode 100644 CBSA/src/cobol/bnkmenu.cbl
+ create mode 100644 CBSA/src/cobol/consent.cbl
+ create mode 100644 CBSA/src/cobol/consttst.cbl
+ create mode 100644 CBSA/src/cobol/crdtagy1.cbl
+ create mode 100644 CBSA/src/cobol/crdtagy2.cbl
+ create mode 100644 CBSA/src/cobol/crdtagy3.cbl
+ create mode 100644 CBSA/src/cobol/crdtagy4.cbl
+ create mode 100644 CBSA/src/cobol/crdtagy5.cbl
+ create mode 100644 CBSA/src/cobol/creacc.cbl
+ create mode 100644 CBSA/src/cobol/crecust.cbl
+ create mode 100644 CBSA/src/cobol/custctrl.cbl
+ create mode 100644 CBSA/src/cobol/dbcrfun.cbl
+ create mode 100644 CBSA/src/cobol/delacc.cbl
+ create mode 100644 CBSA/src/cobol/delcus.cbl
+ create mode 100644 CBSA/src/cobol/dpayapi.cbl
+ create mode 100644 CBSA/src/cobol/dpaytst.cbl
+ create mode 100644 CBSA/src/cobol/getcompy.cbl
+ create mode 100644 CBSA/src/cobol/getscode.cbl
+ create mode 100644 CBSA/src/cobol/inqacc.cbl
+ create mode 100644 CBSA/src/cobol/inqacccu.cbl
+ create mode 100644 CBSA/src/cobol/inqcust.cbl
+ create mode 100644 CBSA/src/cobol/proload.cbl
+ create mode 100644 CBSA/src/cobol/prooffl.cbl
+ create mode 100644 CBSA/src/cobol/updacc.cbl
+ create mode 100644 CBSA/src/cobol/updcust.cbl
+ create mode 100644 CBSA/src/cobol/xfrfun.cbl
+ create mode 100644 CBSA/src/copy/abndinfo.cpy
+ create mode 100644 CBSA/src/copy/accdb2.cpy
+ create mode 100644 CBSA/src/copy/account.cpy
+ create mode 100644 CBSA/src/copy/acctctrl.cpy
+ create mode 100644 CBSA/src/copy/bnk1acc.cpy
+ create mode 100644 CBSA/src/copy/bnk1cam.cpy
+ create mode 100644 CBSA/src/copy/bnk1ccm.cpy
+ create mode 100644 CBSA/src/copy/bnk1cdm.cpy
+ create mode 100644 CBSA/src/copy/bnk1dam.cpy
+ create mode 100644 CBSA/src/copy/bnk1dcm.cpy
+ create mode 100644 CBSA/src/copy/bnk1mai.cpy
+ create mode 100644 CBSA/src/copy/bnk1tfm.cpy
+ create mode 100644 CBSA/src/copy/bnk1uam.cpy
+ create mode 100644 CBSA/src/copy/consent.cpy
+ create mode 100644 CBSA/src/copy/constapi.cpy
+ create mode 100644 CBSA/src/copy/constdb2.cpy
+ create mode 100644 CBSA/src/copy/contdb2.cpy
+ create mode 100644 CBSA/src/copy/creacc.cpy
+ create mode 100644 CBSA/src/copy/crecust.cpy
+ create mode 100644 CBSA/src/copy/custctrl.cpy
+ create mode 100644 CBSA/src/copy/customer.cpy
+ create mode 100644 CBSA/src/copy/datastr.cpy
+ create mode 100644 CBSA/src/copy/delacc.cpy
+ create mode 100644 CBSA/src/copy/delcus.cpy
+ create mode 100644 CBSA/src/copy/getcompy.cpy
+ create mode 100644 CBSA/src/copy/getscode.cpy
+ create mode 100644 CBSA/src/copy/inqacc.cpy
+ create mode 100644 CBSA/src/copy/inqacccu.cpy
+ create mode 100644 CBSA/src/copy/inqcust.cpy
+ create mode 100644 CBSA/src/copy/paydbcr.cpy
+ create mode 100644 CBSA/src/copy/procdb2.cpy
+ create mode 100644 CBSA/src/copy/proctran.cpy
+ create mode 100644 CBSA/src/copy/sortcode.cpy
+ create mode 100644 CBSA/src/copy/updacc.cpy
+ create mode 100644 CBSA/src/copy/updcust.cpy
+ create mode 100644 CBSA/src/copy/xfrfun.cpy
+[CMD] Create rel-1.0.0 tag
+[INFO] Initializing Git Repo for Application CBSA completed. rc=0
+[APPLICATION] Initialize Git Repo for /u/dbehm/git/dbb-git-migration-modeler-work/applications/GenApp
+/u/dbehm/git/dbb-git-migration-modeler/src/scripts/Init-Application-Repositories.sh: line 62: [: ==: unary operator expected
+[INFO] Initialize Git Repository for application GenApp
+[CMD] git init --initial-branch=main
+Initialized empty Git repository in /u/dbehm/git/dbb-git-migration-modeler-work/applications/GenApp/.git/
+[INFO] Setting file tag for GenApp.yaml
+[CMD] chtag -c IBM-1047 -t GenApp.yaml
+[INFO] Updating Git configuration files (.gitattributes)
+[CMD] rm .gitattributes
+[CMD] cp /u/dbehm/git/dbb-git-migration-modeler-work/git-config/.gitattributes .gitattributes
+[INFO] Prepare initial commit
+[CMD] git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.gitattributes
+	GenApp.yaml
+	GenApp/
+
+nothing added to commit but untracked files present (use "git add" to track)
+[CMD] git add --all
+[INFO] Commit files to new Git repository
+[CMD] git commit -m 'Initial Commit'
+[main (root-commit) ac1820c] Initial Commit
+ 57 files changed, 12640 insertions(+)
+ create mode 100644 .gitattributes
+ create mode 100644 GenApp.yaml
+ create mode 100644 GenApp/application-conf/ACBgen.properties
+ create mode 100644 GenApp/application-conf/Assembler.properties
+ create mode 100644 GenApp/application-conf/BMS.properties
+ create mode 100644 GenApp/application-conf/CRB.properties
+ create mode 100644 GenApp/application-conf/Cobol.properties
+ create mode 100644 GenApp/application-conf/DBDgen.properties
+ create mode 100644 GenApp/application-conf/Easytrieve.properties
+ create mode 100644 GenApp/application-conf/LinkEdit.properties
+ create mode 100644 GenApp/application-conf/MFS.properties
+ create mode 100644 GenApp/application-conf/PLI.properties
+ create mode 100644 GenApp/application-conf/PSBgen.properties
+ create mode 100644 GenApp/application-conf/README.md
+ create mode 100644 GenApp/application-conf/REXX.properties
+ create mode 100644 GenApp/application-conf/Transfer.properties
+ create mode 100755 GenApp/application-conf/ZunitConfig.properties
+ create mode 100644 GenApp/application-conf/application.properties
+ create mode 100644 GenApp/application-conf/bind.properties
+ create mode 100644 GenApp/application-conf/file.properties
+ create mode 100644 GenApp/application-conf/languageConfigurationMapping.properties
+ create mode 100644 GenApp/application-conf/reports.properties
+ create mode 100644 GenApp/src/bms/ssmap.bms
+ create mode 100644 GenApp/src/cobol/lgacdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgacdb02.cbl
+ create mode 100644 GenApp/src/cobol/lgacus01.cbl
+ create mode 100644 GenApp/src/cobol/lgacvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgapdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgapol01.cbl
+ create mode 100644 GenApp/src/cobol/lgapvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgastat1.cbl
+ create mode 100644 GenApp/src/cobol/lgdpdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgdpol01.cbl
+ create mode 100644 GenApp/src/cobol/lgdpvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgicdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgicus01.cbl
+ create mode 100644 GenApp/src/cobol/lgicvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgipdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgipol01.cbl
+ create mode 100644 GenApp/src/cobol/lgipvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgsetup.cbl
+ create mode 100644 GenApp/src/cobol/lgstsq.cbl
+ create mode 100644 GenApp/src/cobol/lgtestc1.cbl
+ create mode 100644 GenApp/src/cobol/lgtestp1.cbl
+ create mode 100644 GenApp/src/cobol/lgtestp2.cbl
+ create mode 100644 GenApp/src/cobol/lgtestp3.cbl
+ create mode 100644 GenApp/src/cobol/lgtestp4.cbl
+ create mode 100644 GenApp/src/cobol/lgucdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgucus01.cbl
+ create mode 100644 GenApp/src/cobol/lgucvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgupdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgupol01.cbl
+ create mode 100644 GenApp/src/cobol/lgupvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgwebst5.cbl
+ create mode 100644 GenApp/src/copy/lgcmarea.cpy
+ create mode 100644 GenApp/src/copy/lgcmared.cpy
+ create mode 100644 GenApp/src/copy/lgpolicy.cpy
+[CMD] Create rel-1.0.0 tag
+[INFO] Initializing Git Repo for Application GenApp completed. rc=0
+[APPLICATION] Initialize Git Repo for /u/dbehm/git/dbb-git-migration-modeler-work/applications/RetirementCalculator
+/u/dbehm/git/dbb-git-migration-modeler/src/scripts/Init-Application-Repositories.sh: line 62: [: ==: unary operator expected
+[INFO] Initialize Git Repository for application RetirementCalculator
+[CMD] git init --initial-branch=main
+Initialized empty Git repository in /u/dbehm/git/dbb-git-migration-modeler-work/applications/RetirementCalculator/.git/
+[INFO] Setting file tag for RetirementCalculator.yaml
+[CMD] chtag -c IBM-1047 -t RetirementCalculator.yaml
+[INFO] Updating Git configuration files (.gitattributes)
+[CMD] rm .gitattributes
+[CMD] cp /u/dbehm/git/dbb-git-migration-modeler-work/git-config/.gitattributes .gitattributes
+[INFO] Prepare initial commit
+[CMD] git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.gitattributes
+	RetirementCalculator.yaml
+	RetirementCalculator/
+
+nothing added to commit but untracked files present (use "git add" to track)
+[CMD] git add --all
+[INFO] Commit files to new Git repository
+[CMD] git commit -m 'Initial Commit'
+[main (root-commit) 4e9e15b] Initial Commit
+ 27 files changed, 2059 insertions(+)
+ create mode 100644 .gitattributes
+ create mode 100644 RetirementCalculator.yaml
+ create mode 100644 RetirementCalculator/application-conf/ACBgen.properties
+ create mode 100644 RetirementCalculator/application-conf/Assembler.properties
+ create mode 100644 RetirementCalculator/application-conf/BMS.properties
+ create mode 100644 RetirementCalculator/application-conf/CRB.properties
+ create mode 100644 RetirementCalculator/application-conf/Cobol.properties
+ create mode 100644 RetirementCalculator/application-conf/DBDgen.properties
+ create mode 100644 RetirementCalculator/application-conf/Easytrieve.properties
+ create mode 100644 RetirementCalculator/application-conf/LinkEdit.properties
+ create mode 100644 RetirementCalculator/application-conf/MFS.properties
+ create mode 100644 RetirementCalculator/application-conf/PLI.properties
+ create mode 100644 RetirementCalculator/application-conf/PSBgen.properties
+ create mode 100644 RetirementCalculator/application-conf/README.md
+ create mode 100644 RetirementCalculator/application-conf/REXX.properties
+ create mode 100644 RetirementCalculator/application-conf/Transfer.properties
+ create mode 100755 RetirementCalculator/application-conf/ZunitConfig.properties
+ create mode 100644 RetirementCalculator/application-conf/application.properties
+ create mode 100644 RetirementCalculator/application-conf/bind.properties
+ create mode 100644 RetirementCalculator/application-conf/file.properties
+ create mode 100644 RetirementCalculator/application-conf/languageConfigurationMapping.properties
+ create mode 100644 RetirementCalculator/application-conf/reports.properties
+ create mode 100644 RetirementCalculator/src/cobol/ebud01.cbl
+ create mode 100644 RetirementCalculator/src/cobol/ebud02.cbl
+ create mode 100644 RetirementCalculator/src/cobol/ebud03.cbl
+ create mode 100644 RetirementCalculator/src/cobol/ebud0run.cbl
+ create mode 100644 RetirementCalculator/src/copy/linput.cpy
+[CMD] Create rel-1.0.0 tag
+[INFO] Initializing Git Repo for Application RetirementCalculator completed. rc=0
+[APPLICATION] Initialize Git Repo for /u/dbehm/git/dbb-git-migration-modeler-work/applications/UNASSIGNED
+/u/dbehm/git/dbb-git-migration-modeler/src/scripts/Init-Application-Repositories.sh: line 62: [: ==: unary operator expected
+[INFO] Initialize Git Repository for application UNASSIGNED
+[CMD] git init --initial-branch=main
+Initialized empty Git repository in /u/dbehm/git/dbb-git-migration-modeler-work/applications/UNASSIGNED/.git/
+[INFO] Setting file tag for UNASSIGNED.yaml
+[CMD] chtag -c IBM-1047 -t UNASSIGNED.yaml
+[INFO] Updating Git configuration files (.gitattributes)
+[CMD] rm .gitattributes
+[CMD] cp /u/dbehm/git/dbb-git-migration-modeler-work/git-config/.gitattributes .gitattributes
+[INFO] Prepare initial commit
+[CMD] git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.gitattributes
+	UNASSIGNED.yaml
+	UNASSIGNED/
+
+nothing added to commit but untracked files present (use "git add" to track)
+[CMD] git add --all
+[INFO] Commit files to new Git repository
+[CMD] git commit -m 'Initial Commit'
+[main (root-commit) d994b11] Initial Commit
+ 28 files changed, 2430 insertions(+)
+ create mode 100644 .gitattributes
+ create mode 100644 UNASSIGNED.yaml
+ create mode 100644 UNASSIGNED/application-conf/ACBgen.properties
+ create mode 100644 UNASSIGNED/application-conf/Assembler.properties
+ create mode 100644 UNASSIGNED/application-conf/BMS.properties
+ create mode 100644 UNASSIGNED/application-conf/CRB.properties
+ create mode 100644 UNASSIGNED/application-conf/Cobol.properties
+ create mode 100644 UNASSIGNED/application-conf/DBDgen.properties
+ create mode 100644 UNASSIGNED/application-conf/Easytrieve.properties
+ create mode 100644 UNASSIGNED/application-conf/LinkEdit.properties
+ create mode 100644 UNASSIGNED/application-conf/MFS.properties
+ create mode 100644 UNASSIGNED/application-conf/PLI.properties
+ create mode 100644 UNASSIGNED/application-conf/PSBgen.properties
+ create mode 100644 UNASSIGNED/application-conf/README.md
+ create mode 100644 UNASSIGNED/application-conf/REXX.properties
+ create mode 100644 UNASSIGNED/application-conf/Transfer.properties
+ create mode 100755 UNASSIGNED/application-conf/ZunitConfig.properties
+ create mode 100644 UNASSIGNED/application-conf/application.properties
+ create mode 100644 UNASSIGNED/application-conf/bind.properties
+ create mode 100644 UNASSIGNED/application-conf/file.properties
+ create mode 100644 UNASSIGNED/application-conf/languageConfigurationMapping.properties
+ create mode 100644 UNASSIGNED/application-conf/reports.properties
+ create mode 100644 UNASSIGNED/src/bms/epsmlis.bms
+ create mode 100644 UNASSIGNED/src/bms/epsmort.bms
+ create mode 100644 UNASSIGNED/src/cobol/flemsmai.cbl
+ create mode 100644 UNASSIGNED/src/cobol/flemssub.cbl
+ create mode 100644 UNASSIGNED/src/cobol/oldacdb1.cbl
+ create mode 100644 UNASSIGNED/src/cobol/oldacdb2.cbl
+[CMD] Create rel-1.0.0 tag
+[INFO] Initializing Git Repo for Application UNASSIGNED completed. rc=0
+Do you want to run preview builds for the applications in /u/dbehm/git/dbb-git-migration-modeler-work/applications (Y/n): Y
+*******************************************************************
+[STAGE] Run preview builds for applications
+*******************************************************************
+[APPLICATION] Run preview build for application CBSA
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/dbb-zappbuild_300/build.groovy --workspace /u/dbehm/git/dbb-git-migration-modeler-work/applications/CBSA --application CBSA --outDir /u/dbehm/git/dbb-git-migration-modeler-work/logs/CBSA --fullBuild --hlq DBEHM.DBB.MIG --preview --logEncoding UTF-8 --applicationCurrentBranch main --propOverwrites createBuildOutputSubfolder=false --propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
+[INFO] Build completed with RC=0
+[INFO] Build console available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/CBSA/build-preview-CBSA.log
+[INFO] Build reports available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/CBSA
+[APPLICATION] Run preview build for application GenApp
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/dbb-zappbuild_300/build.groovy --workspace /u/dbehm/git/dbb-git-migration-modeler-work/applications/GenApp --application GenApp --outDir /u/dbehm/git/dbb-git-migration-modeler-work/logs/GenApp --fullBuild --hlq DBEHM.DBB.MIG --preview --logEncoding UTF-8 --applicationCurrentBranch main --propOverwrites createBuildOutputSubfolder=false --propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
+[INFO] Build completed with RC=0
+[INFO] Build console available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/GenApp/build-preview-GenApp.log
+[INFO] Build reports available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/GenApp
+[APPLICATION] Run preview build for application RetirementCalculator
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/dbb-zappbuild_300/build.groovy --workspace /u/dbehm/git/dbb-git-migration-modeler-work/applications/RetirementCalculator --application RetirementCalculator --outDir /u/dbehm/git/dbb-git-migration-modeler-work/logs/RetirementCalculator --fullBuild --hlq DBEHM.DBB.MIG --preview --logEncoding UTF-8 --applicationCurrentBranch main --propOverwrites createBuildOutputSubfolder=false --propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
+[INFO] Build completed with RC=0
+[INFO] Build console available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/RetirementCalculator/build-preview-RetirementCalculator.log
+[INFO] Build reports available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/RetirementCalculator
+[APPLICATION] Run preview build for application UNASSIGNED
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/dbb-zappbuild_300/build.groovy --workspace /u/dbehm/git/dbb-git-migration-modeler-work/applications/UNASSIGNED --application UNASSIGNED --outDir /u/dbehm/git/dbb-git-migration-modeler-work/logs/UNASSIGNED --fullBuild --hlq DBEHM.DBB.MIG --preview --logEncoding UTF-8 --applicationCurrentBranch main --propOverwrites createBuildOutputSubfolder=false --propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
+[INFO] Build completed with RC=0
+[INFO] Build console available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/UNASSIGNED/build-preview-UNASSIGNED.log
+[INFO] Build reports available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/UNASSIGNED
+[INFO] Performing Preview Builds completed successfully. rc=0
+*******************************************************************
+[STAGE] Run packaging step for applications
+*******************************************************************
+[APPLICATION] Run packaging for application CBSA
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/extensions/dbb20/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy --workDir /u/dbehm/git/dbb-git-migration-modeler-work/logs/CBSA \
+--addExtension --branch main --version rel-1.0.0 --tarFileName CBSA-fullBaseline-rel-1.0.0.tar
+[INFO] Packaging completed with RC=1
+[INFO] Packaging console output available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/CBSA/packaging-preview-CBSA.log
+[APPLICATION] Run packaging for application GenApp
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/extensions/dbb20/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy --workDir /u/dbehm/git/dbb-git-migration-modeler-work/logs/GenApp \
+--addExtension --branch main --version rel-1.0.0 --tarFileName GenApp-fullBaseline-rel-1.0.0.tar
+[INFO] Packaging completed with RC=1
+[INFO] Packaging console output available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/GenApp/packaging-preview-GenApp.log
+[APPLICATION] Run packaging for application RetirementCalculator
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/extensions/dbb20/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy --workDir /u/dbehm/git/dbb-git-migration-modeler-work/logs/RetirementCalculator \
+--addExtension --branch main --version rel-1.0.0 --tarFileName RetirementCalculator-fullBaseline-rel-1.0.0.tar
+[INFO] Packaging completed with RC=1
+[INFO] Packaging console output available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/RetirementCalculator/packaging-preview-RetirementCalculator.log
+[APPLICATION] Run packaging for application UNASSIGNED
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/extensions/dbb20/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy --workDir /u/dbehm/git/dbb-git-migration-modeler-work/logs/UNASSIGNED \
+--addExtension --branch main --version rel-1.0.0 --tarFileName UNASSIGNED-fullBaseline-rel-1.0.0.tar
+[INFO] Packaging completed with RC=1
+[INFO] Packaging console output available at /u/dbehm/git/dbb-git-migration-modeler-work/logs/UNASSIGNED/packaging-preview-UNASSIGNED.log
+~~~~
+
+</details>
 
 ### Refresh Application Descriptors
 
@@ -2689,7 +3102,7 @@ Assess Include files & Programs usage for UNASSIGNED
 
 </details>
 
-## Migrations scenarios
+## Migrations scenarios for Migration-Modeler-Start
 
 ### A group of datasets belongs to the same application
 
