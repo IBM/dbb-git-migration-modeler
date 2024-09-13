@@ -534,7 +534,7 @@ def estimateDatasetMemberSize(String dataset, String member) {
 	long bytesSkipped = -1
 	try {
 		while (bytesSkipped != 0) {
-			bytesSkipped = streamReader.skip(1024)
+			bytesSkipped = streamReader.skip(Long.MAX_VALUE)
 			storageSize = storageSize + bytesSkipped
 		}
 		file.close()
