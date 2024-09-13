@@ -29,6 +29,7 @@ import com.ibm.dmh.scan.classify.ScanProperties;
 import com.ibm.teamz.classify.ClassifyFileContent;
 import com.ibm.dmh.scan.classify.IncludedFileMetaData;
 import com.ibm.dmh.scan.classify.SingleFilesMetadata;
+import java.text.DecimalFormat
 
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def applicationsMappingUtils = loadScript(new File("utils/applicationsMappingUtils.groovy"))
@@ -41,6 +42,7 @@ import com.ibm.dmh.scan.classify.SingleFilesMetadata;
 @Field Properties props = new Properties()
 @Field repositoryPathsMapping
 @Field Dmh5210 scanner
+HashMap<String, Long> storageRequirements = new HashMap<String, Long>() 
 
 /**
  * Processing logic
@@ -125,8 +127,12 @@ datasets.each() { dataset ->
 				PdsDirectory.MemberInfo memberInfo = (PdsDirectory.MemberInfo) directoryListIterator.next();
 				String member = (memberInfo.getName());
 				def mappedApplication = findMappedApplicationFromMemberName(member)
-				logger.logMessage("**** '$dataset($member)' - Mapped Application: " + mappedApplication);
+				logger.logMessage("**** '$dataset($member)' - Mapped Application: $mappedApplication");
 				addDatasetMemberToApplication(mappedApplication, "$dataset($member)")
+				def currentStorageRequirement = storageRequirements.get(mappedApplication)
+				if (!currentStorageRequirement)
+					currentStorageRequirement = 0
+				storageRequirements.put(mappedApplication, currentStorageRequirement + estimateDatasetMemberSize(dataset, member))  
 			}
 			directoryList.close();
 		}
@@ -139,14 +145,22 @@ datasets.each() { dataset ->
 	}
 }
 
+DecimalFormat df = new DecimalFormat("###,###,###,###")
+
 logger.logMessage "** Generating Applications Configurations files. "
 applicationMappingToDatasetMembers.each() { application, members ->
 	logger.logMessage "** Generating Configuration files for application $application. "
 	generateApplicationFiles(application)
+	println("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(application))} bytes")
 }
-
+def globalStorageRequirements = 0
+storageRequirements.each() { application, storageRequirement ->
+	globalStorageRequirements = globalStorageRequirements + storageRequirement
+}
+println("** Estimated storage size of all migrated members: ${df.format(globalStorageRequirements)} bytes")
 
 logger.close()
+
 
 /*  ==== Utilities ====  */
 
@@ -511,4 +525,22 @@ def initializeScanner() {
 	Dmh5210 dmh5210 = new Dmh5210();
 	dmh5210.init(scanProperties);
 	return dmh5210;
+}
+
+def estimateDatasetMemberSize(String dataset, String member) {
+	ZFile file = new ZFile(constructDatasetForZFileOperation(dataset, member), "r")
+	InputStreamReader streamReader = new InputStreamReader(file.getInputStream())
+	long storageSize = 0
+	long bytesSkipped = -1
+	try {
+		while (bytesSkipped != 0) {
+			bytesSkipped = streamReader.skip(Long.MAX_VALUE)
+			storageSize = storageSize + bytesSkipped
+		}
+		file.close()
+		return storageSize
+	} catch (IOException exception) {
+		println("*! [WARNING] Unable to retrieve the estimated storage size for '$dataset($member)'")
+		return 0
+	}
 }
