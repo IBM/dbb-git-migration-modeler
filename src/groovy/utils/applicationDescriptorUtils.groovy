@@ -16,33 +16,33 @@ import java.nio.file.*
  */
 
 class ApplicationDescriptor {
-	String application
-	String description
-	String owner
-	ArrayList<Source> sources
-	ArrayList<DependencyDescriptor> dependencies
-	ArrayList<String> consumers
+    String application
+    String description
+    String owner
+    ArrayList<Source> sources
+    ArrayList<DependencyDescriptor> dependencies
+    ArrayList<String> consumers
 }
 
 class Source {
-	String name
-	String repositoryPath
-	String languageProcessor
-	String fileExtension
-	String artifactsType
-	ArrayList<FileDef> files
+    String name
+    String repositoryPath
+    String languageProcessor
+    String fileExtension
+    String artifactsType
+    ArrayList<FileDef> files
 }
 
 class FileDef {
-	String name
-	String type
-	String usage
+    String name
+    String type
+    String usage
 }
 
 class DependencyDescriptor {
-	String name
-	String version
-	String type
+    String name
+    String version
+    String type
 }
 
 /**
@@ -52,44 +52,48 @@ class DependencyDescriptor {
  * 
  */
 def readApplicationDescriptor(File yamlFile){
-	// Internal objects
-	def yamlSlurper = new groovy.yaml.YamlSlurper()
-	ApplicationDescriptor applicationDescriptor = yamlSlurper.parse(yamlFile)
-	return applicationDescriptor
+    // Internal objects
+    def yamlSlurper = new groovy.yaml.YamlSlurper()
+    ApplicationDescriptor applicationDescriptor = yamlSlurper.parse(yamlFile)
+    return applicationDescriptor
 }
 
 /**
  * Write an ApplicationDescriptor Object into a YAML file
  */
 def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationDescriptor){
-	// Sort source groups and files by name before writing to YAML file
-	if (applicationDescriptor.sources) {
-		applicationDescriptor.sources.sort {
-			it.name
-		}
-		applicationDescriptor.sources.each() { source ->
-			source.files.sort {
-				it.name
-			}
-		}
-	} 
+    // Sort source groups and files by name before writing to YAML file
+    if (applicationDescriptor.sources) {
+        applicationDescriptor.sources.sort {
+            it.name
+        }
+        applicationDescriptor.sources.each() { source ->
+            source.files.sort {
+                it.name
+            }
+        }
+    } 
 
-	def yamlBuilder = new YamlBuilder()
-	// build updated application descriptor
+    def yamlBuilder = new YamlBuilder()
+    // build updated application descriptor
 
-	yamlBuilder {
-		application applicationDescriptor.application
-		description applicationDescriptor.description
-		owner applicationDescriptor.owner
-		sources (applicationDescriptor.sources)
-		dependencies applicationDescriptor.dependencies
-		consumers applicationDescriptor.consumers
-	}
+    yamlBuilder {
+        application applicationDescriptor.application
+        description applicationDescriptor.description
+        owner applicationDescriptor.owner
+        sources (applicationDescriptor.sources)
+        if (applicationDescriptor.dependencies) {
+            dependencies applicationDescriptor.dependencies
+        }
+        if (applicationDescriptor.consumers) {
+            consumers applicationDescriptor.consumers
+        }
+    }
 
-	// write file
-	yamlFile.withWriter() { writer ->
-		writer.write(yamlBuilder.toString())
-	}
+    // write file
+    yamlFile.withWriter() { writer ->
+        writer.write(yamlBuilder.toString())
+    }
 }
 
 /**
@@ -102,54 +106,54 @@ def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationD
 
 def appendFileDefinition(ApplicationDescriptor applicationDescriptor, String sourceGroupName, String languageProcessor, String artifactsType, String fileExtension, String repositoryPath, String name, String type, String usage){
 
-	def sourceGroupRecord
+    def sourceGroupRecord
 
-	def fileRecord = new FileDef()
-	fileRecord.name = name
-	fileRecord.type = type
-	fileRecord.usage = usage
-	
-	if (!applicationDescriptor.sources) {
-	   applicationDescriptor.sources = new ArrayList<Source>()
-	}
+    def fileRecord = new FileDef()
+    fileRecord.name = name
+    fileRecord.type = type
+    fileRecord.usage = usage
+    
+    if (!applicationDescriptor.sources) {
+       applicationDescriptor.sources = new ArrayList<Source>()
+    }
 
-	existingSourceGroup = applicationDescriptor.sources.find(){ source ->
-		source.name == sourceGroupName
-	}
+    existingSourceGroup = applicationDescriptor.sources.find(){ source ->
+        source.name == sourceGroupName
+    }
 
-	if (existingSourceGroup) { // append file record definition to existing sourceGroup
+    if (existingSourceGroup) { // append file record definition to existing sourceGroup
         sourceGroupRecord = existingSourceGroup
-		
-		// check if the fileRecord already exists, and this is an update
+        
+        // check if the fileRecord already exists, and this is an update
 
-		existingFileRecord = sourceGroupRecord.files.find(){ file ->
-			file.name == fileRecord.name
-		}
+        existingFileRecord = sourceGroupRecord.files.find(){ file ->
+            file.name == fileRecord.name
+        }
 
-		if (existingFileRecord) { // update existing file record
-			existingFileRecord.type = type
-			existingFileRecord.usage = usage
-		}
-		else { // add a new record
-			sourceGroupRecord.files.add(fileRecord)
-		}
+        if (existingFileRecord) { // update existing file record
+            existingFileRecord.type = type
+            existingFileRecord.usage = usage
+        }
+        else { // add a new record
+            sourceGroupRecord.files.add(fileRecord)
+        }
 
-	}
-	else {
+    }
+    else {
 
-		// create a new source group entry
-		sourceGroupRecord = new Source()
-		sourceGroupRecord.name = sourceGroupName
-		sourceGroupRecord.languageProcessor = languageProcessor
-		sourceGroupRecord.fileExtension = fileExtension
-		sourceGroupRecord.artifactsType = artifactsType
-		sourceGroupRecord.repositoryPath = repositoryPath
+        // create a new source group entry
+        sourceGroupRecord = new Source()
+        sourceGroupRecord.name = sourceGroupName
+        sourceGroupRecord.languageProcessor = languageProcessor
+        sourceGroupRecord.fileExtension = fileExtension
+        sourceGroupRecord.artifactsType = artifactsType
+        sourceGroupRecord.repositoryPath = repositoryPath
 
-		sourceGroupRecord.files = new ArrayList<FileDef>()
-		// append file record
-		sourceGroupRecord.files.add(fileRecord)
-		applicationDescriptor.sources.add(sourceGroupRecord)
-	}
+        sourceGroupRecord.files = new ArrayList<FileDef>()
+        // append file record
+        sourceGroupRecord.files.add(fileRecord)
+        applicationDescriptor.sources.add(sourceGroupRecord)
+    }
 }
 
 
@@ -180,22 +184,22 @@ def removeFileDefinition(ApplicationDescriptor applicationDescriptor, String sou
  */
 
 def addApplicationDependency(ApplicationDescriptor applicationDescriptor, String applicationDependency, String version, String type) {
-	if (!applicationDescriptor.dependencies) {
-		applicationDescriptor.dependencies = new ArrayList<DependencyDescriptor>()
-	}
-	def existingDependencies = applicationDescriptor.dependencies.findAll() {
-		it.name.equals(applicationDependency) & it.type.equals(type)
-	}
-	if (!existingDependencies) {
-		def dependency = new DependencyDescriptor()
-		dependency.name = applicationDependency
-		dependency.version = version
-		dependency.type = type
-		applicationDescriptor.dependencies.add(dependency)
-		applicationDescriptor.dependencies.sort {
-			it.name
-		} 
-	}
+    if (!applicationDescriptor.dependencies) {
+        applicationDescriptor.dependencies = new ArrayList<DependencyDescriptor>()
+    }
+    def existingDependencies = applicationDescriptor.dependencies.findAll() {
+        it.name.equals(applicationDependency) & it.type.equals(type)
+    }
+    if (!existingDependencies) {
+        def dependency = new DependencyDescriptor()
+        dependency.name = applicationDependency
+        dependency.version = version
+        dependency.type = type
+        applicationDescriptor.dependencies.add(dependency)
+        applicationDescriptor.dependencies.sort {
+            it.name
+        } 
+    }
 }
 
 /**
@@ -203,20 +207,20 @@ def addApplicationDependency(ApplicationDescriptor applicationDescriptor, String
  */
 
 def addApplicationConsumer(ApplicationDescriptor applicationDescriptor, String consumingApplication) {
-	
-	if (!applicationDescriptor.consumers) {
-		applicationDescriptor.consumers = new ArrayList<String>()
-	}
-	// don't add the "owning" application
-	if (applicationDescriptor.application != consumingApplication) {
-		def existingConsumers = applicationDescriptor.consumers.findAll() {
-			it.equals(consumingApplication)
-		}
-		if (!existingConsumers) {	 
-			applicationDescriptor.consumers.add(consumingApplication)
-			applicationDescriptor.consumers.sort()
-		}
-	} 
+    
+    if (!applicationDescriptor.consumers) {
+        applicationDescriptor.consumers = new ArrayList<String>()
+    }
+    // don't add the "owning" application
+    if (applicationDescriptor.application != consumingApplication) {
+        def existingConsumers = applicationDescriptor.consumers.findAll() {
+            it.equals(consumingApplication)
+        }
+        if (!existingConsumers) {     
+            applicationDescriptor.consumers.add(consumingApplication)
+            applicationDescriptor.consumers.sort()
+        }
+    } 
 }
 
 /**
@@ -224,7 +228,7 @@ def addApplicationConsumer(ApplicationDescriptor applicationDescriptor, String c
  */
 
 def resetAllSourceGroups(ApplicationDescriptor applicationDescriptor) {
-	applicationDescriptor.sources = new ArrayList<Source>()
+    applicationDescriptor.sources = new ArrayList<Source>()
 }
 
 /**
@@ -232,8 +236,8 @@ def resetAllSourceGroups(ApplicationDescriptor applicationDescriptor) {
  */
 
 def resetConsumersAndDependencies(ApplicationDescriptor applicationDescriptor) {
-	applicationDescriptor.consumers = new ArrayList<Source>()
-	applicationDescriptor.dependencies = new ArrayList<Source>()
+    applicationDescriptor.consumers = new ArrayList<Source>()
+    applicationDescriptor.dependencies = new ArrayList<Source>()
 }
 
 /**
