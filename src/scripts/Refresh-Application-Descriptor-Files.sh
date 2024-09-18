@@ -73,7 +73,7 @@ else
 			-a $applicationDir \
 			-m $DBB_MODELER_METADATA_STORE_DIR \
 			-l $DBB_MODELER_LOGS/3-$applicationDir-scan.log"   
-		echo " [CMD] $CMD"
+		echo "[CMD] $CMD" > $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		$CMD
 	done
 
@@ -89,7 +89,7 @@ else
 			--application $applicationDir \
 			--repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml \
 			--logFile $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log"
-		echo " [CMD] $CMD"
+		echo "[CMD] $CMD" > $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
 		$CMD
 	done
 
@@ -104,7 +104,7 @@ else
 			--metadatastore $DBB_MODELER_METADATA_STORE_DIR \
 			--application $applicationDir \
 			--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
-		echo " [CMD] $CMD"			
+		echo "[CMD] $CMD" > $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 		$CMD
 	done
 fi

@@ -7,7 +7,7 @@ import groovy.util.*
 
 def create(String loggerFilePath){
 	def logFile = new File(loggerFilePath)
-	logfileWriter = logFile.newWriter(true)
+	logfileWriter = logFile.newWriter('IBM-1047', true)
 }
 
 def close() {

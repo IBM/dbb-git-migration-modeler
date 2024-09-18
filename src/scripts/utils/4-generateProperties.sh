@@ -16,19 +16,21 @@ else
 	dir=$(dirname "$0")
 	. $dir/0-environment.sh "$@"
 
-    cd $DBB_MODELER_APPLICATION_DIR
-    for applicationDir in `ls | grep -v dbb-zappbuild`
-    do
-        echo "*******************************************************************"
-        echo "Generate properties for application '$applicationDir'"
-        echo "*******************************************************************"
-        CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/generateProperties.groovy \
-            --workspace $DBB_MODELER_APPLICATION_DIR \
-            --application $applicationDir \
-            --zAppBuild $DBB_ZAPPBUILD \
-            --typesConfigurations $TYPE_CONFIGURATIONS_FILE \
-            --logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"
-        echo " [INFO] ${CMD}"
-        $CMD
-    done
+	cd $DBB_MODELER_APPLICATION_DIR
+	for applicationDir in `ls | grep -v dbb-zappbuild`
+	do
+		echo "*******************************************************************"
+		echo "Generate properties for application '$applicationDir'"
+		echo "*******************************************************************"
+		touch $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
+		chtag -tc IBM-1047 $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
+		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/generateProperties.groovy \
+			--workspace $DBB_MODELER_APPLICATION_DIR \
+			--application $applicationDir \
+			--zAppBuild $DBB_ZAPPBUILD \
+			--typesConfigurations $TYPE_CONFIGURATIONS_FILE \
+			--logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"
+		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
+		$CMD
+	done
 fi

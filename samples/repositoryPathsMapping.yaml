@@ -7,12 +7,8 @@ repositoryPaths:
     toLowerCase: true
     encoding: IBM-1047
     mvsMapping:
-      scan:
-        language: COB
-        fileType: MAIN
-      types:
-          - CBLCICSDB2
-          - CBLCICS
+      datasetLastLevelQualifiers:
+        - COBOL
   - repositoryPath: $application/src/copy
     artifactsType: "Include File"
     sourceGroup: "copy"
@@ -50,16 +46,15 @@ repositoryPaths:
       datasetLastLevelQualifiers:
         - ASM
   - repositoryPath: $application/src/bms
-    artifactsType: "Program"
+    artifactsType: "BMS"
     sourceGroup: "bms"
     languageProcessor: "BMS.groovy"
     fileExtension: bms
     toLowerCase: true
     encoding: IBM-1047
     mvsMapping:
-      scan:
-        language: ASM
-        fileType: MAP
+      datasetLastLevelQualifiers:
+        - BMS
   - repositoryPath: $application/src/link
     artifactsType: "Other"
     sourceGroup: "link"

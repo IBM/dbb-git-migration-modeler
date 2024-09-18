@@ -79,18 +79,8 @@ if (!originalZAppBuildFolder.exists()) {
 	// Copying the original zAppBuild to the customer instance if it doesn't exist
 	File customZAppBuildFolder = new File(customZAppBuildFolderPath)
 	if (!customZAppBuildFolder.exists()) {
-		
 		logger.logMessage("** Copying the zAppBuild from $originalZAppBuildFolder to $customZAppBuildFolderPath.")
-		
-		Files.walk(Paths.get(props.zAppBuildFolderPath)).forEach(source -> {
-			Path destination = Paths.get(customZAppBuildFolderPath, source.toString().substring(props.zAppBuildFolderPath.length()));
-			try {
-				Files.copy(source, destination);
-			} catch (IOException e) {
-				logger.logMessage "!* Error when copying the original dbb-zAppBuild folder '${props.zAppBuildFolderPath}'. Exiting."
-				System.exit(1);	
-			}
-		});		
+		runShellCmd("cp -Rf $originalZAppBuildFolder $customZAppBuildFolderPath")
 	}
 }
 
@@ -102,17 +92,15 @@ if (!customLanguageConfigurationFolder.exists()) {
 }
 
 def applicationConfFolderPath = "${props.workspace}/${props.application}/${props.application}/application-conf"
+def sampleApplicationConfFolderPath = "${props.zAppBuildFolderPath}/samples/application-conf"
+
 File applicationConfFolder = new File(applicationConfFolderPath)
 if (!applicationConfFolder.exists()) {
-	def sampleApplicationConfFolderPath = "${props.zAppBuildFolderPath}/samples/application-conf"
-	Files.walk(Paths.get(sampleApplicationConfFolderPath)).forEach( source -> {
-		Path destination = Paths.get(applicationConfFolderPath, source.toString().substring(sampleApplicationConfFolderPath.length()));
-		try {
-			Files.copy(source, destination);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	});		
+	logger.logMessage("** Copying default application-conf directory to ${applicationConfFolderPath}")
+	runShellCmd("mkdir -p ${applicationConfFolderPath}")
+	runShellCmd("cp -R ${sampleApplicationConfFolderPath}/. ${applicationConfFolderPath}/")
+} else {
+	logger.logMessage("** For ${props.application} an application-conf directory already exists.")
 }
 
 // languageConfigurationMapping file
@@ -217,7 +205,10 @@ if (filesToLanguageConfigurationMap.size() > 0) {
 	// Replace old with new file.properties
 	File filePropertiesFile = new File(filePropertiesFilePath)
 	filePropertiesFile.delete()
-	Files.move(Paths.get(filePropertiesFilePath + ".new"), Paths.get(filePropertiesFilePath))
+	
+	runShellCmd("mv ${filePropertiesFilePath}.new ${filePropertiesFilePath}")
+	runShellCmd("chtag -t -c IBM-1047 ${filePropertiesFilePath}")
+		
 	logger.logMessage("** INFO: Don't forget to enable the use of Language Configuration by uncommenting the 'loadLanguageConfigurationProperties' property in '$filePropertiesFilePath'")
 }
 
@@ -278,3 +269,19 @@ def parseArgs(String[] args) {
 	}	
 	
 }
+
+// Methods
+def runShellCmd(String cmd){
+	StringBuffer resp = new StringBuffer()
+	StringBuffer error = new StringBuffer()
+
+	Process process = cmd.execute()
+	process.waitForProcessOutput(resp, error)
+	if (error) {
+		String warningMsg = "*! Failed to execute shell command $cmd"
+		println(warningMsg)
+		println(error)
+	}
+}
+
+

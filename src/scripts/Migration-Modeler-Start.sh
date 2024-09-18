@@ -9,16 +9,16 @@
 #*******************************************************************************
 
 Prolog() {
-  echo "                                                                                                            "
-  echo " DBB Git Migration Modeler                                                                                  "
-  echo " Release:     $MigrationModelerRelease                                                                      "
-  echo "                                                                                                            "
-  echo " Script:      Migration-Modeler-Start.sh                                                                    "
-  echo "                                                                                                            "
-  echo " Description: The purpose of this script is to facilitate the execution of the 4-step process supported     "
-  echo "              by the DBB Git Migration Modeler.                                                             "
-  echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
-  echo "                                                                                                            "
+	echo "                                                                                                            "
+	echo " DBB Git Migration Modeler                                                                                  "
+	echo " Release:     $MigrationModelerRelease                                                                      "
+	echo "                                                                                                            "
+	echo " Script:      Migration-Modeler-Start.sh                                                                    "
+	echo "                                                                                                            "
+	echo " Description: The purpose of this script is to facilitate the execution of the 4-step process supported     "
+	echo "              by the DBB Git Migration Modeler.                                                             "
+	echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
+	echo "                                                                                                            "
 }
 #
 Prolog
@@ -34,85 +34,83 @@ dir=$(dirname "$0")
 . $dir/utils/0-environment.sh "$@"
 
 if [ $rc -eq 0 ]; then
-  echo ""
-  echo "[PHASE] Cleanup working directories"
-  read -p "Do you want to clean the working directory $DBB_MODELER_WORK (Y/n): " variable
-  
-  if [[ $variable =~ ^[Yy]$ ]]; then
+	echo ""
+	echo "[PHASE] Cleanup working directories"
+	read -p "Do you want to clean the working directory '$DBB_MODELER_WORK' (Y/n): " variable
 
-    #### Cleanup output directories
-    if [ -d $DBB_MODELER_APPCONFIG_DIR ]; then
-      echo "[INFO] Removing '${DBB_MODELER_APPCONFIG_DIR}' folder."
-      rm -rf $DBB_MODELER_APPCONFIG_DIR
-    fi
-    if [ -d $DBB_MODELER_APPLICATION_DIR ]; then
-      echo "[INFO] Removing '${DBB_MODELER_APPLICATION_DIR}' folder."
-      rm -rf $DBB_MODELER_APPLICATION_DIR
-    fi
-    if [ -d $DBB_MODELER_LOGS ]; then
-      echo "[INFO] Removing '${DBB_MODELER_LOGS}' folder."
-      rm -rf $DBB_MODELER_LOGS
-    fi
+	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 
-    #### Create work directories
-    if [ ! -d $DBB_MODELER_LOGS ]; then
-      mkdir -p $DBB_MODELER_LOGS
-    fi
-  fi
+		#### Cleanup output directories
+		if [ -d $DBB_MODELER_APPCONFIG_DIR ]; then
+			rm -rf $DBB_MODELER_APPCONFIG_DIR
+			echo "[INFO] Removed '${DBB_MODELER_APPCONFIG_DIR}' folder"
+		fi
+		if [ -d $DBB_MODELER_APPLICATION_DIR ]; then
+			rm -rf $DBB_MODELER_APPLICATION_DIR
+			echo "[INFO] Removed '${DBB_MODELER_APPLICATION_DIR}' folder"
+		fi
+		if [ -d $DBB_MODELER_LOGS ]; then
+			rm -rf $DBB_MODELER_LOGS
+			echo "[INFO] Removed '${DBB_MODELER_LOGS}' folder"
+		fi
+	fi
 fi
 
 if [ $rc -eq 0 ]; then
-  echo ""
-  echo "[PHASE] Extract applications from $APPLICATION_DATASETS based on application mappings in $APPLICATION_MAPPING_FILE"
-  read -p "Do you want run the application extraction (Y/n): " variable
+	#### Create work directories
+	if [ ! -d $DBB_MODELER_LOGS ]; then
+		mkdir -p $DBB_MODELER_LOGS
+		echo "[INFO] Created '${DBB_MODELER_LOGS}' folder"
+	fi
+fi
 
-  if [[ $variable =~ ^[Yy]$ ]]; then
+if [ $rc -eq 0 ]; then
+	echo
+	echo "[PHASE] Extract applications from $APPLICATION_DATASETS based on application mappings in $APPLICATION_MAPPING_FILE"
+	read -p "Do you want run the application extraction (Y/n): " variable
+
+	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
   	
-    #### Application Extraction step
-    CMD="$DBB_MODELER_HOME/src/scripts/utils/1-extractApplications.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE "
-    echo "${CMD}"
-    $CMD
+		#### Application Extraction step
+		$DBB_MODELER_HOME/src/scripts/utils/1-extractApplications.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
     
-    # Note - create multiple Migration Modeler Configuration files, if you want to run the extraction step with different datasets configurations.
+		# Note - create multiple Migration Modeler Configuration files, if you want to run the extraction step with different datasets configurations.
+		
+		## The following command can be used when datasets contain mixed types of artifacts, the use of the scanDatasetMembers option enables the DBB Scanner to understand the type of artifacts and route them to the right subfolder in USS
+		#$DBB_MODELER_HOME/src/scripts/1-extractApplications.sh -d DBEHM.MIG.MIXED,DBEHM.MIG.BMS --applicationsMapping $DBB_MODELER_WORK/applicationsMapping.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_WORK/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS -l $DBB_MODELER_LOGS/1-extractApplications.log -scanDatasetMembers -scanEncoding IBM-1047
+		## The following command can be used when wildcards are used to list the datasets that should be scanned.
+		#$DBB_MODELER_HOME/src/scripts/1-extractApplications.sh -d GITLAB.CATMAN.**.CO*,DBEHM.MIG.COBOL,DBEHM.MIG.COPY --applicationsMapping $DBB_MODELER_WORK/applicationsMapping-CATMAN.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_WORK/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS
     
-    ## The following command can be used when datasets contain mixed types of artifacts, the use of the scanDatasetMembers option enables the DBB Scanner to understand the type of artifacts and route them to the right subfolder in USS
-    #$DBB_MODELER_HOME/src/scripts/1-extractApplications.sh -d DBEHM.MIG.MIXED,DBEHM.MIG.BMS --applicationsMapping $DBB_MODELER_WORK/applicationsMapping.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_WORK/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS -l $DBB_MODELER_LOGS/1-extractApplications.log -scanDatasetMembers -scanEncoding IBM-1047
-    ## The following command can be used when wildcards are used to list the datasets that should be scanned.
-    #$DBB_MODELER_HOME/src/scripts/1-extractApplications.sh -d GITLAB.CATMAN.**.CO*,DBEHM.MIG.COBOL,DBEHM.MIG.COPY --applicationsMapping $DBB_MODELER_WORK/applicationsMapping-CATMAN.yaml --repositoryPathsMapping $DBB_MODELER_WORK/repositoryPathsMapping.yaml --types $DBB_MODELER_WORK/types.txt -oc $DBB_MODELER_APPCONFIGS -oa $DBB_MODELER_APPLICATIONS
-
-    
-  fi
+	fi
 fi
 
 if [ $rc -eq 0 ]; then
-  #### Migration execution step
-  echo ""
-  echo "[PHASE] Execute Migrations"
-  read -p "Do you want to execute the DBB migration scripts in $DBB_MODELER_APPCONFIG_DIR (Y/n): " variable
-
-  if [[ $variable =~ ^[Yy]$ ]]; then
-    $DBB_MODELER_HOME/src/scripts/utils/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-  fi
+	#### Migration execution step
+	echo
+	echo "[PHASE] Execute Migrations"
+	read -p "Do you want to execute the DBB migration scripts in '$DBB_MODELER_APPCONFIG_DIR' (Y/n): " variable
+	
+	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
+		$DBB_MODELER_HOME/src/scripts/utils/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	fi
 fi
 
 if [ $rc -eq 0 ]; then
-  #### Classification step
-  echo ""
-  echo "[PHASE] Execute Dependency Assessment and Classification"
-  read -p "Do you want to perform dependency assessment and classification process (Y/n): " variable
-
-  if [[ $variable =~ ^[Yy]$ ]]; then
-    $DBB_MODELER_HOME/src/scripts/utils/3-classify.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-  fi
+	#### Classification step
+	echo
+	echo "[PHASE] Assess usage and perform classification"
+	read -p "Do you want to perform dependency assessment and classification process (Y/n): " variable
+	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
+		$DBB_MODELER_HOME/src/scripts/utils/3-classify.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	fi
 fi
 
 if [ $rc -eq 0 ]; then
-  #### Property Generation step
-  echo ""
-  echo "[PHASE] Generate Build Configuration"
-  read -p "Do you want to generate the zAppBuild Build configurations for the applications (Y/n): " variable
-  
-  if [[ $variable =~ ^[Yy]$ ]]; then
-    $DBB_MODELER_HOME/src/scripts/utils/4-generateProperties.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-  fi
+	#### Property Generation step
+	echo
+	echo "[PHASE] Generate build configuration"
+	read -p "Do you want to generate the zAppBuild Build configurations for the applications (Y/n): " variable
+	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
+		$DBB_MODELER_HOME/src/scripts/utils/4-generateProperties.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	fi
 fi
