@@ -64,6 +64,7 @@ DBB_MODELER_SAMPLE_CONFIG="$DBB_MODELER_HOME/samples"
 
 # Input files and configuration
 APPLICATION_DATASETS=DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS
+APPLICATION_ARTIFACTS_HLQ=DBEHM.MIG
 # Reference to the configured application mapping file
 APPLICATION_MAPPING_FILE=$DBB_MODELER_WORK/applicationsMapping.yaml
 # Reference to the repository paths mapping file
@@ -78,13 +79,25 @@ SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
 # Reference to default .gitattributes file
 DBB_MODELER_DEFAULT_GIT_CONFIG="$DBB_MODELER_WORK/git-config"
 # Reference to zAppBuild
-DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild_300
+DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild-DAT
 # Reference to DBB Community Repo
-DBB_COMMUNITY_REPO=/var/dbb/extensions/dbb20
+DBB_COMMUNITY_REPO=/var/dbb/pipelineTemplates/dbb
+
+# Publish to Artifact Repository Server
+PUBLISH_ARTIFACTS=true
+# URL of the Artifact Repository Server
+# e.q.: artifactRepositoryUrl=http://artifactoryserver:8081/artifactory
+ARTIFACT_REPOSITORY_SERVER_URL=http://10.3.20.231:8081/artifactory
+# User to connect to the Artifact Repository Server
+# e.q.:  ARTIFACT_REPOSITORY_USER=admin
+ARTIFACT_REPOSITORY_USER=admin
+# Password to connect to the Artifact Repository Server
+# e.q.: ARTIFACT_REPOSITORY_PASSWORD=xxxxx
+ARTIFACT_REPOSITORY_PASSWORD=artifactoryadmin    
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_METADATA_STORE_DIR DBB_MODELER_DEFAULT_GIT_CONFIG)
-input_array=(APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_DATASETS SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO)
+input_array=(APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_DATASETS APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD)
 
 # Prompt for configuration parameters
 for config in ${path_config_array[@]}; do

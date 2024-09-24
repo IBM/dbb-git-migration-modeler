@@ -25,7 +25,7 @@ else
 	for mappingFile in `ls *.mapping`
 	do
 		application=`echo $mappingFile | awk -F. '{ print $1 }'`
-		echo "***** Running the DBB Migration Utility for application $application using file $mappingFile *****"
+		echo "***** Running the DBB Migration Utility for '$application' using file '$mappingFile' *****"
 		mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
 		cd $DBB_MODELER_APPLICATION_DIR/$application
 		

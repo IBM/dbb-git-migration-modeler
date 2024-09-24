@@ -20,6 +20,7 @@ class ApplicationDescriptor {
     String description
     String owner
     ArrayList<Source> sources
+    ArrayList<Baseline> baselines
     ArrayList<DependencyDescriptor> dependencies
     ArrayList<String> consumers
 }
@@ -39,6 +40,11 @@ class FileDef {
     String usage
 }
 
+class Baseline {
+    String branch
+    String baseline
+}
+
 class DependencyDescriptor {
     String name
     String version
@@ -51,7 +57,7 @@ class DependencyDescriptor {
  * returns an ApplicationDescriptor Object
  * 
  */
-def readApplicationDescriptor(File yamlFile){
+def readApplicationDescriptor(File yamlFile) {
     // Internal objects
     def yamlSlurper = new groovy.yaml.YamlSlurper()
     ApplicationDescriptor applicationDescriptor = yamlSlurper.parse(yamlFile)
@@ -61,7 +67,7 @@ def readApplicationDescriptor(File yamlFile){
 /**
  * Write an ApplicationDescriptor Object into a YAML file
  */
-def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationDescriptor){
+def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationDescriptor) {
     // Sort source groups and files by name before writing to YAML file
     if (applicationDescriptor.sources) {
         applicationDescriptor.sources.sort {
@@ -72,7 +78,7 @@ def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationD
                 it.name
             }
         }
-    } 
+    }
 
     def yamlBuilder = new YamlBuilder()
     // build updated application descriptor
@@ -82,6 +88,7 @@ def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationD
         description applicationDescriptor.description
         owner applicationDescriptor.owner
         sources (applicationDescriptor.sources)
+        baselines (applicationDescriptor.baselines)
         if (applicationDescriptor.dependencies) {
             dependencies applicationDescriptor.dependencies
         }
@@ -91,9 +98,11 @@ def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationD
     }
 
     // write file
-    yamlFile.withWriter() { writer ->
+    yamlFile.withWriter("IBM-1047") { writer ->
         writer.write(yamlBuilder.toString())
     }
+	Process process = "chtag -tc IBM-1047 ${yamlFile.getAbsolutePath()}".execute()
+	process.waitFor()   
 }
 
 /**
@@ -104,7 +113,9 @@ def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationD
  * 
  */
 
-def appendFileDefinition(ApplicationDescriptor applicationDescriptor, String sourceGroupName, String languageProcessor, String artifactsType, String fileExtension, String repositoryPath, String name, String type, String usage){
+def appendFileDefinition(ApplicationDescriptor applicationDescriptor, String sourceGroupName,
+							String languageProcessor, String artifactsType, String fileExtension,
+							String repositoryPath, String name, String type, String usage) {
 
     def sourceGroupRecord
 
@@ -133,14 +144,10 @@ def appendFileDefinition(ApplicationDescriptor applicationDescriptor, String sou
         if (existingFileRecord) { // update existing file record
             existingFileRecord.type = type
             existingFileRecord.usage = usage
-        }
-        else { // add a new record
+		} else { // add a new record
             sourceGroupRecord.files.add(fileRecord)
         }
-
-    }
-    else {
-
+	} else {
         // create a new source group entry
         sourceGroupRecord = new Source()
         sourceGroupRecord.name = sourceGroupName
@@ -161,7 +168,7 @@ def appendFileDefinition(ApplicationDescriptor applicationDescriptor, String sou
  * Method to remove a file from the Application Descriptor
  */
 
-def removeFileDefinition(ApplicationDescriptor applicationDescriptor, String sourceGroupName, String name){
+def removeFileDefinition(ApplicationDescriptor applicationDescriptor, String sourceGroupName, String name) {
 
     if (applicationDescriptor.sources) {
         def existingSourceGroup = applicationDescriptor.sources.find() { source ->
@@ -243,8 +250,103 @@ def resetConsumersAndDependencies(ApplicationDescriptor applicationDescriptor) {
 /**
  * Method to create an empty application descriptor object 
  */
-def createEmptyApplicationDescriptor(){
+def createEmptyApplicationDescriptor() {
     ApplicationDescriptor applicationDescriptor = new ApplicationDescriptor()
     applicationDescriptor.sources = new ArrayList<Source>()
+    applicationDescriptor.baselines = new ArrayList<Baseline>()
     return applicationDescriptor
+}
+
+/**
+ * Method to return a FileDef that matches what we are looking for
+ * Return null if nothing is found
+ * Return null if multiple entries are found (for source groups or files) with a warning message
+ */
+
+def getFileUsage(ApplicationDescriptor applicationDescriptor, String sourceGroup, String name) {
+	if (applicationDescriptor) {
+		def matchingSourceGroups = applicationDescriptor.sources.findAll() { matchingSourceGroup ->
+			matchingSourceGroup.name.equals(sourceGroup)
+		}
+		if (matchingSourceGroups) {
+			if (matchingSourceGroups.size() == 1) {
+				def matchingFiles = matchingSourceGroups[0].files.findAll() { matchingFile ->
+					matchingFile.name.equalsIgnoreCase(name)
+				}
+				if (matchingFiles) {
+					if (matchingFiles.size() == 1) {
+						return matchingFiles[0].usage
+					} else {
+						println("*! [WARNING] Multiple Files found matching '${name}'. Skipping search.")
+						return null
+					}
+				} else {
+					return null
+				}
+			} else {
+				println("*! [WARNING] Multiple Source Groups found matching '${sourceGroup}'. Skipping search.")
+				return null
+			}
+		} else {
+			return null
+		}
+	} else {
+		return null
+	}
+}
+
+/**
+ * Method to return an ArraList that contains relative Paths
+ * to public & shared include files
+ */
+
+def getFilesByTypeAndUsage(ApplicationDescriptor applicationDescriptor, String artifactsType, String usage) {
+	if (applicationDescriptor) {
+		def matchingSourceGroups = applicationDescriptor.sources.findAll() { matchingSourceGroup ->
+			matchingSourceGroup.artifactsType.equals(artifactsType)
+		}
+		ArrayList<String> files = new ArrayList<String>()
+
+		if (matchingSourceGroups) {
+			matchingSourceGroups.each() { matchingSourceGroup ->
+				def matchingFiles = matchingSourceGroup.files.findAll() { matchingFile ->
+					matchingFile.usage.equals(usage)
+				}
+				if (matchingFiles) {
+					matchingFiles.each() { matchingFile ->
+						files.add("${matchingSourceGroup.repositoryPath}/${matchingFile.name}.${matchingSourceGroup.fileExtension}")
+					}
+				}
+			}
+		}
+		if (!files.isEmpty()) {
+			return files
+		}
+	}
+}
+
+/**
+ * Method to add a baseline 
+ * If an existing baseline for a given branch already exists, the method replaces it
+ */
+
+def addBaseline(ApplicationDescriptor applicationDescriptor, String branch, String baseline) {
+	if (applicationDescriptor.baselines) {
+		def existingBaselines = applicationDescriptor.baselines.findAll() { baselineDefinition ->
+			baselineDefinition.branch.equals(branch)
+		}
+		existingBaselines.forEach() { existingBaseline ->
+			applicationDescriptor.baselines.remove(existingBaseline)
+	    }
+	} else {
+		applicationDescriptor.baselines = new ArrayList<Baseline>()
+	}
+
+	if (applicationDescriptor.baselines) {
+		applicationDescriptor.sources = new ArrayList<Source>()
+	}
+	Baseline newBaseline = new Baseline()
+	newBaseline.branch = branch
+	newBaseline.baseline = baseline
+	applicationDescriptor.baselines.add(newBaseline)
 }

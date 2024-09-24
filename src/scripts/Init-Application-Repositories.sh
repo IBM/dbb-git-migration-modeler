@@ -161,7 +161,7 @@ else
 						--application $applicationDir \
 						--outDir $DBB_MODELER_LOGS/$applicationDir \
 						--fullBuild \
-						--hlq DBEHM.DBB.MIG --preview \
+						--hlq $APPLICATION_ARTIFACTS_HLQ --preview \
 						--logEncoding UTF-8 \
 						--applicationCurrentBranch main \
 						--propOverwrites createBuildOutputSubfolder=false \
@@ -208,13 +208,23 @@ else
 						
 							# mkdir application log directory
 							mkdir -p $DBB_MODELER_LOGS/$applicationDir
-							
+							version=`cat $applicationDir/applicationDescriptor.yml | grep -A 1  "branch: \"main\"" | tail -1 | awk -F ':' {'printf $2'} | sed "s/[\" ]//g"`
+							if [ -z ${version} ]; then
+							  version="rel-1.0.0"
+							fi
+							 
 							CMD="$DBB_HOME/bin/groovyz $DBB_COMMUNITY_REPO/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy \
 								--workDir $DBB_MODELER_LOGS/$applicationDir \ 
 								--addExtension \
 								--branch main \
-								--version rel-1.0.0 \
-								--tarFileName $applicationDir-fullBaseline-rel-1.0.0.tar"
+								--version $version \
+								--tarFileName $applicationDir-$version.tar"
+							if [ "$PUBLISH_ARTIFACTS" == "true" ]; then
+								CMD="${CMD} -p --artifactRepositoryUrl $ARTIFACT_REPOSITORY_SERVER_URL \
+								     --artifactRepositoryUser $ARTIFACT_REPOSITORY_USER \
+								     --artifactRepositoryPassword $ARTIFACT_REPOSITORY_PASSWORD \
+								     --artifactRepositoryName $applicationDir"
+							fi
 							echo "[INFO] $CMD"  >> $DBB_MODELER_LOGS/Init-Application-Repositories.log
 							$CMD > $DBB_MODELER_LOGS/$applicationDir/packaging-preview-$applicationDir.log
 							rc=$?

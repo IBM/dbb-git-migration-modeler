@@ -53,7 +53,8 @@ if (props.logFile) {
 // create metadatastore
 metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.metadatastore}")
 if (!metadataStore) {
-	logger.logMessage("!* Error: Failed to initialize the DBB File Metatadastore at ${props.metadatastore}");
+	logger.logMessage("*! [ERROR] Failed to initialize the DBB File Metatadastore at '${props.metadatastore}'. Exiting.")
+	System.exit(1)
 } 
 
 logger.logMessage("** Getting the list of files of 'Include File' type.")
@@ -174,18 +175,18 @@ def getProgramsFromApplicationDescriptor() {
 						// Start by removing the file for the application
 						applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
 						// Update the target Application Descriptor 
-						originalTargetApplicationDescriptorFile = new File("${props.configurationsDirectory}/${referencingCollections[0]}.yaml")
-						updatedTargetApplicationDescriptorFile = new File("${props.workspace}/${referencingCollections[0]}/${referencingCollections[0]}.yaml")
+						originalTargetApplicationDescriptorFile = new File("${props.configurationsDirectory}/${referencingCollections[0]}.yml")
+						updatedTargetApplicationDescriptorFile = new File("${props.workspace}/${referencingCollections[0]}/applicationDescriptor.yml")
 						def targetApplicationDescriptor
 						// determine which YAML file to use
 						if (updatedTargetApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
 							targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
 						} else { // Start from the original Application Descriptor created by the extraction phase
 							if (originalTargetApplicationDescriptorFile.exists()) {
-								Files.copy(originalTargetApplicationDescriptorFile.toPath(), updatedTargetApplicationDescriptorFile.toPath(), REPLACE_EXISTING)
+								Files.copy(originalTargetApplicationDescriptorFile.toPath(), updatedTargetApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
 								targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
 							} else {
-								logger.logMessage ("!* Application Descriptor file ${originalTargetApplicationDescriptorFile.getPath()} was not found. Skipping the configuration update for Include File ${file}.")
+								logger.logMessage ("*! [WARNING] Application Descriptor file '${originalTargetApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Include File '${file}'.")
 							}
 						}
 						// Target Application Descriptor file has been found and can be updated
@@ -232,7 +233,7 @@ def getProgramsFromApplicationDescriptor() {
 				applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
 			}
 		} else {
-			logger.logMessage "[ERROR] The Include File '$file' was not found on the filesystem. Skipping analysis."
+			logger.logMessage "*! [WARNING] The Include File '$file' was not found on the filesystem. Skipping analysis."
 		}
 	}
 }
@@ -276,18 +277,18 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 				logger.logMessage "\t==> Updating usage of Program '$file' to 'internal submodule' in '${updatedApplicationDescriptorFile.getPath()}'."
 			} else { // Only an other application references this Program, so changing the USAGE to SERVICE
 				// Update the target Application Descriptor to add Dependency 
-				originalTargetApplicationDescriptorFile = new File("${props.configurationsDirectory}/${referencingCollections[0]}.yaml")
-				updatedTargetApplicationDescriptorFile = new File("${props.workspace}/${referencingCollections[0]}/${referencingCollections[0]}.yaml")
+				originalTargetApplicationDescriptorFile = new File("${props.configurationsDirectory}/${referencingCollections[0]}.yml")
+				updatedTargetApplicationDescriptorFile = new File("${props.workspace}/${referencingCollections[0]}/applicationDescriptor.yml")
 				def targetApplicationDescriptor
 				// determine which YAML file to use
 				if (updatedTargetApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
 					targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
 				} else { // Start from the original Application Descriptor created by the extraction phase
 					if (originalTargetApplicationDescriptorFile.exists()) {
-						Files.copy(originalTargetApplicationDescriptorFile.toPath(), updatedTargetApplicationDescriptorFile.toPath(), REPLACE_EXISTING)
+						Files.copy(originalTargetApplicationDescriptorFile.toPath(), updatedTargetApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
 						targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
 					} else {
-						logger.logMessage ("!* Application Descriptor file ${originalTargetApplicationDescriptorFile.getPath()} was not found. Skipping the configuration update for Include File ${file}.")
+						logger.logMessage ("*! [WARNING] Application Descriptor file '${originalTargetApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Include File '${file}'.")
 					}
 				}
 				// Target Application Descriptor file has been found and can be updated
@@ -365,16 +366,16 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 	// update consumer applications
 	def consumerApplicationDescriptor
 	// determine which YAML file to use
-	consumerApplicationDescriptorFile = new File("${props.workspace}/${consumer}/${consumer}.yaml")
+	consumerApplicationDescriptorFile = new File("${props.workspace}/${consumer}/applicationDescriptor.yml")
 	if (consumerApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
 		consumerApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(consumerApplicationDescriptorFile)
 	} else { // Start from the original Application Descriptor created by the extraction phase
-		originalConsumerApplicationDescriptorFile = new File("${props.configurationsDirectory}/${consumer}.yaml")
+		originalConsumerApplicationDescriptorFile = new File("${props.configurationsDirectory}/${consumer}.yml")
 		if (originalConsumerApplicationDescriptorFile.exists()) {
-			Files.copy(originalConsumerApplicationDescriptorFile.toPath(), consumerApplicationDescriptorFile.toPath(), REPLACE_EXISTING)
+			Files.copy(originalConsumerApplicationDescriptorFile.toPath(), consumerApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
 			consumerApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(consumerApplicationDescriptorFile)
 		} else {
-			logger.logMessage ("!* Application Descriptor file ${originalConsumerApplicationDescriptorFile.getPath()} was not found. Skipping the configuration update for Include File ${file}.")
+			logger.logMessage ("*! [WARNING] Application Descriptor file '${originalConsumerApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Include File '${file}'.")
 		}
 	}
 	// Consumer's Application Descriptor file has been found and can be updated
@@ -424,12 +425,12 @@ def initScriptParameters() {
 	if (new File(applicationFolder).exists()){
 		props.applicationDir = applicationFolder
 	} else {
-		logger.logMessage ("!* Application Directory $applicationFolder does not exist.")
+		logger.logMessage ("*! [ERROR] Application Directory $applicationFolder does not exist. Exiting.")
 		System.exit(1)
 	}
 	
-	originalApplicationDescriptorFile = new File("${props.configurationsDirectory}/${props.application}.yaml")
-	updatedApplicationDescriptorFile = new File("${props.workspace}/${props.application}/${props.application}.yaml")
+	originalApplicationDescriptorFile = new File("${props.configurationsDirectory}/${props.application}.yml")
+	updatedApplicationDescriptorFile = new File("${props.workspace}/${props.application}/applicationDescriptor.yml")
 	// determine which YAML file to use
 	if (updatedApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
 		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedApplicationDescriptorFile)
@@ -438,7 +439,7 @@ def initScriptParameters() {
 			Files.copy(originalApplicationDescriptorFile.toPath(), updatedApplicationDescriptorFile.toPath(), REPLACE_EXISTING)
 			applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedApplicationDescriptorFile)
 		} else {
-			logger.logMessage ("!* Application Descriptor file ${originalApplicationDescriptorFile.getPath()} was not found. Exiting.")
+			logger.logMessage ("*! [ERROR] Application Descriptor file '${originalApplicationDescriptorFile.getPath()}' was not found. Exiting.")
 			System.exit(1)
 		}
 	}
@@ -461,10 +462,10 @@ def updateMappingFiles(String configurationsDirectory, String sourceApplication,
     File sourceApplicationMappingFile = new File("${configurationsDirectory}/${sourceApplication}.mapping")
     File targetApplicationMappingFile = new File("${configurationsDirectory}/${targetApplication}.mapping")
     if (!sourceApplicationMappingFile.exists()) {
-        logger.logMessage "!* Error: couldn't find the mapping file called '${sourceApplication}.mapping'" 
+        logger.logMessage "*! [ERROR] Couldn't find the mapping file '${sourceApplication}.mapping'" 
     } else {
         if (!targetApplicationMappingFile.exists()) {
-            logger.logMessage "!* Error: couldn't find the mapping file called '${targetApplication}.mapping'" 
+            logger.logMessage "*! [ERROR] Couldn't find the mapping file '${targetApplication}.mapping'" 
         } else {    
             try {
                 File newSourceApplicationMappingFile = new File(sourceApplication + ".mapping.new")

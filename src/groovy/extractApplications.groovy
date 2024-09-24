@@ -69,7 +69,7 @@ logger.logMessage ("** Reading the Repository Layout Mapping definition. ")
 if (props.repositoryPathsMappingFilePath) {
 	File repositoryPathsMappingFile = new File(props.repositoryPathsMappingFilePath)
 	if (!repositoryPathsMappingFile.exists()) {
-		logger.logMessage "!* Warning: File ${props.repositoryPathsMappingFilePath} not found. Process will exit."
+		logger.logMessage "*! [WARNING] File ${props.repositoryPathsMappingFilePath} not found. Process will exit."
 		System.exit(1)
 	} else {
 		def yamlSlurper = new groovy.yaml.YamlSlurper()
@@ -83,12 +83,12 @@ logger.logMessage ("** Reading the Application Mapping definition. ")
 if (props.applicationsMappingFilePath) {
 	def applicationsMappingFile = new File(props.applicationsMappingFilePath)
 	if (!applicationsMappingFile.exists()) {
-		logger.logMessage "!* Warning: File ${props.applicationsMappingFilePath} not found. All artifacts will be unassigned."
+		logger.logMessage "*! [WARNING] File ${props.applicationsMappingFilePath} not found. All artifacts will be unassigned."
 	} else {
 		applicationsMapping = applicationsMappingUtils.readApplicationsMapping(applicationsMappingFile)
 	}
 } else {
-	logger.logMessage "!* Warning: no Applications Mapping File defined. All artifacts will be unassigned."
+	logger.logMessage "*! [WARNING] no Applications Mapping File defined. All artifacts will be unassigned."
 }
 
 // Read the Types from file
@@ -96,12 +96,12 @@ logger.logMessage ("** Reading the Type Mapping definition. ")
 if (props.typesFilePath) {
 	def typesFile = new File(props.typesFilePath)
 	if (!typesFile.exists()) {
-		logger.logMessage "!* Warning: File ${props.typesFilePath} not found in the current working directory. All artifacts will use the 'UNKNOWN' type."
+		logger.logMessage "*! [WARNING] File ${props.typesFilePath} not found in the current working directory. All artifacts will use the 'UNKNOWN' type."
 	} else {
 		types = loadMapFromFile(props.typesFilePath)
 	}
 } else {
-	logger.logMessage "!* Warning: no Types File defined. All artifacts will use the 'UNKNOWN' type."
+	logger.logMessage "*! [WARNING] no Types File defined. All artifacts will use the 'UNKNOWN' type."
 }
 
 // Resolving datasets that contain wildcards
@@ -137,11 +137,11 @@ datasets.each() { dataset ->
 			directoryList.close();
 		}
 		catch (java.io.IOException exception) {
-			logger.logMessage("**** Error: Is $qdsn a valid dataset?");
+			logger.logMessage("*! [ERROR] Problem when accessing the dataset '$qdsn'.");
 		}
 	}
 	else {
-		logger.logMessage("**** Error: dataset $qdsn does not exist.");
+		logger.logMessage("*! [ERROR] Dataset '$qdsn' does not exist.");
 	}
 }
 
@@ -208,28 +208,28 @@ def parseArgs(String[] args) {
 	if (opts.d) {
 		props.datasetsList = opts.d;
 	} else {
-		logger.logMessage("*! Error: a list of comma-separated datasets ('-d' parameter) to scan must be provided. Exiting.");
+		logger.logMessage("*! [ERROR] a list of comma-separated datasets ('-d' parameter) to scan must be provided. Exiting.");
 		System.exit(1);
 	}
 	
 	if (opts.oc) {
 		props.outputConfigurationDirectory = opts.oc;
 	} else {
-		logger.logMessage("*! Error: an output Configuration directory ('-oc' parameter) must be specified. Exiting.");
+		logger.logMessage("*! [ERROR] an output Configuration directory ('-oc' parameter) must be specified. Exiting.");
 		System.exit(1);
 	}
 
 	if (opts.oa) {
 		props.outputApplicationDirectory = opts.oa;
 	} else {
-		logger.logMessage("*! Error: an output Application directory ('-oa' parameter) must be specified. Exiting.");
+		logger.logMessage("*! [ERROR] an output Application directory ('-oa' parameter) must be specified. Exiting.");
 		System.exit(1);
 	}
 
 	if (opts.r) {
 		props.repositoryPathsMappingFilePath = opts.r
 	} else {
-		logger.logMessage("*! Error: the path to the Repository Paths mapping file ('-r' parameter) must be specified. Exiting.");
+		logger.logMessage("*! [ERROR] the path to the Repository Paths mapping file ('-r' parameter) must be specified. Exiting.");
 		System.exit(1);
 	}
 
@@ -308,7 +308,7 @@ def generateApplicationFiles(String application) {
 
 	// If an existing Application Descriptor file already exists in the CONFIG directory,
 	// we read it into an Application Descriptor object 
-	File applicationDescriptorFile = new File(props.outputConfigurationDirectory + '/' + application + ".yaml")
+	File applicationDescriptorFile = new File(props.outputConfigurationDirectory + '/' + application + ".yml")
 	def applicationDescriptor	
 	if (applicationDescriptorFile.exists()) {
 		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
@@ -322,10 +322,15 @@ def generateApplicationFiles(String application) {
 		applicationDescriptor.application = mappedApplication.application
 		applicationDescriptor.description = mappedApplication.description
 		applicationDescriptor.owner = mappedApplication.owner
+		// Adding baseline to ApplicationDescriptor
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main" as String, mappedApplication.baseline)
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${mappedApplication.baseline}" as String, mappedApplication.baseline)	
 	} else {
 		applicationDescriptor.application = "UNASSIGNED"
 		applicationDescriptor.description = "Unassigned components"
 		applicationDescriptor.owner = "None"
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main" as String, "rel-1.0.0" as String)
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/rel-1.0.0" as String, "rel-1.0.0" as String)	
 	}
 
 	// Main loop, iterating through the dataset members assigned to the current application
@@ -390,12 +395,14 @@ def generateApplicationFiles(String application) {
 	
 	// Writing the DBB Migration Mapping file
 	try {
-		boolean append = false
-		BufferedWriter writer = new BufferedWriter(new FileWriter(mappingFile, append))
-		mappings.each() { datasetMember, target ->
-			writer.write("$datasetMember $target\n");
+		mappingFile.withWriter("IBM-1047") { writer ->
+			mappings.each() { datasetMember, target ->
+				writer.write("$datasetMember $target\n");
+			}
 		}
-		writer.close();
+		Process process = "chtag -tc IBM-1047 ${mappingFile.getAbsolutePath()}".execute()
+		process.waitFor()   
+		
 	}
 	catch (IOException e) {
 		e.printStackTrace();
