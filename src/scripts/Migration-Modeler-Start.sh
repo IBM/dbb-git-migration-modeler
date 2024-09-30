@@ -124,3 +124,10 @@ if [ $rc -eq 0 ]; then
 		$DBB_MODELER_HOME/src/scripts/utils/5-initApplicationRepositories.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	fi
 fi
+
+if [ $rc -eq 0 ]; then
+	#### Summary
+	echo
+	echo "[PHASE] Summary"
+	$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/calculateDependenciesOrder.groovy -a $DBB_MODELER_APPLICATION_DIR
+fi

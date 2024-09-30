@@ -27,14 +27,14 @@ if (!ZAPPFile.exists()) {
 	println("*! [ERROR] The ZAPP file '${props.ZAPPFilePath}' was not found. Exiting.")
 	System.exit(1) 
 }
-File ApplicationDescriptorFile = new File(props.ApplicationDescriptorFilePath)
-if (!ApplicationDescriptorFile.exists()) {
-	println("*! [ERROR] The ZAPP file '${props.ApplicationDescriptorFilePath}' was not found. Exiting.")
+File applicationDescriptorFile = new File(props.applicationDescriptorFilePath)
+if (!applicationDescriptorFile.exists()) {
+	println("*! [ERROR] The Application Descriptor file '${props.ApplicationDescriptorFilePath}' was not found. Exiting.")
 	System.exit(1) 
 }
 
 readZAppFile(ZAPPFile)
-applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(ApplicationDescriptorFile)
+applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
 
 zapp.name = "${applicationDescriptor.application}"
 zapp.description = "ZAPP file for the ${applicationDescriptor.application} application"
@@ -85,7 +85,7 @@ def parseArgs(String[] args) {
 		System.exit(1) 
 	}
 	if (opts.a) {
-		props.ApplicationDescriptorFilePath = opts.a
+		props.applicationDescriptorFilePath = opts.a
 	} else {
 		println("*! [ERROR] The path to the Application Descriptor file must be specified. Exiting.")
 		System.exit(1) 

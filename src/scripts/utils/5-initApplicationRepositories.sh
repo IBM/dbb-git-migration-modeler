@@ -100,6 +100,44 @@ else
 				$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?
 			fi
+			
+			if [ $rc -eq 0 ]; then
+				echo "** Prepare pipeline configuration"
+				if [ "$PIPELINE_CI" == "AzureDevOps" ]; then
+					CMD="cp $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/azure-pipelines.yml $DBB_MODELER_APPLICATION_DIR/$applicationDir/"
+					echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					rc=$?
+					mkdir -p $DBB_MODELER_APPLICATION_DIR/$applicationDir/deployment
+					CMD="cp -R $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/templates/deployment/*.yml $DBB_MODELER_APPLICATION_DIR/$applicationDir/deployment/"
+					echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					rc=$?
+					mkdir -p $DBB_MODELER_APPLICATION_DIR/$applicationDir/tagging
+					CMD="cp -R $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/templates/tagging/*.yml $DBB_MODELER_APPLICATION_DIR/$applicationDir/tagging/"
+					echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					rc=$?
+				fi
+				if [ "${PIPELINE_CI}" == "GitlabCI" ]; then
+					CMD="cp $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/.gitlab-ci.yml $DBB_MODELER_APPLICATION_DIR/$applicationDir/"
+					echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					rc=$?
+				fi
+				if [ "${PIPELINE_CI}" == "Jenkins" ]; then
+					CMD="cp $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/Jenkinsfile $DBB_MODELER_APPLICATION_DIR/$applicationDir/"
+					echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					rc=$?
+				fi
+				if [ "${PIPELINE_CI}" == "GitHubActions" ]; then
+					CMD="cp -R $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/.github $DBB_MODELER_APPLICATION_DIR/$applicationDir/"
+					echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					rc=$?
+				fi		
+			fi			
 
 
 			# Git list all changes
