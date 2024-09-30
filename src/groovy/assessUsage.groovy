@@ -97,6 +97,8 @@ def getIncludeFilesFromApplicationDescriptor() {
 				properties.put("fileExtension", matchingSource.fileExtension)
 				properties.put("artifactsType", matchingSource.artifactsType)
 				properties.put("sourceGroupName", matchingSource.name) 
+				properties.put("language", matchingSource.language) 
+				properties.put("languageProcessor", matchingSource.languageProcessor) 
 				properties.put("type", file.type)
 				files.put(file.name, properties)
 			}
@@ -122,7 +124,9 @@ def getProgramsFromApplicationDescriptor() {
 				properties.put("repositoryPath", matchingSource.repositoryPath)
 				properties.put("fileExtension", matchingSource.fileExtension)
 				properties.put("artifactsType", matchingSource.artifactsType)
-				properties.put("sourceGroupName", matchingSource.name) 
+				properties.put("sourceGroupName", matchingSource.name)
+				properties.put("language", matchingSource.language) 
+				properties.put("languageProcessor", matchingSource.languageProcessor) 
 				properties.put("type", file.type) 
 				files.put(file.name, properties)
 			}
@@ -140,6 +144,8 @@ def getProgramsFromApplicationDescriptor() {
 		def fileExtension = properties.get("fileExtension")
 		def artifactsType = properties.get("artifactsType")
 		def sourceGroupName = properties.get("sourceGroupName")
+		def language = properties.get("language")
+		def languageProcessor = properties.get("languageProcessor")
 		def type = properties.get("type")
 		def qualifiedFile = repositoryPath + '/' + file + '.' + fileExtension
 		
@@ -168,7 +174,7 @@ def getProgramsFromApplicationDescriptor() {
 				// If Include File belongs to the scanned application
 				if (props.application.equals(referencingCollections[0])) {
 					// Just update the usage to PRIVATE
-					applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, "none", artifactsType, fileExtension, repositoryPath, file, type, "private")
+					applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "private")
 					logger.logMessage "\t==> Updating usage of Include File '$file' to 'private' in '${updatedApplicationDescriptorFile.getPath()}'."
 				} else { // Only an other application references this Include File, so update the definitions and maybe move it
 					if (props.moveFiles.toBoolean()) {
@@ -192,7 +198,7 @@ def getProgramsFromApplicationDescriptor() {
 						// Target Application Descriptor file has been found and can be updated
 						if (targetApplicationDescriptor) {
 							targetRepositoryPath = computeTargetFilePath(repositoryPath, props.application, referencingCollections[0])
-							applicationDescriptorUtils.appendFileDefinition(targetApplicationDescriptor, sourceGroupName, "none", artifactsType, fileExtension, targetRepositoryPath, file, type, "private")
+							applicationDescriptorUtils.appendFileDefinition(targetApplicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, file, type, "private")
 							applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
 							copyFileToApplicationFolder(props.application + '/' + qualifiedFile, props.application, referencingCollections[0])
 							// Update application mappings
@@ -203,7 +209,7 @@ def getProgramsFromApplicationDescriptor() {
 						// just modify the scope as PUBLIC or SHARED
 						def usageLabel = props.application.equals("UNASSIGNED") ? 'shared' : 'public'
 						logger.logMessage "\t==> Updating usage of Include File '$file' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'."
-						applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, "none", artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
+						applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
 						
 						updateConsumerApplicationDescriptor(referencingCollections[0], "source", applicationDescriptor)
 					}
@@ -216,7 +222,7 @@ def getProgramsFromApplicationDescriptor() {
 				// just modify the scope as PUBLIC or SHARED
 				def usageLabel = props.application.equals("UNASSIGNED") ? 'shared' : 'public'
 				logger.logMessage "\t==> Updating usage of Include File '$file' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'."
-				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, "none", artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
+				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
 				
 				// update consumers
 				referencingCollections.each { consumerCollection ->
@@ -229,7 +235,7 @@ def getProgramsFromApplicationDescriptor() {
 			} else {
 				logger.logMessage "\tThe Include File '$file' is not referenced at all."
 				// Just update the usage to 'unused'
-				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, "none", artifactsType, fileExtension, repositoryPath, file, type, "unused")
+				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "unused")
 				applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
 			}
 		} else {
@@ -248,6 +254,8 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 		def fileExtension = properties.get("fileExtension")
 		def artifactsType = properties.get("artifactsType")
 		def sourceGroupName = properties.get("sourceGroupName")
+		def language = properties.get("language")
+		def languageProcessor = properties.get("languageProcessor")
 		def type = properties.get("type")
 		def qualifiedFile = repositoryPath + '/' + file + '.' + fileExtension
 		
@@ -273,7 +281,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 			// If Program belongs to the scanned application
 			if (props.application.equals(referencingCollections[0])) {
 				// Just update the usage to INTERNAL
-				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, "none", artifactsType, fileExtension, repositoryPath, file, type, "internal submodule")
+				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "internal submodule")
 				logger.logMessage "\t==> Updating usage of Program '$file' to 'internal submodule' in '${updatedApplicationDescriptorFile.getPath()}'."
 			} else { // Only an other application references this Program, so changing the USAGE to SERVICE
 				// Update the target Application Descriptor to add Dependency 
@@ -297,7 +305,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 					applicationDescriptorUtils.addApplicationDependency(targetApplicationDescriptor, applicationDescriptor.application, "main", "binary")
 					applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
 				}
-				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, "none", artifactsType, fileExtension, repositoryPath, file, type, "service submodule")
+				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "service submodule")
 				applicationDescriptorUtils.addApplicationConsumer(applicationDescriptor, referencingCollections[0])
 				logger.logMessage "\t==> Updating usage of Program '$file' to 'service submodule' in '${updatedApplicationDescriptorFile.getPath()}'."
 			}
@@ -308,7 +316,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 			
 			// just modify the scope to SERVICE 
 			logger.logMessage "\t==> Updating usage of Program '$file' to 'service submodule' in '${updatedApplicationDescriptorFile.getPath()}'."
-			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, "none", artifactsType, fileExtension, repositoryPath, file, type, "service submodule")
+			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "service submodule")
 			referencingCollections.each { consumerCollection ->
 				if (!consumerCollection.equals(props.application)) {
 					updateConsumerApplicationDescriptor(referencingCollections[0], "binary", applicationDescriptor)
@@ -319,7 +327,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 		} else {
 			logger.logMessage "\tThe Program '$file' is not called by any other program."
 			// Just update the usage to 'main'
-			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, "none", artifactsType, fileExtension, repositoryPath, file, type, "main")
+			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "main")
 			applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
 		}
 	}

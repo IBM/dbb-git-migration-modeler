@@ -114,3 +114,13 @@ if [ $rc -eq 0 ]; then
 		$DBB_MODELER_HOME/src/scripts/utils/4-generateProperties.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	fi
 fi
+
+if [ $rc -eq 0 ]; then
+	#### Application repository initialization
+	echo
+	echo "[PHASE] Initialize application's repositories"
+	read -p "Do you want to initialize application's repositories (Y/n): " variable
+	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
+		$DBB_MODELER_HOME/src/scripts/utils/5-initApplicationRepositories.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	fi
+fi

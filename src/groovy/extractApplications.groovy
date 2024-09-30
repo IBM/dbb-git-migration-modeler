@@ -361,6 +361,7 @@ def generateApplicationFiles(String application) {
 		def fileExtension
 		def artifactsType
 		def sourceGroup
+		def language
 		def languageProcessor
 		if (matchingRepositoryPath) {
 			// if Matching Repository Path found, we retrieve the information from the RepositoryPathsMapping file
@@ -370,6 +371,7 @@ def generateApplicationFiles(String application) {
 			}
 			fileExtension = (matchingRepositoryPath.fileExtension) ? (matchingRepositoryPath.fileExtension) : lastQualifier
 			sourceGroup = (matchingRepositoryPath.sourceGroup) ? (matchingRepositoryPath.sourceGroup) : lastQualifier
+			language = (matchingRepositoryPath.language) ? (matchingRepositoryPath.language) : lastQualifier
 			languageProcessor = (matchingRepositoryPath.languageProcessor) ? (matchingRepositoryPath.languageProcessor) : lastQualifier + ".groovy"
 			targetRepositoryPath = (matchingRepositoryPath.repositoryPath) ? matchingRepositoryPath.repositoryPath.replaceAll('\\$application',application) : "$application/$lastQualifier"
 			pdsEncoding = (matchingRepositoryPath.encoding) ? (matchingRepositoryPath.encoding) : "IBM-1047"
@@ -381,13 +383,14 @@ def generateApplicationFiles(String application) {
 			lastQualifier = lastQualifier.toLowerCase()
 			fileExtension = lastQualifier				
 			sourceGroup = lastQualifier
+			language = lastQualifier
 			languageProcessor = lastQualifier + ".groovy"
 			targetRepositoryPath = "$application/$lastQualifier"
 			pdsEncoding = "IBM-1047"
 			artifactsType = lastQualifier
 		}
 		// Appending the dataset member to the Application Descriptor file
-		applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroup, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, member, memberType, "undefined")
+		applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroup, language, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, member, memberType, "undefined")
 		// Adding a line into the DBB Migration Mapping file
 		targetRepositoryPath = props.outputApplicationDirectory + "/" + application + "/" + targetRepositoryPath
 		mappings.put(datasetMember, "$targetRepositoryPath/$member.$fileExtension pdsEncoding=$pdsEncoding")

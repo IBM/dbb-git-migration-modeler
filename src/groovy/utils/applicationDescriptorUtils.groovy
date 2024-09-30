@@ -28,6 +28,7 @@ class ApplicationDescriptor {
 class Source {
     String name
     String repositoryPath
+    String language
     String languageProcessor
     String fileExtension
     String artifactsType
@@ -114,8 +115,9 @@ def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationD
  */
 
 def appendFileDefinition(ApplicationDescriptor applicationDescriptor, String sourceGroupName,
-							String languageProcessor, String artifactsType, String fileExtension,
-							String repositoryPath, String name, String type, String usage) {
+							String language, String languageProcessor, String artifactsType,
+							String fileExtension, String repositoryPath, String name,
+							String type, String usage) {
 
     def sourceGroupRecord
 
@@ -151,6 +153,7 @@ def appendFileDefinition(ApplicationDescriptor applicationDescriptor, String sou
         // create a new source group entry
         sourceGroupRecord = new Source()
         sourceGroupRecord.name = sourceGroupName
+        sourceGroupRecord.language = language
         sourceGroupRecord.languageProcessor = languageProcessor
         sourceGroupRecord.fileExtension = fileExtension
         sourceGroupRecord.artifactsType = artifactsType
