@@ -12,7 +12,6 @@ import groovy.cli.commons.*
 @Field def applicationDescriptor
 @Field HashMap<String, ArrayList<String>> dependencies = new HashMap<String, ArrayList<String>>()
 
-
 // Initialization
 parseArgs(args)
 
@@ -43,10 +42,28 @@ if (!applicationsFolder.exists()) {
 }
 
 println("** Dependencies for each application:") 
+
+Graph graph = new Graph();
 dependencies.each() { application, applicationDependencies ->
-	println("\t$application - $applicationDependencies")
+    graph.addApplication(application);
+    applicationDependencies.each() { dependency ->
+    	graph.addDependencyToApplication(application, dependency);
+    }
 }
 
+
+graph.addApplication("MortgageApplication")
+graph.addDependencyToApplication("MortgageApplication", "GenApp");
+graph.addApplication("PHAN")
+graph.addDependencyToApplication("PHAN", "RetirementCalculator");
+graph.addDependencyToApplication("PHAN", "CBSA");
+graph.addDependencyToApplication("PHAN", "MortgageApplication");
+
+/* graph.addDependencyToApplication("MortgageApplication", "PHAN");
+
+graph.addDependencyToApplication("RetirementCalculator", "MortgageApplication"); */
+
+graph.topologicalSort()
  
 
 /**
@@ -69,6 +86,79 @@ def parseArgs(String[] args) {
 		props.ApplicationsFolderPath = opts.a
 	} else {
 		println("*! [ERROR] The path to the Applications' folder file must be specified. Exiting.")
-		System.exit(1) 
+		System.exit(1)
 	}
 }
+
+class Graph {
+	HashMap<String, ArrayList<String>> dependencies
+	
+	Graph() {
+		dependencies = new HashMap<String, ArrayList<String>>()
+	}
+	
+	void addApplication(String application) {
+		dependencies.put(application, new ArrayList<String>())
+	}
+	
+	void addDependencyToApplication(String application, String dependency) {
+		ArrayList<String> dependencyList = dependencies.get(application);
+		if (!dependencyList) {
+			dependencyList = new ArrayList<String>()
+		}
+		dependencyList.add(dependency);
+		dependencies.put(application, dependencyList)
+	}
+	
+	void deleteApplication(String application) {
+		dependencies.remove(application)
+		dependencies.each() { dependency, dependencyList ->
+			dependencyList.remove(application)
+		}
+	}
+
+	void topologicalSort() {
+		ArrayList<String> applicationsWithNoDependency = new ArrayList<String>() 
+		HashMap<Integer, ArrayList<String>> rankedApplications = new HashMap<Integer, ArrayList<String>>()
+		int rank = 1
+
+		// Initialize list with applications that have no dependencies
+		dependencies.each() { application, applicationDependencies ->
+			if (applicationDependencies.isEmpty()) {
+				applicationsWithNoDependency.add(application as String)
+			}
+		}
+
+		// Main loop		
+		while (!applicationsWithNoDependency.isEmpty()) {
+			ArrayList<String> applicationsInRank = new ArrayList<String>()
+			applicationsWithNoDependency.each() { application ->
+				deleteApplication(application)
+				applicationsInRank.add(application)
+			}
+			rankedApplications.put(rank, applicationsInRank)
+			applicationsWithNoDependency.clear()
+			rank++
+			dependencies.each() { application, applicationDependencies ->
+				if (applicationDependencies.isEmpty()) {
+					applicationsWithNoDependency.add(application as String)
+				}
+			}
+		}
+		
+		println("*** Level-ranked applications:")
+		rankedApplications.each() { applicationsRank, applications ->
+			println("\t" + applicationsRank + " " + applications)
+		}
+		if (dependencies) {
+			println("\n*** Remaining applications:\n\t[")
+			dependencies.each(){ application, dependencies ->
+				print(application + " ")
+			}
+			println("\n]")
+		} else {
+			println("*** All applications were ranked successfully!")
+		}
+	}
+}
+
