@@ -189,6 +189,7 @@ if [ $rc -eq 0 ]; then
 		if [ "$PIPELINE_CI" = "AzureDevOps" ]; then
 			echo "- Initialize Azure DevOps pipeline variables in Azure DevOps configuration"
 		fi
+		echo "- Push the application's Git repository in the order of the above ranked list                            "
 		echo
 		echo "***********************************************************************************************************"
 	fi	

@@ -51,18 +51,6 @@ dependencies.each() { application, applicationDependencies ->
     }
 }
 
-
-graph.addApplication("MortgageApplication")
-graph.addDependencyToApplication("MortgageApplication", "GenApp");
-graph.addApplication("PHAN")
-graph.addDependencyToApplication("PHAN", "RetirementCalculator");
-graph.addDependencyToApplication("PHAN", "CBSA");
-graph.addDependencyToApplication("PHAN", "MortgageApplication");
-
-/* graph.addDependencyToApplication("MortgageApplication", "PHAN");
-
-graph.addDependencyToApplication("RetirementCalculator", "MortgageApplication"); */
-
 graph.topologicalSort()
  
 
@@ -71,7 +59,7 @@ graph.topologicalSort()
  */
 def parseArgs(String[] args) {
 
-	String usage = 'zappUtils.groovy [options]'
+	String usage = 'calculateDependenciesOrder.groovy [options]'
 
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
