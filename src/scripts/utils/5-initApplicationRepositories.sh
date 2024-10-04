@@ -142,7 +142,6 @@ else
 
 			# Git list all changes
 			if [ $rc -eq 0 ]; then
-				echo "** Prepare initial commit"
 				CMD="git status"
 				echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
@@ -168,7 +167,11 @@ else
 
 			# Git commit changes
 			if [ $rc -eq 0 ]; then
-				CMD="git tag rel-1.0.0"
+				version=`cat $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml | grep -A 1  "branch: \"main\"" | tail -1 | awk -F ':' {'printf $2'} | sed "s/[\" ]//g"`
+				if [ -z ${version} ]; then
+				  version="rel-1.0.0"
+				fi		
+				CMD="git tag $version"
 				echo "[CMD] ${CMD}"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 	            $CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?

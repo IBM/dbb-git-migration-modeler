@@ -302,7 +302,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 				// Target Application Descriptor file has been found and can be updated
 				if (targetApplicationDescriptor) {
 					logger.logMessage "Adding dependency to application ${referencingCollections[0]}" 						
-					applicationDescriptorUtils.addApplicationDependency(targetApplicationDescriptor, applicationDescriptor.application, "main", "binary")
+					applicationDescriptorUtils.addApplicationDependency(targetApplicationDescriptor, applicationDescriptor.application, "latest", "binary")
 					applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
 				}
 				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "service submodule")
@@ -388,7 +388,7 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 	}
 	// Consumer's Application Descriptor file has been found and can be updated
 	if (consumerApplicationDescriptor) {						
-		applicationDescriptorUtils.addApplicationDependency(consumerApplicationDescriptor, providerApplicationDescriptor.application, "main", dependencyType)
+		applicationDescriptorUtils.addApplicationDependency(consumerApplicationDescriptor, providerApplicationDescriptor.application, "latest", dependencyType)
 		applicationDescriptorUtils.writeApplicationDescriptor(consumerApplicationDescriptorFile, consumerApplicationDescriptor)
 	}
 	// update provider's Application Descriptor
