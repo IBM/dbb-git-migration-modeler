@@ -62,9 +62,6 @@ DBB_MODELER_SAMPLE_CONFIG="$DBB_MODELER_HOME/samples"
 
 # Migration Modeler Configuration files
 
-# Input files and configuration
-APPLICATION_DATASETS=DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS
-APPLICATION_ARTIFACTS_HLQ=DBEHM.MIG
 # Reference to the configured application mapping file
 APPLICATION_MAPPING_FILE=$DBB_MODELER_WORK/applicationsMapping.yaml
 # Reference to the repository paths mapping file
@@ -73,6 +70,9 @@ REPOSITORY_PATH_MAPPING_FILE=$DBB_MODELER_WORK/repositoryPathsMapping.yaml
 APPLICATION_MEMBER_TYPE_MAPPING=$DBB_MODELER_WORK/types.txt
 # Reference to the type configuration file to generate build configuration
 TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/typesConfigurations.yaml
+# Input files and configuration
+APPLICATION_DATASETS=DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS
+APPLICATION_ARTIFACTS_HLQ=DBEHM.MIG
 # Scanning options
 SCAN_DATASET_MEMBERS=false
 SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
@@ -83,7 +83,7 @@ DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild-DAT
 # Reference to DBB Community Repo
 DBB_COMMUNITY_REPO=/var/dbb/pipelineTemplates/dbb
 
-# Run the DBB Git Migration Modeler interctively
+# Run the DBB Git Migration Modeler interactively
 INTERACTIVE_RUN=false
 
 # Publish to Artifact Repository Server
