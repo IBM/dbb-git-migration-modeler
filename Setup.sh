@@ -96,7 +96,7 @@ ARTIFACT_REPOSITORY_SERVER_URL=http://10.3.20.231:8081/artifactory
 ARTIFACT_REPOSITORY_USER=admin
 # Password to connect to the Artifact Repository Server
 # e.q.: ARTIFACT_REPOSITORY_PASSWORD=xxxxx
-ARTIFACT_REPOSITORY_PASSWORD=artifactoryadmin
+ARTIFACT_REPOSITORY_PASSWORD=
 
 # User ID of the pipeline user
 PIPELINE_USER=ADO

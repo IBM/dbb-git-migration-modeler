@@ -117,8 +117,8 @@ This script prompts for the below environment variables and saves them in a conf
 | APPLICATION_MEMBER_TYPE_MAPPING  | Member to Type mapping | `$DBB_MODELER_WORK/types.txt` | 
 | TYPE_CONFIGURATIONS_FILE | Type Configuration to generate zAppBuild Language Configurations to statically preserve existing build configuration | `$DBB_MODELER_WORK/typesConfigurations.yaml` |
 | **DBB Git Migration Modeler configuration parameters** | | | 
-| APPLICATION_DATASETS  | List of input datasets that will be analyzed by the DBB Git Migration Modeler. These datasets need to hold a copy of the code base of your production system | `DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS` |
-| APPLICATION_ARTIFACTS_HLQ | High-Level Qualifier of the datasets used during the Preview Build | `DBEHM.MIG` | 
+| APPLICATION_DATASETS  | List of input datasets that will be analyzed by the DBB Git Migration Modeler. These datasets need to hold a copy of the code base to be migrated. | `DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS` |
+| APPLICATION_ARTIFACTS_HLQ | High-Level Qualifier of the datasets used during the Preview Build. These datasets need to hold a copy of the artifacts to be packaged as a baseline. | `DBEHM.MIG` | 
 | SCAN_DATASET_MEMBERS | Flag to determine if application extraction process should scan each member to identify source type. | `false` |
 | SCAN_DATASET_MEMBERS_ENCODING | PDS encoding for scanner when determining the source type | `IBM-1047` |
 | DBB_ZAPPBUILD | Path to your customized [dbb-zAppBuild repository](https://github.com/IBM/dbb-zappbuild) on z/OS Unix System Services for baseline builds | `/var/dbb/dbb-zappbuild` |
@@ -128,9 +128,9 @@ This script prompts for the below environment variables and saves them in a conf
 | ARTIFACT_REPOSITORY_SERVER_URL | URL of the Artifact Repository Server | |
 | ARTIFACT_REPOSITORY_USER | User to connect to the Artifact Repository Server | `admin` |
 | ARTIFACT_REPOSITORY_PASSWORD | Password to connect to the Artifact Repository Server | |
-| PIPELINE_USER | User ID of the pipeline user  | |
-| PIPELINE_USER_GROUP | Group that the User ID of the pipeline user belongs to | |
-| PIPELINE_CI | Pipeline technology used - either `AzureDevOps`, `GitlabCI`, `Jenkins` or `GitHubActions` | |
+| PIPELINE_USER | User ID of the pipeline user on z/OS | `ADO` |
+| PIPELINE_USER_GROUP | Group that the User ID of the pipeline user belongs to | `JENKINSG` |
+| PIPELINE_CI | Pipeline technology used - either `AzureDevOps`, `GitlabCI`, `Jenkins` or `GitHubActions` | `AzureDevOps` |
 
 
 ## Tailoring the input files
