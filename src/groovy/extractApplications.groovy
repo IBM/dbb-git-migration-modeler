@@ -151,13 +151,13 @@ logger.logMessage "** Generating Applications Configurations files. "
 applicationMappingToDatasetMembers.each() { application, members ->
 	logger.logMessage "** Generating Configuration files for application $application. "
 	generateApplicationFiles(application)
-	println("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(application))} bytes")
+	logger.logMessage("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(application))} bytes")
 }
 def globalStorageRequirements = 0
 storageRequirements.each() { application, storageRequirement ->
 	globalStorageRequirements = globalStorageRequirements + storageRequirement
 }
-println("** Estimated storage size of all migrated members: ${df.format(globalStorageRequirements)} bytes")
+logger.logMessage("** Estimated storage size of all migrated members: ${df.format(globalStorageRequirements)} bytes")
 
 logger.close()
 
