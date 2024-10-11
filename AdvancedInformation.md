@@ -47,9 +47,9 @@ The outputs of this stage becomes relevant when the final migration is taking pl
 
 The purpose of this stage is to generate properties and property files that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework, based on the information gathered in a specific input file, the [Types file](./samples/types.txt), defined later in this documentation.
 
-This phase will generate the necessary properties and files required to leverage the [Language configuration  mapping](https://github.com/IBM/dbb-zappbuild/blob/develop/docs/FilePropertyManagement.md#language-configuration-mapping) feature available in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/).
+This phase will generate the necessary properties and files required to leverage the [Language configuration  mapping](https://github.com/IBM/dbb-zappbuild/blob/main/docs/FilePropertyManagement.md#language-configuration-mapping) feature available in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/).
 Each composite type will be created (if not already existing) and will combine properties to represent a unique Language Configuration.
-At the application level, file-level overrides are also generated and inserted in the application's [application-conf](https://github.com/IBM/dbb-zappbuild/tree/develop/samples/application-conf) folder.
+At the application level, file-level overrides are also generated and inserted in the application's [application-conf](https://github.com/IBM/dbb-zappbuild/tree/main/samples/application-conf) folder.
 
 ## The Initialization phase
 
@@ -86,16 +86,16 @@ This structure of mapping file and how to invoke the DBB Migration utility with 
 For [the Property Generation phase](#the-property-generation-phase), the following output files are created:
 * Language Configuration files, containing properties defined for types configurations (as defined in the [Types Configurations file](./samples/typesConfigurations.yaml)).
 These Language Configuration files are stored in a custom *dbb-zAppBuild* instance which is copied from an original *dbb-zAppbuild* folder.
-The location of these files is the [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/develop/build-conf/language-conf) folder in the custom *dbb-zAppBuild* instance.
-* For each analyzed application, an [application-conf](https://github.com/IBM/dbb-zappbuild/tree/develop/samples/application-conf) folder is copied from the original *dbb-zAppBuild* instance, in which two files are customized:
-  * A line is added in [file.properties](https://github.com/IBM/dbb-zappbuild/blob/develop/samples/application-conf/file.properties) to enable the use of Language Configuration mappings.
+The location of these files is the [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf) folder in the custom *dbb-zAppBuild* instance.
+* For each analyzed application, an [application-conf](https://github.com/IBM/dbb-zappbuild/tree/main/samples/application-conf) folder is copied from the original *dbb-zAppBuild* instance, in which two files are customized:
+  * A line is added in [file.properties](https://github.com/IBM/dbb-zappbuild/blob/main/samples/application-conf/file.properties) to enable the use of Language Configuration mappings.
   This line is commented by default, and users are asked to uncomment to enable this capability.
-  * For each artifact of the application, an entry is added in [languageConfigurationMapping.properties](https://github.com/IBM/dbb-zappbuild/blob/develop/samples/application-conf/languageConfigurationMapping.properties), which maps the artifact with its Language Configuration defined in [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/develop/build-conf/language-conf)
+  * For each artifact of the application, an entry is added in [languageConfigurationMapping.properties](https://github.com/IBM/dbb-zappbuild/blob/main/samples/application-conf/languageConfigurationMapping.properties), which maps the artifact with its Language Configuration defined in [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf)
 
 
 # Configuring the DBB Git Migration Modeler utility
 
-Install the DBB Git Migration Modeler by cloning [this repository](https://github.com/IBM/dbb-git-migration-modeler.git) to z/OS Unix System Services.
+Install the DBB Git Migration Modeler by cloning [this repository](https://github.com/IBM/dbb-git-migration-modeler) to z/OS Unix System Services.
 
 ## Setting up the DBB Git Migration Modeler configuration
 
@@ -177,10 +177,10 @@ The DBB Git Migration Modeler utility is a set of shell scripts that are wrappin
 
 There are 2 primary command scripts located in the [src/scripts subfolder](./src/scripts) :
 
-* [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) facilitates the assignment of source files to applications, the migration of source files to USS folders, the usage assessment of include files and submodules,  the generation of build configurations, and the initialization of Git repositories.
-* [Refresh-Application-Descriptor-Files script](./src/scripts/Refresh-Application-Descriptor-Files.sh) to re-create Application Descriptors for existing applications that are already managed in Git.
+* The [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) facilitates the assignment of source files to applications, the migration of source files to USS folders, the usage assessment of include files and submodules,  the generation of build configurations, and the initialization of Git repositories.
+* The [Refresh-Application-Descriptor-Files script](./src/scripts/Refresh-Application-Descriptor-Files.sh) is used to re-create Application Descriptors for existing applications that are already managed in Git.
 
-The below sections explain the different primary command scripts.
+The below sections explain these two primary scripts.
 
 ## The Migration-Modeler-Start script
 
@@ -396,7 +396,7 @@ Output log:
 
 ### Migrating the members from MVS datasets to USS folders
 
-The [Run Migrations script (2-runMigrations.sh)](./src/scripts/2-runMigrations.sh) only requires the path to the DBB Git Migration Modeler Configuration file as parameter, to locate the work directories (controlled via `DBB_MODELER_APPLICATION_DIR`).
+The [Run Migrations script (2-runMigrations.sh)](./src/scripts/utils/2-runMigrations.sh) only requires the path to the DBB Git Migration Modeler Configuration file as parameter, to locate the work directories (controlled via `DBB_MODELER_APPLICATION_DIR`).
 It will search for all the DBB Migration mapping files located in the *work-configs* directory, and will process them in sequence.
 
 <details>
@@ -492,7 +492,7 @@ Copying [DBEHM.MIG.COPY, XFRFUN] to /u/mdalbin/Migration-Modeler-MDLB-work/appli
 
 ### Assessing the usage of Include Files and Programs
 
-The [Classification script (3-classify.sh)](./src/scripts/3-classify.sh) only requires the path to the DBB Git Migration Modeler Configuration file as parameter, to locate the work directories.
+The [Classification script (3-classify.sh)](./src/scripts/utils/3-classify.sh) only requires the path to the DBB Git Migration Modeler Configuration file as parameter, to locate the work directories.
 
 It will search for all DBB Migration mapping files located in the `DBB_MODELER_APPCONFIG_DIR` folder and will process applications' definitions found in this folder.
 This script works in 2 phases:
@@ -892,7 +892,7 @@ Output log:
 
 ### Generating Property files
 
-The [Property Generation script (4-generateProperties.sh)](./src/scripts/4-generateProperties.sh) requires the path to the DBB Git Migration Modeler configuration file as parameter.
+The [Property Generation script (4-generateProperties.sh)](./src/scripts/utils/4-generateProperties.sh) requires the path to the DBB Git Migration Modeler configuration file as parameter.
 
 The script will search for all the applications' subfolders in the `DBB_MODELER_APPLICATION_DIR` folder and will process application definitions found in this folder.
 For each application found, it will search for the artifacts of type 'Program', and, for each of them, will check if a Language Configuration exists, based on the *type* information.
@@ -1146,7 +1146,7 @@ To reflect these changes, the **Application Descriptor** file needs to be refres
 
 Additionally, if applications are already migrated to Git and use pipelines, but don't have an Application Descriptor file yet, and the development teams want to leverage its benefits, this creation process should be followed.
 
-A second command is shipped for this workflow. The [Refresh Application Descriptor script (Refresh-Application-Descriptor-Files.sh)](./src/scripts/Refresh-Application-Descriptor-Files.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications. The refresh of the Application Descriptor files must occur on the entire code base like on the initial assessment process.
+A second command is shipped for this workflow. The [Refresh Application Descriptor script](./src/scripts/Refresh-Application-Descriptor-Files.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications. The refresh of the Application Descriptor files must occur on the entire code base like on the initial assessment process.
 
 Like the other scripts, it requires the path to the DBB Git Migration Modeler configuration file as parameter. This configuration file can be created with the [Setup](#setting-up-the-dbb-git-migration-modeler-configuration) instructions.
 
@@ -3025,7 +3025,8 @@ applications:
 
 There can be situations where scenarios must be combined to extract the applications. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply different naming conventions patterns for copybooks. 
 
-In that case, the solution is to run the [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh) multiple times with different input configuration files: The [Migration-Modeler-Start.sh](./src/scripts/Migration-Modeler-Start.sh) can be customized in this way to contain multiple extractions:
+In that case, the solution is to run the [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh) multiple times with different input configuration files.
+The [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) can be customized in this way to contain multiple extractions:
 
 ~~~~bash
 # Configuration specifies an applictionMappings file for CATMAN and the CATMAN PDS libraries
@@ -3102,7 +3103,7 @@ Each type configuration would be defined separately in the [Types Configurations
   isDLI: true
 ~~~~
 
-In this configuration, the [Property Generation script](./src/scripts/utils/4-generateProperties.sh) will generate composite Language Configurations files in *dbb-zAppbuild*'s [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/develop/build-conf/language-conf) folder.
+In this configuration, the [Property Generation script](./src/scripts/utils/4-generateProperties.sh) will generate composite Language Configurations files in *dbb-zAppbuild*'s [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf) folder.
 In this example, 3 files would be created:
 * *BATCH-COBOL.properties* which combines properties from the *BATCH* and the *COBOL* types
 * *CICSDB2-COBOL.properties*, which combines properties from the *CICSDB2* and the *COBOL* types
