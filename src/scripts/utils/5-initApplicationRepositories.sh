@@ -227,6 +227,7 @@ else
 				--branch main \
 				--version $version \
 				--tarFileName $applicationDir-$version.tar \
+				--applicationFolderPath $DBB_MODELER_APPLICATION_DIR/$applicationDir \
 				--owner $PIPELINE_USER:$PIPELINE_USER_GROUP"
 			if [ "$PUBLISH_ARTIFACTS" == "true" ]; then
 				CMD="${CMD} -p --artifactRepositoryUrl $ARTIFACT_REPOSITORY_SERVER_URL \

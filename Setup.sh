@@ -38,11 +38,6 @@ DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 
 # Configure DBB Migration Modeler Home
 echo "[SETUP] Configuring DBB Git Migration Modeler environment variables"
-read -p "Specify the DBB Git Migration Modeler Home [default: $DBB_MODELER_HOME]: " variable
-
-if [ "$variable" ]; then
-    DBB_MODELER_HOME="${variable}"
-fi
 
 # Configure DBB Migration Modeler Work Directory
 DBB_MODELER_WORK="${DBB_MODELER_HOME}-work"
@@ -56,9 +51,7 @@ DBB_MODELER_APPCONFIG_DIR="$DBB_MODELER_WORK/modeler-configs"
 DBB_MODELER_APPLICATION_DIR="$DBB_MODELER_WORK/applications"
 DBB_MODELER_LOGS="$DBB_MODELER_WORK/logs"
 DBB_MODELER_METADATA_STORE_DIR="$DBB_MODELER_WORK/dbb-metadatastore"
-
-# Internal variables
-DBB_MODELER_SAMPLE_CONFIG="$DBB_MODELER_HOME/samples"
+DBB_MODELER_DEFAULT_GIT_CONFIG="$DBB_MODELER_WORK/git-config"
 
 # Migration Modeler Configuration files
 
@@ -76,8 +69,6 @@ APPLICATION_ARTIFACTS_HLQ=DBEHM.MIG
 # Scanning options
 SCAN_DATASET_MEMBERS=false
 SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
-# Reference to default .gitattributes file
-DBB_MODELER_DEFAULT_GIT_CONFIG="$DBB_MODELER_WORK/git-config"
 # Reference to zAppBuild
 DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild-DAT
 # Reference to DBB Community Repo
@@ -96,7 +87,7 @@ ARTIFACT_REPOSITORY_SERVER_URL=http://10.3.20.231:8081/artifactory
 ARTIFACT_REPOSITORY_USER=admin
 # Password to connect to the Artifact Repository Server
 # e.q.: ARTIFACT_REPOSITORY_PASSWORD=xxxxx
-ARTIFACT_REPOSITORY_PASSWORD=
+ARTIFACT_REPOSITORY_PASSWORD=artifactoryadmin
 
 # User ID of the pipeline user
 PIPELINE_USER=ADO
@@ -111,14 +102,6 @@ PIPELINE_CI=AzureDevOps
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_METADATA_STORE_DIR DBB_MODELER_DEFAULT_GIT_CONFIG)
 input_array=(APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_DATASETS APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD PIPELINE_USER PIPELINE_USER_GROUP PIPELINE_CI)
-
-# Prompt for configuration parameters
-for config in ${path_config_array[@]}; do
-	read -p "Specify configuration parameter $config [default: ${!config}]: " variable
-	if [ "$variable" ]; then
-		declare ${config}="${variable}"
-	fi
-done
 
 # Create work dir
 echo
@@ -167,14 +150,7 @@ fi
 CONFIG_DIR="$DBB_MODELER_WORK"
 
 if [ $rc -eq 0 ]; then
-	echo
-	echo "[SETUP] Saving DBB Git Migration Modeler configuration"
-	read -p "Specify the directory where the DBB_GIT_MIGRATION_MODELER.config file should be saved [default: $DBB_MODELER_WORK]: " variable
-	if [ "$variable" ]; then
-		CONFIG_DIR="${variable}"
-	fi
-
-	#Check that CONFIG DIR exists
+	# Check that CONFIG DIR exists
 	if [ ! -d $CONFIG_DIR ]; then
 		rc=4
 		ERRMSG="[ERROR] Specified directory '$CONFIG_DIR' to save DBB Git Migration Modeler configuration does not exist. rc="$rc
@@ -207,8 +183,10 @@ if [ $rc -eq 0 ]; then
 	
 	echo
 	echo "[SETUP] DBB Git Migration Modeler configuration saved to '$CONFIG_FILE'"
-	echo "This file will be imported by the DBB Git Migration Modeler process"
-	echo ""
+	echo
+	echo "***********************************************************************************************************"
+	echo "This DBB Git Migration Modeler configuration file will be imported by the DBB Git Migration Modeler process"
+	echo
 	echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
 	echo "  - $APPLICATION_MAPPING_FILE "
 	echo "  - $REPOSITORY_PATH_MAPPING_FILE "
