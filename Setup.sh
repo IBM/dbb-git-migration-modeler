@@ -84,7 +84,7 @@ DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild-DAT
 DBB_COMMUNITY_REPO=/var/dbb/pipelineTemplates/dbb
 
 # Run the DBB Git Migration Modeler interactively
-INTERACTIVE_RUN=false
+INTERACTIVE_RUN=true
 
 # Publish to Artifact Repository Server
 PUBLISH_ARTIFACTS=true
