@@ -176,7 +176,7 @@ else
 				$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?
 				if [ $rc -eq 0 ]; then
-					CMD="git branch rel-$version refs/tags/$version"
+					CMD="git branch $version refs/tags/$version"
 					echo "[CMD] ${CMD}"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					rc=$?
@@ -184,7 +184,7 @@ else
 			fi
 
 			if [ $rc -eq 0 ]; then
-				echo "** Initializing Git repository for application '$applicationDir' completed. rc="$rc
+				echo "** Initializing Git repository for application '$applicationDir' completed successfully. rc="$rc
 			else
 				echo "*! [ERROR] Initializing Git repository for application '$applicationDir' failed. rc="$rc
 			fi
@@ -245,7 +245,7 @@ else
 			$CMD > $DBB_MODELER_LOGS/$applicationDir/packaging-preview-$applicationDir.log
 			rc=$?
 			if [ $rc -eq 0 ]; then
-				echo "** Packaging of application '$applicationDir' completed with rc="$rc
+				echo "** Packaging of application '$applicationDir' completed successfully. rc="$rc
 			else
 				echo "*! [ERROR] Packaging of application '$applicationDir' failed. rc="$rc
 				echo "** Packaging log available at '$DBB_MODELER_LOGS/$applicationDir/packaging-preview-$applicationDir.log'"

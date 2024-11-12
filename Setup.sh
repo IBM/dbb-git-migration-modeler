@@ -94,14 +94,14 @@ PIPELINE_USER=ADO
 # Group that the User ID of the pipeline user belongs to
 PIPELINE_USER_GROUP=JENKINSG
 # Pipeline technology used
-# Either 'AzureDevOps', 'GitlabCI', 'Jenkins' or 'GitHubActions'
-# As defined in the Templates folder of the DBB Community repo (without the 'Pipeline' suffix)
-PIPELINE_CI=AzureDevOps
-
+# Either '1' for 'AzureDevOps', '2' for 'GitlabCI', '3' for 'Jenkins' or '4' for 'GitHubActions'
+# The parameter will then be translated later inthe process to its final value 
+# as defined in the Templates folder of the DBB Community repo (without the 'Pipeline' suffix)
+PIPELINE_CI=1
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_METADATA_STORE_DIR DBB_MODELER_DEFAULT_GIT_CONFIG)
-input_array=(APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_DATASETS APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD PIPELINE_USER PIPELINE_USER_GROUP PIPELINE_CI)
+input_array=(APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_DATASETS APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD PIPELINE_USER PIPELINE_USER_GROUP)
 
 # Create work dir
 echo
@@ -160,27 +160,51 @@ fi
 
 if [ $rc -eq 0 ]; then
 	CONFIG_FILE="${CONFIG_DIR}/DBB_GIT_MIGRATION_MODELER.config"
-	
+
 	echo "# DBB Git Migration Modeler configuration settings" > $CONFIG_FILE
 	echo "# Generated at $(date)" >> $CONFIG_FILE
 	echo "" >> $CONFIG_FILE
-	
+
 	echo "DBB_MODELER_HOME=${DBB_MODELER_HOME} " >> $CONFIG_FILE
 	echo "DBB_MODELER_WORK=${DBB_MODELER_WORK} " >> $CONFIG_FILE
-	
+
 	echo "" >> $CONFIG_FILE
 	echo "# DBB Git Migration Modeler working folders" >> $CONFIG_FILE
 	for config in ${path_config_array[@]}; do
 	    echo "${config}=${!config} " >> $CONFIG_FILE
 	done
-	
+
 	echo "" >> $CONFIG_FILE
 	echo "# DBB Git Migration Modeler input files" >> $CONFIG_FILE
-	
+
 	for config in ${input_array[@]}; do
 		echo "${config}=${!config} " >> $CONFIG_FILE
 	done
-	
+
+	echo "Specify the pipeline orchestration technology to use."
+	read -p "1 for 'AzureDevOps', 2 for 'GitlabCI', 3 for 'Jenkins' or 4 for 'GitHubActions' [default: 1]: " variable
+	if [ "$variable" ]; then
+		declare PIPELINE_CI="${variable}"
+	else
+		declare PIPELINE_CI="1"
+	fi
+	case ${PIPELINE_CI} in
+	"1")
+		PIPELINE_CI="AzureDevOps"
+		;;
+	"2")
+		PIPELINE_CI="GitlabCI"
+		;;
+	"3")
+		PIPELINE_CI="Jenkins"
+		;;
+	"4")
+		PIPELINE_CI="GitHubActions"
+		;;
+	esac		
+	echo "PIPELINE_CI=${PIPELINE_CI} " >> $CONFIG_FILE
+
+
 	echo
 	echo "[SETUP] DBB Git Migration Modeler configuration saved to '$CONFIG_FILE'"
 	echo
