@@ -165,7 +165,7 @@ else
 				rc=$?
 			fi
 
-			# Git commit changes
+			# Git create tag and release maintenance branch
 			if [ $rc -eq 0 ]; then
 				version=`cat $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml | grep -A 1  "branch: \"main\"" | tail -1 | awk -F ':' {'printf $2'} | sed "s/[\" ]//g"`
 				if [ -z ${version} ]; then
@@ -173,8 +173,14 @@ else
 				fi		
 				CMD="git tag $version"
 				echo "[CMD] ${CMD}"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-	            $CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+				$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?
+				if [ $rc -eq 0 ]; then
+					CMD="git branch rel-$version refs/tags/$version"
+					echo "[CMD] ${CMD}"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+					rc=$?
+				fi
 			fi
 
 			if [ $rc -eq 0 ]; then
