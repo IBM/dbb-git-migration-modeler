@@ -36,7 +36,11 @@ dir=$(dirname "$0")
 if [ $rc -eq 0 ]; then
 	echo ""
 	echo "[PHASE] Cleanup working directories"
-	read -p "Do you want to clean the working directory '$DBB_MODELER_WORK' (Y/n): " variable
+	if [[ $INTERACTIVE_RUN == "true" ]]; then
+		read -p "Do you want to clean the working directory '$DBB_MODELER_WORK' (Y/n): " variable
+	else
+		variable="Y"
+	fi
 
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 
@@ -66,8 +70,12 @@ fi
 
 if [ $rc -eq 0 ]; then
 	echo
-	echo "[PHASE] Extract applications from $APPLICATION_DATASETS based on application mappings in $APPLICATION_MAPPING_FILE"
-	read -p "Do you want run the application extraction (Y/n): " variable
+	echo "[PHASE] Extract applications from '$APPLICATION_DATASETS' based on application mappings defined in '$APPLICATION_MAPPING_FILE'"
+	if [[ $INTERACTIVE_RUN == "true" ]]; then
+		read -p "Do you want run the application extraction (Y/n): " variable
+	else
+		variable="Y"
+	fi
 
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
   	
@@ -87,8 +95,12 @@ fi
 if [ $rc -eq 0 ]; then
 	#### Migration execution step
 	echo
-	echo "[PHASE] Execute Migrations"
-	read -p "Do you want to execute the DBB migration scripts in '$DBB_MODELER_APPCONFIG_DIR' (Y/n): " variable
+	echo "[PHASE] Execute migrations using DBB Migration mapping files stored in '$DBB_MODELER_APPCONFIG_DIR'"
+	if [[ $INTERACTIVE_RUN == "true" ]]; then
+		read -p "Do you want to execute the migration using DBB Migration utility (Y/n): " variable
+	else
+		variable="Y"
+	fi
 	
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 		$DBB_MODELER_HOME/src/scripts/utils/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
@@ -99,7 +111,11 @@ if [ $rc -eq 0 ]; then
 	#### Classification step
 	echo
 	echo "[PHASE] Assess usage and perform classification"
-	read -p "Do you want to perform dependency assessment and classification process (Y/n): " variable
+	if [[ $INTERACTIVE_RUN == "true" ]]; then
+		read -p "Do you want to perform the usage assessment and classification process (Y/n): " variable
+	else
+		variable="Y"
+	fi
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 		$DBB_MODELER_HOME/src/scripts/utils/3-classify.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	fi
@@ -109,8 +125,72 @@ if [ $rc -eq 0 ]; then
 	#### Property Generation step
 	echo
 	echo "[PHASE] Generate build configuration"
-	read -p "Do you want to generate the zAppBuild Build configurations for the applications (Y/n): " variable
+	if [[ $INTERACTIVE_RUN == "true" ]]; then
+		read -p "Do you want to generate the dbb-zAppBuild configurations (Y/n): " variable
+	else
+		variable="Y"
+	fi
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 		$DBB_MODELER_HOME/src/scripts/utils/4-generateProperties.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	fi
+fi
+
+repositoriesInitialized=false
+
+if [ $rc -eq 0 ]; then
+	#### Application repository initialization
+	echo
+	echo "[PHASE] Initialize application's repositories"
+	if [[ $INTERACTIVE_RUN == "true" ]]; then
+		read -p "Do you want to initialize application's repositories (Y/n): " variable
+	else
+		variable="Y"
+	fi
+	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
+		$DBB_MODELER_HOME/src/scripts/utils/5-initApplicationRepositories.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+		rc=$?
+		if [ $rc -eq 0 ]; then
+			repositoriesInitialized=true
+		fi			
+	fi
+fi
+
+if [ $rc -eq 0 ]; then
+	#### Summary
+	echo
+	echo "[PHASE] Summary"
+	$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/calculateDependenciesOrder.groovy -a $DBB_MODELER_APPLICATION_DIR
+	if [ "$repositoriesInitialized" = true ]; then
+		echo
+		echo "***********************************************************************************************************"
+		echo "*************************************    What needs to be done now    *************************************"
+		echo "***********************************************************************************************************"
+		echo
+		
+		case $PIPELINE_CI in
+			AzureDevOps)
+				GitDistribution="Azure DevOps platform"
+			;;
+			GitlabCI)
+				GitDistribution="GitLab platform"
+			;;
+			GitHubActions)
+				GitDistribution="GitHub platform"
+			;;
+			*)
+				GitDistribution="Git Central server"
+			;;
+		esac
+		
+		
+		echo "For each application:                                                                                      "
+		echo "- Create a Git project in your $GitDistribution                                                            "
+		echo "- Add a remote configuration for the application's Git repository on USS using the 'git remote add' command"
+		if [ "$PIPELINE_CI" = "AzureDevOps" ]; then
+			echo "- Initialize Azure DevOps pipeline variables in Azure DevOps configuration"
+		fi
+		echo "- Push the application's Git repository in the order of the above ranked list                            "
+		echo
+		echo "***********************************************************************************************************"
+	fi	
 fi

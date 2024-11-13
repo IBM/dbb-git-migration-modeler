@@ -32,7 +32,7 @@ else
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
 		echo "*******************************************************************"
-		echo "Scan application directory $DBB_MODELER_APPLICATION_DIR/$applicationDir"
+		echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
 		echo "*******************************************************************"
 		touch $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-scan.log
@@ -49,7 +49,7 @@ else
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
 		echo "*******************************************************************"
-		echo "Assess Include files & Programs usage for $applicationDir"
+		echo "Assess Include files & Programs usage for '$applicationDir'"
 		echo "*******************************************************************"
 		touch $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log

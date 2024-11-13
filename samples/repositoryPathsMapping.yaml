@@ -2,6 +2,7 @@ repositoryPaths:
   - repositoryPath: $application/src/cobol
     artifactsType: "Program"
     sourceGroup: "cobol"
+    language: "COBOL"
     languageProcessor: "Cobol.groovy"
     fileExtension: cbl
     toLowerCase: true
@@ -12,6 +13,7 @@ repositoryPaths:
   - repositoryPath: $application/src/copy
     artifactsType: "Include File"
     sourceGroup: "copy"
+    language: "COBOL"
     languageProcessor: "none"
     fileExtension: cpy
     toLowerCase: true
@@ -25,6 +27,7 @@ repositoryPaths:
   - repositoryPath: $application/src/pli
     artifactsType: "Program"
     sourceGroup: "pli"
+    language: "PL/I"
     languageProcessor: "PLI.groovy"
     fileExtension: cbl
     toLowerCase: true
@@ -38,6 +41,7 @@ repositoryPaths:
   - repositoryPath: $application/src/asm
     artifactsType: "Program"
     sourceGroup: "asm"
+    language: "ASM"
     languageProcessor: "Assembler.groovy"
     fileExtension: asm
     toLowerCase: true
@@ -48,6 +52,7 @@ repositoryPaths:
   - repositoryPath: $application/src/bms
     artifactsType: "BMS"
     sourceGroup: "bms"
+    language: "ASM"
     languageProcessor: "BMS.groovy"
     fileExtension: bms
     toLowerCase: true
@@ -58,6 +63,7 @@ repositoryPaths:
   - repositoryPath: $application/src/link
     artifactsType: "Other"
     sourceGroup: "link"
+    language: "LINK"
     languageProcessor: "LinkEdit.groovy"
     fileExtension: lnk
     toLowerCase: true

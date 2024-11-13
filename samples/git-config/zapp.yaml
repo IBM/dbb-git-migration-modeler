@@ -1,0 +1,35 @@
+################################################################
+# LICENSED MATERIALS - PROPERTY OF IBM
+# "RESTRICTED MATERIALS OF IBM"
+# (C) COPYRIGHT IBM CORPORATION 2020, 2022. ALL RIGHTS RESERVED
+# US GOVERNMENT USERS RESTRICTED RIGHTS - USE, DUPLICATION,
+# OR DISCLOSURE RESTRICTED BY GSA ADP SCHEDULE
+# CONTRACT WITH IBM CORPORATION
+################################################################
+
+name: 
+description: 
+version: 3.0.0
+author:
+  name: IBM CORPORATION
+
+profiles:
+  - name: dbb-build
+    type: dbb
+    settings:
+      application: 
+      command: $DBB_HOME/bin/groovyz
+      buildScriptPath: 
+      buildScriptArgs:
+        - --userBuild
+        - --workspace ${zopeneditor.userbuild.userSettings.dbbWorkspace}
+        - --application ${application}
+        - --hlq ${zopeneditor.userbuild.userSettings.dbbHlq}
+        - --outDir ${zopeneditor.userbuild.userSettings.dbbLogDir}
+        - --verbose
+        - --propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
+      additionalDependencies:
+        - ${application}/application-conf
+      logFilePatterns:
+        - ${buildFile.basename}.log
+        - BuildReport.*  

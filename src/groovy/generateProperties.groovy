@@ -57,7 +57,7 @@ if (!typesConfigurationsFile.exists()) {
 }
 
 // Parses the Application Descriptor File of the application, to retrieve the list of programs
-applicationDescriptorFile = new File("${props.workspace}/${props.application}/${props.application}.yaml")
+applicationDescriptorFile = new File("${props.workspace}/${props.application}/applicationDescriptor.yml")
 if (applicationDescriptorFile.exists()) {
 	applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
 } else {

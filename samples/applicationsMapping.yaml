@@ -2,12 +2,14 @@ applications:
   - application: "RetirementCalculator"
     description: "RetirementCalculator"
     owner: "MDALBIN"
+    baseline: "rel-1.0.0"
     namingConventions:
       - "EBU."
       - "LINPUT"
   - application: "GenApp"
     description: "GenApp"
     owner: "DBEHM"
+    baseline: "rel-2.1.0"
     namingConventions:
       - "LG......"
       - "SOA....."
@@ -16,6 +18,7 @@ applications:
   - application: "CBSA"
     description: "CBSA"
     owner: "MDALBIN"
+    baseline: "rel-1.4.0"
     namingConventions:
       - "ABN....."
       - "ACC....."
