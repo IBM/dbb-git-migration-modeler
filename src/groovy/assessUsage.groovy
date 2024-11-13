@@ -163,7 +163,7 @@ def getProgramsFromApplicationDescriptor() {
 				logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
 			
 			impactedFiles.each { impactedFile ->
-				logger.logMessage("\t'${impactedFile.getFile()}' in '${impactedFile.getCollection().getName()}' application context")
+				logger.logMessage("\t\t'${impactedFile.getFile()}' in Application '${impactedFile.getCollection().getName()}'")
 				referencingCollections.add(impactedFile.getCollection().getName())
 			}
 	
@@ -178,8 +178,6 @@ def getProgramsFromApplicationDescriptor() {
 					logger.logMessage("\t==> Updating usage of Include File '$file' to 'private' in '${updatedApplicationDescriptorFile.getPath()}'.")
 				} else { // Only an other application references this Include File, so update the definitions and maybe move it
 					if (props.moveFiles.toBoolean()) {
-						// Start by removing the file for the application
-						applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
 						// Update the target Application Descriptor 
 						originalTargetApplicationDescriptorFile = new File("${props.configurationsDirectory}/${referencingCollections[0]}.yml")
 						updatedTargetApplicationDescriptorFile = new File("${props.workspace}/${referencingCollections[0]}/applicationDescriptor.yml")
@@ -197,13 +195,17 @@ def getProgramsFromApplicationDescriptor() {
 						}
 						// Target Application Descriptor file has been found and can be updated
 						if (targetApplicationDescriptor) {
+							// Move the file
+							copyFileToApplicationFolder(props.application + '/' + qualifiedFile, props.application, referencingCollections[0], file)
 							targetRepositoryPath = computeTargetFilePath(repositoryPath, props.application, referencingCollections[0])
 							applicationDescriptorUtils.appendFileDefinition(targetApplicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, file, type, "private")
+							logger.logMessage("\t==> Adding Include File '$file' with usage 'private' to Application '${referencingCollections[0]}' described in '${updatedTargetApplicationDescriptorFile.getPath()}'.")
 							applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
-							copyFileToApplicationFolder(props.application + '/' + qualifiedFile, props.application, referencingCollections[0])
+							// Remove the file for the application
+							applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
+							logger.logMessage("\t==> Removing Include File '$file' from Application '${props.application}' described in '${updatedApplicationDescriptorFile.getPath()}'.")
 							// Update application mappings
-							updateMappingFiles(props.configurationsDirectory, props.application, referencingCollections[0], props.workspace + '/' + props.application + '/' + qualifiedFile);
-							logger.logMessage("\t==> Moving Include File '$file' with usage 'private' to Application '${referencingCollections[0]}' described '${updatedTargetApplicationDescriptorFile.getPath()}'.")
+							updateMappingFiles(props.configurationsDirectory, props.application, referencingCollections[0], props.workspace + '/' + props.application + '/' + qualifiedFile, file);
 						}
 					} else {
 						// just modify the scope as PUBLIC or SHARED
@@ -410,7 +412,7 @@ def findImpactedFiles(String impactSearch, String file) {
 }
 
 /**** Copies a relative source member to the relative target directory. ****/
-def copyFileToApplicationFolder(String file, String sourceApplication, String targetApplication) {
+def copyFileToApplicationFolder(String file, String sourceApplication, String targetApplication, String shortFile) {
 	targetFilePath = computeTargetFilePath(file, sourceApplication, targetApplication)
 	Path source = Paths.get("${props.workspace}", file)
 	def target = Paths.get("${props.workspace}", targetFilePath)
@@ -419,7 +421,7 @@ def copyFileToApplicationFolder(String file, String sourceApplication, String ta
 	if (!targetDirFile.exists()) targetDirFile.mkdirs()
 	if (source.toFile().exists() && source.toString() != target.toString()) {
 		Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
-		return target.toString()
+		logger.logMessage("\t==> Moving Include File '$shortFile' to '${target.toString()}' in Application '${targetApplication}'.")
 	}
 }
 
@@ -466,7 +468,7 @@ def computeTargetFilePath(String file, String sourceApplication, String targetAp
 	return targetFilename.join('/')
 }
 
-def updateMappingFiles(String configurationsDirectory, String sourceApplication, String targetApplication, String file) {
+def updateMappingFiles(String configurationsDirectory, String sourceApplication, String targetApplication, String file, String shortFile) {
     File sourceApplicationMappingFile = new File("${configurationsDirectory}/${sourceApplication}.mapping")
     File targetApplicationMappingFile = new File("${configurationsDirectory}/${targetApplication}.mapping")
     if (!sourceApplicationMappingFile.exists()) {
@@ -498,6 +500,7 @@ def updateMappingFiles(String configurationsDirectory, String sourceApplication,
                 sourceApplicationMappingReader.close()
                 sourceApplicationMappingFile.delete()
                 Files.move(newSourceApplicationMappingFile.toPath(), sourceApplicationMappingFile.toPath())
+                logger.logMessage("\t==> Updating Migration Mapping files for Applications '${sourceApplication}' and '${targetApplication}' for file '${shortFile}'.")                
             }
             catch (IOException e) {
                 e.printStackTrace()
