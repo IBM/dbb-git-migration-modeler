@@ -9,29 +9,32 @@
 #*******************************************************************************
 
 Prolog() {
-	echo "                                                                                                            "
+	echo
 	echo " DBB Git Migration Modeler                                                                                  "
 	echo " Release:     $MigrationModelerRelease                                                                      "
-	echo "                                                                                                            "
+	echo
 	echo " Script:      Migration-Modeler-Start.sh                                                                    "
-	echo "                                                                                                            "
+	echo
 	echo " Description: The purpose of this script is to facilitate the execution of the 4-step process supported     "
 	echo "              by the DBB Git Migration Modeler.                                                             "
 	echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
-	echo "                                                                                                            "
+	echo
 }
-#
-Prolog
 
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
 rc=0
 PGM="Migration-Modeler-Start.sh"
 
-
 # Initialize Migration Modeler
 dir=$(dirname "$0")
+srcdir=$(dirname "$dir")
+rootdir=$(dirname "$srcdir")
+export MigrationModelerRelease=`cat $rootdir/release.properties | awk -F '=' '{printf $2}'`
 . $dir/utils/0-environment.sh "$@"
+
+# Print Prolog
+Prolog
 
 if [ $rc -eq 0 ]; then
 	echo ""

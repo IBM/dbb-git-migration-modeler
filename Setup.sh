@@ -10,24 +10,23 @@
 # DBB Git Migration Modeler Configuration
 
 Prolog() {
-	echo "                                                                                                            "
+	echo
 	echo " DBB Git Migration Modeler                                                                                  "
-	echo "                                                                                                            "
+	echo " Release:     $MigrationModelerRelease                                                                      "
+	echo
 	echo " Script:      Setup.sh                                                                                      "
-	echo "                                                                                                            "
+	echo
 	echo " Description: This script is setting up a work folder including an configuration file that is used          "
 	echo "              by the DBB Git Migration Modeler process.                                                     "
-	echo "                                                                                                            "
+	echo
 	echo "              The user will be prompted for several configuration parameters that are saved                 "
 	echo "              into a configuration file within the work folder.                                             "
 	echo "              The configuration file is passed to the DBB Git Migration Modeler as a required                  "
 	echo "              input parameter.                                                                              "
-	echo "                                                                                                            "
+	echo
 	echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
-	echo "                                                                                                            "
+	echo
 }
-#
-Prolog
 
 # internal variables
 rc=0          # return code management
@@ -35,6 +34,10 @@ CONFIG_DIR="" # Path to store the DBB_GIT_MIGRATION_MODELER.config
 
 # Default is the root of the Git Repo
 DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
+
+#
+export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}'`
+Prolog
 
 # Configure DBB Migration Modeler Home
 echo "[SETUP] Configuring DBB Git Migration Modeler environment variables"
