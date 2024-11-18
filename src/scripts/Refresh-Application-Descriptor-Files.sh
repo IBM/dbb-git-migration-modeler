@@ -9,32 +9,34 @@
 #*******************************************************************************
 
 Prolog() {
-	echo "                                                                                                            "
+	echo
 	echo " DBB Git Migration Modeler                                                                                  "
 	echo " Release:     $MigrationModelerRelease                                                                      "
-	echo "                                                                                                            "
-	echo " Script:      refreshApplicationDescriptorFiles.sh                                                          "
-	echo "                                                                                                            "
+	echo
+	echo " Script:      Refresh-Application-Descriptor-Files.sh                                                          "
+	echo
 	echo " Description: The purpose of this script is to help keeping the Application Descriptor files of existing    "
 	echo "              applications up-to-date. The script scans the artifacts belonging to the application,         "
 	echo "              removes existing source groups from the Application Descriptor files and run                  "
 	echo "              the usage assessment process again to populate the Application Descriptor files correctly.    "
 	echo "              The script inspects all folders within the referenced 'DBB_MODELER_APPLICATIONS' directory.   "
-	echo "                                                                                                            "
+	echo
 	echo "              You must customize the process to your needs if you want to update the Application Descriptor "
 	echo "              files of applications that are already migrated to a central Git provider.                    "
 	echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
-	echo "                                                                                                            "
+	echo
 }
 
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=""
 rc=0
 PGM="Refresh-Application-Descriptor-Files.sh"
-#"
 
 # Initialize Migration Modeler
 dir=$(dirname "$0")
+srcdir=$(dirname "$dir")
+rootdir=$(dirname "$srcdir")
+export MigrationModelerRelease=`cat $rootdir/release.properties | awk -F '=' '{printf $2}'`
 . $dir/utils/0-environment.sh "$@"
 
 # Print Prolog
