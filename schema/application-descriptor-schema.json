@@ -1,0 +1,184 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "JSON Schema for Application Descriptor",
+    "description": "JSON Schema for Application Descriptor",
+    "type": "object",
+    "properties": {
+        "application": {
+            "type": "string",
+            "title": "The name of the application.",
+            "description": "Unique name of the application w/o blanks or special characters. Used as by other applications to reference it.",
+            "default": "Application name"
+        },
+        "description": {
+            "type": "string",
+            "title": "A description of the application.",
+            "description": "Description of the application business context and purpose. This field is not used in automation tasks.",
+            "default": "Application description"
+        },
+        "owner": {
+            "type": "string",
+            "title": "The owner of the application.",
+            "description": "Application owner. This field is not used in automation tasks.",
+            "default": "Application owner"
+        },
+        "sources": {
+            "type": "array",
+            "title": "List of source types.",
+            "description": "An array of source types that the application owns and manages.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "The name of the source group.",
+                        "description": "List of artifacts managed by the application including their type and usage characteristics."
+                    },
+                    "repositoryPath": {
+                        "type": "string",
+                        "title": "The path in the repository for the source group.",
+                        "description": "Relative path of where the files are stored."
+                    },
+                    "languageProcessor": {
+                        "type": "string",
+                        "title": "The language processor used for the source group.",
+                        "description": "The language processor field is for reference only and not yet processed by any automation tasks."
+                    },
+                    "fileExtension": {
+                        "type": "string",
+                        "title": "The file extension used for the source group.",
+                        "description": "The file extension of the files."
+                    },
+                    "artifactsType": {
+                        "type": "string",
+                        "title": "The type of artifacts in the source group.",
+                        "description": "The type of artifacts is important in the automation tasks to understand the relationships.",
+                        "enum": [
+                            "Program",
+                            "Include File"
+                        ]
+                    },
+                    "files": {
+                        "type": "array",
+                        "title": "The list of files in the source group",
+                        "description": "Array of files that belong and are actively managed within the application's git repository.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "title": "The name of the file.",
+                                    "description": "Name of the file w/o file extension. Capitalization has to meet how the file is stored in the repository."
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "title": "The type of the file",
+                                    "description": "The former build type used to generate build properties. This field is not used in automation tasks."
+                                },
+                                "usage": {
+                                    "type": "string",
+                                    "title": "The usage of the file.",
+                                    "description": "The usage of the file impacts how build outputs for the file are packaged. Case-sensitive. \nInclude files with usage set to 'public' or 'shared' can be published via the application tar file and can then be referenced by other application teams. Similarly, for programs identified as 'service submodule', the build outputs can be published via the package for static link scenarios. 'internal submodule' identifies sub modules that are statically called within the application context only and can be published to the package as well. Dynamically called modules are not in scope for publishing, they are resolved during runtime execution.",
+                                    "enum": [
+                                        "public",
+                                        "private",
+                                        "shared",
+                                        "main",
+                                        "internal submodule",
+                                        "service submodule",
+                                        "undefined"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "type",
+                                "usage"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "repositoryPath",
+                    "languageProcessor",
+                    "fileExtension",
+                    "artifactsType",
+                    "files"
+                ]
+            }
+        },
+        "baselines": {
+            "type": "array",
+            "title": "The baseline reference information for building the application.",
+            "description": "A list of baseline references used by the baseline option for impact builds. This is not yet used in automation tasks.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "branch": {
+                        "type": "string",
+                        "description": "Branch reference of the application"
+                    },
+                    "baseline": {
+                        "type": "string",
+                        "description": "Baseline reference for build framework"
+                    }
+                }
+            }
+        },
+        "dependencies": {
+            "type": "array",
+            "title": "The build dependencies of the application",
+            "description": "The list of build dependencies that the application has. Automation tasks will retrieve the dependency from an artifact repository.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "The name of the dependent application.",
+                        "description": "Name of the dependent application. Case-sensitive."
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "The location of the dependency.",
+                        "description": "Specifies the location from where the dependency is fetched.",
+                        "default": "artifactrepository",
+                        "enum": [
+                            "artifactrepository"
+                        ]
+                    },
+                    "version": {
+                        "type": "string",
+                        "title": "The version of the dependency.",
+                        "description": "Can either be a release version including the unique identifier of the build or a preliminary package."
+                    }
+                },
+                "required": [
+                    "name",
+                    "type",
+                    "version"
+                ]
+            }
+        },
+        "consumers": {
+            "type": "array",
+            "title": "The consumers of the application",
+            "description": "List of applications that dependent on this application.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the consumer application."
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "application",
+        "description",
+        "owner",
+        "sources"
+    ]
+}
