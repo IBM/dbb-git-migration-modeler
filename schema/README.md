@@ -12,7 +12,7 @@ This folder contains the jsonschema files to be used by the DBB Git Migration Mo
 
 ## Sample configuration
 
-Please follow the instructions of your preferred YAML editor. The below bullets 
+Usage instructions differs depending on your preferred YAML editor.
 
 ## VS Code YAML extension
 
