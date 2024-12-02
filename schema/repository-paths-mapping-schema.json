@@ -74,18 +74,18 @@
                   "properties": {
                     "language": {
                       "type": "string",
-                      "description": "The language used for scanning"
+                      "description": "The language criteria retrieved from scanning to filter artifacts"
                     },
                     "fileType": {
                       "type": "string",
-                      "description": "The file type used for scanning"
+                      "description": "The file type criteria retrieved from scanning to filter artifacts"
                     }
                   }
                 },
                 "types": {
                   "type": "array",
                   "title": "Match according to the legacy types.",
-                  "description": "Filter based on the referenced legacy types specified for a files in the types.txt file",
+                  "description": "Filter criteria based on the referenced legacy types (specified in the types.txt file)",
                   "items": {
                     "type": "string"
                   }                }

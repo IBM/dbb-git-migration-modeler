@@ -68,7 +68,7 @@
                                 "name": {
                                     "type": "string",
                                     "title": "The name of the file.",
-                                    "description": "Name of the file w/o file extension. Capitalization has to meet how the file is stored in the repository."
+                                    "description": "Name of the file without file extension. Capitalization has to meet how the file is stored in the repository."
                                 },
                                 "type": {
                                     "type": "string",
@@ -111,13 +111,13 @@
         "baselines": {
             "type": "array",
             "title": "The baseline reference information for building the application.",
-            "description": "A list of baseline references used by the baseline option for impact builds. This is not yet used in automation tasks.",
+            "description": "A list of baseline references used by the baseline option for impact builds. This may be used by future automation tasks.",
             "items": {
                 "type": "object",
                 "properties": {
                     "branch": {
                         "type": "string",
-                        "description": "Branch reference of the application"
+                        "description": "Branch name for which the baseline is set"
                     },
                     "baseline": {
                         "type": "string",
