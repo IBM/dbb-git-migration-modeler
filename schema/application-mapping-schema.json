@@ -32,7 +32,7 @@
             "baseline": {
               "type": "string",
               "title": "The version of the application.",
-              "description": "Baseline version of the application. Used to create a git tag."
+              "description": "Baseline version of the application. Used to initialize the application's Git repository and to create a baseline package."
             },
             "namingConventions": {
               "type": "array",
