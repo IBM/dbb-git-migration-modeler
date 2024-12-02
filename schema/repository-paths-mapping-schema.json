@@ -53,7 +53,7 @@
             "encoding": {
               "type": "string",
               "title": "The encoding used in the repository",
-              "description": "Specify the z/OS file ebcdic encoding. Used for generating DBB Migration Mapping files"
+              "description": "Specify the z/OS file encoding. Used for generating DBB Migration Mapping files"
             },
             "mvsMapping": {
               "type": "object",
