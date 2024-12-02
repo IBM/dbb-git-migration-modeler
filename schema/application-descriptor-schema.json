@@ -86,7 +86,7 @@
                                         "main",
                                         "internal submodule",
                                         "service submodule",
-                                        "undefined"
+                                        "unused"
                                     ]
                                 }
                             },
