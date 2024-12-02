@@ -1,6 +1,6 @@
 # Schemas for enabling syntax validation and completion in IDEs
 
-This folder contains the jsonschema files to be used by developers to enable their preferred YAML editor to perform syntax validation and completion.
+This folder contains the jsonschema files to be used by the DBB Git Migration Modeler users when performing syntax validation and completion with their preferred YAML editor.
 
 ## Index
 
