@@ -16,7 +16,7 @@ Usage instructions differs depending on your preferred YAML editor.
 
 ### VS Code YAML extension
 
-To code YAML in VS Code, most users take advantage of the [YAML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) extension by Red Hat. 
+To code YAML in VS Code, most users take advantage of the [RedHat YAML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) extension. 
 
 You can associate the schema using a modeline (a comment). All sample files come with this modeline.
 
