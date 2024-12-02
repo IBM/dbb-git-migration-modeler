@@ -121,7 +121,7 @@
                     },
                     "baseline": {
                         "type": "string",
-                        "description": "Baseline reference for build framework"
+                        "description": "Baseline reference for the given branch"
                     }
                 }
             }
