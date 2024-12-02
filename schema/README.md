@@ -14,7 +14,7 @@ This folder contains the jsonschema files to be used by the DBB Git Migration Mo
 
 Usage instructions differs depending on your preferred YAML editor.
 
-## VS Code YAML extension
+### VS Code YAML extension
 
 To code YAML in VS Code, most users take advantage of the [YAML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) extension by Red Hat. 
 
