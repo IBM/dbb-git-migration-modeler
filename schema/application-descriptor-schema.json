@@ -7,7 +7,7 @@
         "application": {
             "type": "string",
             "title": "The name of the application.",
-            "description": "Unique name of the application w/o blanks or special characters. Used as by other applications to reference it.",
+            "description": "Unique name of the application (without blanks or special characters). Used as by other applications to reference it.",
             "default": "Application name"
         },
         "description": {
