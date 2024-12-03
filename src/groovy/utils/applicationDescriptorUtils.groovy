@@ -232,7 +232,7 @@ def addApplicationConsumer(ApplicationDescriptor applicationDescriptor, String c
         }
         if (!existingConsumers) {     
             Consumer consumer = new Consumer()
-            consumer.name = "consumingApplication"
+            consumer.name = consumingApplication
             applicationDescriptor.consumers.add(consumer)
             applicationDescriptor.consumers.sort()
         }
