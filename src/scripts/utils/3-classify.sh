@@ -79,15 +79,13 @@ else
 		echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
 		echo "*******************************************************************"
 		touch $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-scan.log
+		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
 			-w $DBB_MODELER_APPLICATION_DIR \
 			-a $applicationDir \
 			-m $DBB_MODELER_METADATA_STORE_DIR \
-			-l $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-scan.log
+			-l $DBB_MODELER_LOGS/3-$applicationDir-rescan.log"    
+		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		$CMD
 	done
-
-	
 fi
