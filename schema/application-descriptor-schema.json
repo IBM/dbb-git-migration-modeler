@@ -10,6 +10,11 @@
             "description": "Unique name of the application (without blanks or special characters). Used as by other applications to reference it.",
             "default": "Application name"
         },
+        "schemaVersion": {
+            "type": "string",
+            "title": "The version of the Application Descriptor schema.",
+            "default": "0.11.0"
+        },
         "description": {
             "type": "string",
             "title": "A description of the application.",
@@ -177,6 +182,7 @@
     },
     "required": [
         "application",
+        "schemaVersion",
         "description",
         "owner",
         "sources"

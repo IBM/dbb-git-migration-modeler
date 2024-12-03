@@ -11,12 +11,15 @@ import groovy.lang.GroovyShell
 import groovy.util.*
 import java.nio.file.*
 
+public static void String APPLICATION_DESCRIPTOR_SCHEMA = "0.11.0"
+
 /**
  * Utilities to read, update or export existing ApplicationDescriptor from/to YAML 
  */
 
 class ApplicationDescriptor {
     String application
+    String schemaVersion = APPLICATION_DESCRIPTOR_SCHEMA
     String description
     String owner
     ArrayList<Source> sources
@@ -90,6 +93,7 @@ def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationD
 
     yamlBuilder {
         application applicationDescriptor.application
+        schemaVersion applicationDescriptor.schemaVersion
         description applicationDescriptor.description
         owner applicationDescriptor.owner
         sources (applicationDescriptor.sources)
