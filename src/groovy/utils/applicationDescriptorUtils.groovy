@@ -22,7 +22,7 @@ class ApplicationDescriptor {
     ArrayList<Source> sources
     ArrayList<Baseline> baselines
     ArrayList<DependencyDescriptor> dependencies
-    ArrayList<String> consumers
+    ArrayList<Consumer> consumers
 }
 
 class Source {
@@ -50,6 +50,10 @@ class DependencyDescriptor {
     String name
     String version
     String type
+}
+
+class Consumer {
+    String name
 }
 
 /**
@@ -227,7 +231,9 @@ def addApplicationConsumer(ApplicationDescriptor applicationDescriptor, String c
             it.equals(consumingApplication)
         }
         if (!existingConsumers) {     
-            applicationDescriptor.consumers.add(consumingApplication)
+            Consumer consumer = new Consumer()
+            consumer.name = "consumingApplication"
+            applicationDescriptor.consumers.add(consumer)
             applicationDescriptor.consumers.sort()
         }
     } 
