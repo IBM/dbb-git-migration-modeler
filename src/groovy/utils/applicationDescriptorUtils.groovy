@@ -230,7 +230,7 @@ def addApplicationConsumer(ApplicationDescriptor applicationDescriptor, String c
     // don't add the "owning" application
     if (applicationDescriptor.application != consumingApplication) {
         def existingConsumers = applicationDescriptor.consumers.findAll() {
-            it.equals(consumingApplication)
+            it.name.equals(consumingApplication)
         }
         if (!existingConsumers) {     
             Consumer consumer = new Consumer()
