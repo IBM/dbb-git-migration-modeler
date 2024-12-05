@@ -31,13 +31,8 @@ import static java.nio.file.StandardCopyOption.*
 @Field def applicationDescriptor
 
 
-/**
- * Processing logic
- */
-
 // Initialization
 parseArgs(args)
-initScriptParameters()
 
 // Print parms
 println("** Script configuration:")
@@ -45,17 +40,12 @@ props.each { k,v->
 	println "   $k -> $v"
 }
 
+initScriptParameters()
+
 // Handle log file
 if (props.logFile) {
 	logger.create(props.logFile)
 }
-
-// create metadatastore
-metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.metadatastore}")
-if (!metadataStore) {
-	logger.logMessage("*! [ERROR] Failed to initialize the DBB File Metatadastore at '${props.metadatastore}'. Exiting.")
-	System.exit(1)
-} 
 
 logger.logMessage("** Getting the list of files of 'Include File' type.")
 //HashMap<String, ArrayList<String>> includesFiles = getIncludeFilesFromApplicationDescriptor()
@@ -346,7 +336,11 @@ def parseArgs(String[] args) {
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
 	cli.w(longOpt:'workspace', args:1, 'Absolute path to workspace (root) directory containing all required source directories')
-	cli.d(longOpt:'metadatastore', args:1, 'Absolute path to DBB Dependency Metadatastore used by the modeler')
+	cli.f(longOpt:'file-metadatastore', args:1, 'Absolute path to the folder containing the DBB File Metadatastore')
+	cli.du(longOpt:'db2-user', args:1, 'Db2 User ID for DBB Db2 Metadatastore')
+	cli.dp(longOpt:'db2-password', args:1, 'Db2 User\'s Password for DBB Db2 Metadatastore')
+	cli.dpf(longOpt:'db2-password-file', args:1, 'Absolute path to the Db2 Password file for DBB Db2 Metadatastore')
+	cli.dc(longOpt:'db2-config', args:1, 'Absolute path to the Db2 connection configuration file')
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name.')
 	cli.c(longOpt:'configurations', args:1, required:false, 'Path of the directory containing Application Configurations YAML files.')
 	cli.m(longOpt:'moveFiles', args:0, 'Flag to move files when usage is assessed.')
@@ -358,7 +352,11 @@ def parseArgs(String[] args) {
 	}
 
 	if (opts.w) props.workspace = opts.w
-	if (opts.d) props.metadatastore = opts.d
+	if (opts.f) props.fileMetadatastore = opts.f
+	if (opts.du) props.db2User = opts.du
+	if (opts.dp) props.db2Password = opts.dp
+	if (opts.dpf) props.db2PasswordFile = opts.dpf
+	if (opts.dc) props.db2ConfigFile = opts.dc
 	if (opts.a) props.application = opts.a
 	if (opts.c) props.configurationsDirectory = opts.c
 	if (opts.m) {
@@ -368,6 +366,19 @@ def parseArgs(String[] args) {
 	}
 	if (opts.l) {
 		props.logFile = opts.l
+	}
+	
+	// Checks for correct configuration about Metadatastore
+	if (!props.fileMetadatastore && (!props.db2User || !props.db2ConfigFile)) {
+		logger.logMessage("*! [ERROR] Incomplete metadatastore configuration. Either the File metadatastore parameter (--file-metadatastore) or the Db2 metadatastore parameters (--db2-user and --db2-config) are missing. Exiting.")
+		System.exit(1)		 
+	} else {
+		if (props.db2User && props.db2ConfigFile) {
+			if (!props.db2Password && !props.db2PasswordFile) {
+				logger.logMessage("*! [ERROR] Missing Password and Password File for Db2 Metadatastore connection. Exiting.")
+				System.exit(1)		 
+			}
+		}		
 	}	
 }
 
@@ -428,16 +439,32 @@ def copyFileToApplicationFolder(String file, String sourceApplication, String ta
 /**** Initialize additional parameters ****/
 def initScriptParameters() {
 	// Settings
-
 	String applicationFolder = "${props.workspace}/${props.application}"
-
-	// application folder
 	if (new File(applicationFolder).exists()){
 		props.applicationDir = applicationFolder
 	} else {
-		logger.logMessage("*! [ERROR] Application Directory $applicationFolder does not exist. Exiting.")
+		logger.logMessage("*! [ERROR] Application Directory '$applicationFolder' does not exist. Exiting.")
 		System.exit(1)
 	}
+
+	if (props.fileMetadatastore) {	
+		metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.fileMetadatastore}")
+	} else {
+		File db2ConnectionConfigurationFile = new File(props.db2ConfigFile)
+		if (!db2ConnectionConfigurationFile.exists()){
+			logger.logMessage("!* [ERROR] Db2 Connection configuration file '${props.db2ConfigFile}' does not exist. Exiting.")
+			System.exit(1)
+		} else {
+			Properties db2ConnectionProps = new Properties()
+			db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
+			// Call correct Db2 MetadataStore constructor
+			if (props.db2Password) {
+				metadataStore = MetadataStoreFactory.createDb2MetadataStore("${props.db2User}", "${props.db2Password}", db2ConnectionProps)
+			} else if (props.db2PasswordFile) {
+				metadataStore = MetadataStoreFactory.createDb2MetadataStore("${props.db2User}", new File(props.db2PasswordFile), db2ConnectionProps)
+			}
+		}
+	}	
 	
 	originalApplicationDescriptorFile = new File("${props.configurationsDirectory}/${props.application}.yml")
 	updatedApplicationDescriptorFile = new File("${props.workspace}/${props.application}/applicationDescriptor.yml")

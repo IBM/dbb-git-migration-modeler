@@ -28,7 +28,7 @@ import groovy.cli.commons.*
 /******** Enabling Control Transfer flag */
 props.put("dbb.DependencyScanner.controlTransfers", "true")
 
-
+// Initialization
 parseArgs(args)
 
 // Print parms
@@ -37,12 +37,13 @@ props.each { k,v->
 	println "   $k -> $v"
 }
 
+initScriptParameters()
+
 // Handle log file
 if (props.logFile) {
 	logger.create(props.logFile)
 }
 
-initScriptParameters()
 
 logger.logMessage ("** Scanning the files.")
 Set<String> appFiles = getFileList()
@@ -106,9 +107,13 @@ def parseArgs(String[] args) {
 
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
-	cli.w(longOpt:'workspace', args:1, 'Absolute path to workspace (root) directory containing all required source directories')
-	cli.m(longOpt:'metadatastore', args:1, 'Absolute path to DBB Metadatastore used by the modeler')
-	cli.a(longOpt:'application', args:1, required:true, 'Application  name ')
+	cli.w(longOpt:'workspace', args:1, required:true, 'Absolute path to workspace (root) directory containing all required source directories')
+	cli.f(longOpt:'file-metadatastore', args:1, required:false, 'Absolute path to the folder containing the DBB File Metadatastore')
+	cli.du(longOpt:'db2-user', args:1, required:false, 'Db2 User ID for DBB Db2 Metadatastore')
+	cli.dp(longOpt:'db2-password', args:1, required:false, 'Db2 User\'s Password for DBB Db2 Metadatastore')
+	cli.dpf(longOpt:'db2-password-file', args:1, required:false, 'Absolute path to the Db2 Password file for DBB Db2 Metadatastore')
+	cli.dc(longOpt:'db2-config', args:1, required:false, 'Absolute path to the Db2 connection configuration file')
+	cli.a(longOpt:'application', args:1, required:true, 'Application name ')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 
 	def opts = cli.parse(args)
@@ -117,11 +122,26 @@ def parseArgs(String[] args) {
 	}
 
 	if (opts.w) props.workspace = opts.w
-	if (opts.m) props.metadatastore = opts.m
+	if (opts.f) props.fileMetadatastore = opts.f
+	if (opts.du) props.db2User = opts.du
+	if (opts.dp) props.db2Password = opts.dp
+	if (opts.dpf) props.db2PasswordFile = opts.dpf
+	if (opts.dc) props.db2ConfigFile = opts.dc
 	if (opts.a) props.application = opts.a
-	if (opts.l) {
-		props.logFile = opts.l
-	}
+	if (opts.l) props.logFile = opts.l
+
+	// Checks for correct configuration about Metadatastore
+	if (!props.fileMetadatastore && (!props.db2User || !props.db2ConfigFile)) {
+		logger.logMessage("*! [ERROR] Incomplete metadatastore configuration. Either the File metadatastore parameter (--file-metadatastore) or the Db2 metadatastore parameters (--db2-user and --db2-config) are missing. Exiting.")
+		System.exit(1)		 
+	} else {
+		if (props.db2User && props.db2ConfigFile) {
+			if (!props.db2Password && !props.db2PasswordFile) {
+				logger.logMessage("*! [ERROR] Missing Password and Password File for Db2 Metadatastore connection. Exiting.")
+				System.exit(1)		 
+			}
+		}		
+	}	
 }
 
 /* 
@@ -133,11 +153,28 @@ def initScriptParameters() {
 	if (new File(applicationFolder).exists()){
 		props.applicationDir = applicationFolder
 	} else {
-		logger.logMessage ("!* Application Directory ${props.applicationDir} does not exist.")
+		logger.logMessage("*! [ERROR] Application Directory '$applicationFolder' does not exist. Exiting.")
 		System.exit(1)
 	}
-	
-	metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.metadatastore}")
+
+	if (props.fileMetadatastore) {	
+		metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.fileMetadatastore}")
+	} else {
+		File db2ConnectionConfigurationFile = new File(props.db2ConfigFile)
+		if (!db2ConnectionConfigurationFile.exists()){
+			logger.logMessage("!* [ERROR] Db2 Connection configuration file '${props.db2ConfigFile}' does not exist. Exiting.")
+			System.exit(1)
+		} else {
+			Properties db2ConnectionProps = new Properties()
+			db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
+			// Call correct Db2 MetadataStore constructor
+			if (props.db2Password) {
+				metadataStore = MetadataStoreFactory.createDb2MetadataStore("${props.db2User}", "${props.db2Password}", db2ConnectionProps)
+			} else if (props.db2PasswordFile) {
+				metadataStore = MetadataStoreFactory.createDb2MetadataStore("${props.db2User}", new File(props.db2PasswordFile), db2ConnectionProps)
+			}
+		}
+	}
 }
 
 /*
