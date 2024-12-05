@@ -162,6 +162,13 @@ if [ $rc -eq 0 ]; then
 	if [ "$variable" ]; then
 		declare DBB_MODELER_METADATASTORE_TYPE="${variable}"
 	fi
+	
+	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
+		read -p "Specify the location of the DBB File Metadatastore [default: ${DBB_MODELER_FILE_METADATA_STORE_DIR}]: " variable
+		if [ "$variable" ]; then
+			declare DBB_MODELER_FILE_METADATA_STORE_DIR="${variable}"
+		fi
+	fi
 
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 		read -p "Specify the location of the DBB Db2 Metadatastore configuration file [default: ${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}]: " variable
