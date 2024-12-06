@@ -8,7 +8,7 @@ This folder contains the jsonschema files to be used by the DBB Git Migration Mo
 | --   |  --     | 
 | [application-descriptor-schema.json](application-descriptor-schema.json) | Schema for Application Descriptor file |
 | [application-mapping-schema.json](application-mapping-schema.json) | Schema for Application Mapping file |
-| [repository-paths-mapping-schema.json](repository-paths-mapping-schema.json) | Schema for Repository Paths mapping file |
+| [repository-paths-mapping-schema.json](repository-paths-mapping-schema.json) | Schema for Repository Paths Mapping file |
 
 ## Sample configuration
 

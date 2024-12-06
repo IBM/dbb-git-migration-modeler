@@ -30,7 +30,7 @@
         "sources": {
             "type": "array",
             "title": "List of source types.",
-            "description": "An array of source types that the application owns and manages.",
+            "description": "List of source types that the application owns and manages.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -42,7 +42,7 @@
                     "repositoryPath": {
                         "type": "string",
                         "title": "The path in the repository for the source group.",
-                        "description": "Relative path of where the files are stored."
+                        "description": "Relative path to the repository's subfolder containing sources of this type."
                     },
                     "languageProcessor": {
                         "type": "string",
@@ -65,8 +65,8 @@
                     },
                     "files": {
                         "type": "array",
-                        "title": "The list of files in the source group",
-                        "description": "Array of files that belong and are actively managed within the application's git repository.",
+                        "title": "List of files in the source group.",
+                        "description": "Collection of files that belong to this source group and are managed within the application's Git repository.",
                         "items": {
                             "type": "object",
                             "properties": {
@@ -116,7 +116,7 @@
         "baselines": {
             "type": "array",
             "title": "The baseline reference information for building the application.",
-            "description": "A list of baseline references used by the baseline option for impact builds. This may be used by future automation tasks.",
+            "description": "List of baseline references used by the baseline option for impact builds. This may be used by future automation tasks.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -134,7 +134,7 @@
         "dependencies": {
             "type": "array",
             "title": "The build dependencies of the application",
-            "description": "The list of build dependencies that the application has. Automation tasks will retrieve the dependency from an artifact repository.",
+            "description": "List of the build dependencies that the application has. Automation tasks will retrieve the dependencies from an artifact repository.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -146,7 +146,7 @@
                     "type": {
                         "type": "string",
                         "title": "The location of the dependency.",
-                        "description": "Specifies the location from where the dependency is fetched.",
+                        "description": "Location from where the dependency is fetched.",
                         "default": "artifactrepository",
                         "enum": [
                             "artifactrepository"

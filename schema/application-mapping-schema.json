@@ -6,7 +6,7 @@
     "properties": {
       "applications": {
         "type": "array",
-        "title": "Array of application mappings",
+        "title": "Collection of application mappings.",
         "description": "List of application meta information containing the existing naming patterns of members that are owned and managed for a given application. Used by the Migration Modeler.",
         "items": {
           "type": "object",

@@ -48,12 +48,12 @@
             "toLowerCase": {
               "type": "boolean",
               "title": "Flag indicating whether to convert all characters to lowercase", 
-              "description": "Flag controlling the capitalization of files names in the z/OS Unix System services target folders. Used for generating DBB Migration Mapping files"
+              "description": "Flag controlling the capitalization of files names in the z/OS Unix System services target folders. Used for generating DBB Migration Mapping files."
             },
             "encoding": {
               "type": "string",
-              "title": "The encoding used in the repository",
-              "description": "Specify the z/OS file encoding. Used for generating DBB Migration Mapping files"
+              "title": "The original z/OS file encoding",
+              "description": "The original z/OS file encoding. Used for generating DBB Migration Mapping files."
             },
             "mvsMapping": {
               "type": "object",
@@ -70,7 +70,7 @@
                 "scan": {
                   "type": "object",
                   "title": "Match according to DBB scanner classification",
-                  "description": "Filter based on the results of the DBB classification scanner.",
+                  "description": "Filter based on the results of the DBB classification scanner. Scanning must be enabled through the SCAN_DATASET_MEMBERS parameter of the Migration Modeler.",
                   "properties": {
                     "language": {
                       "type": "string",
