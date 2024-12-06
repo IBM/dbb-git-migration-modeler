@@ -17,12 +17,13 @@ import java.nio.file.*
 
 class ApplicationDescriptor {
     String application
+    String schemaVersion = "applicationDescriptor/0.11.0"
     String description
     String owner
     ArrayList<Source> sources
     ArrayList<Baseline> baselines
     ArrayList<DependencyDescriptor> dependencies
-    ArrayList<String> consumers
+    ArrayList<Consumer> consumers
 }
 
 class Source {
@@ -50,6 +51,10 @@ class DependencyDescriptor {
     String name
     String version
     String type
+}
+
+class Consumer {
+    String name
 }
 
 /**
@@ -86,6 +91,7 @@ def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationD
 
     yamlBuilder {
         application applicationDescriptor.application
+        schemaVersion applicationDescriptor.schemaVersion
         description applicationDescriptor.description
         owner applicationDescriptor.owner
         sources (applicationDescriptor.sources)
@@ -224,10 +230,12 @@ def addApplicationConsumer(ApplicationDescriptor applicationDescriptor, String c
     // don't add the "owning" application
     if (applicationDescriptor.application != consumingApplication) {
         def existingConsumers = applicationDescriptor.consumers.findAll() {
-            it.equals(consumingApplication)
+            it.name.equals(consumingApplication)
         }
         if (!existingConsumers) {     
-            applicationDescriptor.consumers.add(consumingApplication)
+            Consumer consumer = new Consumer()
+            consumer.name = consumingApplication
+            applicationDescriptor.consumers.add(consumer)
             applicationDescriptor.consumers.sort()
         }
     } 
