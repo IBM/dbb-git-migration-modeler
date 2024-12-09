@@ -19,11 +19,11 @@ else
 	# Build Metadatastore
 	# Drop and recreate the Build Metadatastore folder
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-		if [ -z "${DBB_MODELER_METADATA_STORE_DIR}" ]; then
+		if [ -z "${DBB_MODELER_FILE_METADATA_STORE_DIR}" ]; then
 			echo "[ERROR] File Metadatastore location is missing from the Configuration file. Exiting."
 			exit 1
 		else
-			if [ -d $DBB_MODELER_METADATA_STORE_DIR ] 
+			if [ -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
 			then
 				rm -rf $DBB_MODELER_FILE_METADATA_STORE_DIR
 			fi
@@ -40,6 +40,11 @@ else
 		if [ -z "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
 			echo "[ERROR] The Db2 Connection Configuration file is missing from the Configuration file. Exiting."
 			exit 1
+		else 
+			if [ ! -f "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
+				echo "[ERROR] The Db2 Connection Configuration file '${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting."
+				exit 1
+			fi
 		fi
 		if [ -z "${DBB_MODELER_DB2_METADATASTORE_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE}" ]; then
 			echo "[ERROR] Either the Db2 Metadatastore User's Password or the Db2 Metadatastore Password File are missing from the Configuration file. Exiting."
@@ -99,59 +104,6 @@ else
 			--moveFiles \
 			--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
 		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
-		$CMD
-	done
-	
-	# Drop and recreate the Build Metadatastore folder
-	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-		if [ -d $DBB_MODELER_METADATA_STORE_DIR ] 
-		then
-			rm -rf $DBB_MODELER_FILE_METADATA_STORE_DIR
-		fi
-		if [ ! -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
-		then
-			mkdir -p $DBB_MODELER_FILE_METADATA_STORE_DIR
-		fi
-#	elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-#		cd $DBB_MODELER_APPLICATION_DIR
-#		for applicationDir in `ls | grep -v dbb-zappbuild`
-#		do
-#			if [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORD" ]; then
-#				$DBB_HOME/bin/dbb delete group $applicationDir --type db2 --user $DBB_MODELER_DB2_METADATASTORE_ID --password $DBB_MODELER_DB2_METADATASTORE_PASSWORD --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE
-#			elif [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE" ]; then
-#				if [ ! -f "$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE" ]; then
-#					echo "[ERROR] Db2 Metadatastore configuration file does not exist. Exiting"
-#					exit 1
-#				fi
-#				$DBB_HOME/bin/dbb delete group $applicationDir --type db2 --user $DBB_MODELER_DB2_METADATASTORE_ID --password-file $DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE
-#			fi
-#		done
-	fi
-
-	# Scan files again after dropping the file metadatastore
-	cd $DBB_MODELER_APPLICATION_DIR
-	for applicationDir in `ls | grep -v dbb-zappbuild`
-	do
-		echo "*******************************************************************"
-		echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
-		echo "*******************************************************************"
-		touch $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
-		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-			declare METADATASTORE_OPTIONS="--file-metadatastore $DBB_MODELER_FILE_METADATA_STORE_DIR"
-		elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-			if [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORD" ]; then
-				declare METADATASTORE_OPTIONS="--db2-user $DBB_MODELER_DB2_METADATASTORE_ID --db2-password $DBB_MODELER_DB2_METADATASTORE_PASSWORD --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"
-			elif [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE" ]; then
-				declare METADATASTORE_OPTIONS="--db2-user $DBB_MODELER_DB2_METADATASTORE_ID --db2-password-file $DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"
-			fi
-		fi
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			-w $DBB_MODELER_APPLICATION_DIR \
-			-a $applicationDir \
-			${METADATASTORE_OPTIONS} \
-			-l $DBB_MODELER_LOGS/3-$applicationDir-rescan.log"    
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		$CMD
 	done
 fi

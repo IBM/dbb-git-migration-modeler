@@ -153,8 +153,9 @@ def getProgramsFromApplicationDescriptor() {
 				logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
 			
 			impactedFiles.each { impactedFile ->
-				logger.logMessage("\t\t'${impactedFile.getFile()}' in Application '${impactedFile.getCollection().getName()}'")
-				referencingCollections.add(impactedFile.getCollection().getName())
+				def referencingCollection = impactedFile.getCollection().getName().replace("-main", "")
+				logger.logMessage("\t'${impactedFile.getFile()}' in  Application  '$referencingCollection'")
+				referencingCollections.add(referencingCollection)			
 			}
 	
 			// Assess usage when only 1 application reference the file
@@ -262,8 +263,9 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 			logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
 		
 		impactedFiles.each { impactedFile ->
-			logger.logMessage("\t'${impactedFile.getFile()}' in '${impactedFile.getCollection().getName()}' application context")
-			referencingCollections.add(impactedFile.getCollection().getName())
+			def referencingCollection = impactedFile.getCollection().getName().replace("-main", "")
+			logger.logMessage("\t'${impactedFile.getFile()}' in  Application  '$referencingCollection'")
+			referencingCollections.add(referencingCollection)
 		}
 
 		// Assess usage when only 1 application reference the file
@@ -396,7 +398,7 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 			Files.copy(originalConsumerApplicationDescriptorFile.toPath(), consumerApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
 			consumerApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(consumerApplicationDescriptorFile)
 		} else {
-			logger.logMessage("*! [WARNING] Application Descriptor file '${originalConsumerApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Include File '${file}'.")
+			logger.logMessage("*! [WARNING] Application Descriptor file '${originalConsumerApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Application '${consumer}'.")
 		}
 	}
 	// Consumer's Application Descriptor file has been found and can be updated
@@ -412,14 +414,29 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 /**** findImpactedFiles -  method to configure and invoke SearchPathImpactFinder ****/
 def findImpactedFiles(String impactSearch, String file) {
 
-	List<String> collections = new ArrayList<String>()
-	metadataStore.getCollections().each{ collection ->
-		collections.add(collection.getName())
+	HashSet<ImpactFile> allImpacts = new HashSet<ImpactFile>()
+	metadataStore.getBuildGroups().each { buildGroup ->
+		if (!buildGroup.getName().equals("dbb_default")) {
+			List<String> collections = new ArrayList<String>()
+			buildGroup.getCollections().each { collection ->
+				collections.add(collection.getName())
+			}
+			if (collections) {
+//				println("******* ${buildGroup.getName()} - $collections")
+				def finder = new SearchPathImpactFinder(impactSearch, buildGroup.getName(), collections)
+//				def finder = new SearchPathImpactFinder(impactSearch, collections)
+				// Find all files impacted by the changed file
+				if (finder) {
+					impacts = finder.findImpactedFiles(file, props.workspace)
+//					println("******* ${buildGroup.getName()} - $collections - $impacts")
+					if (impacts) {
+						allImpacts.addAll(impacts)
+					}
+				}
+			}
+		}
 	}
-	def finder = new SearchPathImpactFinder(impactSearch, collections)
-	// Find all files impacted by the changed file
-	impacts = finder.findImpactedFiles(file, props.workspace)
-	return impacts
+	return allImpacts
 }
 
 /**** Copies a relative source member to the relative target directory. ****/

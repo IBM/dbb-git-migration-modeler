@@ -50,17 +50,29 @@ Set<String> appFiles = getFileList()
 List<LogicalFile> logicalFiles = scanFiles(appFiles)
 
 logger.logMessage ("** Storing results in the '${props.application}' DBB Collection.")
-// manage collection
-if (!metadataStore.collectionExists(props.application)) {
-	// create collection
-	metadataStore.createCollection(props.application)
-} else {
-	// reset collection
-	metadataStore.deleteCollection(props.application)
-	metadataStore.createCollection(props.application)
+// Manage Build Groups and Collections
+/*
+metadataStore.getBuildGroupNames().each { buildGroupName ->
+	if (!buildGroupName.equals("dbb_default")) {
+		println("**** Delete ${buildGroupName}")
+		metadataStore.deleteBuildGroup(buildGroupName)
+	}
 }
+metadataStore.getCollections().each { collection ->
+	metadataStore.deleteCollection(collection)
+} */
+
+if (metadataStore.buildGroupExists("${props.application}-main")) {
+	metadataStore.deleteBuildGroup("${props.application}-main")
+}
+/*
+if (metadataStore.collectionExists("${props.application}-main")) {
+	metadataStore.deleteCollection("${props.application}-main")
+} */
+BuildGroup buildGroup = metadataStore.createBuildGroup("${props.application}-main")
+Collection collection = buildGroup.createCollection("${props.application}-main")
 // store results
-metadataStore.getCollection(props.application).addLogicalFiles(logicalFiles)
+collection.addLogicalFiles(logicalFiles)
 
 logger.close()
 
