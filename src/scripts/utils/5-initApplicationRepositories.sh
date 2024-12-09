@@ -195,6 +195,16 @@ else
 		
 			# mkdir application log directory
 			mkdir -p $DBB_MODELER_LOGS/$applicationDir
+
+			if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
+				declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreFileLocation=$DBB_MODELER_FILE_METADATA_STORE_DIR"
+			elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
+				if [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORD" ]; then
+					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_ID --pw $DBB_MODELER_DB2_METADATASTORE_PASSWORD"
+				elif [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE" ]; then
+					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_ID --pwFile $DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE"
+				fi
+			fi
 			
 			CMD="$DBB_HOME/bin/groovyz $DBB_ZAPPBUILD/build.groovy \
 				--workspace $DBB_MODELER_APPLICATION_DIR/$applicationDir \
@@ -204,7 +214,7 @@ else
 				--hlq $APPLICATION_ARTIFACTS_HLQ --preview \
 				--logEncoding UTF-8 \
 				--applicationCurrentBranch main \
-				--propOverwrites createBuildOutputSubfolder=false \
+				${METADATASTORE_OPTIONS} \
 				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties"
 			echo "** $CMD"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 			$CMD > $DBB_MODELER_LOGS/$applicationDir/build-preview-$applicationDir.log
