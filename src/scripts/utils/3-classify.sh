@@ -76,7 +76,7 @@ else
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
 		echo "*******************************************************************"
-		echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
+		echo "Rescan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
 		echo "*******************************************************************"
 		touch $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
