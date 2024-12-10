@@ -1,113 +1,120 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Repository Paths Schema",
-    "description": "Schema for defining repository paths for Git Migration Modeler",
-    "type": "object",
-    "properties": {
-      "repositoryPaths": {
-        "type": "array",
-        "title": "Repository Paths configuration",
-        "description": "List of repository paths configurations defining the filter criteria and input parameters to the Git Migration Modeler for generating the DBB Git Migration Mapping files and the initial version of the Application Descriptor.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "repositoryPath": {
-              "type": "string",
-              "title": "The path of the repository",
-              "description": "Relative path within the git repository structure for matching files."
-            },
-            "artifactsType": {
-              "type": "string",
-              "title": "The type of artifacts in the repository",
-              "description": "The type of artifacts under this group.",
-              "enum": [
-                  "Program",
-                  "Include File"
-              ]
-            },
-            "sourceGroup": {
-              "type": "string",
-              "title": "The name of the source group",
-              "description": "The name of the source group record, that is created within the Application Descriptor."
-            },
-            "language": {
-              "type": "string",
-              "title": "The programming language used in the repository",
-              "description": "Name of the programming language that is used for this group. Used to generate zapp.yaml files."
-            },
-            "languageProcessor": {
-              "type": "string",
-              "title": "The language processor used for processing the language",
-              "description": "Corresponding language processor for this group.  Informational purpose only. Not used by any automation tasks."
-            },
-            "fileExtension": {
-              "type": "string",
-              "title": "The file extension used in the repository",
-              "description": "File extension used for generating DBB Migration Mapping files."
-            },
-            "toLowerCase": {
-              "type": "boolean",
-              "title": "Flag indicating whether to convert all characters to lowercase", 
-              "description": "Flag controlling the capitalization of files names in the z/OS Unix System services target folders. Used for generating DBB Migration Mapping files."
-            },
-            "encoding": {
-              "type": "string",
-              "title": "The original z/OS file encoding",
-              "description": "The original z/OS file encoding. Used for generating DBB Migration Mapping files."
-            },
-            "mvsMapping": {
-              "type": "object",
-              "title": "Criteria for mapping members from PDS input libraries to this repositoryPath configuration.",
-              "properties": {
-                "datasetLastLevelQualifiers": {
-                  "type": "array",
-                  "title": "Match according to the last level qualifiers for MVS datasets",
-                  "description": "Filter based on the last level qualifiers from the input datasets for Migration Modeler.",
-                  "items": {
-                    "type": "string"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Repository Paths Schema",
+  "description": "Schema for defining repository paths for Git Migration Modeler",
+  "type": "object",
+  "properties": {
+    "repositoryPaths": {
+      "type": "array",
+      "title": "Repository Paths configuration",
+      "description": "List of repository paths configurations defining the filter criteria and input parameters to the Git Migration Modeler for generating the DBB Git Migration Mapping files and the initial version of the Application Descriptor.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "repositoryPath": {
+            "type": "string",
+            "title": "The path of the repository",
+            "description": "Relative path within the git repository structure for matching files."
+          },
+          "artifactsType": {
+            "type": "string",
+            "title": "The type of artifacts in the repository",
+            "description": "The type of artifacts under this group.",
+            "enum": [
+              "Program",
+              "Include File"
+            ]
+          },
+          "sourceGroup": {
+            "type": "string",
+            "title": "The name of the source group",
+            "description": "The name of the source group record, that is created within the Application Descriptor."
+          },
+          "language": {
+            "type": "string",
+            "title": "The programming language used in the repository",
+            "description": "Name of the programming language that is used for this group. Used to generate zapp.yaml files.",
+            "enum": [
+              "cobol",
+              "pl1",
+              "hlasm",
+              "rexx",
+              "jcl"
+            ]
+          },
+          "languageProcessor": {
+            "type": "string",
+            "title": "The language processor used for processing the language",
+            "description": "Corresponding language processor for this group.  Informational purpose only. Not used by any automation tasks."
+          },
+          "fileExtension": {
+            "type": "string",
+            "title": "The file extension used in the repository",
+            "description": "File extension used for generating DBB Migration Mapping files."
+          },
+          "toLowerCase": {
+            "type": "boolean",
+            "title": "Flag indicating whether to convert all characters to lowercase",
+            "description": "Flag controlling the capitalization of files names in the z/OS Unix System services target folders. Used for generating DBB Migration Mapping files."
+          },
+          "encoding": {
+            "type": "string",
+            "title": "The original z/OS file encoding",
+            "description": "The original z/OS file encoding. Used for generating DBB Migration Mapping files."
+          },
+          "mvsMapping": {
+            "type": "object",
+            "title": "Criteria for mapping members from PDS input libraries to this repositoryPath configuration.",
+            "properties": {
+              "datasetLastLevelQualifiers": {
+                "type": "array",
+                "title": "Match according to the last level qualifiers for MVS datasets",
+                "description": "Filter based on the last level qualifiers from the input datasets for Migration Modeler.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "scan": {
+                "type": "object",
+                "title": "Match according to DBB scanner classification",
+                "description": "Filter based on the results of the DBB classification scanner. Scanning must be enabled through the SCAN_DATASET_MEMBERS parameter of the Migration Modeler.",
+                "properties": {
+                  "language": {
+                    "type": "string",
+                    "description": "The language criteria retrieved from scanning to filter artifacts"
+                  },
+                  "fileType": {
+                    "type": "string",
+                    "description": "The file type criteria retrieved from scanning to filter artifacts"
                   }
-                },
-                "scan": {
-                  "type": "object",
-                  "title": "Match according to DBB scanner classification",
-                  "description": "Filter based on the results of the DBB classification scanner. Scanning must be enabled through the SCAN_DATASET_MEMBERS parameter of the Migration Modeler.",
-                  "properties": {
-                    "language": {
-                      "type": "string",
-                      "description": "The language criteria retrieved from scanning to filter artifacts"
-                    },
-                    "fileType": {
-                      "type": "string",
-                      "description": "The file type criteria retrieved from scanning to filter artifacts"
-                    }
-                  }
-                },
-                "types": {
-                  "type": "array",
-                  "title": "Match according to the legacy types.",
-                  "description": "Filter criteria based on the referenced legacy types (specified in the types.txt file)",
-                  "items": {
-                    "type": "string"
-                  }                }
+                }
+              },
+              "types": {
+                "type": "array",
+                "title": "Match according to the legacy types.",
+                "description": "Filter criteria based on the referenced legacy types (specified in the types.txt file)",
+                "items": {
+                  "type": "string"
+                }
               }
             }
-          },
-          "required": [
-            "repositoryPath",
-            "artifactsType",
-            "sourceGroup",
-            "language",
-            "languageProcessor",
-            "fileExtension",
-            "toLowerCase",
-            "encoding",
-            "mvsMapping"
-          ]
-        }
+          }
+        },
+        "required": [
+          "repositoryPath",
+          "artifactsType",
+          "sourceGroup",
+          "language",
+          "languageProcessor",
+          "fileExtension",
+          "toLowerCase",
+          "encoding",
+          "mvsMapping"
+        ]
       }
-    },
-    "required": [
-      "repositoryPaths"
-    ]
-   }
-   
+    }
+  },
+  "required": [
+    "repositoryPaths"
+  ]
+}
