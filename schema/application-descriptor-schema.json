@@ -115,7 +115,7 @@
         },
         "baselines": {
             "type": "array",
-            "title": "The baseline reference information for building the application.",
+            "title": "The baseline references for building the application.",
             "description": "List of baseline references used by the baseline option for impact builds. This may be used by future automation tasks.",
             "items": {
                 "type": "object",
