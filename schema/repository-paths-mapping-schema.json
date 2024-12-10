@@ -33,7 +33,7 @@
             "language": {
               "type": "string",
               "title": "The programming language used in the repository",
-              "description": "Name of the programming language that is used for this group. Informational purpose only."
+              "description": "Name of the programming language that is used for this group. Used to generate zapp.yaml files."
             },
             "languageProcessor": {
               "type": "string",
