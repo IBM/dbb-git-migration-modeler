@@ -213,7 +213,7 @@ def getProgramsFromApplicationDescriptor() {
 						logger.logMessage("\t==> Updating usage of Include File '$file' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'.")
 						applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
 						
-						updateConsumerApplicationDescriptor(referencingCollections[0], "source", applicationDescriptor)
+						updateConsumerApplicationDescriptor(referencingCollections[0], "artifactrepository", applicationDescriptor)
 					}
 				}
 				applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
@@ -229,7 +229,7 @@ def getProgramsFromApplicationDescriptor() {
 				// update consumers
 				referencingCollections.each { consumerCollection ->
 					if (!consumerCollection.equals(props.application)) {
-						updateConsumerApplicationDescriptor(consumerCollection, "source", applicationDescriptor)
+						updateConsumerApplicationDescriptor(consumerCollection, "artifactrepository", applicationDescriptor)
 					}
 				}
 				applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
@@ -285,31 +285,13 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 				// Just update the usage to INTERNAL
 				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "internal submodule")
 				logger.logMessage("\t==> Updating usage of Program '$file' to 'internal submodule' in '${updatedApplicationDescriptorFile.getPath()}'.")
-			} else { // Only an other application references this Program, so changing the USAGE to SERVICE
-				// Update the target Application Descriptor to add Dependency 
-				originalTargetApplicationDescriptorFile = new File("${props.configurationsDirectory}/${referencingCollections[0]}.yml")
-				updatedTargetApplicationDescriptorFile = new File("${props.workspace}/${referencingCollections[0]}/applicationDescriptor.yml")
-				def targetApplicationDescriptor
-				// determine which YAML file to use
-				if (updatedTargetApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
-					targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
-				} else { // Start from the original Application Descriptor created by the extraction phase
-					if (originalTargetApplicationDescriptorFile.exists()) {
-						Files.copy(originalTargetApplicationDescriptorFile.toPath(), updatedTargetApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
-						targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
-					} else {
-						logger.logMessage("*! [WARNING] Application Descriptor file '${originalTargetApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Include File '${file}'.")
-					}
-				}
-				// Target Application Descriptor file has been found and can be updated
-				if (targetApplicationDescriptor) {
-					logger.logMessage("\t\tAdding dependency to application ${referencingCollections[0]}") 						
-					applicationDescriptorUtils.addApplicationDependency(targetApplicationDescriptor, applicationDescriptor.application, "latest", "binary")
-					applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
-				}
+			} else { // Only one other application references this Program, so changing the USAGE to SERVICE
+				
 				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "service submodule")
-				applicationDescriptorUtils.addApplicationConsumer(applicationDescriptor, referencingCollections[0])
 				logger.logMessage("\t==> Updating usage of Program '$file' to 'service submodule' in '${updatedApplicationDescriptorFile.getPath()}'.")
+				
+				// Update the target Application Descriptor to add Dependency
+				updateConsumerApplicationDescriptor(referencingCollections[0], "artifactrepository", applicationDescriptor)
 			}
 			applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
 
@@ -321,7 +303,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "service submodule")
 			referencingCollections.each { consumerCollection ->
 				if (!consumerCollection.equals(props.application)) {
-					updateConsumerApplicationDescriptor(referencingCollections[0], "binary", applicationDescriptor)
+					updateConsumerApplicationDescriptor(consumerCollection, "artifactrepository", applicationDescriptor)
 				}
 			}
 			applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)

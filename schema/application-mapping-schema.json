@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JSON Schema for Application Mapping file",
+  "description": "JSON Schema for Application Mapping",
+  "type": "object",
+  "properties": {
+    "applications": {
+      "type": "array",
+      "title": "Collection of application mappings.",
+      "description": "List of application meta information containing the existing naming patterns of members that are owned and managed for a given application. Used by the Migration Modeler.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "application": {
+            "type": "string",
+            "title": "The name of the application.",
+            "description": "Unique name of the application (without blanks or special characters). Used to name the application directory.",
+            "default": "Application name"
+          },
+          "description": {
+            "type": "string",
+            "title": "A description of the application.",
+            "description": "Description of the application business context and purpose. This field is not used in automation tasks.",
+            "default": "Application description"
+          },
+          "owner": {
+            "type": "string",
+            "title": "The owner of the application.",
+            "description": "Application owner. This field is not used in automation tasks.",
+            "default": "Application owner"
+          },
+          "baseline": {
+            "type": "string",
+            "title": "The version of the application.",
+            "description": "Baseline version of the application. Used to initialize the application's Git repository and to create a baseline package."
+          },
+          "namingConventions": {
+            "type": "array",
+            "title": "The list of naming patterns.",
+            "description": "A list of naming patterns or file names that belong to the application.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "application",
+          "description",
+          "owner",
+          "baseline",
+          "namingConventions"
+        ]
+      }
+    }
+  },
+  "required": [
+    "applications"
+  ]
+}
