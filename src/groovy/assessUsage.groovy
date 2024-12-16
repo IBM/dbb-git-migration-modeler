@@ -23,9 +23,9 @@ import static java.nio.file.StandardCopyOption.*
 
 
 @Field BuildProperties props = BuildProperties.getInstance()
-@Field MetadataStore metadataStore
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
+@Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
 @Field File originalApplicationDescriptorFile //Original Application Descriptor file in CONFIGS
 @Field File updatedApplicationDescriptorFile  //Updated Application Descriptor file in APPLICATIONS
 @Field def applicationDescriptor
@@ -338,10 +338,10 @@ def parseArgs(String[] args) {
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
 	cli.w(longOpt:'workspace', args:1, 'Absolute path to workspace (root) directory containing all required source directories')
-	cli.f(longOpt:'file-metadatastore', args:1, 'Absolute path to the folder containing the DBB File Metadatastore')
-	cli.du(longOpt:'db2-user', args:1, 'Db2 User ID for DBB Db2 Metadatastore')
-	cli.dp(longOpt:'db2-password', args:1, 'Db2 User\'s Password for DBB Db2 Metadatastore')
-	cli.dpf(longOpt:'db2-password-file', args:1, 'Absolute path to the Db2 Password file for DBB Db2 Metadatastore')
+	cli.f(longOpt:'file-metadatastore', args:1, 'Absolute path to the folder containing the DBB File MetadataStore')
+	cli.du(longOpt:'db2-user', args:1, 'Db2 User ID for DBB Db2 MetadataStore')
+	cli.dp(longOpt:'db2-password', args:1, 'Db2 User\'s Password for DBB Db2 MetadataStore')
+	cli.dpf(longOpt:'db2-password-file', args:1, 'Absolute path to the Db2 Password file for DBB Db2 MetadataStore')
 	cli.dc(longOpt:'db2-config', args:1, 'Absolute path to the Db2 connection configuration file')
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name.')
 	cli.c(longOpt:'configurations', args:1, required:false, 'Path of the directory containing Application Configurations YAML files.')
@@ -354,7 +354,7 @@ def parseArgs(String[] args) {
 	}
 
 	if (opts.w) props.workspace = opts.w
-	if (opts.f) props.fileMetadatastore = opts.f
+	if (opts.f) props.fileMetadataStore = opts.f
 	if (opts.du) props.db2User = opts.du
 	if (opts.dp) props.db2Password = opts.dp
 	if (opts.dpf) props.db2PasswordFile = opts.dpf
@@ -370,14 +370,14 @@ def parseArgs(String[] args) {
 		props.logFile = opts.l
 	}
 	
-	// Checks for correct configuration about Metadatastore
-	if (!props.fileMetadatastore && (!props.db2User || !props.db2ConfigFile)) {
-		logger.logMessage("*! [ERROR] Incomplete metadatastore configuration. Either the File metadatastore parameter (--file-metadatastore) or the Db2 metadatastore parameters (--db2-user and --db2-config) are missing. Exiting.")
+	// Checks for correct configuration about MetadataStore
+	if (!props.fileMetadataStore && (!props.db2User || !props.db2ConfigFile)) {
+		logger.logMessage("*! [ERROR] Incomplete MetadataStore configuration. Either the File MetadataStore parameter (--file-metadatastore) or the Db2 MetadataStore parameters (--db2-user and --db2-config) are missing. Exiting.")
 		System.exit(1)		 
 	} else {
 		if (props.db2User && props.db2ConfigFile) {
 			if (!props.db2Password && !props.db2PasswordFile) {
-				logger.logMessage("*! [ERROR] Missing Password and Password File for Db2 Metadatastore connection. Exiting.")
+				logger.logMessage("*! [ERROR] Missing Password and Password File for Db2 MetadataStore connection. Exiting.")
 				System.exit(1)		 
 			}
 		}		
@@ -413,22 +413,18 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 
 /**** findImpactedFiles -  method to configure and invoke SearchPathImpactFinder ****/
 def findImpactedFiles(String impactSearch, String file) {
-
 	HashSet<ImpactFile> allImpacts = new HashSet<ImpactFile>()
-	metadataStore.getBuildGroups().each { buildGroup ->
+	metadataStoreUtils.getBuildGroups().each { buildGroup ->
 		if (!buildGroup.getName().equals("dbb_default")) {
 			List<String> collections = new ArrayList<String>()
 			buildGroup.getCollections().each { collection ->
 				collections.add(collection.getName())
 			}
 			if (collections) {
-//				println("******* ${buildGroup.getName()} - $collections")
 				def finder = new SearchPathImpactFinder(impactSearch, buildGroup.getName(), collections)
-//				def finder = new SearchPathImpactFinder(impactSearch, collections)
 				// Find all files impacted by the changed file
 				if (finder) {
 					impacts = finder.findImpactedFiles(file, props.workspace)
-//					println("******* ${buildGroup.getName()} - $collections - $impacts")
 					if (impacts) {
 						allImpacts.addAll(impacts)
 					}
@@ -464,8 +460,8 @@ def initScriptParameters() {
 		System.exit(1)
 	}
 
-	if (props.fileMetadatastore) {	
-		metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.fileMetadatastore}")
+	if (props.fileMetadataStore) {	
+		metadataStoreUtils.initializeFileMetadataStore("${props.fileMetadataStore}")
 	} else {
 		File db2ConnectionConfigurationFile = new File(props.db2ConfigFile)
 		if (!db2ConnectionConfigurationFile.exists()){
@@ -476,12 +472,12 @@ def initScriptParameters() {
 			db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
 			// Call correct Db2 MetadataStore constructor
 			if (props.db2Password) {
-				metadataStore = MetadataStoreFactory.createDb2MetadataStore("${props.db2User}", "${props.db2Password}", db2ConnectionProps)
+				metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", "${props.db2Password}", db2ConnectionProps)
 			} else if (props.db2PasswordFile) {
-				metadataStore = MetadataStoreFactory.createDb2MetadataStore("${props.db2User}", new File(props.db2PasswordFile), db2ConnectionProps)
+				metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", new File(props.db2PasswordFile), db2ConnectionProps)
 			}
 		}
-	}	
+	}
 	
 	originalApplicationDescriptorFile = new File("${props.configurationsDirectory}/${props.application}.yml")
 	updatedApplicationDescriptorFile = new File("${props.workspace}/${props.application}/applicationDescriptor.yml")

@@ -22,8 +22,8 @@ import groovy.cli.commons.*
 
 
 @Field BuildProperties props = BuildProperties.getInstance()
-@Field MetadataStore metadataStore
 @Field def logger = loadScript(new File("utils/logger.groovy"))
+@Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
 
 /******** Enabling Control Transfer flag */
 props.put("dbb.DependencyScanner.controlTransfers", "true")
@@ -49,30 +49,17 @@ logger.logMessage ("** Scanning the files.")
 Set<String> appFiles = getFileList()
 List<LogicalFile> logicalFiles = scanFiles(appFiles)
 
-logger.logMessage ("** Storing results in the '${props.application}' DBB Collection.")
+logger.logMessage ("** Storing results in the '${props.application}-main' DBB Collection.")
 // Manage Build Groups and Collections
-/*
-metadataStore.getBuildGroupNames().each { buildGroupName ->
-	if (!buildGroupName.equals("dbb_default")) {
-		println("**** Delete ${buildGroupName}")
-		metadataStore.deleteBuildGroup(buildGroupName)
-	}
-}
-metadataStore.getCollections().each { collection ->
-	metadataStore.deleteCollection(collection)
-} */
 
-if (metadataStore.buildGroupExists("${props.application}-main")) {
-	metadataStore.deleteBuildGroup("${props.application}-main")
-}
-/*
-if (metadataStore.collectionExists("${props.application}-main")) {
-	metadataStore.deleteCollection("${props.application}-main")
-} */
-BuildGroup buildGroup = metadataStore.createBuildGroup("${props.application}-main")
-Collection collection = buildGroup.createCollection("${props.application}-main")
+metadataStoreUtils.deleteBuildGroup("${props.application}-main")
+Collection collection = metadataStoreUtils.createCollection("${props.application}-main", "${props.application}-main")
 // store results
 collection.addLogicalFiles(logicalFiles)
+if (props.dbbOwner) {
+	println("** Setting collection owner to ${owner}")
+	metadataStoreUtils.setCollectionOwner("${props.application}-main", "${props.application}-main", props.dbbOwner)
+}
 
 logger.close()
 
@@ -120,11 +107,12 @@ def parseArgs(String[] args) {
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
 	cli.w(longOpt:'workspace', args:1, required:true, 'Absolute path to workspace (root) directory containing all required source directories')
-	cli.f(longOpt:'file-metadatastore', args:1, required:false, 'Absolute path to the folder containing the DBB File Metadatastore')
-	cli.du(longOpt:'db2-user', args:1, required:false, 'Db2 User ID for DBB Db2 Metadatastore')
-	cli.dp(longOpt:'db2-password', args:1, required:false, 'Db2 User\'s Password for DBB Db2 Metadatastore')
-	cli.dpf(longOpt:'db2-password-file', args:1, required:false, 'Absolute path to the Db2 Password file for DBB Db2 Metadatastore')
+	cli.f(longOpt:'file-metadatastore', args:1, required:false, 'Absolute path to the folder containing the DBB File MetadataStore')
+	cli.du(longOpt:'db2-user', args:1, required:false, 'Db2 User ID for DBB Db2 MetadataStore')
+	cli.dp(longOpt:'db2-password', args:1, required:false, 'Db2 User\'s Password for DBB Db2 MetadataStore')
+	cli.dpf(longOpt:'db2-password-file', args:1, required:false, 'Absolute path to the Db2 Password file for DBB Db2 MetadataStore')
 	cli.dc(longOpt:'db2-config', args:1, required:false, 'Absolute path to the Db2 connection configuration file')
+	cli.do(longOpt:'dbb-owner', args:1, required:false, 'Owner of the DBB MetadataStore collections')
 	cli.a(longOpt:'application', args:1, required:true, 'Application name ')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 
@@ -139,12 +127,13 @@ def parseArgs(String[] args) {
 	if (opts.dp) props.db2Password = opts.dp
 	if (opts.dpf) props.db2PasswordFile = opts.dpf
 	if (opts.dc) props.db2ConfigFile = opts.dc
+	if (opts.do) props.dbbOwner = opts.do
 	if (opts.a) props.application = opts.a
 	if (opts.l) props.logFile = opts.l
 
-	// Checks for correct configuration about Metadatastore
+	// Checks for correct configuration about MetadataStore
 	if (!props.fileMetadatastore && (!props.db2User || !props.db2ConfigFile)) {
-		logger.logMessage("*! [ERROR] Incomplete metadatastore configuration. Either the File metadatastore parameter (--file-metadatastore) or the Db2 metadatastore parameters (--db2-user and --db2-config) are missing. Exiting.")
+		logger.logMessage("*! [ERROR] Incomplete MetadataStore configuration. Either the File MetadataStore parameter (--file-metadatastore) or the Db2 Metadatastore parameters (--db2-user and --db2-config) are missing. Exiting.")
 		System.exit(1)		 
 	} else {
 		if (props.db2User && props.db2ConfigFile) {
@@ -169,8 +158,8 @@ def initScriptParameters() {
 		System.exit(1)
 	}
 
-	if (props.fileMetadatastore) {	
-		metadataStore = MetadataStoreFactory.createFileMetadataStore("${props.fileMetadatastore}")
+	if (props.fileMetadataStore) {	
+		metadataStoreUtils.initializeFileMetadataStore("${props.fileMetadatastore}")
 	} else {
 		File db2ConnectionConfigurationFile = new File(props.db2ConfigFile)
 		if (!db2ConnectionConfigurationFile.exists()){
@@ -181,9 +170,9 @@ def initScriptParameters() {
 			db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
 			// Call correct Db2 MetadataStore constructor
 			if (props.db2Password) {
-				metadataStore = MetadataStoreFactory.createDb2MetadataStore("${props.db2User}", "${props.db2Password}", db2ConnectionProps)
+				metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", "${props.db2Password}", db2ConnectionProps)
 			} else if (props.db2PasswordFile) {
-				metadataStore = MetadataStoreFactory.createDb2MetadataStore("${props.db2User}", new File(props.db2PasswordFile), db2ConnectionProps)
+				metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", new File(props.db2PasswordFile), db2ConnectionProps)
 			}
 		}
 	}

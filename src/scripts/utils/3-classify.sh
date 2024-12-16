@@ -74,6 +74,7 @@ else
 			-w $DBB_MODELER_APPLICATION_DIR \
 			-a $applicationDir \
 			${METADATASTORE_OPTIONS} \
+			-do ${PIPELINE_USER} \
 			-l $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
 		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		$CMD
