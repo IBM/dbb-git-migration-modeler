@@ -104,8 +104,10 @@ When using a file-based MetadataStore, the location of the MetadataStore is spec
 
 When using a Db2-based MetadataStore, some configuration steps must be executed prior to using the DBB Git Migration Modeler. A Db2 database and the Db2 tables corresponding to the DBB-provided schema must be created.
 Instructions to create a Db2-based MetadataStore with DBB can be found in this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-zos-as-metadata-database) for Db2 z/OS and this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-luw-as-metadata-database) for Db2 LUW.
+
 The configuration to access the Db2-based MetadataStore with the DBB Git Migration Modeler is performed through the `DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE`, `DBB_MODELER_DB2_METADATASTORE_ID`, `DBB_MODELER_DB2_METADATASTORE_PASSWORD` and `DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE` properties.
-Once correctly configured, the DBB Git Migration Modeler is ready to be set up.
+These required properties are collected during the Setup phase, as described in the next section. The Setup script then suggests to use the `CheckDb2MetadataStore.sh` script to verify the correct connectivity to the Db2 database.
+Once the Db2 MetadataStore connection is correctly configured and checked, the DBB Git Migration Modeler is ready to be used with a Db2-based MetadataStore.
 
 ## Setting up the DBB Git Migration Modeler configuration
 

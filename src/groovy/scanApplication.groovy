@@ -45,11 +45,11 @@ if (props.logFile) {
 }
 
 
-logger.logMessage ("** Scanning the files.")
+logger.logMessage("** Scanning the files.")
 Set<String> appFiles = getFileList()
 List<LogicalFile> logicalFiles = scanFiles(appFiles)
 
-logger.logMessage ("** Storing results in the '${props.application}-main' DBB Collection.")
+logger.logMessage("** Storing results in the '${props.application}-main' DBB Collection.")
 // Manage Build Groups and Collections
 
 metadataStoreUtils.deleteBuildGroup("${props.application}-main")
@@ -57,7 +57,7 @@ Collection collection = metadataStoreUtils.createCollection("${props.application
 // store results
 collection.addLogicalFiles(logicalFiles)
 if (props.dbbOwner) {
-	println("** Setting collection owner to ${props.dbbOwner}")
+	logger.logMessage("** Setting collection owner to ${props.dbbOwner}")
 	metadataStoreUtils.setCollectionOwner("${props.application}-main", "${props.application}-main", props.dbbOwner)
 }
 
@@ -85,12 +85,12 @@ def scanFiles(fileList) {
 	List<LogicalFile> logicalFiles = new ArrayList<LogicalFile>()
 	fileList.each{ file ->
 		DependencyScanner scanner = new DependencyScanner()
-		logger.logMessage "\t Scanning file $file "
+		logger.logMessage("\t Scanning file $file ")
 		try {
 			logicalFile = scanner.scan(file, props.workspace)
 			logicalFiles.add(logicalFile)
 		} catch (Exception e) {
-			logger.logMessage "\t\tSomething went wrong when scanning this file."
+			logger.logMessage("\t*! [ERROR] Something went wrong when scanning the file '$file'.")
 			logger.logMessage(e.getMessage())
 		}
 	}
@@ -111,7 +111,7 @@ def parseArgs(String[] args) {
 	cli.du(longOpt:'db2-user', args:1, required:false, 'Db2 User ID for DBB Db2 MetadataStore')
 	cli.dp(longOpt:'db2-password', args:1, required:false, 'Db2 User\'s Password for DBB Db2 MetadataStore')
 	cli.dpf(longOpt:'db2-password-file', args:1, required:false, 'Absolute path to the Db2 Password file for DBB Db2 MetadataStore')
-	cli.dc(longOpt:'db2-config', args:1, required:false, 'Absolute path to the Db2 connection configuration file')
+	cli.dc(longOpt:'db2-config', args:1, required:false, 'Absolute path to the Db2 Connection configuration file')
 	cli.do(longOpt:'dbb-owner', args:1, required:false, 'Owner of the DBB MetadataStore collections')
 	cli.a(longOpt:'application', args:1, required:true, 'Application name ')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
@@ -133,12 +133,12 @@ def parseArgs(String[] args) {
 
 	// Checks for correct configuration about MetadataStore
 	if (!props.fileMetadatastore && (!props.db2User || !props.db2ConfigFile)) {
-		logger.logMessage("*! [ERROR] Incomplete MetadataStore configuration. Either the File MetadataStore parameter (--file-metadatastore) or the Db2 Metadatastore parameters (--db2-user and --db2-config) are missing. Exiting.")
+		logger.logMessage("*! [ERROR] Incomplete MetadataStore configuration. Either the File MetadataStore parameter (--file-metadatastore) or the Db2 MetadataStore parameters (--db2-user and --db2-config) are missing. Exiting.")
 		System.exit(1)		 
 	} else {
 		if (props.db2User && props.db2ConfigFile) {
 			if (!props.db2Password && !props.db2PasswordFile) {
-				logger.logMessage("*! [ERROR] Missing Password and Password File for Db2 Metadatastore connection. Exiting.")
+				logger.logMessage("*! [ERROR] Missing Password and Password File for Db2 MetadataStore connection. Exiting.")
 				System.exit(1)		 
 			}
 		}		

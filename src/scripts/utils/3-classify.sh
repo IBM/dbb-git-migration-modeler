@@ -16,11 +16,11 @@ else
 	dir=$(dirname "$0")
 	. $dir/0-environment.sh "$@"
 
-	# Build Metadatastore
-	# Drop and recreate the Build Metadatastore folder
+	# Build MetadataStore
+	# Drop and recreate the Build MetadataStore folder
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
 		if [ -z "${DBB_MODELER_FILE_METADATA_STORE_DIR}" ]; then
-			echo "[ERROR] File Metadatastore location is missing from the Configuration file. Exiting."
+			echo "[ERROR] File MetadataStore location is missing from the Configuration file. Exiting."
 			exit 1
 		else
 			if [ -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
@@ -34,20 +34,20 @@ else
 		fi
 	elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 		if [ -z "${DBB_MODELER_DB2_METADATASTORE_ID}" ]; then
-			echo "[ERROR] The Db2 Metadatastore User is missing from the Configuration file. Exiting."
+			echo "[ERROR] The Db2 MetadataStore User is missing from the Configuration file. Exiting."
 			exit 1
 		fi
 		if [ -z "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
-			echo "[ERROR] The Db2 Connection Configuration file is missing from the Configuration file. Exiting."
+			echo "[ERROR] The Db2 Connection configuration file is missing from the Configuration file. Exiting."
 			exit 1
 		else 
 			if [ ! -f "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
-				echo "[ERROR] The Db2 Connection Configuration file '${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting."
+				echo "[ERROR] The Db2 Connection configuration file '${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting."
 				exit 1
 			fi
 		fi
 		if [ -z "${DBB_MODELER_DB2_METADATASTORE_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE}" ]; then
-			echo "[ERROR] Either the Db2 Metadatastore User's Password or the Db2 Metadatastore Password File are missing from the Configuration file. Exiting."
+			echo "[ERROR] Either the Db2 MetadataStore User's Password or the Db2 MetadataStore Password File are missing from the Configuration file. Exiting."
 			exit 1
 		fi	
 	fi
