@@ -57,7 +57,7 @@ Collection collection = metadataStoreUtils.createCollection("${props.application
 // store results
 collection.addLogicalFiles(logicalFiles)
 if (props.dbbOwner) {
-	println("** Setting collection owner to ${owner}")
+	println("** Setting collection owner to ${props.dbbOwner}")
 	metadataStoreUtils.setCollectionOwner("${props.application}-main", "${props.application}-main", props.dbbOwner)
 }
 
