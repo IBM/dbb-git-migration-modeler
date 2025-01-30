@@ -25,20 +25,6 @@ class ApplicationsMapping {
 	ArrayList<ApplicationMapping> applications
 }
 
-/////// Test
-//ApplicationsMapping applicationsMapping = readApplicationsMapping(new File("applicationsMapping.yml"))
-//println applicationsMapping.applications
-//println applicationDescriptor.description
-//println applicationDescriptor.sources.size()
-//
-//applicationDescriptor = appendFileDefinition(applicationDescriptor, "copy", "none", "COPY", "COPYBOOK", "PRIVATE")
-//
-//println applicationDescriptor.application
-//println applicationDescriptor.description
-//println applicationDescriptor.sources.size()
-//
-//writeApplicationDescriptor(new File("/u/dbehm/componentization/work/retirementCalculator.yaml"), applicationDescriptor)
-
 /**
  * 
  * Reads an existing application descriptor YAML
@@ -60,9 +46,6 @@ def writeApplicationsMapping(File yamlFile, ApplicationsMapping applicationsMapp
 	yamlBuilder {
 		applications applicationsMapping
 	}
-
-	// debug
-	// println yamlBuilder.toString()
 
 	// write file
 	yamlFile.withWriter() { writer ->

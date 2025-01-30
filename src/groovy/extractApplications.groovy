@@ -72,6 +72,7 @@ if (props.repositoryPathsMappingFilePath) {
 		logger.logMessage "*! [WARNING] File ${props.repositoryPathsMappingFilePath} not found. Process will exit."
 		System.exit(1)
 	} else {
+		
 		def yamlSlurper = new groovy.yaml.YamlSlurper()
 		repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
 	}
@@ -496,6 +497,7 @@ def loadMapFromFile(String filePath) {
 				map.put(key, value);
 			}
 		}
+		reader.close()
 	} catch (IOException e) {
 		e.printStackTrace();
 	}
