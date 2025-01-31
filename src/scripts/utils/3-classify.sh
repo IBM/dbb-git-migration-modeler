@@ -109,10 +109,15 @@ else
 	done
 	
 	# Drop and recreate the Build Metadatastore folder
-	if [ -d $DBB_MODELER_METADATA_STORE_DIR ] 
-	then
-		rm -rf $DBB_MODELER_METADATA_STORE_DIR
-		mkdir -p $DBB_MODELER_METADATA_STORE_DIR
+	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
+		if [ -d $DBB_MODELER_METADATA_STORE_DIR ] 
+		then
+			rm -rf $DBB_MODELER_FILE_METADATA_STORE_DIR
+		fi
+		if [ ! -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
+		then
+			mkdir -p $DBB_MODELER_FILE_METADATA_STORE_DIR
+		fi
 	fi
 
 	# Scan files again after dropping the file metadatastore
