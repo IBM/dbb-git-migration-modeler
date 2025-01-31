@@ -49,7 +49,7 @@ def typesConfigurations
 logger.logMessage ("** Reading the Types Configurations definitions from '${props.typesConfigurationsFilePath}'. ")
 def typesConfigurationsFile = new File(props.typesConfigurationsFilePath)
 if (!typesConfigurationsFile.exists()) {
-	logger.logMessage "!* Error: the Types Configurations file '${props.typesConfigurationsFilePath}' doesn't exist. Exiting."
+	logger.logMessage "!* [ERROR] the Types Configurations file '${props.typesConfigurationsFilePath}' doesn't exist. Exiting."
 	System.exit(1);	
 } else {
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
@@ -61,7 +61,7 @@ applicationDescriptorFile = new File("${props.workspace}/${props.application}/ap
 if (applicationDescriptorFile.exists()) {
 	applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
 } else {
-	logger.logMessage ("!* Application Descriptor file ${applicationDescriptorFile.getPath()} was not found. Exiting.")
+	logger.logMessage ("!* [ERROR] Application Descriptor file '${applicationDescriptorFile.getPath()}' was not found. Exiting.")
 	System.exit(1)
 }
 
@@ -70,10 +70,10 @@ def customZAppBuildFolderPath = props.workspace + "/dbb-zappbuild"
 // Path of the original dbb-zAppBuild instance got from the script parms
 def originalZAppBuildFolder = new File(props.zAppBuildFolderPath)
 if (!originalZAppBuildFolder.exists()) {
-	logger.logMessage "!* Error: the original dbb-zAppBuild folder '${props.zAppBuildFolderPath}' doesn't exist. Exiting."
+	logger.logMessage "!* [ERROR] The original dbb-zAppBuild folder '${props.zAppBuildFolderPath}' doesn't exist. Exiting."
 	System.exit(1);	
 } else if (!originalZAppBuildFolder.isDirectory()) {
-	logger.logMessage "!* Error: the path '${props.zAppBuildFolderPath}' doesn't point to a folder. Exiting."
+	logger.logMessage "!* [ERROR] The path '${props.zAppBuildFolderPath}' doesn't point to a folder. Exiting."
 	System.exit(1);	
 } else {
 	// Copying the original zAppBuild to the customer instance if it doesn't exist
@@ -105,10 +105,10 @@ if (!applicationConfFolder.exists()) {
 
 // languageConfigurationMapping file
 def languageConfigurationMappingFilePath = applicationConfFolderPath + "/languageConfigurationMapping.properties"
-File languageConfigurationMappingFile = new File(languageConfigurationMappingFilePath)
+/*File languageConfigurationMappingFile = new File(languageConfigurationMappingFilePath)
 if (!languageConfigurationMappingFile.exists()) {
 	languageConfigurationMappingFile.createNewFile()
-}
+} */
 
 def filePropertiesFilePath = applicationConfFolderPath + "/file.properties"
 
@@ -192,6 +192,7 @@ if (filesToLanguageConfigurationMap.size() > 0) {
 			newFilePropertiesWriter.write(line + "\n")
 		}
 	}
+	filePropertiesReader.close()
 
 	// Append new line
 	def currentDate = new Date()
@@ -211,7 +212,6 @@ if (filesToLanguageConfigurationMap.size() > 0) {
 		
 	logger.logMessage("** INFO: Don't forget to enable the use of Language Configuration by uncommenting the 'loadLanguageConfigurationProperties' property in '$filePropertiesFilePath'")
 }
-
 
 // close logger file
 logger.close()

@@ -108,6 +108,7 @@ def writeApplicationDescriptor(File yamlFile, ApplicationDescriptor applicationD
     yamlFile.withWriter("IBM-1047") { writer ->
         writer.write(yamlBuilder.toString())
     }
+    
 	Process process = "chtag -tc IBM-1047 ${yamlFile.getAbsolutePath()}".execute()
 	process.waitFor()   
 }
@@ -353,9 +354,6 @@ def addBaseline(ApplicationDescriptor applicationDescriptor, String branch, Stri
 		applicationDescriptor.baselines = new ArrayList<Baseline>()
 	}
 
-	if (applicationDescriptor.baselines) {
-		applicationDescriptor.sources = new ArrayList<Source>()
-	}
 	Baseline newBaseline = new Baseline()
 	newBaseline.branch = branch
 	newBaseline.baseline = baseline

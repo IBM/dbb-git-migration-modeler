@@ -155,18 +155,18 @@ def parseArgs(String[] args) {
 def getFileList(String dir) {
 	Set<String> fileList = new HashSet();
 	Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-					if (!Files.isDirectory(file)) {
+		@Override
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+			if (!Files.isDirectory(file)) {
 
-						String fileName = file.toString();
-						if (fileName.startsWith('/')) {
-							String relPath = new File(dir).toURI().relativize(new File(fileName.trim()).toURI()).getPath()
-							fileList.add(relPath);
-						}
-					}
-					return FileVisitResult.CONTINUE;
+				String fileName = file.toString();
+				if (fileName.startsWith('/')) {
+					String relPath = new File(dir).toURI().relativize(new File(fileName.trim()).toURI()).getPath()
+					fileList.add(relPath);
 				}
-			});
+			}
+			return FileVisitResult.CONTINUE;
+		}
+	});
 	return fileList;
 }

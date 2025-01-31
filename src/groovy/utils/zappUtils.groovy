@@ -140,7 +140,7 @@ def writeZAppFile(File yamlFile) {
     // write file
     yamlFile.withWriter("IBM-1047") { writer ->
         writer.write(yamlBuilder.toString())
-    } 
+    }
 
 	Process process = "chtag -tc IBM-1047 ${yamlFile.getAbsolutePath()}".execute()
 	process.waitFor()   
