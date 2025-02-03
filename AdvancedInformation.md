@@ -128,7 +128,7 @@ This script prompts for the below environment variables and saves them in a conf
 | DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE  | Path for the DB2 Metadatastore Connection configuration file | `$DBB_MODELER_WORK/db2Connection.conf` |
 | DBB_MODELER_DB2_METADATASTORE_ID  | DB2 User ID to connect through the JDBC driver | `user` |
 | DBB_MODELER_DB2_METADATASTORE_PASSWORD  | DB2 User ID's Password to connect through the JDBC driver |  |
-| DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE  | # Default path for the DB2 Password file to connect through the JDBC driver |  |
+| DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE  | Default path for the DB2 Password file to connect through the JDBC driver (recommended) |  |
 | **DBB Git Migration Modeler Input files** | | | 
 | APPLICATION_MAPPING_FILE  | Application Mapping file containing the existing applications and their naming conventions, elements lists. See tailoring of input files. | `$DBB_MODELER_WORK/applicationsMapping.yaml` | 
 | REPOSITORY_PATH_MAPPING_FILE  | Repository Paths Mapping file map the various types of members to the folder layout in Git. See tailoring of input files. | `$DBB_MODELER_WORK/repositoryPathsMapping.yaml` | 
