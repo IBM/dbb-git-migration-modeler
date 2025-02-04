@@ -33,7 +33,7 @@ else
 			fi
 		fi
 	elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-		if [ -z "${DBB_MODELER_DB2_METADATASTORE_ID}" ]; then
+		if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" ]; then
 			echo "[ERROR] The Db2 MetadataStore User is missing from the Configuration file. Exiting."
 			exit 1
 		fi
@@ -46,7 +46,7 @@ else
 				exit 1
 			fi
 		fi
-		if [ -z "${DBB_MODELER_DB2_METADATASTORE_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE}" ]; then
+		if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" ]; then
 			echo "[ERROR] Either the Db2 MetadataStore User's Password or the Db2 MetadataStore Password File are missing from the Configuration file. Exiting."
 			exit 1
 		fi	
@@ -61,25 +61,15 @@ else
 		echo "*******************************************************************"
 		touch $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-scan.log
-		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-			declare METADATASTORE_OPTIONS="--file-metadatastore $DBB_MODELER_FILE_METADATA_STORE_DIR"
-		elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-			if [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORD" ]; then
-				declare METADATASTORE_OPTIONS="--db2-user $DBB_MODELER_DB2_METADATASTORE_ID --db2-password $DBB_MODELER_DB2_METADATASTORE_PASSWORD --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"
-			elif [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE" ]; then
-				declare METADATASTORE_OPTIONS="--db2-user $DBB_MODELER_DB2_METADATASTORE_ID --db2-password-file $DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"
-			fi
-		fi		
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			-w $DBB_MODELER_APPLICATION_DIR \
+			$@ \
 			-a $applicationDir \
-			${METADATASTORE_OPTIONS} \
-			-do ${PIPELINE_USER} \
 			-l $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
 		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		$CMD
 	done
 
+	# Assess file usage across applications
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
@@ -88,19 +78,8 @@ else
 		echo "*******************************************************************"
 		touch $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
-		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-			declare METADATASTORE_OPTIONS="--file-metadatastore $DBB_MODELER_FILE_METADATA_STORE_DIR"
-		elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-			if [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORD" ]; then
-				declare METADATASTORE_OPTIONS="--db2-user $DBB_MODELER_DB2_METADATASTORE_ID --db2-password $DBB_MODELER_DB2_METADATASTORE_PASSWORD --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"
-			elif [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE" ]; then
-				declare METADATASTORE_OPTIONS="--db2-user $DBB_MODELER_DB2_METADATASTORE_ID --db2-password-file $DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"
-			fi
-		fi
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
-			--workspace $DBB_MODELER_APPLICATION_DIR \
-			--configurations $DBB_MODELER_APPCONFIG_DIR \
-			${METADATASTORE_OPTIONS} \
+			$@ \
 			--application $applicationDir \
 			--moveFiles \
 			--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
@@ -121,6 +100,7 @@ else
 	fi
 
 	# Scan files again after dropping the file metadatastore
+	# Collections are dropped from the groovy script when using Db2 MetadataStore
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
@@ -130,9 +110,8 @@ else
 		touch $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			-w $DBB_MODELER_APPLICATION_DIR \
+			$@ \
 			-a $applicationDir \
-			-m $DBB_MODELER_METADATA_STORE_DIR \
 			-l $DBB_MODELER_LOGS/3-$applicationDir-rescan.log"    
 		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		$CMD

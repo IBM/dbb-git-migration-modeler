@@ -21,8 +21,8 @@ import java.nio.file.*
 import groovy.cli.commons.*
 import static java.nio.file.StandardCopyOption.*
 
-
-@Field BuildProperties props = BuildProperties.getInstance()
+@Field Properties props = new Properties()
+@Field Properties configuration = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
@@ -34,18 +34,7 @@ import static java.nio.file.StandardCopyOption.*
 // Initialization
 parseArgs(args)
 
-// Print parms
-println("** Script configuration:")
-props.each { k,v->
-	println "   $k -> $v"
-}
-
 initScriptParameters()
-
-// Handle log file
-if (props.logFile) {
-	logger.create(props.logFile)
-}
 
 logger.logMessage("** Getting the list of files of 'Include File' type.")
 //HashMap<String, ArrayList<String>> includesFiles = getIncludeFilesFromApplicationDescriptor()
@@ -80,7 +69,7 @@ def getIncludeFilesFromApplicationDescriptor() {
 	if (matchingSources) {
 		matchingSources.each() { matchingSource ->
 			matchingSource.files.each() { file ->
-				def impactSearchRule = 	"search:[:COPY]${props.workspace}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
+				def impactSearchRule = 	"search:[:COPY]${Props.DBB_MODELER_APPLICATION_DIR}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
 				HashMap<String, String> properties = new HashMap<String, String>()
 				properties.put("impactSearchRule", impactSearchRule)
 				properties.put("repositoryPath", matchingSource.repositoryPath)
@@ -108,7 +97,7 @@ def getProgramsFromApplicationDescriptor() {
 		matchingSources.each() { matchingSource ->
 			matchingSource.files.each() { file ->
 				// run impact analysis and only look for Static CALL dependencies
-				def impactSearchRule = 	"search:[:CALL]${props.workspace}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
+				def impactSearchRule = 	"search:[:CALL]${Props.DBB_MODELER_APPLICATION_DIR}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
 				HashMap<String, String> properties = new HashMap<String, String>()
 				properties.put("impactSearchRule", impactSearchRule)
 				properties.put("repositoryPath", matchingSource.repositoryPath)
@@ -142,7 +131,7 @@ def getProgramsFromApplicationDescriptor() {
 		Set<String> referencingCollections = new HashSet<String>()
 
 		// Check if the file physically exists
-		File sourceFile = new File ("${props.workspace}/${props.application}/${qualifiedFile}")
+		File sourceFile = new File ("${Props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${qualifiedFile}")
 		if (sourceFile.exists()) { 
 			// Obtain impacts
 			logger.logMessage("** Analyzing impacted applications for file '${props.application}/${qualifiedFile}'.")
@@ -170,8 +159,8 @@ def getProgramsFromApplicationDescriptor() {
 				} else { // Only an other application references this Include File, so update the definitions and maybe move it
 					if (props.moveFiles.toBoolean()) {
 						// Update the target Application Descriptor 
-						originalTargetApplicationDescriptorFile = new File("${props.configurationsDirectory}/${referencingCollections[0]}.yml")
-						updatedTargetApplicationDescriptorFile = new File("${props.workspace}/${referencingCollections[0]}/applicationDescriptor.yml")
+						originalTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${referencingCollections[0]}.yml")
+						updatedTargetApplicationDescriptorFile = new File("${Props.DBB_MODELER_APPLICATION_DIR}/${referencingCollections[0]}/applicationDescriptor.yml")
 						def targetApplicationDescriptor
 						// determine which YAML file to use
 						if (updatedTargetApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
@@ -196,7 +185,7 @@ def getProgramsFromApplicationDescriptor() {
 							applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
 							logger.logMessage("\t==> Removing Include File '$file' from Application '${props.application}' described in '${updatedApplicationDescriptorFile.getPath()}'.")
 							// Update application mappings
-							updateMappingFiles(props.configurationsDirectory, props.application, referencingCollections[0], props.workspace + '/' + props.application + '/' + qualifiedFile, file);
+							updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, referencingCollections[0], Props.DBB_MODELER_APPLICATION_DIR + '/' + props.application + '/' + qualifiedFile, file);
 						}
 					} else {
 						// just modify the scope as PUBLIC or SHARED
@@ -320,49 +309,136 @@ def parseArgs(String[] args) {
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
 	cli.w(longOpt:'workspace', args:1, 'Absolute path to workspace (root) directory containing all required source directories')
-	cli.f(longOpt:'file-metadatastore', args:1, 'Absolute path to the folder containing the DBB File MetadataStore')
-	cli.du(longOpt:'db2-user', args:1, 'Db2 User ID for DBB Db2 MetadataStore')
-	cli.dp(longOpt:'db2-password', args:1, 'Db2 User\'s Password for DBB Db2 MetadataStore')
-	cli.dpf(longOpt:'db2-password-file', args:1, 'Absolute path to the Db2 Password file for DBB Db2 MetadataStore')
-	cli.dc(longOpt:'db2-config', args:1, 'Absolute path to the Db2 connection configuration file')
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name.')
-	cli.c(longOpt:'configurations', args:1, required:false, 'Path of the directory containing Application Configurations YAML files.')
 	cli.m(longOpt:'moveFiles', args:0, 'Flag to move files when usage is assessed.')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
+	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
 
 	def opts = cli.parse(args)
-	if (!opts) {
+	if (!args || !opts) {
+		cli.usage()
 		System.exit(1)
 	}
+	
+	if (opts.l) {
+		props.logFile = opts.l
+		logger.create(props.logFile)		
+	}	
 
-	if (opts.w) props.workspace = opts.w
-	if (opts.f) props.fileMetadataStore = opts.f
-	if (opts.du) props.db2User = opts.du
-	if (opts.dp) props.db2Password = opts.dp
-	if (opts.dpf) props.db2PasswordFile = opts.dpf
-	if (opts.dc) props.db2ConfigFile = opts.dc
-	if (opts.a) props.application = opts.a
-	if (opts.c) props.configurationsDirectory = opts.c
+	if (opts.a) {
+		props.application = opts.a
+	} else {
+		logger.logMessage("*! [ERROR] The Application name (option -a/--application) must be provided. Exiting.")
+		System.exit(1)		 			
+	}
+
 	if (opts.m) {
 		props.moveFiles = "true"
 	} else {
 		props.moveFiles = "false"
 	}
-	if (opts.l) {
-		props.logFile = opts.l
+
+	if (opts.c) {
+		props.configurationFilePath = opts.c
+		File configurationFile = new File(props.configurationFilePath)
+		if (configurationFile.exists()) {
+			configurationFile.withReader() { reader ->
+				configuration.load(reader)
+			}
+		} else {
+			logger.logMessage("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
+			System.exit(1)		 			
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
+		System.exit(1)
 	}
 	
-	// Checks for correct configuration about MetadataStore
-	if (!props.fileMetadataStore && (!props.db2User || !props.db2ConfigFile)) {
-		logger.logMessage("*! [ERROR] Incomplete MetadataStore configuration. Either the File MetadataStore parameter (--file-metadatastore) or the Db2 MetadataStore parameters (--db2-user and --db2-config) are missing. Exiting.")
-		System.exit(1)		 
+	if (configuration.DBB_MODELER_APPCONFIG_DIR) {
+		File directory = new File(configuration.DBB_MODELER_APPCONFIG_DIR)
+		if (directory.exists()) {
+			props.DBB_MODELER_APPCONFIG_DIR = configuration.DBB_MODELER_APPCONFIG_DIR
+		} else {
+			logger.logMessage("*! [ERROR] The Configurations directory '${configuration.DBB_MODELER_APPCONFIG_DIR}' does not exist. Exiting.")
+			System.exit(1)
+		}
 	} else {
-		if (props.db2User && props.db2ConfigFile) {
-			if (!props.db2Password && !props.db2PasswordFile) {
-				logger.logMessage("*! [ERROR] Missing Password and Password File for Db2 MetadataStore connection. Exiting.")
+		logger.logMessage("*! [ERROR] The Configurations directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+
+	if (configuration.DBB_MODELER_APPLICATION_DIR) {
+		File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
+		if (directory.exists()) {
+			props.DBB_MODELER_APPLICATION_DIR = configuration.DBB_MODELER_APPLICATION_DIR
+		} else {
+			logger.logMessage("*! [ERROR] The Applications directory '${configuration.DBB_MODELER_APPLICATION_DIR}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+		
+	if (configuration.DBB_MODELER_METADATASTORE_TYPE) {
+		props.DBB_MODELER_METADATASTORE_TYPE = configuration.DBB_MODELER_METADATASTORE_TYPE
+		if (!props.DBB_MODELER_METADATASTORE_TYPE.equals("file") && !props.DBB_MODELER_METADATASTORE_TYPE.equals("db2")) {
+			logger.logMessage("*! [ERROR] The type of MetadataStore can only be 'file' or 'db2'. Exiting.")
+			System.exit(1)
+		} 
+	} else {
+		logger.logMessage("*! [ERROR] The type of MetadataStore (file or db2) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+	
+	if (props.DBB_MODELER_METADATASTORE_TYPE.equals("file")) {
+		if (configuration.DBB_MODELER_FILE_METADATA_STORE_DIR) {
+			File directory = new File(configuration.DBB_MODELER_FILE_METADATA_STORE_DIR)
+			if (directory.exists()) {
+				props.DBB_MODELER_FILE_METADATA_STORE_DIR = configuration.DBB_MODELER_FILE_METADATA_STORE_DIR
+			} else {
+				logger.logMessage("*! [ERROR] The location for the File MetadataStore '${configuration.DBB_MODELER_FILE_METADATA_STORE_DIR}' does not exist. Exiting.")
+				System.exit(1)
+			}
+		} else {
+			logger.logMessage("*! [ERROR] The location of the File MetadataStore must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+			System.exit(1)
+		} 
+	} else if (props.DBB_MODELER_METADATASTORE_TYPE.equals("db2")) {
+		if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID) {
+			props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID = configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID
+		} else {
+			logger.logMessage("*! [ERROR] The User ID for Db2 MetadataStore JDBC connection must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+			System.exit(1)		 
+		}
+		if (configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE) {
+			File file = new File(configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE)
+			if (file.exists()) {
+				props.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE = configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE
+			} else {
+				logger.logMessage("*! [ERROR] The Db2 Connection configuration file for Db2 MetadataStore JDBC connection '${configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting.")
 				System.exit(1)		 
 			}
-		}		
+		} else {
+			logger.logMessage("*! [ERROR] The path to the Db2 Connection configuration file for Db2 MetadataStore JDBC connection must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+			System.exit(1)		 
+		}
+	
+		if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD && !configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
+			logger.logMessage("*! [ERROR] Either the Password or the Password File for Db2 Metadatastore JDBC connection must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+			System.exit(1)		 
+		} else {
+			props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD = configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD
+			props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE = configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE			
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The type of MetadataStore (file or db2) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+
+	logger.logMessage("** Script configuration:")
+	props.each() { k, v ->
+		logger.logMessage("\t$k -> $v")
 	}	
 }
 
@@ -371,11 +447,11 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 	// update consumer applications
 	def consumerApplicationDescriptor
 	// determine which YAML file to use
-	consumerApplicationDescriptorFile = new File("${props.workspace}/${consumer}/applicationDescriptor.yml")
+	consumerApplicationDescriptorFile = new File("${Props.DBB_MODELER_APPLICATION_DIR}/${consumer}/applicationDescriptor.yml")
 	if (consumerApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
 		consumerApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(consumerApplicationDescriptorFile)
 	} else { // Start from the original Application Descriptor created by the extraction phase
-		originalConsumerApplicationDescriptorFile = new File("${props.configurationsDirectory}/${consumer}.yml")
+		originalConsumerApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${consumer}.yml")
 		if (originalConsumerApplicationDescriptorFile.exists()) {
 			Files.copy(originalConsumerApplicationDescriptorFile.toPath(), consumerApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
 			consumerApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(consumerApplicationDescriptorFile)
@@ -406,7 +482,7 @@ def findImpactedFiles(String impactSearch, String file) {
 				def finder = new SearchPathImpactFinder(impactSearch, buildGroup.getName(), collections)
 				// Find all files impacted by the changed file
 				if (finder) {
-					impacts = finder.findImpactedFiles(file, props.workspace)
+					impacts = finder.findImpactedFiles(file, Props.DBB_MODELER_APPLICATION_DIR)
 					if (impacts) {
 						allImpacts.addAll(impacts)
 					}
@@ -420,8 +496,8 @@ def findImpactedFiles(String impactSearch, String file) {
 /**** Copies a relative source member to the relative target directory. ****/
 def copyFileToApplicationFolder(String file, String sourceApplication, String targetApplication, String shortFile) {
 	targetFilePath = computeTargetFilePath(file, sourceApplication, targetApplication)
-	Path source = Paths.get("${props.workspace}", file)
-	def target = Paths.get("${props.workspace}", targetFilePath)
+	Path source = Paths.get("${Props.DBB_MODELER_APPLICATION_DIR}", file)
+	def target = Paths.get("${Props.DBB_MODELER_APPLICATION_DIR}", targetFilePath)
 	def targetDir = target.getParent()
 	File targetDirFile = new File(targetDir.toString())
 	if (!targetDirFile.exists()) targetDirFile.mkdirs()
@@ -434,35 +510,30 @@ def copyFileToApplicationFolder(String file, String sourceApplication, String ta
 /**** Initialize additional parameters ****/
 def initScriptParameters() {
 	// Settings
-	String applicationFolder = "${props.workspace}/${props.application}"
+	String applicationFolder = "${Props.DBB_MODELER_APPLICATION_DIR}/${props.application}"
 	if (new File(applicationFolder).exists()){
 		props.applicationDir = applicationFolder
 	} else {
-		logger.logMessage("*! [ERROR] Application Directory '$applicationFolder' does not exist. Exiting.")
+		logger.logMessage("*! [ERROR] The Application Directory '$applicationFolder' does not exist. Exiting.")
 		System.exit(1)
 	}
 
-	if (props.fileMetadataStore) {	
-		metadataStoreUtils.initializeFileMetadataStore("${props.fileMetadataStore}")
+	if (props.DBB_MODELER_FILE_METADATA_STORE_DIR) {	
+		metadataStoreUtils.initializeFileMetadataStore("${props.DBB_MODELER_FILE_METADATA_STORE_DIR}")
 	} else {
-		File db2ConnectionConfigurationFile = new File(props.db2ConfigFile)
-		if (!db2ConnectionConfigurationFile.exists()){
-			logger.logMessage("!* [ERROR] Db2 Connection configuration file '${props.db2ConfigFile}' does not exist. Exiting.")
-			System.exit(1)
-		} else {
-			Properties db2ConnectionProps = new Properties()
-			db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
-			// Call correct Db2 MetadataStore constructor
-			if (props.db2Password) {
-				metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", "${props.db2Password}", db2ConnectionProps)
-			} else if (props.db2PasswordFile) {
-				metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", new File(props.db2PasswordFile), db2ConnectionProps)
-			}
+		File db2ConnectionConfigurationFile = new File(props.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE)
+		Properties db2ConnectionProps = new Properties()
+		db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
+		// Call correct Db2 MetadataStore constructor
+		if (props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD) {
+			metadataStoreUtils.initializeDb2MetadataStore("${props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", "${props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}", db2ConnectionProps)
+		} else if (props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
+			metadataStoreUtils.initializeDb2MetadataStore("${props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", new File(props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE), db2ConnectionProps)
 		}
 	}
 	
-	originalApplicationDescriptorFile = new File("${props.configurationsDirectory}/${props.application}.yml")
-	updatedApplicationDescriptorFile = new File("${props.workspace}/${props.application}/applicationDescriptor.yml")
+	originalApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${props.application}.yml")
+	updatedApplicationDescriptorFile = new File("${Props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
 	// determine which YAML file to use
 	if (updatedApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
 		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedApplicationDescriptorFile)

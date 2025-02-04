@@ -126,9 +126,9 @@ This script prompts for the below environment variables and saves them in a conf
 | DBB_MODELER_METADATASTORE_TYPE  | Type of MetadataStore - Valid values are "file" or "db2" | `file` |
 | DBB_MODELER_FILE_METADATA_STORE_DIR  | Location of the File MetadataStore | `$DBB_MODELER_WORK/dbb-metadatastore` |
 | DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE  | Path for the DB2 Metadatastore Connection configuration file | `$DBB_MODELER_WORK/db2Connection.conf` |
-| DBB_MODELER_DB2_METADATASTORE_ID  | DB2 User ID to connect through the JDBC driver | `user` |
-| DBB_MODELER_DB2_METADATASTORE_PASSWORD  | DB2 User ID's Password to connect through the JDBC driver |  |
-| DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE  | Default path for the DB2 Password file to connect through the JDBC driver (recommended) |  |
+| DBB_MODELER_DB2_METADATASTORE_JDBC_ID  | DB2 JDBC User ID to connect through the JDBC driver | `user` |
+| DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD  | DB2 JDBC User ID's Password to connect through the JDBC driver |  |
+| DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE  | Default path for the DB2 JDBC Password file to connect through the JDBC driver (recommended) |  |
 | **DBB Git Migration Modeler Input files** | | | 
 | APPLICATION_MAPPING_FILE  | Application Mapping file containing the existing applications and their naming conventions, elements lists. See tailoring of input files. | `$DBB_MODELER_WORK/applicationsMapping.yaml` | 
 | REPOSITORY_PATH_MAPPING_FILE  | Repository Paths Mapping file map the various types of members to the folder layout in Git. See tailoring of input files. | `$DBB_MODELER_WORK/repositoryPathsMapping.yaml` | 

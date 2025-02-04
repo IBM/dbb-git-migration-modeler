@@ -21,25 +21,16 @@ else
 		mkdir -p $DBB_MODELER_APPCONFIG_DIR
 	fi
 
+	if [ ! -d $DBB_MODELER_APPLICATION_DIR ] 
+	then
+		mkdir -p $DBB_MODELER_APPLICATION_DIR
+	fi
+
 	touch $DBB_MODELER_LOGS/1-extractApplications.log
 	chtag -tc IBM-1047 $DBB_MODELER_LOGS/1-extractApplications.log
 
 	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
-		-d $APPLICATION_DATASETS \
-		--applicationsMapping $APPLICATION_MAPPING_FILE \
-		--repositoryPathsMapping $REPOSITORY_PATH_MAPPING_FILE \
-		--types $APPLICATION_MEMBER_TYPE_MAPPING \
-		-oc $DBB_MODELER_APPCONFIG_DIR \
-		-oa $DBB_MODELER_APPLICATION_DIR \
-		-l $DBB_MODELER_LOGS/1-extractApplications.log"
-
-	if [ "${SCAN_DATASET_MEMBERS}" == "true" ]; then
-		CMD="${CMD} --scanDatasetMembers"
-
-		if [ ! -z "${SCAN_DATASET_MEMBERS_ENCODING}" ]; then
-			CMD="${CMD} --scanEncoding ${SCAN_DATASET_MEMBERS_ENCODING}"
-		fi
-	fi
+		$@ -l $DBB_MODELER_LOGS/1-extractApplications.log"
 	
 	echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/1-extractApplications.log
 	$CMD

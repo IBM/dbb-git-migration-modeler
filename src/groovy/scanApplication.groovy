@@ -20,8 +20,8 @@ import groovy.util.*
 import java.nio.file.*
 import groovy.cli.commons.*
 
-
-@Field BuildProperties props = BuildProperties.getInstance()
+@Field Properties props = new Properties()
+@Field Properties configuration = new Properties()
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
 
@@ -31,19 +31,7 @@ props.put("dbb.DependencyScanner.controlTransfers", "true")
 // Initialization
 parseArgs(args)
 
-// Print parms
-println("** Script configuration:")
-props.each { k,v->
-	println "   $k -> $v"
-}
-
 initScriptParameters()
-
-// Handle log file
-if (props.logFile) {
-	logger.create(props.logFile)
-}
-
 
 logger.logMessage("** Scanning the files.")
 Set<String> appFiles = getFileList()
@@ -56,9 +44,9 @@ metadataStoreUtils.deleteBuildGroup("${props.application}-main")
 Collection collection = metadataStoreUtils.createCollection("${props.application}-main", "${props.application}-main")
 // store results
 collection.addLogicalFiles(logicalFiles)
-if (props.dbbOwner) {
-	logger.logMessage("** Setting collection owner to ${props.dbbOwner}")
-	metadataStoreUtils.setCollectionOwner("${props.application}-main", "${props.application}-main", props.dbbOwner)
+if (props.PIPELINE_USER) {
+	logger.logMessage("** Setting collection owner to ${props.PIPELINE_USER}")
+	metadataStoreUtils.setCollectionOwner("${props.application}-main", "${props.application}-main", props.PIPELINE_USER)
 }
 
 logger.close()
@@ -87,7 +75,7 @@ def scanFiles(fileList) {
 		DependencyScanner scanner = new DependencyScanner()
 		logger.logMessage("\t Scanning file $file ")
 		try {
-			logicalFile = scanner.scan(file, props.workspace)
+			logicalFile = scanner.scan(file, props.DBB_MODELER_APPLICATION_DIR)
 			logicalFiles.add(logicalFile)
 		} catch (Exception e) {
 			logger.logMessage("\t*! [ERROR] Something went wrong when scanning the file '$file'.")
@@ -106,43 +94,125 @@ def parseArgs(String[] args) {
 
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
-	cli.w(longOpt:'workspace', args:1, required:true, 'Absolute path to workspace (root) directory containing all required source directories')
-	cli.f(longOpt:'file-metadatastore', args:1, required:false, 'Absolute path to the folder containing the DBB File MetadataStore')
-	cli.du(longOpt:'db2-user', args:1, required:false, 'Db2 User ID for DBB Db2 MetadataStore')
-	cli.dp(longOpt:'db2-password', args:1, required:false, 'Db2 User\'s Password for DBB Db2 MetadataStore')
-	cli.dpf(longOpt:'db2-password-file', args:1, required:false, 'Absolute path to the Db2 Password file for DBB Db2 MetadataStore')
-	cli.dc(longOpt:'db2-config', args:1, required:false, 'Absolute path to the Db2 Connection configuration file')
-	cli.do(longOpt:'dbb-owner', args:1, required:false, 'Owner of the DBB MetadataStore collections')
-	cli.a(longOpt:'application', args:1, required:true, 'Application name ')
+	cli.a(longOpt:'application', args:1, required:true, 'Application name')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
+	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
+	
 
 	def opts = cli.parse(args)
-	if (!opts) {
+	if (!args || !opts) {
+		cli.usage()
 		System.exit(1)
 	}
 
-	if (opts.w) props.workspace = opts.w
-	if (opts.f) props.fileMetadatastore = opts.f
-	if (opts.du) props.db2User = opts.du
-	if (opts.dp) props.db2Password = opts.dp
-	if (opts.dpf) props.db2PasswordFile = opts.dpf
-	if (opts.dc) props.db2ConfigFile = opts.dc
-	if (opts.do) props.dbbOwner = opts.do
-	if (opts.a) props.application = opts.a
-	if (opts.l) props.logFile = opts.l
+	if (opts.l) {
+		props.logFile = opts.l
+		logger.create(props.logFile)		
+	}
 
-	// Checks for correct configuration about MetadataStore
-	if (!props.fileMetadatastore && (!props.db2User || !props.db2ConfigFile)) {
-		logger.logMessage("*! [ERROR] Incomplete MetadataStore configuration. Either the File MetadataStore parameter (--file-metadatastore) or the Db2 MetadataStore parameters (--db2-user and --db2-config) are missing. Exiting.")
-		System.exit(1)		 
+	if (opts.a) {
+		props.application = opts.a
 	} else {
-		if (props.db2User && props.db2ConfigFile) {
-			if (!props.db2Password && !props.db2PasswordFile) {
-				logger.logMessage("*! [ERROR] Missing Password and Password File for Db2 MetadataStore connection. Exiting.")
+		logger.logMessage("*! [ERROR] The Application name (option -a/--application) must be provided. Exiting.")
+		System.exit(1)		 			
+	}
+
+	if (opts.c) {
+		props.configurationFilePath = opts.c
+		File configurationFile = new File(props.configurationFilePath)
+		if (configurationFile.exists()) {
+			configurationFile.withReader() { reader ->
+				configuration.load(reader)
+			}
+		} else {
+			logger.logMessage("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
+			System.exit(1)		 			
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
+		System.exit(1)
+	}
+
+	if (configuration.DBB_MODELER_APPLICATION_DIR) {
+		File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
+		if (directory.exists()) {
+			props.DBB_MODELER_APPLICATION_DIR = configuration.DBB_MODELER_APPLICATION_DIR
+		} else {
+			logger.logMessage("*! [ERROR] The Applications directory '${configuration.DBB_MODELER_APPLICATION_DIR}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+	
+	if (configuration.DBB_MODELER_METADATASTORE_TYPE) {
+		props.DBB_MODELER_METADATASTORE_TYPE = configuration.DBB_MODELER_METADATASTORE_TYPE
+		if (!props.DBB_MODELER_METADATASTORE_TYPE.equals("file") && !props.DBB_MODELER_METADATASTORE_TYPE.equals("db2")) {
+			logger.logMessage("*! [ERROR] The type of MetadataStore can only be 'file' or 'db2'. Exiting.")
+			System.exit(1)
+		} 
+	} else {
+		logger.logMessage("*! [ERROR] The type of MetadataStore (file or db2) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+	
+	if (props.DBB_MODELER_METADATASTORE_TYPE.equals("file")) {
+		if (configuration.DBB_MODELER_FILE_METADATA_STORE_DIR) {
+			File directory = new File(configuration.DBB_MODELER_FILE_METADATA_STORE_DIR)
+			if (directory.exists()) {
+				props.DBB_MODELER_FILE_METADATA_STORE_DIR = configuration.DBB_MODELER_FILE_METADATA_STORE_DIR
+			} else {
+				logger.logMessage("*! [ERROR] The location for the File MetadataStore '${configuration.DBB_MODELER_FILE_METADATA_STORE_DIR}' does not exist. Exiting.")
+				System.exit(1)
+			}
+		} else {
+			logger.logMessage("*! [ERROR] The location of the File MetadataStore must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+			System.exit(1)
+		} 
+	} else if (props.DBB_MODELER_METADATASTORE_TYPE.equals("db2")) {
+		if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID) {
+			props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID = configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID
+		} else {
+			logger.logMessage("*! [ERROR] The User ID for Db2 MetadataStore JDBC connection must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+			System.exit(1)		 
+		}
+		if (configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE) {
+			File file = new File(configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE)
+			if (file.exists()) {
+				props.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE = configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE
+			} else {
+				logger.logMessage("*! [ERROR] The Db2 Connection configuration file for Db2 MetadataStore JDBC connection '${configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting.")
 				System.exit(1)		 
 			}
-		}		
-	}	
+		} else {
+			logger.logMessage("*! [ERROR] The path to the Db2 Connection configuration file for Db2 MetadataStore JDBC connection must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+			System.exit(1)		 
+		}
+	
+		if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD && !configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
+			logger.logMessage("*! [ERROR] Either the Password or the Password File for Db2 Metadatastore JDBC connection must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+			System.exit(1)		 
+		} else {
+			props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD = configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD
+			props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE = configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE			
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The type of MetadataStore (file or db2) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+	
+	if (configuration.PIPELINE_USER) {
+		props.PIPELINE_USER = configuration.PIPELINE_USER
+	} else {
+		logger.logMessage("*! [ERROR] The Pipeline User (owner of DBB collections) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+
+	logger.logMessage("** Script configuration:")
+	props.each() { k, v ->
+		logger.logMessage("\t$k -> $v")
+	}
 }
 
 /* 
@@ -150,7 +220,7 @@ def parseArgs(String[] args) {
  */
 def initScriptParameters() {
 	// Settings
-	String applicationFolder = "${props.workspace}/${props.application}"
+	String applicationFolder = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}"
 	if (new File(applicationFolder).exists()){
 		props.applicationDir = applicationFolder
 	} else {
@@ -158,22 +228,17 @@ def initScriptParameters() {
 		System.exit(1)
 	}
 
-	if (props.fileMetadataStore) {	
-		metadataStoreUtils.initializeFileMetadataStore("${props.fileMetadatastore}")
+	if (props.DBB_MODELER_FILE_METADATA_STORE_DIR) {	
+		metadataStoreUtils.initializeFileMetadataStore("${props.DBB_MODELER_FILE_METADATA_STORE_DIR}")
 	} else {
-		File db2ConnectionConfigurationFile = new File(props.db2ConfigFile)
-		if (!db2ConnectionConfigurationFile.exists()){
-			logger.logMessage("!* [ERROR] Db2 Connection configuration file '${props.db2ConfigFile}' does not exist. Exiting.")
-			System.exit(1)
-		} else {
-			Properties db2ConnectionProps = new Properties()
-			db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
-			// Call correct Db2 MetadataStore constructor
-			if (props.db2Password) {
-				metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", "${props.db2Password}", db2ConnectionProps)
-			} else if (props.db2PasswordFile) {
-				metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", new File(props.db2PasswordFile), db2ConnectionProps)
-			}
+		File db2ConnectionConfigurationFile = new File(props.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE)
+		Properties db2ConnectionProps = new Properties()
+		db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
+		// Call correct Db2 MetadataStore constructor
+		if (props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD) {
+			metadataStoreUtils.initializeDb2MetadataStore("${props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", "${props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}", db2ConnectionProps)
+		} else if (props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
+			metadataStoreUtils.initializeDb2MetadataStore("${props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", new File(props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE), db2ConnectionProps)
 		}
 	}
 }
@@ -184,7 +249,7 @@ def initScriptParameters() {
 def relativizePath(String path) {
 	if (!path.startsWith('/'))
 		return path
-	String relPath = new File(props.workspace).toURI().relativize(new File(path.trim()).toURI()).getPath()
+	String relPath = new File(props.DBB_MODELER_APPLICATION_DIR).toURI().relativize(new File(path.trim()).toURI()).getPath()
 	// Directories have '/' added to the end.  Lets remove it.
 	if (relPath.endsWith('/'))
 		relPath = relPath.take(relPath.length()-1)

@@ -17,10 +17,8 @@ import java.util.Properties;
 import java.nio.file.*
 import static java.nio.file.StandardCopyOption.*
 
-
-// script properties
 @Field Properties props = new Properties()
-
+@Field Properties configuration = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field File applicationDescriptorFile
@@ -33,12 +31,6 @@ import static java.nio.file.StandardCopyOption.*
 // Parse arguments from command-line
 parseArgs(args)
 
-// Print parms
-println("** Script configuration:")
-props.each { k,v->
-	println "   $k -> $v"
-}
-
 // Handle log file
 if (props.logFile) {
 	logger.create(props.logFile)
@@ -46,10 +38,10 @@ if (props.logFile) {
 
 def typesConfigurations
 // Build the Types Configuration object from Types Configurations file
-logger.logMessage ("** Reading the Types Configurations definitions from '${props.typesConfigurationsFilePath}'. ")
-def typesConfigurationsFile = new File(props.typesConfigurationsFilePath)
+logger.logMessage("** Reading the Types Configurations definitions from '${props.TYPE_CONFIGURATIONS_FILE}'.")
+def typesConfigurationsFile = new File(props.TYPE_CONFIGURATIONS_FILE)
 if (!typesConfigurationsFile.exists()) {
-	logger.logMessage "!* [ERROR] the Types Configurations file '${props.typesConfigurationsFilePath}' doesn't exist. Exiting."
+	logger.logMessage("!* [ERROR] the Types Configurations file '${props.TYPE_CONFIGURATIONS_FILE}' does not exist. Exiting.")
 	System.exit(1);	
 } else {
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
@@ -57,23 +49,23 @@ if (!typesConfigurationsFile.exists()) {
 }
 
 // Parses the Application Descriptor File of the application, to retrieve the list of programs
-applicationDescriptorFile = new File("${props.workspace}/${props.application}/applicationDescriptor.yml")
+applicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
 if (applicationDescriptorFile.exists()) {
 	applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
 } else {
-	logger.logMessage ("!* [ERROR] Application Descriptor file '${applicationDescriptorFile.getPath()}' was not found. Exiting.")
+	logger.logMessage("!* [ERROR] The Application Descriptor file '${applicationDescriptorFile.getPath()}' does not exist. Exiting.")
 	System.exit(1)
 }
 
 // Path to the dbb-zAppBuild instance we will customize
-def customZAppBuildFolderPath = props.workspace + "/dbb-zappbuild"
+def customZAppBuildFolderPath = props.DBB_MODELER_APPLICATION_DIR + "/dbb-zappbuild"
 // Path of the original dbb-zAppBuild instance got from the script parms
-def originalZAppBuildFolder = new File(props.zAppBuildFolderPath)
+def originalZAppBuildFolder = new File(props.DBB_ZAPPBUILD)
 if (!originalZAppBuildFolder.exists()) {
-	logger.logMessage "!* [ERROR] The original dbb-zAppBuild folder '${props.zAppBuildFolderPath}' doesn't exist. Exiting."
+	logger.logMessage("!* [ERROR] The original dbb-zAppBuild folder '${props.DBB_ZAPPBUILD}' does not exist. Exiting.")
 	System.exit(1);	
 } else if (!originalZAppBuildFolder.isDirectory()) {
-	logger.logMessage "!* [ERROR] The path '${props.zAppBuildFolderPath}' doesn't point to a folder. Exiting."
+	logger.logMessage("!* [ERROR] The path '${props.DBB_ZAPPBUILD}' does not point to a folder. Exiting.")
 	System.exit(1);	
 } else {
 	// Copying the original zAppBuild to the customer instance if it doesn't exist
@@ -91,8 +83,8 @@ if (!customLanguageConfigurationFolder.exists()) {
 	customLanguageConfigurationFolder.mkdirs()
 }
 
-def applicationConfFolderPath = "${props.workspace}/${props.application}/${props.application}/application-conf"
-def sampleApplicationConfFolderPath = "${props.zAppBuildFolderPath}/samples/application-conf"
+def applicationConfFolderPath = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${props.application}/application-conf"
+def sampleApplicationConfFolderPath = "${props.DBB_ZAPPBUILD}/samples/application-conf"
 
 File applicationConfFolder = new File(applicationConfFolderPath)
 if (!applicationConfFolder.exists()) {
@@ -133,7 +125,7 @@ applicationDescriptor.sources.each { sourceGroup ->
 			logger.logMessage("\tAssessing file ${file.name} with type $type.")
 			
 			if (!languageConfigurationFile.exists()) {
-				logger.logMessage("\t Generating new Language Configuration $languageConfigurationFilePath for type '${type}'")
+				logger.logMessage("\tGenerating new Language Configuration $languageConfigurationFilePath for type '${type}'")
 				Properties combinedTypeConfigurationProperties = new Properties()
 				type.split("-").each() { typeConfiguration ->
 
@@ -145,7 +137,7 @@ applicationDescriptor.sources.each { sourceGroup ->
 						def value = matchingTypeConfiguration.getValue() as String
 						if (!property.equals("typeConfiguration")) {
 							if (combinedTypeConfigurationProperties.getProperty(property)) {
-								logger.logMessage("!* Warning: property $property was already found in the '$type' property files. Overriding.")
+								logger.logMessage("!* [WARNING] Property '$property' was already found in the '$type' property files. Overriding.")
 							}
 							combinedTypeConfigurationProperties.setProperty(property, value)
 						}
@@ -154,7 +146,7 @@ applicationDescriptor.sources.each { sourceGroup ->
 				// Save language configuration properties file
 				combinedTypeConfigurationProperties.store(new FileWriter(languageConfigurationFilePath), "Generated by the Migration-Modeler utility")
 			} else {
-				logger.logMessage("\t Found existing Language Configuration $languageConfigurationFilePath for type '${type}'")
+				logger.logMessage("\tFound existing Language Configuration $languageConfigurationFilePath for type '${type}'")
 			}
 
 			// add each file to the Language Configuration Map to be written to languageConfigurationMapping.properties file
@@ -224,50 +216,87 @@ def parseArgs(String[] args) {
 	String usage = 'generateProperties.groovy [options]'
 	String header = 'options:'
 	def cli = new CliBuilder(usage:usage,header:header);
-	cli.w(longOpt:'workspace', args:1, required:true, 'Absolute path to workspace (root) directory containing all required source directories')
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name.')
-	cli.t(longOpt:'typesConfigurations', args:1, required:true, 'Path of the Types Configurations YAML file.')
-	cli.z(longOpt:'zAppBuild', args:1, required:true, 'Path of the original dbb-zAppBuild folder.')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
+	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
 
-	def opts = cli.parse(args);
+	def opts = cli.parse(args)
 	if (!args || !opts) {
-		cli.usage();
-		System.exit(1);
+		cli.usage()
+		System.exit(1)
 	}
 
-	if (opts.w) {
-		props.workspace = opts.w;
-	} else {
-		logger.logMessage("*! Error: a workspace ('-w' parameter) must be provided. Exiting.");
-		System.exit(1);
-	}
-	
-	if (opts.a) {
-		props.application = opts.a;
-	} else {
-		logger.logMessage("*! Error: an application ('-a' parameter) must be specified. Exiting.");
-		System.exit(1);
-	}
-
-	if (opts.t) {
-		props.typesConfigurationsFilePath = opts.t
-	} else {
-		logger.logMessage("*! Error: the path to the Types Configurations file ('-t' parameter) must be specified. Exiting.");
-		System.exit(1);
-	}
-
-	if (opts.z) {
-		props.zAppBuildFolderPath = opts.z
-	} else {
-		logger.logMessage("*! Error: the path of the original dbb-zAppBuild folder ('-z' parameter) must be specified. Exiting.");
-		System.exit(1);
-	}
-	
 	if (opts.l) {
 		props.logFile = opts.l
+		logger.create(props.logFile)		
 	}	
 	
+	if (opts.a) {
+		props.application = opts.a
+	} else {
+		logger.logMessage("*! [ERROR] The Application name (option -a/--application) must be provided. Exiting.")
+		System.exit(1)		 			
+	}
+
+	if (opts.c) {
+		props.configurationFilePath = opts.c
+		File configurationFile = new File(props.configurationFilePath)
+		if (configurationFile.exists()) {
+			configurationFile.withReader() { reader ->
+				configuration.load(reader)
+			}
+		} else {
+			logger.logMessage("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
+			System.exit(1)		 			
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
+		System.exit(1)
+	}
+
+	if (configuration.DBB_MODELER_APPLICATION_DIR) {
+		File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
+		if (directory.exists()) {
+			props.DBB_MODELER_APPLICATION_DIR = configuration.DBB_MODELER_APPLICATION_DIR
+		} else {
+			logger.logMessage("*! [ERROR] The Applications directory '${configuration.DBB_MODELER_APPLICATION_DIR}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+
+	if (configuration.TYPE_CONFIGURATIONS_FILE) {
+		File file = new File(configuration.TYPE_CONFIGURATIONS_FILE)
+		if (file.exists()) {
+			props.TYPE_CONFIGURATIONS_FILE = configuration.TYPE_CONFIGURATIONS_FILE
+		} else {
+			logger.logMessage("*! [ERROR] The Types Configurations file '${configuration.TYPE_CONFIGURATIONS_FILE}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The path to the Types Configurations file must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+
+	if (configuration.DBB_ZAPPBUILD) {
+		File directory = new File(configuration.DBB_ZAPPBUILD)
+		if (directory.exists()) {
+			props.DBB_ZAPPBUILD = configuration.DBB_ZAPPBUILD
+		} else {
+			logger.logMessage("*! [ERROR] The dbb-zAppBuild instance '${configuration.DBB_ZAPPBUILD}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The dbb-zAppBuild instance must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+	
+	logger.logMessage("** Script configuration:")
+	props.each() { k, v ->
+		logger.logMessage("\t$k -> $v")
+	}
 }
 
 // Methods
@@ -283,5 +312,3 @@ def runShellCmd(String cmd){
 		println(error)
 	}
 }
-
-

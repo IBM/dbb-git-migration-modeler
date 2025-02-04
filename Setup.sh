@@ -63,15 +63,15 @@ DBB_MODELER_FILE_METADATA_STORE_DIR="$DBB_MODELER_WORK/dbb-metadatastore"
 # Default path for the DB2 Metadatastore Connection configuration file
 DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE="$DBB_MODELER_WORK/db2Connection.conf"
 # DB2 User ID to connect through the JDBC driver
-DBB_MODELER_DB2_METADATASTORE_ID="user"
+DBB_MODELER_DB2_METADATASTORE_JDBC_ID="user"
 # DB2 User ID's Password to connect through the JDBC driver
 # The password has to be encrypted as described in:
 #    https://www.ibm.com/docs/en/dbb/2.0?topic=customization-encrypting-metadata-store-passwords#db2-encrypted-password-argument
-DBB_MODELER_DB2_METADATASTORE_PASSWORD=""
+DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD=""
 # Default path for the DB2 Password file to connect through the JDBC driver
 # The password file has to be created as described in:
 #    https://www.ibm.com/docs/en/dbb/2.0?topic=customization-encrypting-metadata-store-passwords#dbb-db2-password-file
-DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE=""
+DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=""
 
 # Migration Modeler Configuration files
 
@@ -175,20 +175,20 @@ if [ $rc -eq 0 ]; then
 		if [ "$variable" ]; then
 			declare DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE="${variable}"
 		fi
-		read -p "Specify the DBB Db2 Metadatastore User ID [default: ${DBB_MODELER_DB2_METADATASTORE_ID}]: " variable
+		read -p "Specify the DBB Db2 Metadatastore JDBC User ID [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}]: " variable
 		if [ "$variable" ]; then
-			declare DBB_MODELER_DB2_METADATASTORE_ID="${variable}"
+			declare DBB_MODELER_DB2_METADATASTORE_JDBC_ID="${variable}"
 		fi
-		read -p "Specify the DBB Db2 Metadatastore User Password [leave empty if not used]: " variable
+		read -p "Specify the DBB Db2 Metadatastore JDBC User Password [leave empty if not used]: " variable
 		if [ "$variable" ]; then
-			declare DBB_MODELER_DB2_METADATASTORE_PASSWORD="${variable}"
+			declare DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD="${variable}"
 		fi
-		read -p "Specify the DBB Db2 Metadatastore Password File [leave empty if not used]: " variable
+		read -p "Specify the DBB Db2 Metadatastore JDBC Password File [leave empty if not used]: " variable
 		if [ "$variable" ]; then
-			declare DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE="${variable}"
+			declare DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="${variable}"
 		fi
-		if [ "$DBB_MODELER_DB2_METADATASTORE_PASSWORD" = "" ] & [ "$DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE" = "" ]; then
-			echo "[ERROR] Either the Db2 User Password or the Db2 Password File must be specified. Exiting."
+		if [ "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD" = "" ] & [ "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE" = "" ]; then
+			echo "[ERROR] Either the Db2 JDBC User Password or the Db2 JDBC Password File must be specified. Exiting."
 			rm -rf $DBB_MODELER_WORK
 			exit 1
 		fi		
@@ -221,34 +221,36 @@ fi
 
 if [ $rc -eq 0 ]; then
 	CONFIG_FILE="${CONFIG_DIR}/DBB_GIT_MIGRATION_MODELER.config"
+	touch $CONFIG_FILE
+	chtag -tc IBM-1047 $CONFIG_FILE 
 
 	echo "# DBB Git Migration Modeler configuration settings" > $CONFIG_FILE
 	echo "# Generated at $(date)" >> $CONFIG_FILE
 	echo "" >> $CONFIG_FILE
 
-	echo "DBB_MODELER_HOME=${DBB_MODELER_HOME} " >> $CONFIG_FILE
-	echo "DBB_MODELER_WORK=${DBB_MODELER_WORK} " >> $CONFIG_FILE
+	echo "DBB_MODELER_HOME=${DBB_MODELER_HOME}" >> $CONFIG_FILE
+	echo "DBB_MODELER_WORK=${DBB_MODELER_WORK}" >> $CONFIG_FILE
 
 	echo "" >> $CONFIG_FILE
 	echo "# DBB Git Migration Modeler working folders" >> $CONFIG_FILE
 	for config in ${path_config_array[@]}; do
-	    echo "${config}=${!config} " >> $CONFIG_FILE
+	    echo "${config}=${!config}" >> $CONFIG_FILE
 	done
 
 	echo "" >> $CONFIG_FILE
 	echo "# DBB Git Migration Modeler - DBB Metadatastore configuration" >> $CONFIG_FILE
-	echo "DBB_MODELER_METADATASTORE_TYPE=${DBB_MODELER_METADATASTORE_TYPE} " >> $CONFIG_FILE
-	echo "DBB_MODELER_FILE_METADATA_STORE_DIR=${DBB_MODELER_FILE_METADATA_STORE_DIR} " >> $CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE=${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE} " >> $CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_ID=${DBB_MODELER_DB2_METADATASTORE_ID} " >> $CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_PASSWORD=${DBB_MODELER_DB2_METADATASTORE_PASSWORD} " >> $CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE=${DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE} " >> $CONFIG_FILE
+	echo "DBB_MODELER_METADATASTORE_TYPE=${DBB_MODELER_METADATASTORE_TYPE}" >> $CONFIG_FILE
+	echo "DBB_MODELER_FILE_METADATA_STORE_DIR=${DBB_MODELER_FILE_METADATA_STORE_DIR}" >> $CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE=${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" >> $CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_ID=${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" >> $CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" >> $CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" >> $CONFIG_FILE
 
 	echo "" >> $CONFIG_FILE
 	echo "# DBB Git Migration Modeler input files" >> $CONFIG_FILE
 
 	for config in ${input_array[@]}; do
-		echo "${config}=${!config} " >> $CONFIG_FILE
+		echo "${config}=${!config}" >> $CONFIG_FILE
 	done
 
 	echo "Specify the pipeline orchestration technology to use."
@@ -272,7 +274,7 @@ if [ $rc -eq 0 ]; then
 		PIPELINE_CI="GitHubActions"
 		;;
 	esac		
-	echo "PIPELINE_CI=${PIPELINE_CI} " >> $CONFIG_FILE
+	echo "PIPELINE_CI=${PIPELINE_CI}" >> $CONFIG_FILE
 
 
 	echo

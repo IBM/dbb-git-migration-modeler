@@ -16,7 +16,8 @@ import groovy.util.*
 import groovy.cli.commons.*
 
 
-@Field BuildProperties props = BuildProperties.getInstance()
+@Field Properties props = new Properties()
+@Field Properties configuration = new Properties()
 @Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
 
 // Initialization
@@ -28,8 +29,14 @@ props.each { k,v->
 	println "   $k -> $v"
 }
 
-initScriptParameters()
-
+Properties db2ConnectionProps = new Properties()
+db2ConnectionProps.load(new FileInputStream(configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE))
+// Call correct Db2 MetadataStore constructor
+if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD) {
+	metadataStoreUtils.initializeDb2MetadataStore("${configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", "${configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}", db2ConnectionProps)
+} else if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
+	metadataStoreUtils.initializeDb2MetadataStore("${configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", new File(configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE), db2ConnectionProps)
+}
 Collection collection = metadataStoreUtils.createCollection("DummyCollection-main", "DummyCollection-main")
 if (collection) {
 	println("** Successfully created the Dummy Collection and Build Group.");
@@ -46,56 +53,61 @@ def parseArgs(String[] args) {
 	String usage = 'checkDb2MetadataStore.groovy [options]'
 
 	def cli = new CliBuilder(usage:usage)
-	cli.du(longOpt:'db2-user', args:1, required:false, 'Db2 User ID for DBB Db2 MetadataStore')
-	cli.dp(longOpt:'db2-password', args:1, required:false, 'Db2 User\'s Password for DBB Db2 MetadataStore')
-	cli.dpf(longOpt:'db2-password-file', args:1, required:false, 'Absolute path to the Db2 Password file for DBB Db2 MetadataStore')
-	cli.dc(longOpt:'db2-config', args:1, required:false, 'Absolute path to the Db2 Connection configuration file')
+	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
 
 	def opts = cli.parse(args)
 	if (!opts) {
 		System.exit(1)
 	}
+	
+	if (opts.c) {
+		props.configurationFilePath = opts.c
+		File configurationFile = new File(props.configurationFilePath)
+		if (!configurationFile.exists()) {
+			println("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
+			System.exit(1)		 			
+		} else {
+			configurationFile.withReader() { reader ->
+				configuration.load(reader)
+			}
+		}
+	} else {
+		println("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
+		System.exit(1)
+	}
 
-	if (opts.du) props.db2User = opts.du
-	if (opts.dp) props.db2Password = opts.dp
-	if (opts.dpf) props.db2PasswordFile = opts.dpf
-	if (opts.dc) props.db2ConfigFile = opts.dc
+	if (configuration.DBB_MODELER_METADATASTORE_TYPE) {
+		if (configuration.DBB_MODELER_METADATASTORE_TYPE.equals("file")) {
+			println("*! [ERROR] The DBB Git Migration Modeler is configured to use a File-based MetadataStore. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		println("*! [ERROR] The type of MetadataStore (file or db2) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.");
+		System.exit(1)
+	}
 
-	if (!props.db2User) {
-		logger.logMessage("*! [ERROR] Missing User ID for Db2 MetadataStore connection. Exiting.")
+	
+	if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID) {
+		println("*! [ERROR] Missing User ID for Db2 MetadataStore connection. Exiting.")
 		System.exit(1)		 
 	}
 
-	if (!props.db2ConfigFile) {
-		logger.logMessage("*! [ERROR] Missing Path to the Db2 Connection configuration file for Db2 MetadataStore connection. Exiting.")
+	if (!configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE) {
+		println("*! [ERROR] Missing Path to the Db2 Connection configuration file for Db2 MetadataStore connection. Exiting.")
 		System.exit(1)		 
+	} else {
+		File db2ConfigFile = new File(configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE)
+		if (!db2ConfigFile.exists()) {
+			println("*! [ERROR] The Db2 Connection configuration file for Db2 MetadataStore connection '${props.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting.")
+			System.exit(1)		 
+		}
 	}
 
 	// Checks for correct configuration about MetadataStore
-	if (props.db2User && props.db2ConfigFile) {
-		if (!props.db2Password && !props.db2PasswordFile) {
-			logger.logMessage("*! [ERROR] Missing Password and Password File for Db2 Metadatastore connection. Exiting.")
+	if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID && configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE) {
+		if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD && !configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
+			println("*! [ERROR] Missing Password and Password File for Db2 Metadatastore connection. Exiting.")
 			System.exit(1)		 
 		}
 	}	
-}
-
-/* 
- * init additional parameters
- */
-def initScriptParameters() {
-	File db2ConnectionConfigurationFile = new File(props.db2ConfigFile)
-	if (!db2ConnectionConfigurationFile.exists()){
-		logger.logMessage("!* [ERROR] Db2 Connection configuration file '${props.db2ConfigFile}' does not exist. Exiting.")
-		System.exit(1)
-	} else {
-		Properties db2ConnectionProps = new Properties()
-		db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
-		// Call correct Db2 MetadataStore constructor
-		if (props.db2Password) {
-			metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", "${props.db2Password}", db2ConnectionProps)
-		} else if (props.db2PasswordFile) {
-			metadataStoreUtils.initializeDb2MetadataStore("${props.db2User}", new File(props.db2PasswordFile), db2ConnectionProps)
-		}
-	}
 }

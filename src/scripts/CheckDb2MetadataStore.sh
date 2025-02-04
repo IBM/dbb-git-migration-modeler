@@ -22,7 +22,7 @@ else
 		echo "[ERROR] The File MetadataStore is configured in the Configuration file. Exiting."
 		exit 1
 	elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-		if [ -z "${DBB_MODELER_DB2_METADATASTORE_ID}" ]; then
+		if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" ]; then
 			echo "[ERROR] The Db2 MetadataStore User is missing from the Configuration file. Exiting."
 			exit 1
 		fi
@@ -35,18 +35,12 @@ else
 				exit 1
 			fi
 		fi
-		if [ -z "${DBB_MODELER_DB2_METADATASTORE_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE}" ]; then
+		if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" ]; then
 			echo "[ERROR] Either the Db2 MetadataStore User's Password or the Db2 MetadataStore Password File are missing from the Configuration file. Exiting."
 			exit 1
 		fi	
 	fi
 
-	if [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORD" ]; then
-		declare METADATASTORE_OPTIONS="--db2-user $DBB_MODELER_DB2_METADATASTORE_ID --db2-password $DBB_MODELER_DB2_METADATASTORE_PASSWORD --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"
-	elif [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE" ]; then
-		declare METADATASTORE_OPTIONS="--db2-user $DBB_MODELER_DB2_METADATASTORE_ID --db2-password-file $DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE --db2-config $DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"
-	fi
-
-	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkDb2MetadataStore.groovy ${METADATASTORE_OPTIONS}"
+	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkDb2MetadataStore.groovy $@"
 	$CMD
 fi
