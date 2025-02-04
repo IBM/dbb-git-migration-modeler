@@ -51,7 +51,7 @@ else
 		else
 			echo "** Initialize Git repository for application '$applicationDir'"
 			
-			CMD="git init --initial-branch=main"
+			CMD="git init --initial-branch=${APPLICATION_DEFAULT_BRANCH}"
 			echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 			$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 			rc=$?
@@ -167,7 +167,7 @@ else
 
 			# Git create tag and release maintenance branch
 			if [ $rc -eq 0 ]; then
-				version=`cat $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml | grep -A 1  "branch: \"main\"" | tail -1 | awk -F ':' {'printf $2'} | sed "s/[\" ]//g"`
+				version=`cat $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml | grep -A 1  "branch: \"$APPLICATION_DEFAULT_BRANCH\"" | tail -1 | awk -F ':' {'printf $2'} | sed "s/[\" ]//g"`
 				if [ -z ${version} ]; then
 				  version="rel-1.0.0"
 				fi		
@@ -199,12 +199,13 @@ else
 			if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
 				declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreFileLocation=$DBB_MODELER_FILE_METADATA_STORE_DIR"
 			elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-				if [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORD" ]; then
-					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_ID --pw $DBB_MODELER_DB2_METADATASTORE_PASSWORD"
-				elif [ -n "$DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE" ]; then
-					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_ID --pwFile $DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE"
+				if [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD" ]; then
+					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --pw $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD"
+				elif [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE" ]; then
+					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --pwFile $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE"
 				fi
 			fi
+			
 			
 			CMD="$DBB_HOME/bin/groovyz $DBB_ZAPPBUILD/build.groovy \
 				--workspace $DBB_MODELER_APPLICATION_DIR/$applicationDir \
@@ -213,7 +214,7 @@ else
 				--fullBuild \
 				--hlq $APPLICATION_ARTIFACTS_HLQ --preview \
 				--logEncoding UTF-8 \
-				--applicationCurrentBranch main \
+				--applicationCurrentBranch $APPLICATION_DEFAULT_BRANCH \
 				${METADATASTORE_OPTIONS} \
 				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties"
 			echo "** $CMD"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
@@ -232,7 +233,7 @@ else
 		
 			# mkdir application log directory
 			mkdir -p $DBB_MODELER_LOGS/$applicationDir
-			version=`cat $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml | grep -A 1  "branch: \"main\"" | tail -1 | awk -F ':' {'printf $2'} | sed "s/[\" ]//g"`
+			version=`cat $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml | grep -A 1  "branch: \"${APPLICATION_DEFAULT_BRANCH}\"" | tail -1 | awk -F ':' {'printf $2'} | sed "s/[\" ]//g"`
 			if [ -z ${version} ]; then
 			  version="rel-1.0.0"
 			fi
@@ -240,7 +241,7 @@ else
 			CMD="$DBB_HOME/bin/groovyz $DBB_COMMUNITY_REPO/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy \
 				--workDir $DBB_MODELER_LOGS/$applicationDir \ 
 				--addExtension \
-				--branch main \
+				--branch $APPLICATION_DEFAULT_BRANCH \
 				--version $version \
 				--tarFileName $applicationDir-$version.tar \
 				--applicationFolderPath $DBB_MODELER_APPLICATION_DIR/$applicationDir \

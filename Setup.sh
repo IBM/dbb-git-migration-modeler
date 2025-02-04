@@ -74,7 +74,6 @@ DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD=""
 DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=""
 
 # Migration Modeler Configuration files
-
 # Reference to the configured application mapping file
 APPLICATION_MAPPING_FILE=$DBB_MODELER_WORK/applicationsMapping.yaml
 # Reference to the repository paths mapping file
@@ -90,9 +89,11 @@ APPLICATION_ARTIFACTS_HLQ=DBEHM.MIG
 SCAN_DATASET_MEMBERS=false
 SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
 # Reference to zAppBuild
-DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild-DAT
+DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild
 # Reference to DBB Community Repo
 DBB_COMMUNITY_REPO=/var/dbb/pipelineTemplates/dbb
+# Default branch name when initializing Git repositories and scanning files into DBB collections
+APPLICATION_DEFAULT_BRANCH=main
 
 # Run the DBB Git Migration Modeler interactively
 INTERACTIVE_RUN=true
@@ -115,13 +116,13 @@ PIPELINE_USER=ADO
 PIPELINE_USER_GROUP=JENKINSG
 # Pipeline technology used
 # Either '1' for 'AzureDevOps', '2' for 'GitlabCI', '3' for 'Jenkins' or '4' for 'GitHubActions'
-# The parameter will then be translated later inthe process to its final value 
+# The parameter will then be translated later in the process to its final value 
 # as defined in the Templates folder of the DBB Community repo (without the 'Pipeline' suffix)
 PIPELINE_CI=1
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_GIT_CONFIG)
-input_array=(APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_DATASETS APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD PIPELINE_USER PIPELINE_USER_GROUP)
+input_array=(APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_DATASETS APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD PIPELINE_USER PIPELINE_USER_GROUP)
 
 # Create work dir
 echo

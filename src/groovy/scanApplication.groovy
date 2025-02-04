@@ -37,16 +37,16 @@ logger.logMessage("** Scanning the files.")
 Set<String> appFiles = getFileList()
 List<LogicalFile> logicalFiles = scanFiles(appFiles)
 
-logger.logMessage("** Storing results in the '${props.application}-main' DBB Collection.")
+logger.logMessage("** Storing results in the '${props.application}-${props.APPLICATION_DEFAULT_BRANCH}' DBB Collection.")
 // Manage Build Groups and Collections
 
-metadataStoreUtils.deleteBuildGroup("${props.application}-main")
-Collection collection = metadataStoreUtils.createCollection("${props.application}-main", "${props.application}-main")
+metadataStoreUtils.deleteBuildGroup("${props.application}-${props.APPLICATION_DEFAULT_BRANCH}")
+Collection collection = metadataStoreUtils.createCollection("${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}")
 // store results
 collection.addLogicalFiles(logicalFiles)
 if (props.PIPELINE_USER) {
 	logger.logMessage("** Setting collection owner to ${props.PIPELINE_USER}")
-	metadataStoreUtils.setCollectionOwner("${props.application}-main", "${props.application}-main", props.PIPELINE_USER)
+	metadataStoreUtils.setCollectionOwner("${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", props.PIPELINE_USER)
 }
 
 logger.close()
@@ -206,6 +206,13 @@ def parseArgs(String[] args) {
 		props.PIPELINE_USER = configuration.PIPELINE_USER
 	} else {
 		logger.logMessage("*! [ERROR] The Pipeline User (owner of DBB collections) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+
+	if (configuration.APPLICATION_DEFAULT_BRANCH) {
+		props.APPLICATION_DEFAULT_BRANCH = configuration.APPLICATION_DEFAULT_BRANCH
+	} else {
+		logger.logMessage("*! [ERROR] The Application Default Branch must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
 	}
 
