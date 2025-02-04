@@ -91,7 +91,7 @@ SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
 # Reference to zAppBuild
 DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild
 # Reference to DBB Community Repo
-DBB_COMMUNITY_REPO=/var/dbb/pipelineTemplates/dbb
+DBB_COMMUNITY_REPO=/var/dbb/dbb
 # Default branch name when initializing Git repositories and scanning files into DBB collections
 APPLICATION_DEFAULT_BRANCH=main
 

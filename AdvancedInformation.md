@@ -141,6 +141,7 @@ This script prompts for the below environment variables and saves them in a conf
 | SCAN_DATASET_MEMBERS_ENCODING | PDS encoding for scanner when determining the source type | `IBM-1047` |
 | DBB_ZAPPBUILD | Path to your customized [dbb-zAppBuild repository](https://github.com/IBM/dbb-zappbuild) on z/OS Unix System Services for baseline builds | `/var/dbb/dbb-zappbuild` |
 | DBB_COMMUNITY_REPO | Path to your customized [DBB community repository](https://github.com/IBM/dbb) on z/OS Unix System Services | `/var/dbb/dbb` |
+| APPLICATION_DEFAULT_BRANCH | Default branch name when initializing Git repositories and scanning files into DBB collections | `main` |
 | INTERACTIVE_RUN | Flag to indicate if the Migration-Modeler-Start script should run interactively or not (`true` or `false`) | `false` |
 | PUBLISH_ARTIFACTS | Flag to indicate if baseline packages should be uploaded to an Artifact Repository server or not (`true` or `false`) | `true` |
 | ARTIFACT_REPOSITORY_SERVER_URL | URL of the Artifact Repository Server | |
