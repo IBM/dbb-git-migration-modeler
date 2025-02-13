@@ -1,11 +1,11 @@
 /********************************************************************************
- * Licensed Materials - Property of IBM                                          *
- * (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.                *
- *                                                                               *
- * Note to U.S. Government Users Restricted Rights:                              *
- * Use, duplication or disclosure restricted by GSA ADP Schedule                 *
- * Contract with IBM Corp.                                                       *
- ********************************************************************************/
+* Licensed Materials - Property of IBM                                          *
+* (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.                *
+*                                                                               *
+* Note to U.S. Government Users Restricted Rights:                              *
+* Use, duplication or disclosure restricted by GSA ADP Schedule                 *
+* Contract with IBM Corp.                                                       *
+********************************************************************************/
 
 @groovy.transform.BaseScript com.ibm.dbb.groovy.ScriptLoader baseScript
 import groovy.transform.*
@@ -20,8 +20,8 @@ import java.nio.file.attribute.*
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field repositoryPathsMapping
 
-// script properties
 @Field Properties props = new Properties()
+@Field Properties configuration = new Properties()
 // Internal variables
 def applicationDescriptor
 
@@ -29,16 +29,10 @@ def applicationDescriptor
  * Processing logic
  */
 
-println("** Recreate Application Descriptor process started. ")
+println("** Recreate Application Descriptor file process started.")
 
 // Parse arguments from command-line
 parseArgs(args)
-
-// Print parms
-println("** Script configuration:")
-props.each { k,v->
-	println "   $k -> $v"
-}
 
 // Handle log file
 if (props.logFile) {
@@ -46,37 +40,31 @@ if (props.logFile) {
 }
 
 // Read the repository layout mapping file
-logger.logMessage ("** Reading the Repository Layout Mapping definition. ")
+logger.logMessage("** Reading the Repository Layout Mapping definition.")
 
-if (props.repositoryPathsMappingFilePath) {
-	File repositoryPathsMappingFile = new File(props.repositoryPathsMappingFilePath)
-	if (!repositoryPathsMappingFile.exists()) {
-		logger.logMessage "!* Warning: File ${props.repositoryPathsMappingFilePath} not found. Process will exit."
-		System.exit(1)
-	} else {
-		def yamlSlurper = new groovy.yaml.YamlSlurper()
-		repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
-	}
+if (props.REPOSITORY_PATH_MAPPING_FILE) {
+	File repositoryPathsMappingFile = new File(props.REPOSITORY_PATH_MAPPING_FILE)
+	def yamlSlurper = new groovy.yaml.YamlSlurper()
+	repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
 }
 
 // Initialize the Application Descriptor
-File applicationDescriptorFile = new File("${props.workspace}/${props.application}/${props.application}.yaml")
+File applicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${props.application}.yaml")
 if (applicationDescriptorFile.exists()) {
-	logger.logMessage("* Importing existing Application Descriptor and reset source groups, dependencies and consumers.");
+	logger.logMessage("** Importing existing Application Descriptor and reset source groups, dependencies and consumers.")
 	applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
 	applicationDescriptorUtils.resetAllSourceGroups(applicationDescriptor)
 	applicationDescriptorUtils.resetConsumersAndDependencies(applicationDescriptor)
 } else {
-	logger.logMessage("* Creating a new Application Descriptor.");
+	logger.logMessage("** Creating a new Application Descriptor.")
 	applicationDescriptor = applicationDescriptorUtils.createEmptyApplicationDescriptor()
 	applicationDescriptor.application = props.application
 }
 
-logger.logMessage("* Getting List of files ${props.workspace}/${props.application}");
-Set<String> fileList = getFileList("${props.workspace}/${props.application}")
+logger.logMessage("** Getting List of files ${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
+Set<String> fileList = getFileList("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
 
 fileList.each() { file ->
-
 	if (!file.startsWith(".")) {
 
 		// path to look up in the repository path mapping configuration
@@ -99,52 +87,98 @@ fileList.each() { file ->
 			baseFileName = fileName.replace(".$fileExtension","")
 			repositoryPath = file.replace("/${fileName}","")
 
-			logger.logMessage("* Adding file $file to Application Descriptor into source group ${matchingRepositoryPath.sourceGroup}.");
+			logger.logMessage("** Adding '$file' to Application Descriptor into source group '${matchingRepositoryPath.sourceGroup}'.")
 			
-			
-			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, matchingRepositoryPath.sourceGroup, matchingRepositoryPath.languageProcessor, matchingRepositoryPath.artifactsType, fileExtension, repositoryPath, baseFileName, type, usage)
-
+			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, matchingRepositoryPath.sourceGroup, matchingRepositoryPath.language, matchingRepositoryPath.languageProcessor, matchingRepositoryPath.artifactsType, fileExtension, repositoryPath, baseFileName, type, usage)
 		} else {
-			logger.logMessage("*! The file ($file) did not match any rule defined in the repository path mapping configuration.");
+			logger.logMessage("*! [WARNING] '$file' did not match any rule defined in the repository path mapping configuration. Skipped.")
 		}
-
 	} else {
 		// A hidden file found
-		logger.logMessage("*! A hidden file found ($file). Skipped.");
-
+		logger.logMessage("*! [WARNING] '$file' is a hidden file. Skipped.")
 	}
-
-
 }
 
-
 applicationDescriptorUtils.writeApplicationDescriptor(applicationDescriptorFile, applicationDescriptor)
-logger.logMessage("* Created Application Description file " + applicationDescriptorFile.getAbsolutePath());
+logger.logMessage("** Created Application Description file '${applicationDescriptorFile.getAbsolutePath()}'")
 
 /**
  * Parse CLI config
  */
 def parseArgs(String[] args) {
 
-	String usage = 'createApplicationDescriptor.groovy [options]'
+	String usage = 'recreateApplicationDescriptor.groovy [options]'
 
 	def cli = new CliBuilder(usage:usage)
 	// required sandbox options
-	cli.w(longOpt:'workspace', args:1, 'Absolute path to workspace (root) directory containing all required source directories')
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name ')
-	cli.r(longOpt:'repositoryPathsMapping', args:1, required:true, 'Path to the Repository Paths Mapping file')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
-
+	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
+	
 	def opts = cli.parse(args)
-	if (!opts) {
+	if (!args || !opts) {
+		cli.usage()
 		System.exit(1)
 	}
 
-	if (opts.w) props.workspace = opts.w
-	if (opts.a) props.application = opts.a
-	if (opts.r) props.repositoryPathsMappingFilePath = opts.r
-	if (opts.l) props.logFile = opts.l
+	if (opts.l) {
+		props.logFile = opts.l
+		logger.create(props.logFile)		
+	}
 
+	if (opts.a) {
+		props.application = opts.a
+	} else {
+		logger.logMessage("*! [ERROR] The Application name (option -a/--application) must be provided. Exiting.")
+		System.exit(1)		 			
+	}
+
+	if (opts.c) {
+		props.configurationFilePath = opts.c
+		File configurationFile = new File(props.configurationFilePath)
+		if (configurationFile.exists()) {
+			configurationFile.withReader() { reader ->
+				configuration.load(reader)
+			}
+		} else {
+			logger.logMessage("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
+			System.exit(1)		 			
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
+		System.exit(1)
+	}
+
+	if (configuration.DBB_MODELER_APPLICATION_DIR) {
+		File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
+		if (directory.exists()) {
+			props.DBB_MODELER_APPLICATION_DIR = configuration.DBB_MODELER_APPLICATION_DIR
+		} else {
+			logger.logMessage("*! [ERROR] The Applications directory '${configuration.DBB_MODELER_APPLICATION_DIR}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+
+	if (configuration.REPOSITORY_PATH_MAPPING_FILE) {
+		File file = new File(configuration.REPOSITORY_PATH_MAPPING_FILE)
+		if (file.exists()) {
+			props.REPOSITORY_PATH_MAPPING_FILE = configuration.REPOSITORY_PATH_MAPPING_FILE
+		} else {
+			logger.logMessage("*! [ERROR] The Repository Paths Mapping file '${configuration.REPOSITORY_PATH_MAPPING_FILE}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The path to the Repository Paths Mapping file must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+
+	logger.logMessage("** Script configuration:")
+	props.each() { k, v ->
+		logger.logMessage("\t$k -> $v")
+	}
 }
 
 /**
@@ -158,7 +192,6 @@ def getFileList(String dir) {
 		@Override
 		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 			if (!Files.isDirectory(file)) {
-
 				String fileName = file.toString();
 				if (fileName.startsWith('/')) {
 					String relPath = new File(dir).toURI().relativize(new File(fileName.trim()).toURI()).getPath()

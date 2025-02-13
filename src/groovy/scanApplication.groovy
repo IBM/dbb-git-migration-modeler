@@ -58,7 +58,7 @@ def getFileList() {
 	Set<String> fileSet = new HashSet<String>()
 
 	Files.walk(Paths.get(props.applicationDir)).forEach { filePath ->
-		if (Files.isRegularFile(filePath)) {
+		if (Files.isRegularFile(filePath) && !filePath.startsWith("${props.applicationDir}/.git/")) {
 			relFile = relativizePath(filePath.toString())
 			fileSet.add(relFile)
 		}
@@ -73,7 +73,7 @@ def scanFiles(fileList) {
 	List<LogicalFile> logicalFiles = new ArrayList<LogicalFile>()
 	fileList.each{ file ->
 		DependencyScanner scanner = new DependencyScanner()
-		logger.logMessage("\t Scanning file $file ")
+		logger.logMessage("\tScanning file $file ")
 		try {
 			logicalFile = scanner.scan(file, props.DBB_MODELER_APPLICATION_DIR)
 			logicalFiles.add(logicalFile)
@@ -98,7 +98,6 @@ def parseArgs(String[] args) {
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
 	
-
 	def opts = cli.parse(args)
 	if (!args || !opts) {
 		cli.usage()
