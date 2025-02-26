@@ -40,7 +40,6 @@ import java.text.DecimalFormat
 @Field HashMap<String, String> types
 // script properties
 @Field Properties props = new Properties()
-@Field Properties configuration = new Properties()
 @Field repositoryPathsMapping
 @Field Dmh5210 scanner
 HashMap<String, Long> storageRequirements = new HashMap<String, Long>() 
@@ -177,6 +176,7 @@ def buildDatasetsList(ArrayList<String> datasetsList, String filter) {
 
 /* parseArgs: parse arguments provided through CLI */
 def parseArgs(String[] args) {
+	Properties configuration = new Properties()
 	String usage = 'extractApplications.groovy [options]'
 	String header = 'options:'
 	def cli = new CliBuilder(usage:usage,header:header)

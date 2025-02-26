@@ -21,7 +21,6 @@ import java.nio.file.*
 import groovy.cli.commons.*
 
 @Field Properties props = new Properties()
-@Field Properties configuration = new Properties()
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
 
@@ -89,11 +88,10 @@ def scanFiles(fileList) {
  * Parse CLI config
  */
 def parseArgs(String[] args) {
-
+	Properties configuration = new Properties()
 	String usage = 'scanApplication.groovy [options]'
-
-	def cli = new CliBuilder(usage:usage)
-	// required sandbox options
+	String header = 'options:'
+	def cli = new CliBuilder(usage:usage,header:header)
 	cli.a(longOpt:'application', args:1, required:true, 'Application name')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')

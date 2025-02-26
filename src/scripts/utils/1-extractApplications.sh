@@ -30,7 +30,8 @@ else
 	chtag -tc IBM-1047 $DBB_MODELER_LOGS/1-extractApplications.log
 
 	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
-		$@ -l $DBB_MODELER_LOGS/1-extractApplications.log"
+		--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+		--logFile $DBB_MODELER_LOGS/1-extractApplications.log"
 	
 	echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/1-extractApplications.log
 	$CMD

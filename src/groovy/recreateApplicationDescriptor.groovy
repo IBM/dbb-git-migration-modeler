@@ -21,7 +21,6 @@ import java.nio.file.attribute.*
 @Field repositoryPathsMapping
 
 @Field Properties props = new Properties()
-@Field Properties configuration = new Properties()
 // Internal variables
 def applicationDescriptor
 
@@ -106,11 +105,10 @@ logger.logMessage("** Created Application Description file '${applicationDescrip
  * Parse CLI config
  */
 def parseArgs(String[] args) {
-
+	Properties configuration = new Properties()
 	String usage = 'recreateApplicationDescriptor.groovy [options]'
-
-	def cli = new CliBuilder(usage:usage)
-	// required sandbox options
+	String header = 'options:'
+	def cli = new CliBuilder(usage:usage,header:header)
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name ')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')

@@ -22,7 +22,6 @@ import groovy.cli.commons.*
 import static java.nio.file.StandardCopyOption.*
 
 @Field Properties props = new Properties()
-@Field Properties configuration = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
@@ -69,7 +68,7 @@ def getIncludeFilesFromApplicationDescriptor() {
 	if (matchingSources) {
 		matchingSources.each() { matchingSource ->
 			matchingSource.files.each() { file ->
-				def impactSearchRule = 	"search:[:COPY]${Props.DBB_MODELER_APPLICATION_DIR}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
+				def impactSearchRule = 	"search:[:COPY]${props.DBB_MODELER_APPLICATION_DIR}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
 				HashMap<String, String> properties = new HashMap<String, String>()
 				properties.put("impactSearchRule", impactSearchRule)
 				properties.put("repositoryPath", matchingSource.repositoryPath)
@@ -97,7 +96,7 @@ def getProgramsFromApplicationDescriptor() {
 		matchingSources.each() { matchingSource ->
 			matchingSource.files.each() { file ->
 				// run impact analysis and only look for Static CALL dependencies
-				def impactSearchRule = 	"search:[:CALL]${Props.DBB_MODELER_APPLICATION_DIR}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
+				def impactSearchRule = 	"search:[:CALL]${props.DBB_MODELER_APPLICATION_DIR}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
 				HashMap<String, String> properties = new HashMap<String, String>()
 				properties.put("impactSearchRule", impactSearchRule)
 				properties.put("repositoryPath", matchingSource.repositoryPath)
@@ -131,7 +130,7 @@ def getProgramsFromApplicationDescriptor() {
 		Set<String> referencingCollections = new HashSet<String>()
 
 		// Check if the file physically exists
-		File sourceFile = new File ("${Props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${qualifiedFile}")
+		File sourceFile = new File ("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${qualifiedFile}")
 		if (sourceFile.exists()) { 
 			// Obtain impacts
 			logger.logMessage("** Analyzing impacted applications for file '${props.application}/${qualifiedFile}'.")
@@ -160,7 +159,7 @@ def getProgramsFromApplicationDescriptor() {
 					if (props.moveFiles.toBoolean()) {
 						// Update the target Application Descriptor 
 						originalTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${referencingCollections[0]}.yml")
-						updatedTargetApplicationDescriptorFile = new File("${Props.DBB_MODELER_APPLICATION_DIR}/${referencingCollections[0]}/applicationDescriptor.yml")
+						updatedTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${referencingCollections[0]}/applicationDescriptor.yml")
 						def targetApplicationDescriptor
 						// determine which YAML file to use
 						if (updatedTargetApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
@@ -185,7 +184,7 @@ def getProgramsFromApplicationDescriptor() {
 							applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
 							logger.logMessage("\t==> Removing Include File '$file' from Application '${props.application}' described in '${updatedApplicationDescriptorFile.getPath()}'.")
 							// Update application mappings
-							updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, referencingCollections[0], Props.DBB_MODELER_APPLICATION_DIR + '/' + props.application + '/' + qualifiedFile, file);
+							updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, referencingCollections[0], props.DBB_MODELER_APPLICATION_DIR + '/' + props.application + '/' + qualifiedFile, file);
 						}
 					} else {
 						// just modify the scope as PUBLIC or SHARED
@@ -303,12 +302,10 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
  * Parse CLI config
  */
 def parseArgs(String[] args) {
-
-	String usage = 'classifyIncludeFiles.groovy [options]'
-
-	def cli = new CliBuilder(usage:usage)
-	// required sandbox options
-	cli.w(longOpt:'workspace', args:1, 'Absolute path to workspace (root) directory containing all required source directories')
+	Properties configuration = new Properties()
+	String usage = 'assessUsage.groovy [options]'
+	String header = 'options:'
+	def cli = new CliBuilder(usage:usage,header:header)
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name.')
 	cli.m(longOpt:'moveFiles', args:0, 'Flag to move files when usage is assessed.')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
@@ -447,7 +444,7 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 	// update consumer applications
 	def consumerApplicationDescriptor
 	// determine which YAML file to use
-	consumerApplicationDescriptorFile = new File("${Props.DBB_MODELER_APPLICATION_DIR}/${consumer}/applicationDescriptor.yml")
+	consumerApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${consumer}/applicationDescriptor.yml")
 	if (consumerApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
 		consumerApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(consumerApplicationDescriptorFile)
 	} else { // Start from the original Application Descriptor created by the extraction phase
@@ -482,7 +479,7 @@ def findImpactedFiles(String impactSearch, String file) {
 				def finder = new SearchPathImpactFinder(impactSearch, buildGroup.getName(), collections)
 				// Find all files impacted by the changed file
 				if (finder) {
-					impacts = finder.findImpactedFiles(file, Props.DBB_MODELER_APPLICATION_DIR)
+					impacts = finder.findImpactedFiles(file, props.DBB_MODELER_APPLICATION_DIR)
 					if (impacts) {
 						allImpacts.addAll(impacts)
 					}
@@ -496,8 +493,8 @@ def findImpactedFiles(String impactSearch, String file) {
 /**** Copies a relative source member to the relative target directory. ****/
 def copyFileToApplicationFolder(String file, String sourceApplication, String targetApplication, String shortFile) {
 	targetFilePath = computeTargetFilePath(file, sourceApplication, targetApplication)
-	Path source = Paths.get("${Props.DBB_MODELER_APPLICATION_DIR}", file)
-	def target = Paths.get("${Props.DBB_MODELER_APPLICATION_DIR}", targetFilePath)
+	Path source = Paths.get("${props.DBB_MODELER_APPLICATION_DIR}", file)
+	def target = Paths.get("${props.DBB_MODELER_APPLICATION_DIR}", targetFilePath)
 	def targetDir = target.getParent()
 	File targetDirFile = new File(targetDir.toString())
 	if (!targetDirFile.exists()) targetDirFile.mkdirs()
@@ -510,7 +507,7 @@ def copyFileToApplicationFolder(String file, String sourceApplication, String ta
 /**** Initialize additional parameters ****/
 def initScriptParameters() {
 	// Settings
-	String applicationFolder = "${Props.DBB_MODELER_APPLICATION_DIR}/${props.application}"
+	String applicationFolder = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}"
 	if (new File(applicationFolder).exists()){
 		props.applicationDir = applicationFolder
 	} else {
@@ -533,7 +530,7 @@ def initScriptParameters() {
 	}
 	
 	originalApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${props.application}.yml")
-	updatedApplicationDescriptorFile = new File("${Props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
+	updatedApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
 	// determine which YAML file to use
 	if (updatedApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
 		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedApplicationDescriptorFile)

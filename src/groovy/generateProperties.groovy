@@ -18,7 +18,6 @@ import java.nio.file.*
 import static java.nio.file.StandardCopyOption.*
 
 @Field Properties props = new Properties()
-@Field Properties configuration = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field File applicationDescriptorFile
@@ -213,6 +212,7 @@ logger.close()
 
 /* parseArgs: parse arguments provided through CLI */
 def parseArgs(String[] args) {
+	Properties configuration = new Properties()
 	String usage = 'generateProperties.groovy [options]'
 	String header = 'options:'
 	def cli = new CliBuilder(usage:usage,header:header);

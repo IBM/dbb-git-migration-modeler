@@ -62,9 +62,9 @@ else
 		touch $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			$@ \
-			-a $applicationDir \
-			-l $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
+			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+			--application $applicationDir \
+			--logFile $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
 		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		$CMD
 	done
@@ -79,7 +79,7 @@ else
 		touch $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
-			$@ \
+			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 			--application $applicationDir \
 			--moveFiles \
 			--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
@@ -110,9 +110,9 @@ else
 		touch $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			$@ \
-			-a $applicationDir \
-			-l $DBB_MODELER_LOGS/3-$applicationDir-rescan.log"    
+			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+			--application $applicationDir \
+			--logFile $DBB_MODELER_LOGS/3-$applicationDir-rescan.log"    
 		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		$CMD
 	done

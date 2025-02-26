@@ -41,6 +41,6 @@ else
 		fi	
 	fi
 
-	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkDb2MetadataStore.groovy $@"
+	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkDb2MetadataStore.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE"
 	$CMD
 fi
