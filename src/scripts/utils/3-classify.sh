@@ -16,15 +16,40 @@ else
 	dir=$(dirname "$0")
 	. $dir/0-environment.sh "$@"
 
-	# Build Metadatastore
-	if [ -d $DBB_MODELER_METADATA_STORE_DIR ] 
-	then
-		rm -rf $DBB_MODELER_METADATA_STORE_DIR
-	fi
-	
-	if [ ! -d $DBB_MODELER_METADATA_STORE_DIR ] 
-	then
-		mkdir -p $DBB_MODELER_METADATA_STORE_DIR
+	# Build MetadataStore
+	# Drop and recreate the Build MetadataStore folder
+	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
+		if [ -z "${DBB_MODELER_FILE_METADATA_STORE_DIR}" ]; then
+			echo "[ERROR] File MetadataStore location is missing from the Configuration file. Exiting."
+			exit 1
+		else
+			if [ -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
+			then
+				rm -rf $DBB_MODELER_FILE_METADATA_STORE_DIR
+			fi
+			if [ ! -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
+			then
+				mkdir -p $DBB_MODELER_FILE_METADATA_STORE_DIR
+			fi
+		fi
+	elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
+		if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" ]; then
+			echo "[ERROR] The Db2 MetadataStore User is missing from the Configuration file. Exiting."
+			exit 1
+		fi
+		if [ -z "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
+			echo "[ERROR] The Db2 Connection configuration file is missing from the Configuration file. Exiting."
+			exit 1
+		else 
+			if [ ! -f "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
+				echo "[ERROR] The Db2 Connection configuration file '${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting."
+				exit 1
+			fi
+		fi
+		if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" ]; then
+			echo "[ERROR] Either the Db2 MetadataStore User's Password or the Db2 MetadataStore Password File are missing from the Configuration file. Exiting."
+			exit 1
+		fi	
 	fi
 
 	# Scan files
@@ -37,14 +62,14 @@ else
 		touch $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			-w $DBB_MODELER_APPLICATION_DIR \
-			-a $applicationDir \
-			-m $DBB_MODELER_METADATA_STORE_DIR \
-			-l $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
+			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+			--application $applicationDir \
+			--logFile $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
 		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		$CMD
 	done
 
+	# Assess file usage across applications
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
@@ -54,9 +79,7 @@ else
 		touch $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
-			--workspace $DBB_MODELER_APPLICATION_DIR \
-			--configurations $DBB_MODELER_APPCONFIG_DIR \
-			--metadatastore $DBB_MODELER_METADATA_STORE_DIR \
+			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 			--application $applicationDir \
 			--moveFiles \
 			--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
@@ -65,13 +88,19 @@ else
 	done
 	
 	# Drop and recreate the Build Metadatastore folder
-	if [ -d $DBB_MODELER_METADATA_STORE_DIR ] 
-	then
-		rm -rf $DBB_MODELER_METADATA_STORE_DIR
-		mkdir -p $DBB_MODELER_METADATA_STORE_DIR
+	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
+		if [ -d $DBB_MODELER_METADATA_STORE_DIR ] 
+		then
+			rm -rf $DBB_MODELER_FILE_METADATA_STORE_DIR
+		fi
+		if [ ! -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
+		then
+			mkdir -p $DBB_MODELER_FILE_METADATA_STORE_DIR
+		fi
 	fi
 
 	# Scan files again after dropping the file metadatastore
+	# Collections are dropped from the groovy script when using Db2 MetadataStore
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
@@ -81,10 +110,9 @@ else
 		touch $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			-w $DBB_MODELER_APPLICATION_DIR \
-			-a $applicationDir \
-			-m $DBB_MODELER_METADATA_STORE_DIR \
-			-l $DBB_MODELER_LOGS/3-$applicationDir-rescan.log"    
+			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+			--application $applicationDir \
+			--logFile $DBB_MODELER_LOGS/3-$applicationDir-rescan.log"    
 		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
 		$CMD
 	done

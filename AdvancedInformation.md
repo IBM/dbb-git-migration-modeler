@@ -97,6 +97,18 @@ The location of these files is the [build-conf/language-conf](https://github.com
 
 Install the DBB Git Migration Modeler by cloning [this repository](https://github.com/IBM/dbb-git-migration-modeler) to z/OS Unix System Services.
 
+## Pre-requisites when using a Db2-based MetadataStore with DBB
+
+The DBB Git Migration Modeler can use either a file-based MetadataStore or a Db2-based MetadataStore with DBB.
+When using a file-based MetadataStore, the location of the MetadataStore is specified during the setup phase of the DBB Git Migration Modeler, as described in the next section, through the `DBB_MODELER_FILE_METADATA_STORE_DIR` property. No additional setup is required.
+
+When using a Db2-based MetadataStore, some configuration steps must be executed prior to using the DBB Git Migration Modeler. A Db2 database and the Db2 tables corresponding to the DBB-provided schema must be created.
+Instructions to create a Db2-based MetadataStore with DBB can be found in this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-zos-as-metadata-database) for Db2 z/OS and this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-luw-as-metadata-database) for Db2 LUW.
+
+The configuration to access the Db2-based MetadataStore with the DBB Git Migration Modeler is performed through the `DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE`, `DBB_MODELER_DB2_METADATASTORE_ID`, `DBB_MODELER_DB2_METADATASTORE_PASSWORD` and `DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE` properties.
+These required properties are collected during the Setup phase, as described in the next section. The Setup script then suggests to use the `CheckDb2MetadataStore.sh` script to verify the correct connectivity to the Db2 database.
+Once the Db2 MetadataStore connection is correctly configured and checked, the DBB Git Migration Modeler is ready to be used with a Db2-based MetadataStore.
+
 ## Setting up the DBB Git Migration Modeler configuration
 
 Once installed on z/OS Unix System Services, the [Setup.sh script](./Setup.sh) must be run to configure the DBB Git Migration Modeler, and set configuration parameters.
@@ -107,10 +119,16 @@ This script prompts for the below environment variables and saves them in a conf
 | DBB_MODELER_HOME  | The home of the DBB Git Migration Modeler project | The current directory of Setup.sh |
 | DBB_MODELER_WORK  | The working directory for the DBB Git Migration Modeler. Requires to be sized to store the entire copy of all application programs. | `$DBB_MODELER_HOME-work` | 
 | DBB_MODELER_APPCONFIG_DIR  | Stores the initial version of the Application Descriptor and the generated DBB Migration Mapping files | `$DBB_MODELER_WORK/work-configs` |
-| DBB_MODELER_APPLICATION_DIR  | Path where the DBB Git Migration Modeler will create the application directories | `$DBB_MODELER_WORK/work-applications` | 
-| DBB_MODELER_LOGS  | Path where the DBB Git Migration Modeler will store the log files of the various steps of Migration Modeler process | `$DBB_MODELER_WORK/work-logs` | 
-| DBB_MODELER_METADATA_STORE_DIR  | Path to create a DBB File Metadatastore. Required for the Assessment phase | `$DBB_MODELER_WORK/work-metadatastore` |
+| DBB_MODELER_APPLICATION_DIR  | Path to where the DBB Git Migration Modeler will create the application directories | `$DBB_MODELER_WORK/work-applications` | 
+| DBB_MODELER_LOGS  | Path to where the DBB Git Migration Modeler will store the log files of the various steps of Migration Modeler process | `$DBB_MODELER_WORK/work-logs` | 
 | DEFAULT_GIT_CONFIG  | Folder containing default `.gitattributes` and `zapp.yaml` files | `$DBB_MODELER_WORK/git-config` |
+| **DBB Git Migration Modeler MetadataStore configuration** | | | 
+| DBB_MODELER_METADATASTORE_TYPE  | Type of MetadataStore - Valid values are "file" or "db2" | `file` |
+| DBB_MODELER_FILE_METADATA_STORE_DIR  | Location of the File MetadataStore | `$DBB_MODELER_WORK/dbb-metadatastore` |
+| DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE  | Path for the DB2 Metadatastore Connection configuration file | `$DBB_MODELER_WORK/db2Connection.conf` |
+| DBB_MODELER_DB2_METADATASTORE_JDBC_ID  | DB2 JDBC User ID to connect through the JDBC driver | `user` |
+| DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD  | DB2 JDBC User ID's Password to connect through the JDBC driver |  |
+| DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE  | Default path for the DB2 JDBC Password file to connect through the JDBC driver (recommended) |  |
 | **DBB Git Migration Modeler Input files** | | | 
 | APPLICATION_MAPPING_FILE  | Application Mapping file containing the existing applications and their naming conventions, elements lists. See tailoring of input files. | `$DBB_MODELER_WORK/applicationsMapping.yaml` | 
 | REPOSITORY_PATH_MAPPING_FILE  | Repository Paths Mapping file map the various types of members to the folder layout in Git. See tailoring of input files. | `$DBB_MODELER_WORK/repositoryPathsMapping.yaml` | 
@@ -123,6 +141,7 @@ This script prompts for the below environment variables and saves them in a conf
 | SCAN_DATASET_MEMBERS_ENCODING | PDS encoding for scanner when determining the source type | `IBM-1047` |
 | DBB_ZAPPBUILD | Path to your customized [dbb-zAppBuild repository](https://github.com/IBM/dbb-zappbuild) on z/OS Unix System Services for baseline builds | `/var/dbb/dbb-zappbuild` |
 | DBB_COMMUNITY_REPO | Path to your customized [DBB community repository](https://github.com/IBM/dbb) on z/OS Unix System Services | `/var/dbb/dbb` |
+| APPLICATION_DEFAULT_BRANCH | Default branch name when initializing Git repositories and scanning files into DBB collections | `main` |
 | INTERACTIVE_RUN | Flag to indicate if the Migration-Modeler-Start script should run interactively or not (`true` or `false`) | `false` |
 | PUBLISH_ARTIFACTS | Flag to indicate if baseline packages should be uploaded to an Artifact Repository server or not (`true` or `false`) | `true` |
 | ARTIFACT_REPOSITORY_SERVER_URL | URL of the Artifact Repository Server | |
@@ -207,9 +226,9 @@ The outcome of this script are subfolders created in the `DBB_MODELER_APPLICATIO
 
 3. [Classification script (3-classify.sh)](./src/scripts/utils/3-classify.sh): this script scans the source code and performs the classification process. It calls two groovy scripts ([scanApplication.groovy](./src/groovy/scanApplication.groovy) and [assessUsage.groovy](./src/groovy/assessUsage.groovy)) to respectively scans the content of each files of the applications using the DBB scanner, and assesses how Include Files and Programs are used by all the applications.
    * For the scanning phase, the script iterates through the list of identified applications, and uses the DBB scanner to understand the dependencies for each artifact.
-   This information is stored in a local, temporary DBB metadatastore on the USS filesystem (in the `DBB_MODELER_METADATA_STORE_DIR` folder), that holds the dependencies information.
+   This information is stored in the DBB Metadatastore that holds the dependencies information.
 
-   * The second phase of the process uses this metadata information to understand how Include Files and Programs are used across all applications and classify the Include Files in three categories (Private, Public or Shared) and Programs in three categories ("main", "internal submodule", "service submodule").
+   * The second phase of the process uses this Metadata information to understand how Include Files and Programs are used across all applications and classify the Include Files in three categories (Private, Public or Shared) and Programs in three categories ("main", "internal submodule", "service submodule").
    Depending on the results of this assessment, Include Files may be moved from one application to another, Programs are not subject to move.
 
    * **Outputs**
@@ -1154,7 +1173,7 @@ The main script calls three groovy scripts ([scanApplication.groovy](./src/groov
 
    * For the scanning phase, the script iterates through the files located within applications' subfolder in the `DBB_MODELER_APPLICATION_DIR` folder.
    It uses the DBB Scanner to understand the dependencies for each artifact.
-   This information is stored in a local, temporary DBB metadatastore on the UNIX System Sservices filesystem, that holds the dependencies information.
+   This information is stored in the DBB Metadatastore that holds the dependencies information.
 
    * In the second phase, the Application Descriptor files are initialized.
    If an Application Descriptor is found, the source groups and dependencies/consumers information are reset.
