@@ -216,7 +216,7 @@ def parseArgs(String[] args) {
 	String usage = 'generateProperties.groovy [options]'
 	String header = 'options:'
 	def cli = new CliBuilder(usage:usage,header:header);
-	cli.a(longOpt:'application', args:1, required:true, 'Application  name.')
+	cli.a(longOpt:'application', args:1, required:true, 'Application name.')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
 

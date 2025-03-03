@@ -57,10 +57,9 @@ logger.logMessage("** Reading the Repository Layout Mapping definition.")
 if (props.REPOSITORY_PATH_MAPPING_FILE) {
 	File repositoryPathsMappingFile = new File(props.REPOSITORY_PATH_MAPPING_FILE)
 	if (!repositoryPathsMappingFile.exists()) {
-		logger.logMessage("*! [WARNING] File ${props.REPOSITORY_PATH_MAPPING_FILE} not found. Exiting.")
+		logger.logMessage("*! [WARNING] The Repository Path Mapping file ${props.REPOSITORY_PATH_MAPPING_FILE} was not found. Exiting.")
 		System.exit(1)
-	} else {
-		
+	} else {		
 		def yamlSlurper = new groovy.yaml.YamlSlurper()
 		repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
 	}
@@ -69,8 +68,8 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 // Applications Mapping read from YAML file (expected to be in applicationsMapping.yml so far)
 logger.logMessage("** Reading the Application Mapping definition.")
 @Field applicationsMapping
-if (props.APPLICATION_MAPPING_FILE) {
-	def applicationsMappingFile = new File(props.APPLICATION_MAPPING_FILE)
+if (props.applicationsMappingFilePath) {
+	def applicationsMappingFile = new File(props.applicationsMappingFilePath)
 	if (!applicationsMappingFile.exists()) {
 		logger.logMessage("*! [ERROR] The Application Mapping File '${props.applicationsMappingFilePath}' was not found. Exiting.")
 		System.exit(1)
@@ -96,7 +95,7 @@ if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
 	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
 
-logger.logMessage ("** Iterating through the provided datasets. ")
+logger.logMessage("** Iterating through the provided datasets.")
 applicationsMapping.datasets.each() { dataset ->
 	String qdsn = constructPDSForZFileOperation(dataset)
 	if (ZFile.dsExists(qdsn)) {
@@ -130,7 +129,7 @@ DecimalFormat df = new DecimalFormat("###,###,###,###")
 
 logger.logMessage("** Generating Applications Configurations files.")
 applicationMappingToDatasetMembers.each() { application, members ->
-	logger.logMessage "** Generating Configuration files for application $application."
+	logger.logMessage("** Generating Configuration files for application $application.")
 	generateApplicationFiles(application)
 	logger.logMessage("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(application))} bytes")
 }
@@ -232,19 +231,6 @@ def parseArgs(String[] args) {
 		}
 	} else {
 		logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
-		System.exit(1)
-	}	
-
-	if (configuration.APPLICATION_MAPPING_FILE) {
-		File file = new File(configuration.APPLICATION_MAPPING_FILE)
-		if (file.exists()) {
-			props.APPLICATION_MAPPING_FILE = configuration.APPLICATION_MAPPING_FILE
-		} else {
-			logger.logMessage("*! [ERROR] The Applications Mapping file '${configuration.APPLICATION_MAPPING_FILE}' does not exist. Exiting.")
-			System.exit(1)
-		}
-	} else {
-		logger.logMessage("*! [ERROR] The path to the Applications Mapping file must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
 	}	
 

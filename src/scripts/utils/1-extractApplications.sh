@@ -57,13 +57,13 @@ if [ $rc -eq 0 ]; then
 	dir=$(dirname "$0")
 	. $dir/0-environment.sh  -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
-	if [ ! -d $DBB_MODELER_APPCONFIG_DIR ]; then
+	if [ ! -d $DBB_MODELER_APPCONFIG_DIR ];	then
 		mkdir -p $DBB_MODELER_APPCONFIG_DIR
 	fi
-
-	if [ ! -d $DBB_MODELER_APPLICATIONS_DIR ]; then
-		mkdir -p $DBB_MODELER_APPLICATIONS_DIR
-	fi
+	
+	if [ ! -d $DBB_MODELER_APPLICATION_DIR ]; then
+		mkdir -p $DBB_MODELER_APPLICATION_DIR
+	fi	
 
 	for applicationsMappingFile in `ls $DBB_MODELER_APPMAPPINGS_DIR`
 	do		
