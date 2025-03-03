@@ -21,26 +21,32 @@ else
 		mkdir -p $DBB_MODELER_APPCONFIG_DIR
 	fi
 
-	touch $DBB_MODELER_LOGS/1-extractApplications.log
-	chtag -tc IBM-1047 $DBB_MODELER_LOGS/1-extractApplications.log
-
-	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
-		-d $APPLICATION_DATASETS \
-		--applicationsMapping $APPLICATION_MAPPING_FILE \
-		--repositoryPathsMapping $REPOSITORY_PATH_MAPPING_FILE \
-		--types $APPLICATION_MEMBER_TYPE_MAPPING \
-		-oc $DBB_MODELER_APPCONFIG_DIR \
-		-oa $DBB_MODELER_APPLICATION_DIR \
-		-l $DBB_MODELER_LOGS/1-extractApplications.log"
-
-	if [ "${SCAN_DATASET_MEMBERS}" == "true" ]; then
-		CMD="${CMD} --scanDatasetMembers"
-
-		if [ ! -z "${SCAN_DATASET_MEMBERS_ENCODING}" ]; then
-			CMD="${CMD} --scanEncoding ${SCAN_DATASET_MEMBERS_ENCODING}"
-		fi
-	fi
+	for applicationsMappingFile in `ls $DBB_MODELER_APPMAPPINGS_DIR`
+	do		
+		echo "*******************************************************************"
+		echo "Extract applications using '$DBB_MODELER_APPMAPPINGS_DIR/$applicationsMappingFile'"
+		echo "*******************************************************************"
+		applicationMapping=`echo $applicationsMappingFile | awk -F '.' '{printf $1}'`
+		
+		touch $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log
+		chtag -tc IBM-1047 $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log
 	
-	echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/1-extractApplications.log
-	$CMD
+		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
+			--applicationsMapping $DBB_MODELER_APPMAPPINGS_DIR/$applicationsMappingFile \
+			--repositoryPathsMapping $REPOSITORY_PATH_MAPPING_FILE \
+			--types $APPLICATION_MEMBER_TYPE_MAPPING \
+			-oc $DBB_MODELER_APPCONFIG_DIR \
+			-oa $DBB_MODELER_APPLICATION_DIR \
+			-l $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log"
+	
+		if [ "${SCAN_DATASET_MEMBERS}" == "true" ]; then
+			CMD="${CMD} --scanDatasetMembers"
+			if [ ! -z "${SCAN_DATASET_MEMBERS_ENCODING}" ]; then
+				CMD="${CMD} --scanEncoding ${SCAN_DATASET_MEMBERS_ENCODING}"
+			fi
+		fi
+
+		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log
+		$CMD
+	done
 fi

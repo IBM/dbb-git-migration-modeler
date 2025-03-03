@@ -73,7 +73,7 @@ fi
 
 if [ $rc -eq 0 ]; then
 	echo
-	echo "[PHASE] Extract applications from '$APPLICATION_DATASETS' based on application mappings defined in '$APPLICATION_MAPPING_FILE'"
+	echo "[PHASE] Extract applications based on application mappings defined in '$DBB_MODELER_APPCONFIG_DIR'"
 	if [[ $INTERACTIVE_RUN == "true" ]]; then
 		read -p "Do you want run the application extraction (Y/n): " variable
 	else

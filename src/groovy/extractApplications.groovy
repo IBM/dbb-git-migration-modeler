@@ -32,7 +32,6 @@ import com.ibm.dmh.scan.classify.SingleFilesMetadata;
 import java.text.DecimalFormat
 
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
-@Field def applicationsMappingUtils = loadScript(new File("utils/applicationsMappingUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 
 @Field HashMap<String, HashSet<String>> applicationMappingToDatasetMembers = new HashMap<String, HashSet<String>>()
@@ -84,12 +83,13 @@ logger.logMessage ("** Reading the Application Mapping definition. ")
 if (props.applicationsMappingFilePath) {
 	def applicationsMappingFile = new File(props.applicationsMappingFilePath)
 	if (!applicationsMappingFile.exists()) {
-		logger.logMessage "*! [WARNING] File ${props.applicationsMappingFilePath} not found. All artifacts will be unassigned."
+		logger.logMessage "*! [ERROR] The Application Mapping File '${props.applicationsMappingFilePath}' was not found. Exiting."
 	} else {
-		applicationsMapping = applicationsMappingUtils.readApplicationsMapping(applicationsMappingFile)
+		def yamlSlurper = new groovy.yaml.YamlSlurper()
+		applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
 	}
 } else {
-	logger.logMessage "*! [WARNING] no Applications Mapping File defined. All artifacts will be unassigned."
+	logger.logMessage "*! [ERROR] no Applications Mapping File provided. Exiting."
 }
 
 // Read the Types from file
@@ -106,18 +106,18 @@ if (props.typesFilePath) {
 }
 
 // Resolving datasets that contain wildcards
-ArrayList<String> datasets = new ArrayList<String>()
+/*ArrayList<String> datasets = new ArrayList<String>()
 props.datasetsList.split(',').each() { dataset ->
 	if (dataset.contains("*")) {
 		buildDatasetsList(datasets, dataset)
 	} else {
 		datasets.add(dataset)
 	}
-}
+} */
 
 
 logger.logMessage ("** Iterating through the provided datasets. ")
-datasets.each() { dataset ->
+applicationsMapping.datasets.each() { dataset ->
 	String qdsn = constructPDSForZFileOperation(dataset)
 	if (ZFile.dsExists(qdsn)) {
 		logger.logMessage("*** Found $dataset");
@@ -148,9 +148,9 @@ datasets.each() { dataset ->
 
 DecimalFormat df = new DecimalFormat("###,###,###,###")
 
-logger.logMessage "** Generating Applications Configurations files. "
+logger.logMessage("** Generating Applications Configurations files.")
 applicationMappingToDatasetMembers.each() { application, members ->
-	logger.logMessage "** Generating Configuration files for application $application. "
+	logger.logMessage "** Generating Configuration files for application $application."
 	generateApplicationFiles(application)
 	logger.logMessage("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(application))} bytes")
 }
@@ -190,7 +190,6 @@ def parseArgs(String[] args) {
 	String usage = 'extractApplications.groovy [options]'
 	String header = 'options:'
 	def cli = new CliBuilder(usage:usage,header:header);
-	cli.d(longOpt:'datasets', args:1, required:true, 'List of comma-separated datasets to scan');
 	cli.oc(longOpt:'outputConfigurations', args:1, required:true, 'Output folder where Configurations files are written');
 	cli.oa(longOpt:'outputApplications', args:1, required:true, 'Output folder where Applications files will be copied');
 	cli.a(longOpt:'applicationsMapping', args:1, required:false, 'Path to the Applications Mapping file')
@@ -205,14 +204,7 @@ def parseArgs(String[] args) {
 		cli.usage();
 		System.exit(1);
 	}
-	
-	if (opts.d) {
-		props.datasetsList = opts.d;
-	} else {
-		logger.logMessage("*! [ERROR] a list of comma-separated datasets ('-d' parameter) to scan must be provided. Exiting.");
-		System.exit(1);
-	}
-	
+
 	if (opts.oc) {
 		props.outputConfigurationDirectory = opts.oc;
 	} else {
@@ -440,11 +432,11 @@ def findMappedApplicationFromMemberName(String memberName) {
 		if (mappedApplications.size == 1) { // one application claimed ownership
 			return mappedApplications[0].application
 		} else if (mappedApplications.size > 1) { // multiple appliations claimed ownership
-			logger.logMessage ("[WARNING] Multiple applications claim ownership of member $memberName:")
+			logger.logMessage("[WARNING] Multiple applications claim ownership of member $memberName:")
 			mappedApplications.each {it -> 
 					logger.logMessage ("          Claiming ownership : " + it.application) 
 					}
-			logger.logMessage ("[WARNING] The owner cannot be defined. Map $memberName to UNASSIGNED")
+			logger.logMessage("[WARNING] The owner cannot be defined. Map $memberName to UNASSIGNED")
 			return "UNASSIGNED"
 		} else { // no match found
 			return "UNASSIGNED"
@@ -552,7 +544,7 @@ def estimateDatasetMemberSize(String dataset, String member) {
 		file.close()
 		return storageSize
 	} catch (IOException exception) {
-		println("*! [WARNING] Unable to retrieve the estimated storage size for '$dataset($member)'")
+		logger.logMessage("*! [WARNING] Unable to retrieve the estimated storage size for '$dataset($member)'")
 		return 0
 	}
 }
