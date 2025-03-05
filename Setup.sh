@@ -289,7 +289,7 @@ if [ $rc -eq 0 ]; then
 	echo "This DBB Git Migration Modeler configuration file will be imported by the DBB Git Migration Modeler process."
 	echo
 	
-	dbbVersion=`dbb --version | grep "Dependency Based Build version" | awk -F' ' '{print $5}'`
+	dbbVersion=`$DBB_HOME/bin/dbb --version | grep "Dependency Based Build version" | awk -F' ' '{print $5}'`
 	dbbVersionMajor=`echo $dbbVersion | awk -F'.' '{print $1}'`
 	dbbVersionMinor=`echo $dbbVersion | awk -F'.' '{print $2}'`
 	dbbVersionPatch=`echo $dbbVersion | awk -F'.' '{print $3}'`
