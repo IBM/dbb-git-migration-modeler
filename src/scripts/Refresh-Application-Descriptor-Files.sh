@@ -79,7 +79,7 @@ else
 		if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" ]; then
 			echo "[ERROR] Either the Db2 MetadataStore User's Password or the Db2 MetadataStore Password File are missing from the Configuration file. Exiting."
 			exit 1
-		fi	
+		fi
 	fi
 
 	# Scan files
@@ -108,7 +108,7 @@ else
 		echo "Reset Application Descriptor for $applicationDir"
 		echo "*******************************************************************"
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/recreateApplicationDescriptor.groovy \
-			$@ \
+			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 			--application $applicationDir \
 			--logFile $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log"
 		echo "[CMD] $CMD" > $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
