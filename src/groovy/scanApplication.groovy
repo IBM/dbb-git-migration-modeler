@@ -24,9 +24,6 @@ import groovy.cli.commons.*
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
 
-/******** Enabling Control Transfer flag */
-props.put("dbb.DependencyScanner.controlTransfers", "true")
-
 // Initialization
 parseArgs(args)
 
@@ -70,8 +67,10 @@ def getFileList() {
  */
 def scanFiles(fileList) {
 	List<LogicalFile> logicalFiles = new ArrayList<LogicalFile>()
+	DependencyScanner scanner = new DependencyScanner()
+	// Enabling Control Transfer flag in DBB Scanner	
+	scanner.setCollectControlTransfers("true")
 	fileList.each{ file ->
-		DependencyScanner scanner = new DependencyScanner()
 		logger.logMessage("\tScanning file $file ")
 		try {
 			logicalFile = scanner.scan(file, props.DBB_MODELER_APPLICATION_DIR)
