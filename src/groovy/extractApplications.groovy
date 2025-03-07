@@ -91,7 +91,7 @@ if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
 		types = loadMapFromFile(props.APPLICATION_MEMBER_TYPE_MAPPING)
 	}
 } else {
-	logger.logMessage("*! [WARNING] no Types File defined. All artifacts will use the 'UNKNOWN' type.")
+	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
 
 // Resolving datasets that contain wildcards
@@ -277,9 +277,6 @@ def parseArgs(String[] args) {
 			logger.logMessage("*! [ERROR] The Types file '${configuration.APPLICATION_MEMBER_TYPE_MAPPING}' does not exist. Exiting.")
 			System.exit(1)
 		}
-	} else {
-		logger.logMessage("*! [ERROR] The path to the Types file must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
-		System.exit(1)
 	}	
 
 	if (configuration.SCAN_DATASET_MEMBERS) {
