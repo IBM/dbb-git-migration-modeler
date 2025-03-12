@@ -289,52 +289,23 @@ if [ $rc -eq 0 ]; then
 	echo "This DBB Git Migration Modeler configuration file will be imported by the DBB Git Migration Modeler process."
 	echo
 	
-	dbbVersion=`$DBB_HOME/bin/dbb --version | grep "Dependency Based Build version" | awk -F' ' '{print $5}'`
-	dbbVersionMajor=`echo $dbbVersion | awk -F'.' '{print $1}'`
-	dbbVersionMinor=`echo $dbbVersion | awk -F'.' '{print $2}'`
-	dbbVersionPatch=`echo $dbbVersion | awk -F'.' '{print $3}'`
-	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-		## Checking DBB Toolkit version		
-		if [ "$dbbVersionMajor" -lt "3" ]; then
-			echo
-			echo "[ERROR] The DBB Toolkit is $dbbVersion. The minimal required version for the DBB Toolkit to use the Db2-based MetadataStore is 3.0.1."
-			exit 1
-		elif [ "$dbbVersionMajor" -lt "3" ]; then
-			if [ "$dbbVersionMinor" -eq "0" ]; then
-				if [ "$dbbVersionPatch" -lt "1" ]; then
-					echo
-					echo "[ERROR] The DBB Toolkit is $dbbVersion. The minimal required version for the DBB Toolkit to use the Db2-based MetadataStore is 3.0.1."
-					exit 1
-				fi
-			fi
-		fi
+	$DBB_MODELER_HOME/src/scripts/utils/checkDBBVersion.sh -c $CONFIG_FILE
+	rc=$?
+	if [ $rc -eq 0 ]; then
+		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
+			echo "********************************************* SUGGESTED ACTION *********************************************"
+			echo "Check the successful configuration and access to the Db2-based MetadataStore with the following command:"
+			echo "'$DBB_MODELER_HOME/src/scripts/CheckDb2MetadataStore.sh -c $CONFIG_FILE'"
+		fi		
+		echo
 		echo "********************************************* SUGGESTED ACTION *********************************************"
-		echo "Check the successful configuration and access to the Db2-based MetadataStore with the following command:"
-		echo "'$DBB_MODELER_HOME/src/scripts/CheckDb2MetadataStore.sh -c $CONFIG_FILE'"
-	else
-		## Checking DBB Toolkit version		
-		if [ "$dbbVersionMajor" -lt "2" ]; then
-			echo
-			echo "[ERROR] The DBB Toolkit is $dbbVersion. The minimal required version for the DBB Toolkit to use the File-based MetadataStore is 2.0.2."
-			exit 1
-		elif [ "$dbbVersionMajor" -eq "2" ]; then
-			if [ "$dbbVersionMinor" -eq "0" ]; then
-				if [ "$dbbVersionPatch" -lt "2" ]; then
-					echo
-					echo "[ERROR] The DBB Toolkit is $dbbVersion. The minimal required version for the DBB Toolkit to use the File-based MetadataStore is 2.0.2."
-					exit 1
-				fi
-			fi
-		fi
+		echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
+		echo "  - $APPLICATION_MAPPING_FILE "
+		echo "  - $REPOSITORY_PATH_MAPPING_FILE "
+		echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional) "
+		echo "  - $TYPE_CONFIGURATIONS_FILE (optional) "
+		echo
+		echo "Once tailored, run the following command:"
+		echo "'$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $CONFIG_FILE'"
 	fi
-	echo
-	echo "********************************************* SUGGESTED ACTION *********************************************"
-	echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
-	echo "  - $APPLICATION_MAPPING_FILE "
-	echo "  - $REPOSITORY_PATH_MAPPING_FILE "
-	echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional) "
-	echo "  - $TYPE_CONFIGURATIONS_FILE (optional) "
-	echo
-	echo "Once tailored, run the following command:"
-	echo "'$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $CONFIG_FILE'"
 fi
