@@ -231,15 +231,19 @@ if [ $rc -eq 0 ]; then
 			case $PIPELINE_CI in
 				AzureDevOps)
 					GitDistribution="Azure DevOps platform"
+					PipelineOrchestrator="Azure DevOps"
 				;;
 				GitlabCI)
 					GitDistribution="GitLab platform"
+					PipelineOrchestrator="GitLab CI"
 				;;
 				GitHubActions)
 					GitDistribution="GitHub platform"
+					PipelineOrchestrator="GitHub Actions"
 				;;
 				*)
 					GitDistribution="Git Central server"
+					PipelineOrchestrator="Pipeline Orchestrator's"
 				;;
 			esac
 			
@@ -247,9 +251,7 @@ if [ $rc -eq 0 ]; then
 			echo "For each application:                                                                                      "
 			echo "- Create a Git project in your $GitDistribution                                                            "
 			echo "- Add a remote configuration for the application's Git repository on USS using the 'git remote add' command"
-			if [ "$PIPELINE_CI" = "AzureDevOps" ]; then
-				echo "- Initialize Azure DevOps pipeline variables in Azure DevOps configuration"
-			fi
+			echo "- Initialize the $PipelineOrchestrator variables in the pipeline configuration"
 			echo "- Push the application's Git repository in the order of the above ranked list                            "
 			echo
 			echo "***********************************************************************************************************"
