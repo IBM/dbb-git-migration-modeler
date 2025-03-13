@@ -48,28 +48,17 @@ HashMap<String, Long> storageRequirements = new HashMap<String, Long>()
  * Processing logic
  */
 
-println("** Extraction process started. ")
+println("** Extraction process started.")
 
 // Parse arguments from command-line
 parseArgs(args)
 
-// Print parms
-println("** Script configuration:")
-props.each { k,v->
-	println "   $k -> $v"
-}
-
-// Handle log file
-if (props.logFile) {
-	logger.create(props.logFile)
-}
-
 // Read the repository layout mapping file
-logger.logMessage ("** Reading the Repository Layout Mapping definition. ")
-if (props.repositoryPathsMappingFilePath) {
-	File repositoryPathsMappingFile = new File(props.repositoryPathsMappingFilePath)
+logger.logMessage("** Reading the Repository Layout Mapping definition.")
+if (props.REPOSITORY_PATH_MAPPING_FILE) {
+	File repositoryPathsMappingFile = new File(props.REPOSITORY_PATH_MAPPING_FILE)
 	if (!repositoryPathsMappingFile.exists()) {
-		logger.logMessage "*! [WARNING] File ${props.repositoryPathsMappingFilePath} not found. Process will exit."
+		logger.logMessage("*! [WARNING] File ${props.REPOSITORY_PATH_MAPPING_FILE} not found. Exiting.")
 		System.exit(1)
 	} else {
 		
@@ -79,35 +68,35 @@ if (props.repositoryPathsMappingFilePath) {
 }
 
 // Applications Mapping read from YAML file (expected to be in applicationsMapping.yml so far)
-logger.logMessage ("** Reading the Application Mapping definition. ")
+logger.logMessage("** Reading the Application Mapping definition.")
 @Field applicationsMapping
-if (props.applicationsMappingFilePath) {
-	def applicationsMappingFile = new File(props.applicationsMappingFilePath)
+if (props.APPLICATION_MAPPING_FILE) {
+	def applicationsMappingFile = new File(props.APPLICATION_MAPPING_FILE)
 	if (!applicationsMappingFile.exists()) {
-		logger.logMessage "*! [WARNING] File ${props.applicationsMappingFilePath} not found. All artifacts will be unassigned."
+		logger.logMessage("*! [WARNING] File ${props.APPLICATION_MAPPING_FILE} not found. All artifacts will be unassigned.")
 	} else {
 		applicationsMapping = applicationsMappingUtils.readApplicationsMapping(applicationsMappingFile)
 	}
 } else {
-	logger.logMessage "*! [WARNING] no Applications Mapping File defined. All artifacts will be unassigned."
+	logger.logMessage("*! [WARNING] no Applications Mapping File defined. All artifacts will be unassigned.")
 }
 
 // Read the Types from file
-logger.logMessage ("** Reading the Type Mapping definition. ")
-if (props.typesFilePath) {
-	def typesFile = new File(props.typesFilePath)
+logger.logMessage("** Reading the Type Mapping definition.")
+if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
+	def typesFile = new File(props.APPLICATION_MEMBER_TYPE_MAPPING)
 	if (!typesFile.exists()) {
-		logger.logMessage "*! [WARNING] File ${props.typesFilePath} not found in the current working directory. All artifacts will use the 'UNKNOWN' type."
+		logger.logMessage("*! [WARNING] File ${props.APPLICATION_MEMBER_TYPE_MAPPING} not found in the current working directory. All artifacts will use the 'UNKNOWN' type.")
 	} else {
-		types = loadMapFromFile(props.typesFilePath)
+		types = loadMapFromFile(props.APPLICATION_MEMBER_TYPE_MAPPING)
 	}
 } else {
-	logger.logMessage "*! [WARNING] no Types File defined. All artifacts will use the 'UNKNOWN' type."
+	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
 
 // Resolving datasets that contain wildcards
 ArrayList<String> datasets = new ArrayList<String>()
-props.datasetsList.split(',').each() { dataset ->
+props.APPLICATION_DATASETS.split(',').each() { dataset ->
 	if (dataset.contains("*")) {
 		buildDatasetsList(datasets, dataset)
 	} else {
@@ -116,7 +105,7 @@ props.datasetsList.split(',').each() { dataset ->
 }
 
 
-logger.logMessage ("** Iterating through the provided datasets. ")
+logger.logMessage("** Iterating through the provided datasets.")
 datasets.each() { dataset ->
 	String qdsn = constructPDSForZFileOperation(dataset)
 	if (ZFile.dsExists(qdsn)) {
@@ -148,9 +137,9 @@ datasets.each() { dataset ->
 
 DecimalFormat df = new DecimalFormat("###,###,###,###")
 
-logger.logMessage "** Generating Applications Configurations files. "
+logger.logMessage("** Generating Applications Configurations files.")
 applicationMappingToDatasetMembers.each() { application, members ->
-	logger.logMessage "** Generating Configuration files for application $application. "
+	logger.logMessage("** Generating Configuration files for application $application.")
 	generateApplicationFiles(application)
 	logger.logMessage("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(application))} bytes")
 }
@@ -187,74 +176,123 @@ def buildDatasetsList(ArrayList<String> datasetsList, String filter) {
 
 /* parseArgs: parse arguments provided through CLI */
 def parseArgs(String[] args) {
+	Properties configuration = new Properties()
 	String usage = 'extractApplications.groovy [options]'
 	String header = 'options:'
-	def cli = new CliBuilder(usage:usage,header:header);
-	cli.d(longOpt:'datasets', args:1, required:true, 'List of comma-separated datasets to scan');
-	cli.oc(longOpt:'outputConfigurations', args:1, required:true, 'Output folder where Configurations files are written');
-	cli.oa(longOpt:'outputApplications', args:1, required:true, 'Output folder where Applications files will be copied');
-	cli.a(longOpt:'applicationsMapping', args:1, required:false, 'Path to the Applications Mapping file')
-	cli.r(longOpt:'repositoryPathsMapping', args:1, required:true, 'Path to the Repository Paths Mapping file')
-	cli.t(longOpt:'types', args:1, required:false, 'Path to the Types file')
+	def cli = new CliBuilder(usage:usage,header:header)
+	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
-	cli.s(longOpt:'scanDatasetMembers', args:0, required:false, 'Flag to indicate if DBB scanner is used to identify the type of artifacts')
-	cli.se(longOpt:'scanEncoding', args:1, required:false, 'Codepage encoding used for the DBB scanner')
 	
-	def opts = cli.parse(args);
+	def opts = cli.parse(args)
 	if (!args || !opts) {
-		cli.usage();
-		System.exit(1);
-	}
-	
-	if (opts.d) {
-		props.datasetsList = opts.d;
-	} else {
-		logger.logMessage("*! [ERROR] a list of comma-separated datasets ('-d' parameter) to scan must be provided. Exiting.");
-		System.exit(1);
-	}
-	
-	if (opts.oc) {
-		props.outputConfigurationDirectory = opts.oc;
-	} else {
-		logger.logMessage("*! [ERROR] an output Configuration directory ('-oc' parameter) must be specified. Exiting.");
-		System.exit(1);
+		cli.usage()
+		System.exit(1)
 	}
 
-	if (opts.oa) {
-		props.outputApplicationDirectory = opts.oa;
-	} else {
-		logger.logMessage("*! [ERROR] an output Application directory ('-oa' parameter) must be specified. Exiting.");
-		System.exit(1);
-	}
-
-	if (opts.r) {
-		props.repositoryPathsMappingFilePath = opts.r
-	} else {
-		logger.logMessage("*! [ERROR] the path to the Repository Paths mapping file ('-r' parameter) must be specified. Exiting.");
-		System.exit(1);
-	}
-
-	if (opts.a) {
-		props.applicationsMappingFilePath = opts.a
-	}
-	
-	if (opts.t) {
-		props.typesFilePath = opts.t
-	}
-	
 	if (opts.l) {
 		props.logFile = opts.l
+		logger.create(props.logFile)		
 	}
-
-	if (opts.s) {
-		props.scanDatasetMembers = opts.s
-		if (opts.se) {
-			props.scanEncoding = opts.se
+	
+	if (opts.c) {
+		props.configurationFilePath = opts.c
+		File configurationFile = new File(props.configurationFilePath)
+		if (configurationFile.exists()) {
+			configurationFile.withReader() { reader ->
+				configuration.load(reader)
+			}
 		} else {
-			props.scanEncoding = "IBM-1047"
+			logger.logMessage("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
+			System.exit(1)		 			
 		}
 	} else {
-		props.scanDatasetMembers = "false"
+		logger.logMessage("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
+		System.exit(1)
+	}
+	
+	if (configuration.APPLICATION_DATASETS) {
+		props.APPLICATION_DATASETS = configuration.APPLICATION_DATASETS
+	} else {
+		logger.logMessage("*! [ERROR] A list of comma-separated datasets to scan must be provided in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+
+	if (configuration.DBB_MODELER_APPCONFIG_DIR) {
+		File directory = new File(configuration.DBB_MODELER_APPCONFIG_DIR)
+		if (directory.exists()) {
+			props.DBB_MODELER_APPCONFIG_DIR = configuration.DBB_MODELER_APPCONFIG_DIR
+		} else {
+			logger.logMessage("*! [ERROR] The Configurations directory '${configuration.DBB_MODELER_APPCONFIG_DIR}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The Configurations directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+
+	if (configuration.DBB_MODELER_APPLICATION_DIR) {
+		File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
+		if (directory.exists()) {
+			props.DBB_MODELER_APPLICATION_DIR = configuration.DBB_MODELER_APPLICATION_DIR
+		} else {
+			logger.logMessage("*! [ERROR] The Applications directory '${configuration.DBB_MODELER_APPLICATION_DIR}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+
+	if (configuration.APPLICATION_MAPPING_FILE) {
+		File file = new File(configuration.APPLICATION_MAPPING_FILE)
+		if (file.exists()) {
+			props.APPLICATION_MAPPING_FILE = configuration.APPLICATION_MAPPING_FILE
+		} else {
+			logger.logMessage("*! [ERROR] The Applications Mapping file '${configuration.APPLICATION_MAPPING_FILE}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The path to the Applications Mapping file must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+
+	if (configuration.REPOSITORY_PATH_MAPPING_FILE) {
+		File file = new File(configuration.REPOSITORY_PATH_MAPPING_FILE)
+		if (file.exists()) {
+			props.REPOSITORY_PATH_MAPPING_FILE = configuration.REPOSITORY_PATH_MAPPING_FILE
+		} else {
+			logger.logMessage("*! [ERROR] The Repository Paths Mapping file '${configuration.REPOSITORY_PATH_MAPPING_FILE}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The path to the Repository Paths Mapping file must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+
+	if (configuration.APPLICATION_MEMBER_TYPE_MAPPING) {
+		File file = new File(configuration.APPLICATION_MEMBER_TYPE_MAPPING)
+		if (file.exists()) {
+			props.APPLICATION_MEMBER_TYPE_MAPPING = configuration.APPLICATION_MEMBER_TYPE_MAPPING
+		} else {
+			logger.logMessage("*! [ERROR] The Types file '${configuration.APPLICATION_MEMBER_TYPE_MAPPING}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	}	
+
+	if (configuration.SCAN_DATASET_MEMBERS) {
+		props.SCAN_DATASET_MEMBERS = configuration.SCAN_DATASET_MEMBERS
+		if (configuration.SCAN_DATASET_MEMBERS_ENCODING) {
+			props.SCAN_DATASET_MEMBERS_ENCODING = configuration.SCAN_DATASET_MEMBERS_ENCODING
+		} else {
+			props.SCAN_DATASET_MEMBERS_ENCODING = "IBM-1047"
+		}
+	} else {
+		props.SCAN_DATASET_MEMBERS = "false"
+	}
+	
+	logger.logMessage("** Script configuration:")
+	props.each() { k, v ->
+		logger.logMessage("\t$k -> $v")
 	}
 }
 
@@ -295,7 +333,7 @@ def isFilterOnMemberMatching(String memberName, String filter) {
 def generateApplicationFiles(String application) {
 	// If an existing DBB Migration Mapping file already exists in the CONFIG directory,
 	// we read it and store it into a HashMap where the key in the input dataset member 
-	File mappingFile = new File(props.outputConfigurationDirectory + '/' + application + ".mapping");
+	File mappingFile = new File(props.DBB_MODELER_APPCONFIG_DIR + '/' + application + ".mapping");
 	HashMap<String, String> mappings = new HashMap<String, String>()
 	if (mappingFile.exists()) {
 		BufferedReader mappingReader = new BufferedReader(new FileReader(mappingFile))
@@ -309,7 +347,7 @@ def generateApplicationFiles(String application) {
 
 	// If an existing Application Descriptor file already exists in the CONFIG directory,
 	// we read it into an Application Descriptor object 
-	File applicationDescriptorFile = new File(props.outputConfigurationDirectory + '/' + application + ".yml")
+	File applicationDescriptorFile = new File(props.DBB_MODELER_APPCONFIG_DIR + '/' + application + ".yml")
 	def applicationDescriptor	
 	if (applicationDescriptorFile.exists()) {
 		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
@@ -342,7 +380,7 @@ def generateApplicationFiles(String application) {
 		def (dataset, member) = getDatasetAndMember(datasetMember)
 		// Using the DBB Scanner if activated
 		String scannedLanguage, scannedFileType
-		if (props.scanDatasetMembers && props.scanDatasetMembers.toBoolean()) {
+		if (props.SCAN_DATASET_MEMBERS && props.SCAN_DATASET_MEMBERS.toBoolean()) {
 			(scannedLanguage, scannedFileType) = scanDatasetMember(constructDatasetForZFileOperation(dataset, member))
 		}
 		def lastQualifier = getLastQualifier(dataset)
@@ -352,7 +390,7 @@ def generateApplicationFiles(String application) {
 		// 2) the type if set
 		// 3) the last level qualifier of the containing dataset
 		def matchingRepositoryPath = repositoryPathsMapping.repositoryPaths.find {repositoryPath ->
-			(props.scanDatasetMembers && props.scanDatasetMembers.toBoolean() && repositoryPath.mvsMapping.scan ? repositoryPath.mvsMapping.scan.language.equals(scannedLanguage) && repositoryPath.mvsMapping.scan.fileType.equals(scannedFileType) : false) ||
+			(props.SCAN_DATASET_MEMBERS && props.SCAN_DATASET_MEMBERS.toBoolean() && repositoryPath.mvsMapping.scan ? repositoryPath.mvsMapping.scan.language.equals(scannedLanguage) && repositoryPath.mvsMapping.scan.fileType.equals(scannedFileType) : false) ||
 			(repositoryPath.mvsMapping.types ? repositoryPath.mvsMapping.types.contains(memberType) : false) ||
 			(repositoryPath.mvsMapping.datasetLastLevelQualifiers ? repositoryPath.mvsMapping.datasetLastLevelQualifiers.contains(lastQualifier) : false) 
 		}
@@ -393,7 +431,7 @@ def generateApplicationFiles(String application) {
 		// Appending the dataset member to the Application Descriptor file
 		applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroup, language, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, member, memberType, "undefined")
 		// Adding a line into the DBB Migration Mapping file
-		targetRepositoryPath = props.outputApplicationDirectory + "/" + application + "/" + targetRepositoryPath
+		targetRepositoryPath = props.DBB_MODELER_APPLICATION_DIR + "/" + application + "/" + targetRepositoryPath
 		mappings.put(datasetMember, "$targetRepositoryPath/$member.$fileExtension pdsEncoding=$pdsEncoding")
 	}
 	
@@ -439,12 +477,12 @@ def findMappedApplicationFromMemberName(String memberName) {
 		
 		if (mappedApplications.size == 1) { // one application claimed ownership
 			return mappedApplications[0].application
-		} else if (mappedApplications.size > 1) { // multiple appliations claimed ownership
-			logger.logMessage ("[WARNING] Multiple applications claim ownership of member $memberName:")
+		} else if (mappedApplications.size > 1) { // multiple applications claimed ownership
+			logger.logMessage("*! [WARNING] Multiple applications claim ownership of member $memberName:")
 			mappedApplications.each {it -> 
 					logger.logMessage ("          Claiming ownership : " + it.application) 
 					}
-			logger.logMessage ("[WARNING] The owner cannot be defined. Map $memberName to UNASSIGNED")
+			logger.logMessage("*! [WARNING] The owner cannot be defined. Map $memberName to UNASSIGNED")
 			return "UNASSIGNED"
 		} else { // no match found
 			return "UNASSIGNED"
@@ -533,7 +571,7 @@ def scanDatasetMember(String datasetMemberToScan) {
 
 def initializeScanner() {
 	ScanProperties scanProperties = new ScanProperties();
-	scanProperties.setCodePage(props.scanEncoding);
+	scanProperties.setCodePage(props.SCAN_DATASET_MEMBERS_ENCODING);
 	Dmh5210 dmh5210 = new Dmh5210();
 	dmh5210.init(scanProperties);
 	return dmh5210;
