@@ -73,12 +73,14 @@ if (props.APPLICATION_MAPPING_FILE) {
 	def applicationsMappingFile = new File(props.APPLICATION_MAPPING_FILE)
 	if (!applicationsMappingFile.exists()) {
 		logger.logMessage("*! [ERROR] The Application Mapping File '${props.applicationsMappingFilePath}' was not found. Exiting.")
+		System.exit(1)
 	} else {
 		def yamlSlurper = new groovy.yaml.YamlSlurper()
 		applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
 	}
 } else {
 	logger.logMessage("*! [ERROR] no Applications Mapping File provided. Exiting.")
+	System.exit(1)
 }
 
 // Read the Types from file
@@ -94,9 +96,8 @@ if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
 	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
 
-
-logger.logMessage("** Iterating through the provided datasets.")
-datasets.each() { dataset ->
+logger.logMessage ("** Iterating through the provided datasets. ")
+applicationsMapping.datasets.each() { dataset ->
 	String qdsn = constructPDSForZFileOperation(dataset)
 	if (ZFile.dsExists(qdsn)) {
 		logger.logMessage("*** Found $dataset");
@@ -129,7 +130,7 @@ DecimalFormat df = new DecimalFormat("###,###,###,###")
 
 logger.logMessage("** Generating Applications Configurations files.")
 applicationMappingToDatasetMembers.each() { application, members ->
-	logger.logMessage("** Generating Configuration files for application $application.")
+	logger.logMessage "** Generating Configuration files for application $application."
 	generateApplicationFiles(application)
 	logger.logMessage("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(application))} bytes")
 }
@@ -471,7 +472,7 @@ def findMappedApplicationFromMemberName(String memberName) {
 		} else if (mappedApplications.size > 1) { // multiple applications claimed ownership
 			logger.logMessage("*! [WARNING] Multiple applications claim ownership of member $memberName:")
 			mappedApplications.each {it -> 
-				logger.logMessage ("\t\tClaiming ownership: " + it.application) 
+				logger.logMessage("\t\tClaiming ownership: " + it.application) 
 			}
 			logger.logMessage("*! [WARNING] The owner cannot be defined. Map $memberName to UNASSIGNED")
 			return "UNASSIGNED"

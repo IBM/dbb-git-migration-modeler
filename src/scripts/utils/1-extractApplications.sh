@@ -76,12 +76,9 @@ if [ $rc -eq 0 ]; then
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log
 	
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
+			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 			--applicationsMapping $DBB_MODELER_APPMAPPINGS_DIR/$applicationsMappingFile \
-			--repositoryPathsMapping $REPOSITORY_PATH_MAPPING_FILE \
-			--types $APPLICATION_MEMBER_TYPE_MAPPING \
-			-oc $DBB_MODELER_APPCONFIG_DIR \
-			-oa $DBB_MODELER_APPLICATION_DIR \
-			-l $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log"
+			--logFile $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log"
 	
 		if [ "${SCAN_DATASET_MEMBERS}" == "true" ]; then
 			CMD="${CMD} --scanDatasetMembers"
