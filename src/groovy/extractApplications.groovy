@@ -186,7 +186,7 @@ def parseArgs(String[] args) {
 	}
 	
 	if (opts.a) {
-		props.applicationMappingsFilePath = opts.a
+		props.applicationsMappingFilePath = opts.a
 	} else {
 		logger.logMessage("*! [ERROR] The path to the Applications Mapping file (option -a/--applicationsMapping) must be provided. Exiting.")
 		System.exit(1)		 			
