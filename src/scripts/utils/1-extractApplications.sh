@@ -65,29 +65,18 @@ if [ $rc -eq 0 ]; then
 		mkdir -p $DBB_MODELER_APPLICATION_DIR
 	fi	
 
-	for applicationsMappingFile in `ls $DBB_MODELER_APPMAPPINGS_DIR`
-	do		
-		echo "*******************************************************************"
-		echo "Extract applications using '$DBB_MODELER_APPMAPPINGS_DIR/$applicationsMappingFile'"
-		echo "*******************************************************************"
-		applicationMapping=`echo $applicationsMappingFile | awk -F '.' '{printf $1}'`
-		
-		touch $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log
+	echo "*******************************************************************"
+	echo "Extract applications using Applications Mapping files in '$DBB_MODELER_APPMAPPINGS_DIR'"
+	echo "*******************************************************************"
+	applicationMapping=`echo $applicationsMappingFile | awk -F '.' '{printf $1}'`
 	
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--applicationsMapping $DBB_MODELER_APPMAPPINGS_DIR/$applicationsMappingFile \
-			--logFile $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log"
-	
-		if [ "${SCAN_DATASET_MEMBERS}" == "true" ]; then
-			CMD="${CMD} --scanDatasetMembers"
-			if [ ! -z "${SCAN_DATASET_MEMBERS_ENCODING}" ]; then
-				CMD="${CMD} --scanEncoding ${SCAN_DATASET_MEMBERS_ENCODING}"
-			fi
-		fi
+	touch $DBB_MODELER_LOGS/1-extractApplications.log
+	chtag -tc IBM-1047 $DBB_MODELER_LOGS/1-extractApplications.log
 
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/1-$applicationMapping-extractApplications.log
-		$CMD
-	done
+	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
+		--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+		--logFile $DBB_MODELER_LOGS/1-extractApplications.log"
+
+	echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/1-extractApplications.log
+	$CMD
 fi

@@ -12,6 +12,7 @@ import groovy.transform.*
 import groovy.util.*
 import groovy.time.*
 import groovy.cli.commons.*
+import static groovy.io.FileType.*
 import groovy.yaml.YamlSlurper
 import com.ibm.jzos.CatalogSearch;
 import com.ibm.jzos.CatalogSearchField;
@@ -34,7 +35,13 @@ import java.text.DecimalFormat
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 
-@Field HashMap<String, HashSet<String>> applicationMappingToDatasetMembers = new HashMap<String, HashSet<String>>()
+//Map between applications name and owned datasetMembers
+@Field HashMap<String, HashSet<String>> applicationsToDatasetMembersMap = new HashMap<String, HashSet<String>>()
+//Map between datasets (represented as List) and the applications defined in the Applications Mapping files
+@Field HashMap<ArrayList<String>, ArrayList<Object>> datasetsMap = new HashMap<ArrayList<String>, ArrayList<Object>>()
+//Map between members and datasets (represented as List)
+@Field HashMap<String, ArrayList<String>> membersToDatasetsMap = new HashMap<String, ArrayList<String>>()
+
 // Types Configurations
 @Field HashMap<String, String> types
 // script properties
@@ -47,7 +54,7 @@ HashMap<String, Long> storageRequirements = new HashMap<String, Long>()
  * Processing logic
  */
 
-println("** Extraction process started.")
+logger.logMessage("** Extraction process started.")
 
 // Parse arguments from command-line
 parseArgs(args)
@@ -65,23 +72,6 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 	}
 }
 
-// Applications Mapping read from YAML file (expected to be in applicationsMapping.yml so far)
-logger.logMessage("** Reading the Application Mapping definition.")
-@Field applicationsMapping
-if (props.applicationsMappingFilePath) {
-	def applicationsMappingFile = new File(props.applicationsMappingFilePath)
-	if (!applicationsMappingFile.exists()) {
-		logger.logMessage("*! [ERROR] The Application Mapping File '${props.applicationsMappingFilePath}' was not found. Exiting.")
-		System.exit(1)
-	} else {
-		def yamlSlurper = new groovy.yaml.YamlSlurper()
-		applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
-	}
-} else {
-	logger.logMessage("*! [ERROR] no Applications Mapping File provided. Exiting.")
-	System.exit(1)
-}
-
 // Read the Types from file
 logger.logMessage("** Reading the Type Mapping definition.")
 if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
@@ -95,42 +85,67 @@ if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
 	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
 
-logger.logMessage("** Iterating through the provided datasets.")
-applicationsMapping.datasets.each() { dataset ->
-	String qdsn = constructPDSForZFileOperation(dataset)
-	if (ZFile.dsExists(qdsn)) {
-		logger.logMessage("*** Found $dataset");
-		try {
-			PdsDirectory directoryList = new PdsDirectory(qdsn)
-			Iterator directoryListIterator = directoryList.iterator();
-			while (directoryListIterator.hasNext()) {
-				PdsDirectory.MemberInfo memberInfo = (PdsDirectory.MemberInfo) directoryListIterator.next();
-				String member = (memberInfo.getName());
-				def mappedApplication = findMappedApplicationFromMemberName(member)
-				logger.logMessage("**** '$dataset($member)' - Mapped Application: $mappedApplication");
-				addDatasetMemberToApplication(mappedApplication, "$dataset($member)")
-				def currentStorageRequirement = storageRequirements.get(mappedApplication)
-				if (!currentStorageRequirement)
-					currentStorageRequirement = 0
-				storageRequirements.put(mappedApplication, currentStorageRequirement + estimateDatasetMemberSize(dataset, member))  
-			}
-			directoryList.close();
-		}
-		catch (java.io.IOException exception) {
-			logger.logMessage("*! [ERROR] Problem when accessing the dataset '$qdsn'.");
-		}
+logger.logMessage("** Processing the provided Applications Mapping files.")
+File applicationsMappingsDir = new File(props.DBB_MODELER_APPMAPPINGS_DIR)
+applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
+	logger.logMessage("*** Processing '${applicationsMappingFile.getName()}'")
+	def yamlSlurper = new groovy.yaml.YamlSlurper()
+	applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
+	ArrayList<Object> applicationsList = datasetsMap.get(applicationsMapping.datasets)
+	if (!applicationsList) {
+		applicationsList = new ArrayList<Object>()
+		datasetsMap.put(applicationsMapping.datasets, applicationsList)
 	}
-	else {
-		logger.logMessage("*! [ERROR] Dataset '$qdsn' does not exist.");
+	applicationsMapping.applications.each() { application ->
+		applicationsList.add(application)
 	}
 }
+
+if (findDuplicateApplications()) {
+	System.exit(1)
+}
+
+logger.logMessage("** Iterating through the applications.")
+datasetsMap.each() { datasets, applicationsList ->
+	logger.logMessage("*** Processing '$datasets'")
+
+	datasets.each() { dataset ->
+		String qdsn = constructPDSForZFileOperation(dataset)
+		if (ZFile.dsExists(qdsn)) {
+			logger.logMessage("**** Found '$dataset'");
+			try {
+				PdsDirectory directoryList = new PdsDirectory(qdsn)
+				Iterator directoryListIterator = directoryList.iterator();
+				while (directoryListIterator.hasNext()) {
+					PdsDirectory.MemberInfo memberInfo = (PdsDirectory.MemberInfo) directoryListIterator.next();
+					String member = (memberInfo.getName());
+					addDatasetToMember(member, dataset)
+					def mappedApplication = findMappedApplicationFromMemberName(applicationsList, member)
+					logger.logMessage("***** '$dataset($member)' - Mapped Application: $mappedApplication");
+					addDatasetMemberToApplication(mappedApplication, "$dataset($member)")
+				}
+				directoryList.close();
+			}
+			catch (java.io.IOException exception) {
+				logger.logMessage("*! [ERROR] Problem when accessing the dataset '$qdsn'.");
+			}
+		}
+		else {
+			logger.logMessage("*! [ERROR] Dataset '$qdsn' does not exist.");
+		}
+	}
+}
+
+findDuplicateProcessingOfMembers()
 
 DecimalFormat df = new DecimalFormat("###,###,###,###")
 
 logger.logMessage("** Generating Applications Configurations files.")
-applicationMappingToDatasetMembers.each() { application, members ->
+applicationsToDatasetMembersMap.each() { application, members ->
 	logger.logMessage("** Generating Configuration files for application $application.")
 	generateApplicationFiles(application)
+	storageRequirements.put(application, calculateStorageSizeForMembers(members))  
+	
 	logger.logMessage("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(application))} bytes")
 }
 def globalStorageRequirements = 0
@@ -144,26 +159,6 @@ logger.close()
 
 /*  ==== Utilities ====  */
 
-/* used to expand datasets when they contains wildcards characters */
-def buildDatasetsList(ArrayList<String> datasetsList, String filter) {
-	CatalogSearch catalogSearch = new CatalogSearch(filter, 64000);
-	catalogSearch.addFieldName("ENTNAME");
-	catalogSearch.search();
-	def datasetCount = 0
-	
-	catalogSearch.each { searchEntry ->
-		CatalogSearch.Entry catalogEntry = (CatalogSearch.Entry) searchEntry;
-		if (catalogEntry.isDatasetEntry()) {
-			datasetCount++;
-			CatalogSearchField field = catalogEntry.getField("ENTNAME");
-			String dsn = field.getFString().trim();
-			datasetsList.add(dsn);
-		}
-	}
-}
-
-
-
 /* parseArgs: parse arguments provided through CLI */
 def parseArgs(String[] args) {
 	Properties configuration = new Properties()
@@ -171,7 +166,6 @@ def parseArgs(String[] args) {
 	String header = 'options:'
 	def cli = new CliBuilder(usage:usage,header:header)
 	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
-	cli.a(longOpt:'applicationsMapping', args:1, required:false, 'Path to the Applications Mapping file')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 	
 	def opts = cli.parse(args)
@@ -184,14 +178,7 @@ def parseArgs(String[] args) {
 		props.logFile = opts.l
 		logger.create(props.logFile)		
 	}
-	
-	if (opts.a) {
-		props.applicationsMappingFilePath = opts.a
-	} else {
-		logger.logMessage("*! [ERROR] The path to the Applications Mapping file (option -a/--applicationsMapping) must be provided. Exiting.")
-		System.exit(1)		 			
-	}
-	
+
 	if (opts.c) {
 		props.configurationFilePath = opts.c
 		File configurationFile = new File(props.configurationFilePath)
@@ -220,6 +207,20 @@ def parseArgs(String[] args) {
 		logger.logMessage("*! [ERROR] The Configurations directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
 	}	
+
+	if (configuration.DBB_MODELER_APPMAPPINGS_DIR) {
+		File directory = new File(configuration.DBB_MODELER_APPMAPPINGS_DIR)
+		if (directory.exists()) {
+			props.DBB_MODELER_APPMAPPINGS_DIR = configuration.DBB_MODELER_APPMAPPINGS_DIR
+		} else {
+			logger.logMessage("*! [ERROR] The Applications Mappings directory '${configuration.DBB_MODELER_APPMAPPINGS_DIR}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The Applications Mappings directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
+
 
 	if (configuration.DBB_MODELER_APPLICATION_DIR) {
 		File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
@@ -334,14 +335,14 @@ def generateApplicationFiles(String application) {
 	}	
 	
 	// Trying to find information about the application we are dealing with
-	mappedApplication = findMappedApplication(application)
-	if (mappedApplication != null) {
-		applicationDescriptor.application = mappedApplication.application
-		applicationDescriptor.description = mappedApplication.description
-		applicationDescriptor.owner = mappedApplication.owner
+	foundApplication = findApplication(application)
+	if (foundApplication != null) {
+		applicationDescriptor.application = foundApplication.application
+		applicationDescriptor.description = foundApplication.description
+		applicationDescriptor.owner = foundApplication.owner
 		// Adding baseline to ApplicationDescriptor
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main" as String, mappedApplication.baseline)
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${mappedApplication.baseline}" as String, mappedApplication.baseline)	
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main" as String, foundApplication.baseline)
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${foundApplication.baseline}" as String, foundApplication.baseline)	
 	} else {
 		applicationDescriptor.application = "UNASSIGNED"
 		applicationDescriptor.description = "Unassigned components"
@@ -351,7 +352,7 @@ def generateApplicationFiles(String application) {
 	}
 
 	// Main loop, iterating through the dataset members assigned to the current application
-	def datasetMembersCollection = applicationMappingToDatasetMembers.get(application)
+	def datasetMembersCollection = applicationsToDatasetMembersMap.get(application)
 	// For each dataset member...
 	datasetMembersCollection.each () { datasetMember ->
 		// Get the dataset and the member separated
@@ -434,51 +435,133 @@ def generateApplicationFiles(String application) {
 }
 
 def addDatasetMemberToApplication(String application, String datasetMember) {
-	def applicationMap = applicationMappingToDatasetMembers.get(application)
-
-	if (applicationMap == null) {
-		applicationMap = new HashSet<String>();
-		applicationMappingToDatasetMembers.put(application, applicationMap);
+	HashSet<String> applicationHashSet = applicationsToDatasetMembersMap.get(application)
+	if (!application.equals("UNASSIGNED")) {
+		HashSet<String> unassignedHashSet = applicationsToDatasetMembersMap.get("UNASSIGNED")
+		if (unassignedHashSet && unassignedHashSet.contains(datasetMember)) {
+			unassignedHashSet.remove(datasetMember)
+		}
+		if (!applicationHashSet) {
+			applicationHashSet = new HashSet<String>();
+			applicationsToDatasetMembersMap.put(application, applicationHashSet);
+		}
+		applicationHashSet.add(datasetMember);
+	} else {
+		HashSet<String> foundDatasetMembers = new HashSet<String>()
+		applicationsToDatasetMembersMap.forEach { searchedApplication, searchedApplicationHashSet ->
+			HashSet<String> foundDatasetMembersInSearchedApplication = searchedApplicationHashSet.findAll { searchedDatasetMember ->
+				searchedDatasetMember.equals(datasetMember) && !searchedApplication.equals("UNASSIGNED")
+			}
+			foundDatasetMembers.addAll(foundDatasetMembersInSearchedApplication)
+		}
+		if (!foundDatasetMembers) {
+			if (!applicationHashSet) {
+				applicationHashSet = new HashSet<String>();
+				applicationsToDatasetMembersMap.put(application, applicationHashSet);
+			}
+			applicationHashSet.add(datasetMember);
+		}		
 	}
-	applicationMap.add(datasetMember);
 }
 
-def findMappedApplicationFromMemberName(String memberName) {
-	if (!applicationsMapping) {
+def findMappedApplicationFromMemberName(ArrayList<Object> applicationsList, String memberName) {
+	// Finding the owning application in the list of applications using the same dataset list
+	def foundApplications = applicationsList.findAll { application ->
+		application.namingConventions.find { namingConvention ->
+			isFilterOnMemberMatching(memberName, namingConvention)
+		}
+	}
+
+	if (foundApplications.size() == 1) { // one application claimed ownership
+		// Finding other potential applications mapped to other datasets which could claim the ownership 
+		ArrayList<Object> otherApplications = new ArrayList<Object>()
+		datasetsMap.each() { datasets, otherApplicationsList ->
+			def foundOtherApplications = otherApplicationsList.findAll { application ->
+				//Skip applications that have the same name as the found application in the first pass
+				if (!application.application.equals(foundApplications[0].application)) {
+					application.namingConventions.find { namingConvention ->
+						isFilterOnMemberMatching(memberName, namingConvention)
+					}
+				} 
+			}
+			if (foundOtherApplications) {
+				otherApplications.addAll(foundOtherApplications)
+			}
+		}
+		if (otherApplications.size() > 0) {
+			logger.logMessage("*! [WARNING] Other applications claim ownership of member '$memberName' in other mappings:")
+			otherApplications.each { application -> 
+				logger.logMessage("\t\tClaiming ownership: '${application.application}'") 
+			}
+			logger.logMessage("*! [WARNING] The owner is identified as '${foundApplications[0].application}'")
+		}
+		return foundApplications[0].application
+	} else if (foundApplications.size() > 1) { // multiple applications claimed ownership
+		logger.logMessage("*! [WARNING] Multiple applications claim ownership of member '$memberName':")
+		foundApplications.each { application -> 
+			logger.logMessage("\t\tClaiming ownership: '${application.application}'")
+		}
+		logger.logMessage("*! [WARNING] The owner cannot be defined. Map '$memberName' to UNASSIGNED")
 		return "UNASSIGNED"
-	} else {
-		def mappedApplications = applicationsMapping.applications.findAll { application ->
-			application.namingConventions.find { namingConvention ->
-				isFilterOnMemberMatching(memberName, namingConvention) 
-			}
-		}
-		
-		if (mappedApplications.size == 1) { // one application claimed ownership
-			return mappedApplications[0].application
-		} else if (mappedApplications.size > 1) { // multiple applications claimed ownership
-			logger.logMessage("*! [WARNING] Multiple applications claim ownership of member $memberName:")
-			mappedApplications.each {it -> 
-				logger.logMessage("\t\tClaiming ownership: " + it.application) 
-			}
-			logger.logMessage("*! [WARNING] The owner cannot be defined. Map $memberName to UNASSIGNED")
-			return "UNASSIGNED"
-		} else { // no match found
-			return "UNASSIGNED"
-		}
+	} else { // no match found
+		return "UNASSIGNED"
 	}
 }
 
-def findMappedApplication(String applicationName) {
-	if (!applicationsMapping) {
-		return null
+def findApplication(String applicationName) {
+	def applications = new ArrayList<Object>()
+	datasetsMap.each() { datasets, applicationsList ->
+		def foundApplications = datasetsMap.get(datasets).findAll { application -> application.application.equals(applicationName) }
+		applications.addAll(foundApplications)
+	}
+	if (applications && applications.size() == 1) {
+		return applications[0]
 	} else {
-		def mappedApplication = applicationsMapping.applications.find { application -> application.application.equals(applicationName) }
-		if (mappedApplication) {
-			return mappedApplication
-		} else {
-			return null
+		return null
+	}
+}
+
+def findDuplicateApplications() {
+	def foundDuplicates = false
+	ArrayList<Object> consolidatedApplicationsList = new ArrayList<Object>()
+	datasetsMap.each() { datasets, applicationsList ->
+		applicationsList.each() { application ->
+			consolidatedApplicationsList.add(application)
 		}
 	}
+	applicationsMap = consolidatedApplicationsList.groupBy { application -> application.application }
+	applicationsMap.each() { application, applicationsList ->
+		if (applicationsList.size() > 1) {
+			logger.logMessage("*! [ERROR] Application '$application' is defined multiple times. Exiting.")
+			foundDuplicates = true
+		}
+	}
+	return foundDuplicates
+}
+
+// Add dataset to the list of datasets where the member can be found
+def addDatasetToMember(String member, String dataset) {
+	ArrayList<String> datasetsList = membersToDatasetsMap.get(member)
+	if (!datasetsList) {
+		datasetsList = new ArrayList<String>()
+		membersToDatasetsMap.put(member, datasetsList)
+	}
+	datasetsList.add(dataset)
+}
+
+def findDuplicateProcessingOfMembers() {
+	def foundDuplicates = false
+	membersToDatasetsMap
+	membersToDatasetsMap.each() { member, datasetsList ->
+		if (datasetsList.size() > 1) {
+			logger.logMessage("*! [WARNING] Member '$member' was processed multiple times:")
+			datasetsList.each { dataset -> 
+				logger.logMessage("\t\tFrom dataset '${dataset}'") 
+			}
+			foundDuplicates = true
+		}
+	}
+	return foundDuplicates
 }
 
 
@@ -555,8 +638,16 @@ def initializeScanner() {
 	return dmh5210;
 }
 
-def estimateDatasetMemberSize(String dataset, String member) {
-	ZFile file = new ZFile(constructDatasetForZFileOperation(dataset, member), "r")
+def calculateStorageSizeForMembers(HashSet<String> datasetMembers) {
+	def storageSize = 0
+	datasetMembers.forEach { datasetMember ->
+		storageSize = storageSize + estimateDatasetMemberSize(datasetMember)
+	}
+	return storageSize
+}
+
+def estimateDatasetMemberSize(String datasetMember) {
+	ZFile file = new ZFile(constructPDSForZFileOperation(datasetMember), "r")
 	InputStreamReader streamReader = new InputStreamReader(file.getInputStream())
 	long storageSize = 0
 	long bytesSkipped = -1
