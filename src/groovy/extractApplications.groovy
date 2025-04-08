@@ -37,10 +37,12 @@ import java.text.DecimalFormat
 
 //Map between applications name and owned datasetMembers
 @Field HashMap<String, HashSet<String>> applicationsToDatasetMembersMap = new HashMap<String, HashSet<String>>()
-//Map between datasets (represented as List) and the applications defined in the Applications Mapping files
-@Field HashMap<ArrayList<String>, ArrayList<Object>> datasetsMap = new HashMap<ArrayList<String>, ArrayList<Object>>()
-//Map between members and datasets (represented as List)
-@Field HashMap<String, ArrayList<String>> membersToDatasetsMap = new HashMap<String, ArrayList<String>>()
+//Map between datasets and the applications defined in the Applications Mapping files
+//////@Field HashMap<ArrayList<String>, ArrayList<Object>> datasetsMap = new HashMap<ArrayList<String>, ArrayList<Object>>()
+@Field HashMap<String, ArrayList<Object>> datasetsMap = new HashMap<String, ArrayList<Object>>()
+//Map between members and datasets
+//////@Field HashMap<String, ArrayList<String>> membersToDatasetsMap = new HashMap<String, ArrayList<String>>()
+@Field HashMap<String, String> membersToDatasetsMap = new HashMap<String, String>()
 
 // Types Configurations
 @Field HashMap<String, String> types
@@ -91,52 +93,45 @@ applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 	logger.logMessage("*** Importing '${applicationsMappingFile.getName()}'")
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
 	applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
-	ArrayList<Object> applicationsList = datasetsMap.get(applicationsMapping.datasets)
-	if (!applicationsList) {
-		applicationsList = new ArrayList<Object>()
-		datasetsMap.put(applicationsMapping.datasets, applicationsList)
-	}
-	applicationsMapping.applications.each() { application ->
-		applicationsList.add(application)
+	applicationsMapping.datasets.each() { dataset ->
+		ArrayList<Object> applicationsList = datasetsMap.get(dataset)
+		if (!applicationsList) {
+			applicationsList = new ArrayList<Object>()
+			datasetsMap.put(dataset, applicationsList)
+		}
+		applicationsMapping.applications.each() { application ->
+			applicationsList.add(application)
+		}
 	}
 }
 
-if (findDuplicateApplications()) {
-	System.exit(1)
-}
 
 logger.logMessage("** Iterating through the applications.")
-datasetsMap.each() { datasets, applicationsList ->
-	logger.logMessage("*** Processing '$datasets'")
-
-	datasets.each() { dataset ->
-		String qdsn = constructPDSForZFileOperation(dataset)
-		if (ZFile.dsExists(qdsn)) {
-			logger.logMessage("**** Found '$dataset'");
-			try {
-				PdsDirectory directoryList = new PdsDirectory(qdsn)
-				Iterator directoryListIterator = directoryList.iterator();
-				while (directoryListIterator.hasNext()) {
-					PdsDirectory.MemberInfo memberInfo = (PdsDirectory.MemberInfo) directoryListIterator.next();
-					String member = (memberInfo.getName());
-					addDatasetToMember(member, dataset)
-					def mappedApplication = findMappedApplicationFromMemberName(applicationsList, member)
-					logger.logMessage("***** '$dataset($member)' - Mapped Application: $mappedApplication");
-					addDatasetMemberToApplication(mappedApplication, "$dataset($member)")
-				}
-				directoryList.close();
+datasetsMap.each() { dataset, applicationsList ->
+	String qdsn = constructPDSForZFileOperation(dataset)
+	if (ZFile.dsExists(qdsn)) {
+		logger.logMessage("**** Found '$dataset'");
+		try {
+			PdsDirectory directoryList = new PdsDirectory(qdsn)
+			Iterator directoryListIterator = directoryList.iterator();
+			while (directoryListIterator.hasNext()) {
+				PdsDirectory.MemberInfo memberInfo = (PdsDirectory.MemberInfo) directoryListIterator.next();
+				String member = (memberInfo.getName());
+				addDatasetToMember(member, dataset)
+				def mappedApplication = findMappedApplicationFromMemberName(applicationsList, member)
+				logger.logMessage("***** '$dataset($member)' - Mapped Application: $mappedApplication");
+				addDatasetMemberToApplication(mappedApplication, "$dataset($member)")
 			}
-			catch (java.io.IOException exception) {
-				logger.logMessage("*! [ERROR] Problem when accessing the dataset '$qdsn'.");
-			}
+			directoryList.close();
 		}
-		else {
-			logger.logMessage("*! [ERROR] Dataset '$qdsn' does not exist.");
+		catch (java.io.IOException exception) {
+			logger.logMessage("*! [ERROR] Problem when accessing the dataset '$qdsn'.");
 		}
 	}
+	else {
+		logger.logMessage("*! [ERROR] Dataset '$qdsn' does not exist.");
+	}
 }
-
-findDuplicateProcessingOfMembers()
 
 DecimalFormat df = new DecimalFormat("###,###,###,###")
 
@@ -465,7 +460,7 @@ def addDatasetMemberToApplication(String application, String datasetMember) {
 }
 
 def findMappedApplicationFromMemberName(ArrayList<Object> applicationsList, String memberName) {
-	// Finding the owning application in the list of applications using the same dataset list
+	// Finding the owning application in the list of applications using the same dataset
 	def foundApplications = applicationsList.findAll { application ->
 		application.namingConventions.find { namingConvention ->
 			isFilterOnMemberMatching(memberName, namingConvention)
@@ -473,28 +468,6 @@ def findMappedApplicationFromMemberName(ArrayList<Object> applicationsList, Stri
 	}
 
 	if (foundApplications.size() == 1) { // one application claimed ownership
-		// Finding other potential applications mapped to other datasets which could claim the ownership 
-		ArrayList<Object> otherApplications = new ArrayList<Object>()
-		datasetsMap.each() { datasets, otherApplicationsList ->
-			def foundOtherApplications = otherApplicationsList.findAll { application ->
-				//Skip applications that have the same name as the found application in the first pass
-				if (!application.application.equals(foundApplications[0].application)) {
-					application.namingConventions.find { namingConvention ->
-						isFilterOnMemberMatching(memberName, namingConvention)
-					}
-				} 
-			}
-			if (foundOtherApplications) {
-				otherApplications.addAll(foundOtherApplications)
-			}
-		}
-		if (otherApplications.size() > 0) {
-			logger.logMessage("*! [WARNING] Other applications claim ownership of member '$memberName' in other mappings:")
-			otherApplications.each { application -> 
-				logger.logMessage("\t\tClaiming ownership: '${application.application}'") 
-			}
-			logger.logMessage("*! [WARNING] The owner is identified as '${foundApplications[0].application}'")
-		}
 		return foundApplications[0].application
 	} else if (foundApplications.size() > 1) { // multiple applications claimed ownership
 		logger.logMessage("*! [WARNING] Multiple applications claim ownership of member '$memberName':")
@@ -510,33 +483,19 @@ def findMappedApplicationFromMemberName(ArrayList<Object> applicationsList, Stri
 
 def findApplication(String applicationName) {
 	def applications = new ArrayList<Object>()
-	datasetsMap.each() { datasets, applicationsList ->
-		def foundApplications = datasetsMap.get(datasets).findAll { application -> application.application.equals(applicationName) }
+	datasetsMap.each() { dataset, applicationsList ->
+		def foundApplications = applicationsList.findAll {
+			application -> application.application.equals(applicationName)
+		}
 		applications.addAll(foundApplications)
+		
 	}
+	applications.unique()
 	if (applications && applications.size() == 1) {
 		return applications[0]
 	} else {
 		return null
 	}
-}
-
-def findDuplicateApplications() {
-	def foundDuplicates = false
-	ArrayList<Object> consolidatedApplicationsList = new ArrayList<Object>()
-	datasetsMap.each() { datasets, applicationsList ->
-		applicationsList.each() { application ->
-			consolidatedApplicationsList.add(application)
-		}
-	}
-	applicationsMap = consolidatedApplicationsList.groupBy { application -> application.application }
-	applicationsMap.each() { application, applicationsList ->
-		if (applicationsList.size() > 1) {
-			logger.logMessage("*! [ERROR] Application '$application' is defined multiple times. Exiting.")
-			foundDuplicates = true
-		}
-	}
-	return foundDuplicates
 }
 
 // Add dataset to the list of datasets where the member can be found
@@ -548,22 +507,6 @@ def addDatasetToMember(String member, String dataset) {
 	}
 	datasetsList.add(dataset)
 }
-
-def findDuplicateProcessingOfMembers() {
-	def foundDuplicates = false
-	membersToDatasetsMap
-	membersToDatasetsMap.each() { member, datasetsList ->
-		if (datasetsList.size() > 1) {
-			logger.logMessage("*! [WARNING] Member '$member' was processed multiple times:")
-			datasetsList.each { dataset -> 
-				logger.logMessage("\t\tFrom dataset '${dataset}'") 
-			}
-			foundDuplicates = true
-		}
-	}
-	return foundDuplicates
-}
-
 
 /**
  * Parse the fullname of a qualified dataset and member name
