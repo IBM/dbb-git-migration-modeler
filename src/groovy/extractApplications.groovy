@@ -85,10 +85,10 @@ if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
 	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
 
-logger.logMessage("** Processing the provided Applications Mapping files.")
+logger.logMessage("** Loading the provided Applications Mapping files.")
 File applicationsMappingsDir = new File(props.DBB_MODELER_APPMAPPINGS_DIR)
 applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
-	logger.logMessage("*** Processing '${applicationsMappingFile.getName()}'")
+	logger.logMessage("*** Importing '${applicationsMappingFile.getName()}'")
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
 	applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
 	ArrayList<Object> applicationsList = datasetsMap.get(applicationsMapping.datasets)
