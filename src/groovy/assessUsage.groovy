@@ -458,7 +458,6 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 	}
 	// Consumer's Application Descriptor file has been found and can be updated
 	if (consumerApplicationDescriptor) {
-		logger.logMessage("Adding ${providerApplicationDescriptor.application} as dependency for ${consumerApplicationDescriptor.application}")
 		applicationDescriptorUtils.addApplicationDependency(consumerApplicationDescriptor, providerApplicationDescriptor.application, "latest", dependencyType)
 		applicationDescriptorUtils.writeApplicationDescriptor(consumerApplicationDescriptorFile, consumerApplicationDescriptor)
 	}
