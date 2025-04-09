@@ -1200,1757 +1200,876 @@ Execution of command:
 
 Output log:
 ~~~~
-
- DBB Git Migration Modeler
- Release:
-
- Script:      refreshApplicationDescriptorFiles.sh
-
- Description: The purpose of this script is to help keeping the Application Descriptor files of existing
-              applications up-to-date. The script scans the artifacts belonging to the application,
-              removes existing source groups from the Application Descriptor files and run
-              the usage assessment process again to populate the Application Descriptor files correctly.
-              The script inspects all folders within the referenced 'DBB_MODELER_APPLICATIONS' directory.
-
-              You must customize the process to your needs if you want to update the Application Descriptor
-              files of applications that are already migrated to a central Git provider.
-              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler
-
-[INFO] Initializing DBB Metadatastore at /u/mdalbin/Migration-Modeler-DBEHM-work/dbb-metadatastore.
-*******************************************************************
-Scan application directory /u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA
-*******************************************************************
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   metadatastore -> /u/mdalbin/Migration-Modeler-DBEHM-work/dbb-metadatastore
-   application -> CBSA
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-CBSA-scan.log
-   dbb.DependencyScanner.controlTransfers -> true
-** Scanning the files.
-         Scanning file CBSA/CBSA/src/cobol/bnk1cca.cbl
-         Scanning file CBSA/CBSA/src/cobol/updcust.cbl
-         Scanning file CBSA/.git/logs/HEAD
-         Scanning file CBSA/CBSA/src/copy/bnk1dcm.cpy
-         Scanning file CBSA/CBSA/src/cobol/bnk1ccs.cbl
-         Scanning file CBSA/CBSA/application-conf/ZunitConfig.properties
-         Scanning file CBSA/CBSA/src/copy/sortcode.cpy
-         Scanning file CBSA/CBSA/application-conf/file.properties
-         Scanning file CBSA/CBSA/src/copy/custctrl.cpy
-         Scanning file CBSA/.git/objects/a1/4465df829b167bbb644dffc1027434adbf3c32
-         Scanning file CBSA/.git/objects/f6/3ebe51d5520bc56b0a6911cfc2ed6705fdfa66
-         Scanning file CBSA/.git/objects/47/f9f61e0fdb34ee5ebbf7fc11529e50b079a04b
-         Scanning file CBSA/.git/objects/4a/58fdbf3761bccd3497ada688d343a15c33e8b0
-         Scanning file CBSA/.git/objects/e3/df501f6a5529aff989412d6c4af4b43a9897d1
-         Scanning file CBSA/.git/objects/e4/96c6a4e7a960de791e1fd97a02ae6614769936
-         Scanning file CBSA/.git/objects/b6/deb95fdbfe6a2f08acb265c23cccc973e8b031
-         Scanning file CBSA/CBSA/src/copy/delacc.cpy
-         Scanning file CBSA/.git/refs/heads/main
-         Scanning file CBSA/CBSA/src/cobol/dpayapi.cbl
-         Scanning file CBSA/.git/objects/cb/75236314e2fba04aca378ad29061942e6900a5
-         Scanning file CBSA/.git/objects/57/a7db352970bbfae82cf24c95aa6cecc159b0e0
-         Scanning file CBSA/.git/hooks/pre-applypatch.sample
-         Scanning file CBSA/.git/objects/b1/7e73e90052cbe5144318dc9cf00cdf04589042
-         Scanning file CBSA/CBSA/src/copy/constapi.cpy
-         Scanning file CBSA/.git/objects/5e/014abb1c1c7b87e5b7487894a0dd577ecd6903
-         Scanning file CBSA/CBSA/src/copy/bnk1cam.cpy
-         Scanning file CBSA/.git/objects/6f/3549f765104b58d630d2a4ce871fc1b9e4bb7a
-         Scanning file CBSA/CBSA/src/cobol/consttst.cbl
-         Scanning file CBSA/.git/objects/de/ce936b7a48fba884a6d376305fbce1a2fc99e5
-         Scanning file CBSA/CBSA/src/cobol/crdtagy3.cbl
-         Scanning file CBSA/.git/objects/94/7a658dffaf7b8a8a1348ad9dabbdca1f87fbb0
-         Scanning file CBSA/CBSA/src/cobol/delcus.cbl
-         Scanning file CBSA/CBSA/src/cobol/accoffl.cbl
-         Scanning file CBSA/CBSA/src/copy/updacc.cpy
-         Scanning file CBSA/.git/hooks/post-update.sample
-         Scanning file CBSA/.git/objects/30/ec95859415287a39af962b759792828e403684
-         Scanning file CBSA/CBSA/src/cobol/accload.cbl
-         Scanning file CBSA/CBSA/application-conf/Transfer.properties
-         Scanning file CBSA/.git/objects/b4/79ed3b38c3f9680850dc34a3c9d10e24ddb52f
-         Scanning file CBSA/CBSA/src/copy/bnk1ccm.cpy
-         Scanning file CBSA/CBSA/application-conf/Cobol.properties
-         Scanning file CBSA/.git/objects/d9/7584fe7d7c5e0120ab762194b119287f6bc91d
-         Scanning file CBSA/.git/objects/66/afa88844c422af69da0d35243993d4e50dac3c
-         Scanning file CBSA/CBSA/application-conf/CRB.properties
-         Scanning file CBSA/CBSA/src/copy/customer.cpy
-         Scanning file CBSA/CBSA/src/copy/creacc.cpy
-         Scanning file CBSA/CBSA/application-conf/languageConfigurationMapping.properties
-         Scanning file CBSA/.git/objects/46/3a5519cbcb1b8db463d628173cafc3751fb323
-         Scanning file CBSA/.git/objects/f5/5399eea902ae9bc01584c1e3bc71f4db98eef6
-         Scanning file CBSA/.git/objects/04/9cc7eb352d85ce38026a8f3029f22e711b8b9a
-         Scanning file CBSA/CBSA/src/copy/bnk1acc.cpy
-         Scanning file CBSA/CBSA/src/copy/bnk1uam.cpy
-         Scanning file CBSA/CBSA/src/cobol/abndproc.cbl
-         Scanning file CBSA/.git/HEAD
-         Scanning file CBSA/.git/objects/04/a5b554ae15152a060f462fe894e09e7188e394
-         Scanning file CBSA/.git/objects/55/57d232d69aa70962e5580123403d3662157e2a
-         Scanning file CBSA/CBSA/application-conf/MFS.properties
-         Scanning file CBSA/.git/index
-         Scanning file CBSA/CBSA/src/copy/abndinfo.cpy
-         Scanning file CBSA/CBSA/src/copy/xfrfun.cpy
-         Scanning file CBSA/.git/objects/01/d96e12b164d97cc7f2c72489c8cd3205a8b69f
-         Scanning file CBSA/CBSA/application-conf/PSBgen.properties
-         Scanning file CBSA/CBSA/application-conf/Easytrieve.properties
-         Scanning file CBSA/.git/hooks/pre-commit.sample
-         Scanning file CBSA/.git/objects/1d/7f5fcdba85d4c4d0bc6ab0bab4b287e69242db
-         Scanning file CBSA/.git/objects/d3/70465392addcb5a86920019826deec0e531a77
-         Scanning file CBSA/CBSA/src/copy/getcompy.cpy
-         Scanning file CBSA/CBSA/src/cobol/delacc.cbl
-         Scanning file CBSA/CBSA/application-conf/REXX.properties
-         Scanning file CBSA/.git/hooks/pre-merge-commit.sample
-         Scanning file CBSA/.git/hooks/fsmonitor-watchman.sample
-         Scanning file CBSA/.git/objects/89/7bf2e97ca69ede559524c31bae8d639ae1b81d
-         Scanning file CBSA/.git/objects/7e/0340c01a352c55eaf478a5c7dbe8c290e50728
-         Scanning file CBSA/.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16
-         Scanning file CBSA/CBSA/src/copy/bnk1cdm.cpy
-         Scanning file CBSA/CBSA/src/cobol/dpaytst.cbl
-         Scanning file CBSA/.git/objects/71/aba7981c900888d8f74ef1f3aa3e1efe91d405
-         Scanning file CBSA/.git/objects/ff/86efc8e05a7fc5e66defbf50820da4ab3bad95
-         Scanning file CBSA/CBSA/src/cobol/bnk1cra.cbl
-         Scanning file CBSA/CBSA/src/cobol/prooffl.cbl
-         Scanning file CBSA/.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec
-         Scanning file CBSA/.git/objects/94/08dd2f2709f23766aa4d1ef89e6e175974b396
-         Scanning file CBSA/CBSA/src/cobol/updacc.cbl
-         Scanning file CBSA/CBSA/src/copy/acctctrl.cpy
-         Scanning file CBSA/.git/objects/c9/5be47dd3ede400e93ba367b5f5ac433a714d5a
-         Scanning file CBSA/.git/objects/fb/741632c192243a1f4e7799371635f854bd40db
-         Scanning file CBSA/CBSA/src/copy/delcus.cpy
-         Scanning file CBSA/.git/objects/c0/6aacd0c94d044b5fb1d2cb22bc796b946bcf6f
-         Scanning file CBSA/.git/objects/ab/80f99d7e1e2cf005e04f11f43b710b6cfc765c
-         Scanning file CBSA/CBSA/src/copy/proctran.cpy
-         Scanning file CBSA/.git/objects/9d/8cdd3cfd001f9ff47534b9a741f61f757cc90c
-         Scanning file CBSA/CBSA/src/copy/getscode.cpy
-         Scanning file CBSA/CBSA/src/cobol/creacc.cbl
-         Scanning file CBSA/CBSA/src/cobol/crdtagy5.cbl
-         Scanning file CBSA/CBSA/src/copy/account.cpy
-         Scanning file CBSA/.git/objects/f7/fbe29970a3bd547fcfd6e82df58e45190d46a8
-         Scanning file CBSA/.git/objects/b0/aed0954293fc2763f3c02ec65cbaa53603015d
-         Scanning file CBSA/CBSA/src/copy/paydbcr.cpy
-         Scanning file CBSA/.git/objects/2f/bc2fdb9097a629e3d0d899d0d4912a5ce4a678
-         Scanning file CBSA/CBSA/src/cobol/getcompy.cbl
-         Scanning file CBSA/.git/hooks/commit-msg.sample
-         Scanning file CBSA/.git/objects/c8/6c28e6b894571ccad1c6beaa040d1b916a1a77
-         Scanning file CBSA/.git/hooks/update.sample
-         Scanning file CBSA/CBSA/src/copy/bnk1mai.cpy
-         Scanning file CBSA/.git/objects/b1/8656b5144b139b6a3b4515d4883a5d0e9ee2ce
-         Scanning file CBSA/.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc
-         Scanning file CBSA/.git/objects/b6/97ad559100281f7737764166ced34b4398ae0d
-         Scanning file CBSA/.git/objects/da/97ba1be5273d4a3265d6fdffd68c4a9cfe57f1
-         Scanning file CBSA/CBSA/src/cobol/bnk1uac.cbl
-         Scanning file CBSA/.git/objects/b0/2d733e80ba87c613c4becba1438cfea345bb63
-         Scanning file CBSA/.git/refs/tags/rel-1.0.0
-         Scanning file CBSA/.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9
-         Scanning file CBSA/.git/objects/33/44cbdf7b601794f0ef2341235f09f126fe4562
-         Scanning file CBSA/CBSA/application-conf/DBDgen.properties
-         Scanning file CBSA/CBSA/src/cobol/getscode.cbl
-         Scanning file CBSA/.git/objects/f4/33cbfff90207efad95d399c2632acc1684f942
-         Scanning file CBSA/CBSA/src/copy/contdb2.cpy
-         Scanning file CBSA/CBSA/src/cobol/bnk1cac.cbl
-         Scanning file CBSA/.git/objects/37/1a19b8d93fa4d1f491a4174865ff3b5dc57b6f
-         Scanning file CBSA/CBSA/src/cobol/xfrfun.cbl
-         Scanning file CBSA/CBSA/src/copy/consent.cpy
-         Scanning file CBSA/.git/objects/21/b32b59cad6603ee75673876be89e6c04c4c122
-         Scanning file CBSA/CBSA/application-conf/PLI.properties
-         Scanning file CBSA/.git/objects/c2/432e4bf3b85f883fdcaff1adb419b1ebf3fd18
-         Scanning file CBSA/.git/COMMIT_EDITMSG
-         Scanning file CBSA/CBSA/src/cobol/crdtagy1.cbl
-         Scanning file CBSA/.git/hooks/sendemail-validate.sample
-         Scanning file CBSA/CBSA/src/cobol/bankdata.cbl
-         Scanning file CBSA/CBSA/src/cobol/crecust.cbl
-         Scanning file CBSA/CBSA.yaml
-         Scanning file CBSA/.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2
-         Scanning file CBSA/.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53
-         Scanning file CBSA/.git/objects/8e/b541c571cd537e557c27e56eb472e9cafb0308
-         Scanning file CBSA/.git/hooks/applypatch-msg.sample
-         Scanning file CBSA/.git/objects/97/0f6a926b868353d6a285d20b07d29abfba4292
-         Scanning file CBSA/CBSA/application-conf/Assembler.properties
-         Scanning file CBSA/.git/objects/f5/0cc01256b3b2f272a59bed37caeb1a61f5ba4c
-         Scanning file CBSA/.git/objects/d3/7d2d4704218babc4ab9871cc3ea1f5271dc80d
-         Scanning file CBSA/.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1
-         Scanning file CBSA/.git/objects/d4/c22ba5bfb0742e2395037184f5fc4174577a8c
-         Scanning file CBSA/.git/objects/a6/ee2080f7c783724cafee89a81049a3f2893e75
-         Scanning file CBSA/.git/objects/b5/6eafbe98c4e46afb0c8c60ee97cf437292a68c
-         Scanning file CBSA/.gitattributes
-         Scanning file CBSA/CBSA/src/copy/datastr.cpy
-         Scanning file CBSA/CBSA/application-conf/application.properties
-         Scanning file CBSA/CBSA/src/cobol/crdtagy4.cbl
-         Scanning file CBSA/.git/objects/ff/7f1a74d6d78a6d35e4559b32cdff813a5fb12e
-         Scanning file CBSA/.git/objects/14/833274735adb257e1062eaa63d495febe9e962
-         Scanning file CBSA/.git/objects/2a/d1a2ba3dc994398cbf308b3e6bdb30db9c1f1b
-         Scanning file CBSA/.git/objects/a7/e4ad4c1bde8c6ad9144199468403799cdd0e26
-         Scanning file CBSA/CBSA/application-conf/bind.properties
-         Scanning file CBSA/.git/config
-         Scanning file CBSA/.git/objects/b8/33431450f198af575ebdf622a8144df7c0962a
-         Scanning file CBSA/.git/objects/33/4b8f087b5e1bd5c05036a920378e8e1f3c0276
-         Scanning file CBSA/CBSA/src/cobol/inqacc.cbl
-         Scanning file CBSA/CBSA/src/cobol/bnk1dac.cbl
-         Scanning file CBSA/.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894
-         Scanning file CBSA/CBSA/src/copy/crecust.cpy
-         Scanning file CBSA/CBSA/application-conf/LinkEdit.properties
-         Scanning file CBSA/.git/objects/d9/c46c2b0b76ac752b67f451dd45995cd5bc96d1
-         Scanning file CBSA/CBSA/src/cobol/dbcrfun.cbl
-         Scanning file CBSA/.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88
-         Scanning file CBSA/.git/info/exclude
-         Scanning file CBSA/.git/hooks/pre-receive.sample
-         Scanning file CBSA/.git/objects/56/eec383e79ddc7d93386976ba31b6f06180c1a0
-         Scanning file CBSA/CBSA/src/cobol/acctctrl.cbl
-         Scanning file CBSA/CBSA/src/copy/procdb2.cpy
-         Scanning file CBSA/CBSA/application-conf/ACBgen.properties
-         Scanning file CBSA/.git/objects/bb/6a183c5808c83f435ffe292d40ce3c1e78182e
-         Scanning file CBSA/.git/objects/4d/3bc5c5136e4bfe98ceb8e5f5136b421afd8596
-         Scanning file CBSA/CBSA/application-conf/reports.properties
-         Scanning file CBSA/.git/objects/fa/7a23ca781e7e8e7afa7d20dc2caaf6ebba38dc
-         Scanning file CBSA/.git/objects/34/390dbd6e6f281f6101d179897949a51393c264
-         Scanning file CBSA/.git/objects/e4/a208249eb9f188dac631a80aa69560a1b5c812
-         Scanning file CBSA/CBSA/src/cobol/inqcust.cbl
-         Scanning file CBSA/.git/objects/27/0fd7eb4a2109c25b62d78595d8ddd044de4983
-         Scanning file CBSA/.git/hooks/push-to-checkout.sample
-         Scanning file CBSA/CBSA/src/copy/constdb2.cpy
-         Scanning file CBSA/.git/hooks/prepare-commit-msg.sample
-         Scanning file CBSA/CBSA/src/cobol/consent.cbl
-         Scanning file CBSA/CBSA/src/cobol/crdtagy2.cbl
-         Scanning file CBSA/.git/objects/12/c04ff4762844463e6e8d5b3a92c150fbb3c6ce
-         Scanning file CBSA/.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5
-         Scanning file CBSA/.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c
-         Scanning file CBSA/CBSA/src/copy/inqacccu.cpy
-         Scanning file CBSA/CBSA/src/cobol/bnk1tfn.cbl
-         Scanning file CBSA/.git/hooks/pre-push.sample
-         Scanning file CBSA/.git/objects/2b/b5e69e60b48517664e8bc178ce5047d2dc6239
-         Scanning file CBSA/.git/objects/57/9fef02baff9b735fc28867aef660f088b64710
-         Scanning file CBSA/.git/logs/refs/heads/main
-         Scanning file CBSA/CBSA/src/cobol/proload.cbl
-         Scanning file CBSA/CBSA/src/cobol/inqacccu.cbl
-         Scanning file CBSA/.git/objects/71/95a42c31f86e0f70315660d9da6d62f9769d1e
-         Scanning file CBSA/.git/objects/9c/3aec3ef67cd80287d375f825fe1b7abfb8be4d
-         Scanning file CBSA/.git/objects/29/ef69588ebc7fb77045dc42407df52eb89b771b
-         Scanning file CBSA/.git/objects/1c/b8db96a22a09cba20ddf3d7bb37fb098963100
-         Scanning file CBSA/.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809
-         Scanning file CBSA/CBSA/src/copy/updcust.cpy
-         Scanning file CBSA/.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd
-         Scanning file CBSA/.git/objects/aa/3a09c5ec672fef16b4d689127e80ca5ce595ce
-         Scanning file CBSA/.git/description
-         Scanning file CBSA/.git/objects/6e/ba9fb7a278153965978bde08e8b79d7549a6e5
-         Scanning file CBSA/CBSA/src/copy/bnk1dam.cpy
-         Scanning file CBSA/.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4
-         Scanning file CBSA/.git/objects/35/1b0c08fb96d69ec8f2e5c4a71121da780037dd
-         Scanning file CBSA/.git/objects/d3/e104ac3f1682cf5c81e6a4df77a916b5601adb
-         Scanning file CBSA/.git/objects/fa/3508648b495e92bc320f8110bfd3d78a4d5a3a
-         Scanning file CBSA/CBSA/src/cobol/custctrl.cbl
-         Scanning file CBSA/CBSA/src/copy/accdb2.cpy
-         Scanning file CBSA/CBSA/application-conf/BMS.properties
-         Scanning file CBSA/CBSA/src/copy/inqacc.cpy
-         Scanning file CBSA/.git/objects/c8/82661ae39a9a8ed30486a8433c1b186cbc5159
-         Scanning file CBSA/.git/hooks/pre-rebase.sample
-         Scanning file CBSA/CBSA/src/cobol/bnk1dcs.cbl
-         Scanning file CBSA/.git/objects/74/7f6becab8f715c30726f0adc2777d4e775a513
-         Scanning file CBSA/.git/objects/bc/ecf21e6187f0d2dba5c129c53954a8363f0d0e
-         Scanning file CBSA/.git/objects/41/c1fc24c5c355423d1cdad4477113b6c6f0945f
-         Scanning file CBSA/.git/objects/56/364507a259c6881a4e9a961213a9aa5a6405e7
-         Scanning file CBSA/CBSA/src/cobol/bnkmenu.cbl
-         Scanning file CBSA/CBSA/application-conf/README.md
-         Scanning file CBSA/.git/objects/d3/f1290864542e156079c4e165497994f1675139
-         Scanning file CBSA/.git/objects/d0/c5bf02bc846be691c4ea906c10118719d3bed3
-         Scanning file CBSA/CBSA/src/copy/inqcust.cpy
-         Scanning file CBSA/.git/objects/02/20c1299e5ed367b9d602d8a11c9909a081c026
-         Scanning file CBSA/CBSA/src/copy/bnk1tfm.cpy
-** Storing results in the 'CBSA' DBB Collection.
-** Build finished
-*******************************************************************
-Scan application directory /u/mdalbin/Migration-Modeler-DBEHM-work/applications/GenApp
-*******************************************************************
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   metadatastore -> /u/mdalbin/Migration-Modeler-DBEHM-work/dbb-metadatastore
-   application -> GenApp
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-GenApp-scan.log
-   dbb.DependencyScanner.controlTransfers -> true
-** Scanning the files.
-         Scanning file GenApp/.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894
-         Scanning file GenApp/.git/objects/2e/f0cfc9de9ca7521899a87cf9e216be7f109d88
-         Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl
-         Scanning file GenApp/.git/refs/heads/main
-         Scanning file GenApp/.git/index
-         Scanning file GenApp/GenApp/application-conf/Assembler.properties
-         Scanning file GenApp/.git/objects/a7/e4ad4c1bde8c6ad9144199468403799cdd0e26
-         Scanning file GenApp/.git/objects/7d/f90877fb98ccba6508a94e6fe3ff1ad865d682
-         Scanning file GenApp/.git/logs/refs/heads/main
-         Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy
-         Scanning file GenApp/.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53
-         Scanning file GenApp/GenApp.yaml
-         Scanning file GenApp/.git/objects/d1/e33757aa74694d0039e8162918a840172d24f8
-         Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy
-         Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl
-         Scanning file GenApp/.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4
-         Scanning file GenApp/.git/objects/da/97ba1be5273d4a3265d6fdffd68c4a9cfe57f1
-         Scanning file GenApp/.gitattributes
-         Scanning file GenApp/.git/objects/bf/a3623bc647efd22c9550939cd8d5bf72cb91ad
-         Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl
-         Scanning file GenApp/.git/objects/7e/36d0d65c7ae8ca0ce7a451692820010cf2c51f
-         Scanning file GenApp/.git/objects/42/d3f2e669c2f9f6cf9565e61b2a3f96ad1ff503
-         Scanning file GenApp/.git/objects/17/cd1d6b0325b04277c7fc7a1ec27ce9bcbd2598
-         Scanning file GenApp/.git/objects/d8/f18d43e8afa308163aebcff561e7dedf67759e
-         Scanning file GenApp/.git/objects/b8/0c506efef3e434fe92e8395a063bfb1d87b5f3
-         Scanning file GenApp/.git/objects/b0/49dc9735257281c334afd74730dee59c62e2e8
-         Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl
-         Scanning file GenApp/.git/objects/89/20ce0008397665b02a79f971898c033709bc6b
-         Scanning file GenApp/.git/objects/c5/ea6c1fed91fd2154ac3f38533455da5481d974
-         Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl
-         Scanning file GenApp/GenApp/application-conf/Cobol.properties
-         Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl
-         Scanning file GenApp/GenApp/application-conf/DBDgen.properties
-         Scanning file GenApp/GenApp/application-conf/CRB.properties
-         Scanning file GenApp/.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809
-         Scanning file GenApp/.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2
-         Scanning file GenApp/GenApp/application-conf/application.properties
-         Scanning file GenApp/.git/objects/de/85d8fbe9f576dabc377e29616bc4e8fcf68a56
-         Scanning file GenApp/.git/description
-         Scanning file GenApp/.git/objects/16/73ab0e7f0e1744ab58379576e6c835d4108474
-         Scanning file GenApp/.git/objects/6e/a11cb2dc20aa126f08701fe873ac2dae5ce0b6
-         Scanning file GenApp/.git/logs/HEAD
-         Scanning file GenApp/.git/objects/98/11fa56e0556c5d884a98ae06f7d007f64edafa
-         Scanning file GenApp/.git/hooks/commit-msg.sample
-         Scanning file GenApp/.git/objects/ed/7e8c1b79aaa76736f0af3b735f667d3d26ad36
-         Scanning file GenApp/GenApp/application-conf/BMS.properties
-         Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl
-         Scanning file GenApp/.git/objects/22/b550bafdc6e9f5103b1a28ca501d6bdae4ec76
-         Scanning file GenApp/GenApp/application-conf/Transfer.properties
-         Scanning file GenApp/.git/objects/b6/53161403e5df737d6e540d8c5a1988a043eafc
-         Scanning file GenApp/.git/hooks/pre-merge-commit.sample
-         Scanning file GenApp/.git/hooks/sendemail-validate.sample
-         Scanning file GenApp/.git/COMMIT_EDITMSG
-         Scanning file GenApp/.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1
-         Scanning file GenApp/GenApp/application-conf/bind.properties
-         Scanning file GenApp/.git/objects/48/cd97eb3d38cc15a850ed45ddfe76c7d3f6c7da
-         Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl
-         Scanning file GenApp/GenApp/application-conf/ZunitConfig.properties
-         Scanning file GenApp/GenApp/application-conf/MFS.properties
-         Scanning file GenApp/.git/hooks/applypatch-msg.sample
-         Scanning file GenApp/GenApp/application-conf/LinkEdit.properties
-         Scanning file GenApp/.git/objects/d4/24e6a718eb9ad584e21f7a899488500484f7e2
-         Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl
-         Scanning file GenApp/.git/objects/12/5b26f553c5647a5aabc69a45f0191aed5d5e01
-         Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl
-         Scanning file GenApp/GenApp/application-conf/PLI.properties
-         Scanning file GenApp/GenApp/application-conf/Easytrieve.properties
-         Scanning file GenApp/.git/hooks/pre-applypatch.sample
-         Scanning file GenApp/.git/hooks/fsmonitor-watchman.sample
-         Scanning file GenApp/.git/objects/e5/86c7d2e00e602158da102e4c8d30deaeb142ae
-         Scanning file GenApp/GenApp/application-conf/README.md
-         Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl
-         Scanning file GenApp/.git/objects/a0/b94e23333057ca37382048c4f7fc6f2e0df75b
-         Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl
-         Scanning file GenApp/GenApp/application-conf/languageConfigurationMapping.properties
-         Scanning file GenApp/.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5
-         Scanning file GenApp/.git/objects/2a/d1a2ba3dc994398cbf308b3e6bdb30db9c1f1b
-         Scanning file GenApp/.git/objects/6b/70ac40882304b17e808848fc61b6c4fd833607
-         Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl
-         Scanning file GenApp/.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16
-         Scanning file GenApp/.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec
-         Scanning file GenApp/.git/objects/1b/9d6bcb233214bd016ac6ffd87d5b4e5a0644cc
-         Scanning file GenApp/GenApp/application-conf/REXX.properties
-         Scanning file GenApp/.git/config
-         Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl
-         Scanning file GenApp/.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88
-         Scanning file GenApp/.git/hooks/update.sample
-         Scanning file GenApp/.git/objects/82/766939ca20dfac5d9ab33782e4f45b2ade19fc
-         Scanning file GenApp/.git/objects/0a/f04c7e31314b30efc3600507f62bfd1c2970c9
-         Scanning file GenApp/.git/hooks/pre-receive.sample
-         Scanning file GenApp/.git/hooks/pre-push.sample
-         Scanning file GenApp/.git/objects/3e/9eed6daafd969231900049360b526396bf4091
-         Scanning file GenApp/GenApp/src/copy/lgcmared.cpy
-         Scanning file GenApp/.git/objects/fa/ffcce01f2da721aa453f5dda21d11f8d3ae693
-         Scanning file GenApp/.git/hooks/push-to-checkout.sample
-         Scanning file GenApp/.git/objects/28/2aa20f6c7d61d15b8922c8d8e0552880351472
-         Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl
-         Scanning file GenApp/.git/hooks/post-update.sample
-         Scanning file GenApp/.git/objects/76/be470b4b4450038992dec6a9f9ac90a8611f2b
-         Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl
-         Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl
-         Scanning file GenApp/.git/hooks/pre-commit.sample
-         Scanning file GenApp/.git/objects/3e/8c9c7714c8622b1fe6077544b2b535dc3d0330
-         Scanning file GenApp/.git/hooks/pre-rebase.sample
-         Scanning file GenApp/.git/objects/3b/6b75b7fd2f100934f2ae236cbff5a174454de2
-         Scanning file GenApp/.git/objects/37/0f90c505893d5ab01089e66e04528f8d40dab1
-         Scanning file GenApp/.git/objects/68/5e0f68143caf8974be751db42bc6f6869e3af9
-         Scanning file GenApp/.git/HEAD
-         Scanning file GenApp/.git/objects/d9/455ae3c356b0e7a2440914f564ddbcbe30e28d
-         Scanning file GenApp/.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c
-         Scanning file GenApp/.git/objects/db/2a6d69779b37f2aff873868afb262ed063d27d
-         Scanning file GenApp/.git/objects/17/4119c31e4008790ec424427596d0859d696c96
-         Scanning file GenApp/GenApp/application-conf/PSBgen.properties
-         Scanning file GenApp/.git/objects/e1/52fbd8c03e836ad0046953854f04b4665d75b9
-         Scanning file GenApp/.git/objects/f7/09ff109986301f101a1912b9d043756d7e596a
-         Scanning file GenApp/.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc
-         Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl
-         Scanning file GenApp/.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9
-         Scanning file GenApp/.git/objects/0d/b601b1f055ea023e104c7d24ab0ef5eea1ff05
-         Scanning file GenApp/.git/hooks/prepare-commit-msg.sample
-         Scanning file GenApp/GenApp/src/bms/ssmap.bms
-         Scanning file GenApp/.git/info/exclude
-         Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl
-         Scanning file GenApp/GenApp/application-conf/reports.properties
-         Scanning file GenApp/.git/objects/83/2f54aa68fe84f78461085d00e3b3206e39fdb7
-         Scanning file GenApp/.git/objects/9a/a1e257384925e8015d7e0864175961ce258290
-         Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl
-         Scanning file GenApp/.git/objects/28/0e6f742c84b40da642115cad3a0c86aa9c0aac
-         Scanning file GenApp/.git/objects/1c/b8db96a22a09cba20ddf3d7bb37fb098963100
-         Scanning file GenApp/.git/refs/tags/rel-1.0.0
-         Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl
-         Scanning file GenApp/.git/objects/d3/f1290864542e156079c4e165497994f1675139
-         Scanning file GenApp/.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd
-         Scanning file GenApp/.git/objects/78/e7f1d24d01d4949e80fc149026a9d902eac1b9
-         Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl
-         Scanning file GenApp/GenApp/application-conf/ACBgen.properties
-         Scanning file GenApp/GenApp/application-conf/file.properties
-** Storing results in the 'GenApp' DBB Collection.
-** Build finished
-*******************************************************************
-Scan application directory /u/mdalbin/Migration-Modeler-DBEHM-work/applications/RetirementCalculator
-*******************************************************************
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   metadatastore -> /u/mdalbin/Migration-Modeler-DBEHM-work/dbb-metadatastore
-   application -> RetirementCalculator
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-RetirementCalculator-scan.log
-   dbb.DependencyScanner.controlTransfers -> true
-** Scanning the files.
-         Scanning file RetirementCalculator/.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c
-         Scanning file RetirementCalculator/.git/refs/heads/main
-         Scanning file RetirementCalculator/.git/objects/87/ff435e7003ef498860dfc30381bc07a03dabd2
-         Scanning file RetirementCalculator/.git/hooks/applypatch-msg.sample
-         Scanning file RetirementCalculator/.git/refs/tags/rel-1.0.0
-         Scanning file RetirementCalculator/.git/description
-         Scanning file RetirementCalculator/.git/objects/e3/df501f6a5529aff989412d6c4af4b43a9897d1
-         Scanning file RetirementCalculator/.git/objects/da/2a610077413aed3719f8b6cceae7418fea61bf
-         Scanning file RetirementCalculator/RetirementCalculator/src/copy/linput.cpy
-         Scanning file RetirementCalculator/.git/logs/refs/heads/main
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/application.properties
-         Scanning file RetirementCalculator/RetirementCalculator.yaml
-         Scanning file RetirementCalculator/.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/bind.properties
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/reports.properties
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/Assembler.properties
-         Scanning file RetirementCalculator/.git/objects/48/7e49969b9764ca1f1f6e4a8e100aafa634f04b
-         Scanning file RetirementCalculator/.git/objects/c9/bcc2e7d175040d35f224a8ec4a9a96fe28e9ca
-         Scanning file RetirementCalculator/.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd
-         Scanning file RetirementCalculator/.git/COMMIT_EDITMSG
-         Scanning file RetirementCalculator/.git/config
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/CRB.properties
-         Scanning file RetirementCalculator/.gitattributes
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/BMS.properties
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/PSBgen.properties
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/languageConfigurationMapping.properties
-         Scanning file RetirementCalculator/.git/hooks/post-update.sample
-         Scanning file RetirementCalculator/.git/hooks/pre-receive.sample
-         Scanning file RetirementCalculator/.git/hooks/pre-push.sample
-         Scanning file RetirementCalculator/.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1
-         Scanning file RetirementCalculator/.git/objects/f3/2100e3cf13a183e80544d4a0ddd843c8d0d949
-         Scanning file RetirementCalculator/.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809
-         Scanning file RetirementCalculator/.git/objects/c3/dbdbc790dc93a9b3e12cd5a220a613c72d0fab
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/LinkEdit.properties
-         Scanning file RetirementCalculator/.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec
-         Scanning file RetirementCalculator/.git/objects/6f/3549f765104b58d630d2a4ce871fc1b9e4bb7a
-         Scanning file RetirementCalculator/.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53
-         Scanning file RetirementCalculator/.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16
-         Scanning file RetirementCalculator/.git/objects/ac/76a910965c68f48767578cd5a5b64957d98a4d
-         Scanning file RetirementCalculator/.git/hooks/sendemail-validate.sample
-         Scanning file RetirementCalculator/.git/logs/HEAD
-         Scanning file RetirementCalculator/.git/hooks/prepare-commit-msg.sample
-         Scanning file RetirementCalculator/.git/hooks/update.sample
-         Scanning file RetirementCalculator/.git/objects/2a/d1a2ba3dc994398cbf308b3e6bdb30db9c1f1b
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/MFS.properties
-         Scanning file RetirementCalculator/.git/hooks/pre-commit.sample
-         Scanning file RetirementCalculator/.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/Easytrieve.properties
-         Scanning file RetirementCalculator/.git/hooks/pre-merge-commit.sample
-         Scanning file RetirementCalculator/.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894
-         Scanning file RetirementCalculator/.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5
-         Scanning file RetirementCalculator/.git/objects/4a/58fdbf3761bccd3497ada688d343a15c33e8b0
-         Scanning file RetirementCalculator/.git/objects/c8/46ec8770e850c9ebda2cc736d6c65f76d0e74b
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/Cobol.properties
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/ACBgen.properties
-         Scanning file RetirementCalculator/.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/PLI.properties
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/ZunitConfig.properties
-         Scanning file RetirementCalculator/.git/HEAD
-         Scanning file RetirementCalculator/RetirementCalculator/src/cobol/ebud03.cbl
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/file.properties
-         Scanning file RetirementCalculator/.git/info/exclude
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/README.md
-         Scanning file RetirementCalculator/.git/objects/a7/e4ad4c1bde8c6ad9144199468403799cdd0e26
-         Scanning file RetirementCalculator/.git/objects/ea/ce47f23a335d6ead94dcb74c338a1e1adf65ae
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/DBDgen.properties
-         Scanning file RetirementCalculator/.git/hooks/fsmonitor-watchman.sample
-         Scanning file RetirementCalculator/.git/hooks/push-to-checkout.sample
-         Scanning file RetirementCalculator/.git/hooks/pre-rebase.sample
-         Scanning file RetirementCalculator/RetirementCalculator/src/cobol/ebud02.cbl
-         Scanning file RetirementCalculator/.git/hooks/commit-msg.sample
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/REXX.properties
-         Scanning file RetirementCalculator/RetirementCalculator/application-conf/Transfer.properties
-         Scanning file RetirementCalculator/.git/objects/1c/b8db96a22a09cba20ddf3d7bb37fb098963100
-         Scanning file RetirementCalculator/.git/hooks/pre-applypatch.sample
-         Scanning file RetirementCalculator/.git/objects/da/97ba1be5273d4a3265d6fdffd68c4a9cfe57f1
-         Scanning file RetirementCalculator/RetirementCalculator/src/cobol/ebud01.cbl
-         Scanning file RetirementCalculator/.git/objects/d3/f1290864542e156079c4e165497994f1675139
-         Scanning file RetirementCalculator/RetirementCalculator/src/cobol/ebud0run.cbl
-         Scanning file RetirementCalculator/.git/objects/12/0c8e0025fdfa30c48032826c42450988f888a8
-         Scanning file RetirementCalculator/.git/objects/79/9226e3830e77a8ecc42283cb31696cb02354b7
-         Scanning file RetirementCalculator/.git/objects/57/c0328a170cd985ed20121f8a29719189b3a28f
-         Scanning file RetirementCalculator/.git/index
-         Scanning file RetirementCalculator/.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88
-         Scanning file RetirementCalculator/.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9
-** Storing results in the 'RetirementCalculator' DBB Collection.
-** Build finished
-*******************************************************************
-Scan application directory /u/mdalbin/Migration-Modeler-DBEHM-work/applications/UNASSIGNED
-*******************************************************************
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   metadatastore -> /u/mdalbin/Migration-Modeler-DBEHM-work/dbb-metadatastore
-   application -> UNASSIGNED
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-UNASSIGNED-scan.log
-   dbb.DependencyScanner.controlTransfers -> true
-** Scanning the files.
-         Scanning file UNASSIGNED/.git/hooks/pre-push.sample
-         Scanning file UNASSIGNED/.git/logs/refs/heads/main
-         Scanning file UNASSIGNED/.git/objects/1c/b8db96a22a09cba20ddf3d7bb37fb098963100
-         Scanning file UNASSIGNED/.git/objects/e3/34046d9c91d6a27d5b73a55fca62038df214e9
-         Scanning file UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl
-         Scanning file UNASSIGNED/.git/hooks/push-to-checkout.sample
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/PSBgen.properties
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/ZunitConfig.properties
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/LinkEdit.properties
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/REXX.properties
-         Scanning file UNASSIGNED/.git/COMMIT_EDITMSG
-         Scanning file UNASSIGNED/.git/objects/6f/3549f765104b58d630d2a4ce871fc1b9e4bb7a
-         Scanning file UNASSIGNED/.git/hooks/pre-rebase.sample
-         Scanning file UNASSIGNED/UNASSIGNED.yaml
-         Scanning file UNASSIGNED/UNASSIGNED/src/bms/epsmlis.bms
-         Scanning file UNASSIGNED/.git/objects/a7/e4ad4c1bde8c6ad9144199468403799cdd0e26
-         Scanning file UNASSIGNED/.gitattributes
-         Scanning file UNASSIGNED/.git/objects/23/8aafb5fbd27ed05fd516e566f9ba78cec0c688
-         Scanning file UNASSIGNED/.git/hooks/pre-applypatch.sample
-         Scanning file UNASSIGNED/.git/hooks/pre-merge-commit.sample
-         Scanning file UNASSIGNED/.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc
-         Scanning file UNASSIGNED/.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4
-         Scanning file UNASSIGNED/.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894
-         Scanning file UNASSIGNED/.git/objects/20/e05460bad23da4b636a6d07cb06fddcf2434d0
-         Scanning file UNASSIGNED/.git/hooks/update.sample
-         Scanning file UNASSIGNED/.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/Assembler.properties
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/application.properties
-         Scanning file UNASSIGNED/.git/hooks/post-update.sample
-         Scanning file UNASSIGNED/.git/objects/e3/df501f6a5529aff989412d6c4af4b43a9897d1
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/PLI.properties
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/languageConfigurationMapping.properties
-         Scanning file UNASSIGNED/.git/logs/HEAD
-         Scanning file UNASSIGNED/UNASSIGNED/src/cobol/flemssub.cbl
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/Transfer.properties
-         Scanning file UNASSIGNED/.git/description
-         Scanning file UNASSIGNED/.git/objects/a6/3ed1ad7270fd84bfb2eaa77886dc2be44d637e
-         Scanning file UNASSIGNED/.git/objects/2a/d1a2ba3dc994398cbf308b3e6bdb30db9c1f1b
-         Scanning file UNASSIGNED/.git/objects/70/8fdfbe162a13d3e1af05064b0c41a6077231a4
-         Scanning file UNASSIGNED/.git/HEAD
-         Scanning file UNASSIGNED/.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88
-         Scanning file UNASSIGNED/.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9
-         Scanning file UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/ACBgen.properties
-         Scanning file UNASSIGNED/.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd
-         Scanning file UNASSIGNED/.git/objects/d3/f1290864542e156079c4e165497994f1675139
-         Scanning file UNASSIGNED/.git/objects/72/b5040d6cc91160887c2a6a8ee4fe37a2482b01
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/MFS.properties
-         Scanning file UNASSIGNED/.git/info/exclude
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/reports.properties
-         Scanning file UNASSIGNED/.git/hooks/fsmonitor-watchman.sample
-         Scanning file UNASSIGNED/.git/refs/tags/rel-1.0.0
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/file.properties
-         Scanning file UNASSIGNED/.git/hooks/commit-msg.sample
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/CRB.properties
-         Scanning file UNASSIGNED/UNASSIGNED/src/bms/epsmort.bms
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/README.md
-         Scanning file UNASSIGNED/.git/hooks/pre-receive.sample
-         Scanning file UNASSIGNED/.git/index
-         Scanning file UNASSIGNED/.git/objects/da/97ba1be5273d4a3265d6fdffd68c4a9cfe57f1
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/Easytrieve.properties
-         Scanning file UNASSIGNED/.git/hooks/applypatch-msg.sample
-         Scanning file UNASSIGNED/.git/objects/b9/cb87f77cc02aa7e5537aeb97901f4a34561cc9
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/Cobol.properties
-         Scanning file UNASSIGNED/.git/hooks/pre-commit.sample
-         Scanning file UNASSIGNED/.git/objects/15/3ef134971f66103c8ca566b513901678804eb7
-         Scanning file UNASSIGNED/.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16
-         Scanning file UNASSIGNED/.git/objects/a1/8654b39a98bae40a80650315882df9f3e4199c
-         Scanning file UNASSIGNED/UNASSIGNED/src/cobol/flemsmai.cbl
-         Scanning file UNASSIGNED/.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec
-         Scanning file UNASSIGNED/.git/objects/a0/f87d9391c2f3626352c39999b631af70552f86
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/bind.properties
-         Scanning file UNASSIGNED/.git/hooks/prepare-commit-msg.sample
-         Scanning file UNASSIGNED/.git/hooks/sendemail-validate.sample
-         Scanning file UNASSIGNED/.git/objects/df/36b23c0258c461dbd1d9b47e9cab5fd4a1fc38
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/BMS.properties
-         Scanning file UNASSIGNED/.git/config
-         Scanning file UNASSIGNED/.git/objects/a7/ba47b0b880d255394445b339da781f22ea4a01
-         Scanning file UNASSIGNED/.git/refs/heads/main
-         Scanning file UNASSIGNED/.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809
-         Scanning file UNASSIGNED/.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c
-         Scanning file UNASSIGNED/.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2
-         Scanning file UNASSIGNED/.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53
-         Scanning file UNASSIGNED/UNASSIGNED/application-conf/DBDgen.properties
-         Scanning file UNASSIGNED/.git/objects/56/62d387361e223a44d43d9f9152b94492222355
-         Scanning file UNASSIGNED/.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5
-         Scanning file UNASSIGNED/.git/objects/4a/58fdbf3761bccd3497ada688d343a15c33e8b0
-** Storing results in the 'UNASSIGNED' DBB Collection.
-** Build finished
-*******************************************************************
-Reset Application Descriptor for CBSA
-*******************************************************************
-** Recreate Application Descriptor process started.
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   application -> CBSA
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-CBSA-createApplicationDescriptor.log
-   repositoryPathsMappingFilePath -> /u/mdalbin/Migration-Modeler-DBEHM-work/repositoryPathsMapping.yaml
-** Reading the Repository Layout Mapping definition.
-* Importing existing Application Descriptor and reset source groups, dependencies and consumers.
-* Getting List of files /u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA
-*! A hidden file found (.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16). Skipped.
-*! A hidden file found (.git/objects/46/3a5519cbcb1b8db463d628173cafc3751fb323). Skipped.
-*! A hidden file found (.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5). Skipped.
-*! The file (CBSA/application-conf/BMS.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/12/c04ff4762844463e6e8d5b3a92c150fbb3c6ce). Skipped.
-*! A hidden file found (.git/objects/74/7f6becab8f715c30726f0adc2777d4e775a513). Skipped.
-* Adding file CBSA/src/cobol/delacc.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/2b/b5e69e60b48517664e8bc178ce5047d2dc6239). Skipped.
-*! A hidden file found (.git/objects/29/ef69588ebc7fb77045dc42407df52eb89b771b). Skipped.
-* Adding file CBSA/src/cobol/bnk1cac.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/71/95a42c31f86e0f70315660d9da6d62f9769d1e). Skipped.
-*! A hidden file found (.git/objects/71/aba7981c900888d8f74ef1f3aa3e1efe91d405). Skipped.
-*! A hidden file found (.git/objects/b0/2d733e80ba87c613c4becba1438cfea345bb63). Skipped.
-* Adding file CBSA/src/cobol/creacc.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/bnkmenu.cbl to Application Descriptor into source group cobol.
-*! The file (CBSA/application-conf/Transfer.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/e4/a208249eb9f188dac631a80aa69560a1b5c812). Skipped.
-*! A hidden file found (.git/objects/bb/6a183c5808c83f435ffe292d40ce3c1e78182e). Skipped.
-* Adding file CBSA/src/copy/datastr.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/30/ec95859415287a39af962b759792828e403684). Skipped.
-*! A hidden file found (.git/objects/fa/7a23ca781e7e8e7afa7d20dc2caaf6ebba38dc). Skipped.
-*! A hidden file found (.git/objects/d3/e104ac3f1682cf5c81e6a4df77a916b5601adb). Skipped.
-*! A hidden file found (.git/hooks/prepare-commit-msg.sample). Skipped.
-* Adding file CBSA/src/copy/bnk1mai.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/c8/6c28e6b894571ccad1c6beaa040d1b916a1a77). Skipped.
-*! A hidden file found (.git/objects/b6/deb95fdbfe6a2f08acb265c23cccc973e8b031). Skipped.
-*! The file (CBSA/application-conf/PSBgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/35/1b0c08fb96d69ec8f2e5c4a71121da780037dd). Skipped.
-*! A hidden file found (.git/objects/1d/7f5fcdba85d4c4d0bc6ab0bab4b287e69242db). Skipped.
-*! A hidden file found (.git/objects/de/ce936b7a48fba884a6d376305fbce1a2fc99e5). Skipped.
-*! A hidden file found (.git/objects/c8/82661ae39a9a8ed30486a8433c1b186cbc5159). Skipped.
-* Adding file CBSA/src/cobol/crdtagy3.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9). Skipped.
-*! A hidden file found (.git/objects/7e/0340c01a352c55eaf478a5c7dbe8c290e50728). Skipped.
-*! A hidden file found (.git/objects/d3/f1290864542e156079c4e165497994f1675139). Skipped.
-*! A hidden file found (.git/objects/94/08dd2f2709f23766aa4d1ef89e6e175974b396). Skipped.
-*! A hidden file found (.git/objects/97/0f6a926b868353d6a285d20b07d29abfba4292). Skipped.
-* Adding file CBSA/src/cobol/bnk1uac.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/d0/c5bf02bc846be691c4ea906c10118719d3bed3). Skipped.
-*! A hidden file found (.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4). Skipped.
-*! A hidden file found (.git/objects/ff/86efc8e05a7fc5e66defbf50820da4ab3bad95). Skipped.
-*! A hidden file found (.git/objects/ab/80f99d7e1e2cf005e04f11f43b710b6cfc765c). Skipped.
-*! A hidden file found (.git/objects/fb/741632c192243a1f4e7799371635f854bd40db). Skipped.
-*! A hidden file found (.git/objects/b6/97ad559100281f7737764166ced34b4398ae0d). Skipped.
-* Adding file CBSA/src/cobol/inqcust.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/c0/6aacd0c94d044b5fb1d2cb22bc796b946bcf6f). Skipped.
-*! A hidden file found (.git/logs/HEAD). Skipped.
-*! The file (CBSA/application-conf/PLI.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/27/0fd7eb4a2109c25b62d78595d8ddd044de4983). Skipped.
-*! A hidden file found (.git/objects/6e/ba9fb7a278153965978bde08e8b79d7549a6e5). Skipped.
-*! A hidden file found (.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53). Skipped.
-* Adding file CBSA/src/copy/getcompy.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/copy/updacc.cpy to Application Descriptor into source group copy.
-*! The file (CBSA/application-conf/README.md) did not match any rule defined in the repository path mapping configuration.
-* Adding file CBSA/src/cobol/bankdata.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/da/97ba1be5273d4a3265d6fdffd68c4a9cfe57f1). Skipped.
-* Adding file CBSA/src/cobol/dpaytst.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/prooffl.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/config). Skipped.
-*! A hidden file found (.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2). Skipped.
-* Adding file CBSA/src/copy/inqcust.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/hooks/pre-push.sample). Skipped.
-*! A hidden file found (.git/objects/5e/014abb1c1c7b87e5b7487894a0dd577ecd6903). Skipped.
-* Adding file CBSA/src/copy/abndinfo.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/copy/accdb2.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/37/1a19b8d93fa4d1f491a4174865ff3b5dc57b6f). Skipped.
-*! A hidden file found (.git/hooks/pre-rebase.sample). Skipped.
-*! A hidden file found (.git/info/exclude). Skipped.
-* Adding file CBSA/src/cobol/bnk1dac.cbl to Application Descriptor into source group cobol.
-*! The file (CBSA/application-conf/ACBgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/applypatch-msg.sample). Skipped.
-*! The file (CBSA/application-conf/Assembler.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/2f/bc2fdb9097a629e3d0d899d0d4912a5ce4a678). Skipped.
-*! A hidden file found (.git/objects/57/a7db352970bbfae82cf24c95aa6cecc159b0e0). Skipped.
-*! A hidden file found (.git/objects/e3/df501f6a5529aff989412d6c4af4b43a9897d1). Skipped.
-* Adding file CBSA/src/cobol/getcompy.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/crecust.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/f7/fbe29970a3bd547fcfd6e82df58e45190d46a8). Skipped.
-*! A hidden file found (.git/hooks/pre-merge-commit.sample). Skipped.
-*! A hidden file found (.git/objects/d9/c46c2b0b76ac752b67f451dd45995cd5bc96d1). Skipped.
-*! A hidden file found (.git/objects/c9/5be47dd3ede400e93ba367b5f5ac433a714d5a). Skipped.
-*! A hidden file found (.git/HEAD). Skipped.
-* Adding file CBSA/src/copy/bnk1dcm.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/cobol/crdtagy4.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/copy/bnk1acc.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/copy/inqacc.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/cobol/consttst.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/copy/crecust.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/d4/c22ba5bfb0742e2395037184f5fc4174577a8c). Skipped.
-*! A hidden file found (.git/objects/d3/7d2d4704218babc4ab9871cc3ea1f5271dc80d). Skipped.
-*! A hidden file found (.git/objects/89/7bf2e97ca69ede559524c31bae8d639ae1b81d). Skipped.
-* Adding file CBSA/src/cobol/bnk1cra.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/delcus.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/description). Skipped.
-*! A hidden file found (.git/objects/2a/d1a2ba3dc994398cbf308b3e6bdb30db9c1f1b). Skipped.
-*! A hidden file found (.git/objects/d9/7584fe7d7c5e0120ab762194b119287f6bc91d). Skipped.
-*! A hidden file found (.git/objects/a7/e4ad4c1bde8c6ad9144199468403799cdd0e26). Skipped.
-* Adding file CBSA/src/copy/bnk1ccm.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/cobol/accload.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec). Skipped.
-*! A hidden file found (.gitattributes). Skipped.
-*! A hidden file found (.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88). Skipped.
-* Adding file CBSA/src/cobol/bnk1ccs.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/41/c1fc24c5c355423d1cdad4477113b6c6f0945f). Skipped.
-* Adding file CBSA/src/copy/updcust.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/4d/3bc5c5136e4bfe98ceb8e5f5136b421afd8596). Skipped.
-* Adding file CBSA/src/copy/bnk1uam.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/copy/delacc.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/cobol/crdtagy5.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/bnk1cca.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/9d/8cdd3cfd001f9ff47534b9a741f61f757cc90c). Skipped.
-*! A hidden file found (.git/objects/04/a5b554ae15152a060f462fe894e09e7188e394). Skipped.
-*! A hidden file found (.git/objects/f5/0cc01256b3b2f272a59bed37caeb1a61f5ba4c). Skipped.
-*! A hidden file found (.git/hooks/push-to-checkout.sample). Skipped.
-*! The file (CBSA/application-conf/CRB.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file CBSA/src/copy/customer.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/refs/heads/main). Skipped.
-*! A hidden file found (.git/objects/d3/70465392addcb5a86920019826deec0e531a77). Skipped.
-*! A hidden file found (.git/objects/55/57d232d69aa70962e5580123403d3662157e2a). Skipped.
-* Adding file CBSA/src/copy/sortcode.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/cobol/custctrl.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/copy/custctrl.cpy to Application Descriptor into source group copy.
-*! The file (CBSA/application-conf/Easytrieve.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/9c/3aec3ef67cd80287d375f825fe1b7abfb8be4d). Skipped.
-* Adding file CBSA/src/copy/bnk1cdm.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc). Skipped.
-*! A hidden file found (.git/objects/bc/ecf21e6187f0d2dba5c129c53954a8363f0d0e). Skipped.
-*! A hidden file found (.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd). Skipped.
-*! A hidden file found (.git/objects/56/364507a259c6881a4e9a961213a9aa5a6405e7). Skipped.
-*! A hidden file found (.git/objects/14/833274735adb257e1062eaa63d495febe9e962). Skipped.
-*! The file (CBSA.yaml) did not match any rule defined in the repository path mapping configuration.
-* Adding file CBSA/src/cobol/abndproc.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c). Skipped.
-*! The file (CBSA/application-conf/LinkEdit.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file CBSA/src/copy/proctran.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/b1/8656b5144b139b6a3b4515d4883a5d0e9ee2ce). Skipped.
-*! A hidden file found (.git/objects/02/20c1299e5ed367b9d602d8a11c9909a081c026). Skipped.
-* Adding file CBSA/src/copy/xfrfun.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/logs/refs/heads/main). Skipped.
-*! The file (CBSA/application-conf/bind.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file CBSA/src/cobol/bnk1dcs.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/updcust.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/acctctrl.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/1c/b8db96a22a09cba20ddf3d7bb37fb098963100). Skipped.
-* Adding file CBSA/src/copy/bnk1tfm.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/f4/33cbfff90207efad95d399c2632acc1684f942). Skipped.
-* Adding file CBSA/src/copy/acctctrl.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/57/9fef02baff9b735fc28867aef660f088b64710). Skipped.
-*! The file (CBSA/application-conf/MFS.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file CBSA/src/cobol/crdtagy1.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/b1/7e73e90052cbe5144318dc9cf00cdf04589042). Skipped.
-* Adding file CBSA/src/copy/paydbcr.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/01/d96e12b164d97cc7f2c72489c8cd3205a8b69f). Skipped.
-*! A hidden file found (.git/objects/b0/aed0954293fc2763f3c02ec65cbaa53603015d). Skipped.
-*! A hidden file found (.git/objects/e4/96c6a4e7a960de791e1fd97a02ae6614769936). Skipped.
-*! A hidden file found (.git/objects/aa/3a09c5ec672fef16b4d689127e80ca5ce595ce). Skipped.
-* Adding file CBSA/src/copy/account.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/fa/3508648b495e92bc320f8110bfd3d78a4d5a3a). Skipped.
-*! A hidden file found (.git/objects/56/eec383e79ddc7d93386976ba31b6f06180c1a0). Skipped.
-* Adding file CBSA/src/copy/creacc.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/copy/getscode.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/cobol/getscode.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/copy/bnk1dam.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/index). Skipped.
-* Adding file CBSA/src/cobol/bnk1tfn.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/proload.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/a1/4465df829b167bbb644dffc1027434adbf3c32). Skipped.
-* Adding file CBSA/src/copy/bnk1cam.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/04/9cc7eb352d85ce38026a8f3029f22e711b8b9a). Skipped.
-*! A hidden file found (.git/objects/8e/b541c571cd537e557c27e56eb472e9cafb0308). Skipped.
-*! A hidden file found (.git/objects/47/f9f61e0fdb34ee5ebbf7fc11529e50b079a04b). Skipped.
-*! A hidden file found (.git/objects/4a/58fdbf3761bccd3497ada688d343a15c33e8b0). Skipped.
-* Adding file CBSA/src/copy/delcus.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894). Skipped.
-* Adding file CBSA/src/cobol/dbcrfun.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/94/7a658dffaf7b8a8a1348ad9dabbdca1f87fbb0). Skipped.
-* Adding file CBSA/src/cobol/updacc.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/consent.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/33/44cbdf7b601794f0ef2341235f09f126fe4562). Skipped.
-*! A hidden file found (.git/hooks/update.sample). Skipped.
-* Adding file CBSA/src/copy/inqacccu.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/hooks/pre-applypatch.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-commit.sample). Skipped.
-*! A hidden file found (.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809). Skipped.
-*! The file (CBSA/application-conf/application.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (CBSA/application-conf/file.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file CBSA/src/cobol/xfrfun.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/hooks/commit-msg.sample). Skipped.
-*! A hidden file found (.git/objects/cb/75236314e2fba04aca378ad29061942e6900a5). Skipped.
-*! A hidden file found (.git/objects/b8/33431450f198af575ebdf622a8144df7c0962a). Skipped.
-*! A hidden file found (.git/objects/f6/3ebe51d5520bc56b0a6911cfc2ed6705fdfa66). Skipped.
-* Adding file CBSA/src/copy/consent.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/objects/ff/7f1a74d6d78a6d35e4559b32cdff813a5fb12e). Skipped.
-*! A hidden file found (.git/objects/21/b32b59cad6603ee75673876be89e6c04c4c122). Skipped.
-*! A hidden file found (.git/hooks/sendemail-validate.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-receive.sample). Skipped.
-* Adding file CBSA/src/cobol/inqacccu.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/crdtagy2.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/copy/constapi.cpy to Application Descriptor into source group copy.
-* Adding file CBSA/src/copy/constdb2.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/hooks/post-update.sample). Skipped.
-*! The file (CBSA/application-conf/ZunitConfig.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/COMMIT_EDITMSG). Skipped.
-*! A hidden file found (.git/objects/33/4b8f087b5e1bd5c05036a920378e8e1f3c0276). Skipped.
-* Adding file CBSA/src/cobol/inqacc.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/b5/6eafbe98c4e46afb0c8c60ee97cf437292a68c). Skipped.
-* Adding file CBSA/src/copy/procdb2.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/hooks/fsmonitor-watchman.sample). Skipped.
-*! A hidden file found (.git/objects/6f/3549f765104b58d630d2a4ce871fc1b9e4bb7a). Skipped.
-*! A hidden file found (.git/objects/f5/5399eea902ae9bc01584c1e3bc71f4db98eef6). Skipped.
-*! The file (CBSA/application-conf/Cobol.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/a6/ee2080f7c783724cafee89a81049a3f2893e75). Skipped.
-*! A hidden file found (.git/objects/34/390dbd6e6f281f6101d179897949a51393c264). Skipped.
-*! The file (CBSA/application-conf/REXX.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (CBSA/application-conf/reports.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (CBSA/application-conf/languageConfigurationMapping.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/refs/tags/rel-1.0.0). Skipped.
-*! A hidden file found (.git/objects/c2/432e4bf3b85f883fdcaff1adb419b1ebf3fd18). Skipped.
-*! A hidden file found (.git/objects/66/afa88844c422af69da0d35243993d4e50dac3c). Skipped.
-* Adding file CBSA/src/cobol/accoffl.cbl to Application Descriptor into source group cobol.
-* Adding file CBSA/src/cobol/dpayapi.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1). Skipped.
-*! A hidden file found (.git/objects/b4/79ed3b38c3f9680850dc34a3c9d10e24ddb52f). Skipped.
-* Adding file CBSA/src/copy/contdb2.cpy to Application Descriptor into source group copy.
-*! The file (CBSA/application-conf/DBDgen.properties) did not match any rule defined in the repository path mapping configuration.
-* Created Application Description file /u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml
-** Build finished
-*******************************************************************
-Reset Application Descriptor for GenApp
-*******************************************************************
-** Recreate Application Descriptor process started.
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   application -> GenApp
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-GenApp-createApplicationDescriptor.log
-   repositoryPathsMappingFilePath -> /u/mdalbin/Migration-Modeler-DBEHM-work/repositoryPathsMapping.yaml
-** Reading the Repository Layout Mapping definition.
-* Importing existing Application Descriptor and reset source groups, dependencies and consumers.
-* Getting List of files /u/mdalbin/Migration-Modeler-DBEHM-work/applications/GenApp
-*! A hidden file found (.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16). Skipped.
-*! A hidden file found (.git/objects/68/5e0f68143caf8974be751db42bc6f6869e3af9). Skipped.
-*! A hidden file found (.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec). Skipped.
-*! A hidden file found (.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5). Skipped.
-*! A hidden file found (.gitattributes). Skipped.
-*! A hidden file found (.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88). Skipped.
-* Adding file GenApp/src/cobol/lgtestc1.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/fa/ffcce01f2da721aa453f5dda21d11f8d3ae693). Skipped.
-*! A hidden file found (.git/objects/82/766939ca20dfac5d9ab33782e4f45b2ade19fc). Skipped.
-* Adding file GenApp/src/cobol/lgupdb01.cbl to Application Descriptor into source group cobol.
-* Adding file GenApp/src/cobol/lgipvs01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/3e/8c9c7714c8622b1fe6077544b2b535dc3d0330). Skipped.
-*! The file (GenApp/application-conf/file.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (GenApp/application-conf/languageConfigurationMapping.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file GenApp/src/cobol/lgdpdb01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/37/0f90c505893d5ab01089e66e04528f8d40dab1). Skipped.
-*! The file (GenApp/application-conf/Cobol.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/3e/9eed6daafd969231900049360b526396bf4091). Skipped.
-*! A hidden file found (.git/objects/0a/f04c7e31314b30efc3600507f62bfd1c2970c9). Skipped.
-*! A hidden file found (.git/hooks/push-to-checkout.sample). Skipped.
-*! The file (GenApp.yaml) did not match any rule defined in the repository path mapping configuration.
-* Adding file GenApp/src/cobol/lgipdb01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/refs/heads/main). Skipped.
-* Adding file GenApp/src/cobol/lgtestp1.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/6b/70ac40882304b17e808848fc61b6c4fd833607). Skipped.
-* Adding file GenApp/src/cobol/lgapol01.cbl to Application Descriptor into source group cobol.
-*! The file (GenApp/application-conf/CRB.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file GenApp/src/cobol/lgupvs01.cbl to Application Descriptor into source group cobol.
-*! The file (GenApp/application-conf/DBDgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/prepare-commit-msg.sample). Skipped.
-*! The file (GenApp/application-conf/ACBgen.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file GenApp/src/cobol/lgtestp4.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc). Skipped.
-*! The file (GenApp/application-conf/REXX.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd). Skipped.
-*! The file (GenApp/application-conf/BMS.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (GenApp/application-conf/LinkEdit.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file GenApp/src/cobol/lgdpvs01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c). Skipped.
-*! The file (GenApp/application-conf/PSBgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/28/0e6f742c84b40da642115cad3a0c86aa9c0aac). Skipped.
-*! A hidden file found (.git/objects/d9/455ae3c356b0e7a2440914f564ddbcbe30e28d). Skipped.
-*! A hidden file found (.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9). Skipped.
-*! A hidden file found (.git/objects/0d/b601b1f055ea023e104c7d24ab0ef5eea1ff05). Skipped.
-*! A hidden file found (.git/objects/9a/a1e257384925e8015d7e0864175961ce258290). Skipped.
-*! A hidden file found (.git/objects/17/cd1d6b0325b04277c7fc7a1ec27ce9bcbd2598). Skipped.
-*! A hidden file found (.git/logs/refs/heads/main). Skipped.
-*! The file (GenApp/application-conf/ZunitConfig.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/d3/f1290864542e156079c4e165497994f1675139). Skipped.
-*! A hidden file found (.git/objects/e1/52fbd8c03e836ad0046953854f04b4665d75b9). Skipped.
-*! A hidden file found (.git/objects/b0/49dc9735257281c334afd74730dee59c62e2e8). Skipped.
-*! The file (GenApp/application-conf/MFS.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/1b/9d6bcb233214bd016ac6ffd87d5b4e5a0644cc). Skipped.
-*! A hidden file found (.git/objects/78/e7f1d24d01d4949e80fc149026a9d902eac1b9). Skipped.
-*! A hidden file found (.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4). Skipped.
-*! A hidden file found (.git/objects/1c/b8db96a22a09cba20ddf3d7bb37fb098963100). Skipped.
-* Adding file GenApp/src/cobol/lgwebst5.cbl to Application Descriptor into source group cobol.
-* Adding file GenApp/src/cobol/lgacvs01.cbl to Application Descriptor into source group cobol.
-*! The file (GenApp/application-conf/Easytrieve.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (GenApp/application-conf/Transfer.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/83/2f54aa68fe84f78461085d00e3b3206e39fdb7). Skipped.
-* Adding file GenApp/src/copy/lgpolicy.cpy to Application Descriptor into source group copy.
-* Adding file GenApp/src/cobol/lgacdb01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/db/2a6d69779b37f2aff873868afb262ed063d27d). Skipped.
-*! The file (GenApp/application-conf/PLI.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/logs/HEAD). Skipped.
-*! A hidden file found (.git/objects/f7/09ff109986301f101a1912b9d043756d7e596a). Skipped.
-*! The file (GenApp/application-conf/Assembler.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/index). Skipped.
-*! A hidden file found (.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53). Skipped.
-* Adding file GenApp/src/cobol/lgucdb01.cbl to Application Descriptor into source group cobol.
-* Adding file GenApp/src/cobol/lgicdb01.cbl to Application Descriptor into source group cobol.
-* Adding file GenApp/src/cobol/lgipol01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894). Skipped.
-* Adding file GenApp/src/cobol/lgupol01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/da/97ba1be5273d4a3265d6fdffd68c4a9cfe57f1). Skipped.
-*! A hidden file found (.git/objects/42/d3f2e669c2f9f6cf9565e61b2a3f96ad1ff503). Skipped.
-*! A hidden file found (.git/config). Skipped.
-*! A hidden file found (.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2). Skipped.
-*! A hidden file found (.git/objects/2e/f0cfc9de9ca7521899a87cf9e216be7f109d88). Skipped.
-*! A hidden file found (.git/hooks/update.sample). Skipped.
-*! A hidden file found (.git/objects/d1/e33757aa74694d0039e8162918a840172d24f8). Skipped.
-*! A hidden file found (.git/hooks/pre-push.sample). Skipped.
-*! The file (GenApp/application-conf/README.md) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/pre-applypatch.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-commit.sample). Skipped.
-*! A hidden file found (.git/objects/7d/f90877fb98ccba6508a94e6fe3ff1ad865d682). Skipped.
-*! A hidden file found (.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809). Skipped.
-*! The file (GenApp/application-conf/application.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file GenApp/src/cobol/lgucvs01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/hooks/pre-rebase.sample). Skipped.
-*! A hidden file found (.git/hooks/commit-msg.sample). Skipped.
-* Adding file GenApp/src/cobol/lgtestp2.cbl to Application Descriptor into source group cobol.
-*! The file (GenApp/application-conf/reports.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file GenApp/src/cobol/lgicvs01.cbl to Application Descriptor into source group cobol.
-* Adding file GenApp/src/cobol/lgsetup.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/info/exclude). Skipped.
-* Adding file GenApp/src/copy/lgcmared.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/hooks/applypatch-msg.sample). Skipped.
-*! A hidden file found (.git/objects/b8/0c506efef3e434fe92e8395a063bfb1d87b5f3). Skipped.
-*! A hidden file found (.git/objects/bf/a3623bc647efd22c9550939cd8d5bf72cb91ad). Skipped.
-*! A hidden file found (.git/objects/c5/ea6c1fed91fd2154ac3f38533455da5481d974). Skipped.
-*! A hidden file found (.git/hooks/sendemail-validate.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-receive.sample). Skipped.
-*! A hidden file found (.git/objects/17/4119c31e4008790ec424427596d0859d696c96). Skipped.
-*! A hidden file found (.git/objects/89/20ce0008397665b02a79f971898c033709bc6b). Skipped.
-* Adding file GenApp/src/cobol/lgacdb02.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/12/5b26f553c5647a5aabc69a45f0191aed5d5e01). Skipped.
-*! A hidden file found (.git/objects/98/11fa56e0556c5d884a98ae06f7d007f64edafa). Skipped.
-* Adding file GenApp/src/cobol/lgapvs01.cbl to Application Descriptor into source group cobol.
-*! The file (GenApp/application-conf/bind.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/de/85d8fbe9f576dabc377e29616bc4e8fcf68a56). Skipped.
-* Adding file GenApp/src/copy/lgcmarea.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/hooks/post-update.sample). Skipped.
-* Adding file GenApp/src/cobol/lgacus01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/hooks/pre-merge-commit.sample). Skipped.
-*! A hidden file found (.git/objects/28/2aa20f6c7d61d15b8922c8d8e0552880351472). Skipped.
-*! A hidden file found (.git/objects/76/be470b4b4450038992dec6a9f9ac90a8611f2b). Skipped.
-*! A hidden file found (.git/COMMIT_EDITMSG). Skipped.
-* Adding file GenApp/src/cobol/lgastat1.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/6e/a11cb2dc20aa126f08701fe873ac2dae5ce0b6). Skipped.
-* Adding file GenApp/src/cobol/lgtestp3.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/HEAD). Skipped.
-*! A hidden file found (.git/objects/3b/6b75b7fd2f100934f2ae236cbff5a174454de2). Skipped.
-*! A hidden file found (.git/hooks/fsmonitor-watchman.sample). Skipped.
-*! A hidden file found (.git/objects/ed/7e8c1b79aaa76736f0af3b735f667d3d26ad36). Skipped.
-* Adding file GenApp/src/bms/ssmap.bms to Application Descriptor into source group bms.
-*! A hidden file found (.git/objects/d8/f18d43e8afa308163aebcff561e7dedf67759e). Skipped.
-* Adding file GenApp/src/cobol/lgucus01.cbl to Application Descriptor into source group cobol.
-* Adding file GenApp/src/cobol/lgicus01.cbl to Application Descriptor into source group cobol.
-* Adding file GenApp/src/cobol/lgapdb01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/22/b550bafdc6e9f5103b1a28ca501d6bdae4ec76). Skipped.
-*! A hidden file found (.git/objects/e5/86c7d2e00e602158da102e4c8d30deaeb142ae). Skipped.
-*! A hidden file found (.git/objects/d4/24e6a718eb9ad584e21f7a899488500484f7e2). Skipped.
-* Adding file GenApp/src/cobol/lgstsq.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/7e/36d0d65c7ae8ca0ce7a451692820010cf2c51f). Skipped.
-*! A hidden file found (.git/refs/tags/rel-1.0.0). Skipped.
-*! A hidden file found (.git/objects/b6/53161403e5df737d6e540d8c5a1988a043eafc). Skipped.
-*! A hidden file found (.git/objects/48/cd97eb3d38cc15a850ed45ddfe76c7d3f6c7da). Skipped.
-*! A hidden file found (.git/objects/a0/b94e23333057ca37382048c4f7fc6f2e0df75b). Skipped.
-*! A hidden file found (.git/description). Skipped.
-*! A hidden file found (.git/objects/2a/d1a2ba3dc994398cbf308b3e6bdb30db9c1f1b). Skipped.
-*! A hidden file found (.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1). Skipped.
-*! A hidden file found (.git/objects/16/73ab0e7f0e1744ab58379576e6c835d4108474). Skipped.
-* Adding file GenApp/src/cobol/lgdpol01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/a7/e4ad4c1bde8c6ad9144199468403799cdd0e26). Skipped.
-* Created Application Description file /u/mdalbin/Migration-Modeler-DBEHM-work/applications/GenApp/GenApp.yaml
-** Build finished
-*******************************************************************
-Reset Application Descriptor for RetirementCalculator
-*******************************************************************
-** Recreate Application Descriptor process started.
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   application -> RetirementCalculator
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-RetirementCalculator-createApplicationDescriptor.log
-   repositoryPathsMappingFilePath -> /u/mdalbin/Migration-Modeler-DBEHM-work/repositoryPathsMapping.yaml
-** Reading the Repository Layout Mapping definition.
-* Importing existing Application Descriptor and reset source groups, dependencies and consumers.
-* Getting List of files /u/mdalbin/Migration-Modeler-DBEHM-work/applications/RetirementCalculator
-*! A hidden file found (.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16). Skipped.
-*! A hidden file found (.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53). Skipped.
-*! A hidden file found (.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec). Skipped.
-*! A hidden file found (.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5). Skipped.
-*! The file (RetirementCalculator/application-conf/Cobol.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.gitattributes). Skipped.
-*! A hidden file found (.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88). Skipped.
-*! A hidden file found (.git/objects/4a/58fdbf3761bccd3497ada688d343a15c33e8b0). Skipped.
-*! The file (RetirementCalculator/application-conf/PLI.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894). Skipped.
-*! A hidden file found (.git/objects/da/97ba1be5273d4a3265d6fdffd68c4a9cfe57f1). Skipped.
-*! A hidden file found (.git/config). Skipped.
-*! A hidden file found (.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2). Skipped.
-*! A hidden file found (.git/objects/c3/dbdbc790dc93a9b3e12cd5a220a613c72d0fab). Skipped.
-*! The file (RetirementCalculator/application-conf/reports.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (RetirementCalculator/application-conf/CRB.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/update.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-push.sample). Skipped.
-* Adding file RetirementCalculator/src/cobol/ebud0run.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/hooks/pre-applypatch.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-commit.sample). Skipped.
-*! A hidden file found (.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809). Skipped.
-*! The file (RetirementCalculator/application-conf/REXX.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (RetirementCalculator/application-conf/Assembler.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (RetirementCalculator/application-conf/README.md) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/pre-rebase.sample). Skipped.
-*! The file (RetirementCalculator/application-conf/file.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/commit-msg.sample). Skipped.
-*! The file (RetirementCalculator/application-conf/PSBgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/12/0c8e0025fdfa30c48032826c42450988f888a8). Skipped.
-*! The file (RetirementCalculator/application-conf/ZunitConfig.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/push-to-checkout.sample). Skipped.
-*! The file (RetirementCalculator.yaml) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/info/exclude). Skipped.
-*! A hidden file found (.git/refs/heads/main). Skipped.
-*! A hidden file found (.git/hooks/applypatch-msg.sample). Skipped.
-*! A hidden file found (.git/objects/ea/ce47f23a335d6ead94dcb74c338a1e1adf65ae). Skipped.
-*! A hidden file found (.git/objects/c9/bcc2e7d175040d35f224a8ec4a9a96fe28e9ca). Skipped.
-*! The file (RetirementCalculator/application-conf/bind.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/sendemail-validate.sample). Skipped.
-*! A hidden file found (.git/objects/48/7e49969b9764ca1f1f6e4a8e100aafa634f04b). Skipped.
-*! A hidden file found (.git/hooks/pre-receive.sample). Skipped.
-*! A hidden file found (.git/hooks/prepare-commit-msg.sample). Skipped.
-*! The file (RetirementCalculator/application-conf/application.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc). Skipped.
-*! A hidden file found (.git/objects/e3/df501f6a5529aff989412d6c4af4b43a9897d1). Skipped.
-*! The file (RetirementCalculator/application-conf/ACBgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/f3/2100e3cf13a183e80544d4a0ddd843c8d0d949). Skipped.
-*! A hidden file found (.git/objects/da/2a610077413aed3719f8b6cceae7418fea61bf). Skipped.
-*! A hidden file found (.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd). Skipped.
-*! The file (RetirementCalculator/application-conf/BMS.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/79/9226e3830e77a8ecc42283cb31696cb02354b7). Skipped.
-*! A hidden file found (.git/objects/ac/76a910965c68f48767578cd5a5b64957d98a4d). Skipped.
-*! A hidden file found (.git/hooks/post-update.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-merge-commit.sample). Skipped.
-*! A hidden file found (.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c). Skipped.
-*! A hidden file found (.git/COMMIT_EDITMSG). Skipped.
-*! A hidden file found (.git/HEAD). Skipped.
-*! A hidden file found (.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9). Skipped.
-*! The file (RetirementCalculator/application-conf/languageConfigurationMapping.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/fsmonitor-watchman.sample). Skipped.
-*! A hidden file found (.git/logs/refs/heads/main). Skipped.
-*! A hidden file found (.git/objects/d3/f1290864542e156079c4e165497994f1675139). Skipped.
-* Adding file RetirementCalculator/src/cobol/ebud01.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/57/c0328a170cd985ed20121f8a29719189b3a28f). Skipped.
-*! A hidden file found (.git/objects/6f/3549f765104b58d630d2a4ce871fc1b9e4bb7a). Skipped.
-*! A hidden file found (.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4). Skipped.
-*! A hidden file found (.git/objects/1c/b8db96a22a09cba20ddf3d7bb37fb098963100). Skipped.
-*! The file (RetirementCalculator/application-conf/Transfer.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (RetirementCalculator/application-conf/MFS.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file RetirementCalculator/src/cobol/ebud02.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/refs/tags/rel-1.0.0). Skipped.
-*! A hidden file found (.git/objects/c8/46ec8770e850c9ebda2cc736d6c65f76d0e74b). Skipped.
-* Adding file RetirementCalculator/src/copy/linput.cpy to Application Descriptor into source group copy.
-*! A hidden file found (.git/description). Skipped.
-*! A hidden file found (.git/objects/2a/d1a2ba3dc994398cbf308b3e6bdb30db9c1f1b). Skipped.
-*! A hidden file found (.git/logs/HEAD). Skipped.
-*! The file (RetirementCalculator/application-conf/LinkEdit.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1). Skipped.
-*! The file (RetirementCalculator/application-conf/Easytrieve.properties) did not match any rule defined in the repository path mapping configuration.
-* Adding file RetirementCalculator/src/cobol/ebud03.cbl to Application Descriptor into source group cobol.
-*! The file (RetirementCalculator/application-conf/DBDgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/a7/e4ad4c1bde8c6ad9144199468403799cdd0e26). Skipped.
-*! A hidden file found (.git/objects/87/ff435e7003ef498860dfc30381bc07a03dabd2). Skipped.
-*! A hidden file found (.git/index). Skipped.
-* Created Application Description file /u/mdalbin/Migration-Modeler-DBEHM-work/applications/RetirementCalculator/RetirementCalculator.yaml
-** Build finished
-*******************************************************************
-Reset Application Descriptor for UNASSIGNED
-*******************************************************************
-** Recreate Application Descriptor process started.
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   application -> UNASSIGNED
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-UNASSIGNED-createApplicationDescriptor.log
-   repositoryPathsMappingFilePath -> /u/mdalbin/Migration-Modeler-DBEHM-work/repositoryPathsMapping.yaml
-** Reading the Repository Layout Mapping definition.
-* Importing existing Application Descriptor and reset source groups, dependencies and consumers.
-* Getting List of files /u/mdalbin/Migration-Modeler-DBEHM-work/applications/UNASSIGNED
-*! A hidden file found (.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16). Skipped.
-*! A hidden file found (.git/objects/a1/8654b39a98bae40a80650315882df9f3e4199c). Skipped.
-*! A hidden file found (.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53). Skipped.
-*! A hidden file found (.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec). Skipped.
-*! A hidden file found (.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5). Skipped.
-*! A hidden file found (.gitattributes). Skipped.
-*! The file (UNASSIGNED/application-conf/README.md) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88). Skipped.
-* Adding file UNASSIGNED/src/cobol/flemsmai.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/4a/58fdbf3761bccd3497ada688d343a15c33e8b0). Skipped.
-*! A hidden file found (.git/objects/a6/3ed1ad7270fd84bfb2eaa77886dc2be44d637e). Skipped.
-*! A hidden file found (.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894). Skipped.
-*! A hidden file found (.git/objects/20/e05460bad23da4b636a6d07cb06fddcf2434d0). Skipped.
-*! The file (UNASSIGNED/application-conf/reports.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/15/3ef134971f66103c8ca566b513901678804eb7). Skipped.
-*! A hidden file found (.git/objects/da/97ba1be5273d4a3265d6fdffd68c4a9cfe57f1). Skipped.
-*! The file (UNASSIGNED/application-conf/BMS.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/config). Skipped.
-*! The file (UNASSIGNED/application-conf/Cobol.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2). Skipped.
-*! A hidden file found (.git/hooks/update.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-push.sample). Skipped.
-*! The file (UNASSIGNED.yaml) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/pre-applypatch.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-commit.sample). Skipped.
-* Adding file UNASSIGNED/src/cobol/oldacdb2.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809). Skipped.
-*! The file (UNASSIGNED/application-conf/languageConfigurationMapping.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/a7/ba47b0b880d255394445b339da781f22ea4a01). Skipped.
-*! A hidden file found (.git/hooks/pre-rebase.sample). Skipped.
-*! A hidden file found (.git/hooks/commit-msg.sample). Skipped.
-*! The file (UNASSIGNED/application-conf/PLI.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (UNASSIGNED/application-conf/application.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/push-to-checkout.sample). Skipped.
-* Adding file UNASSIGNED/src/bms/epsmort.bms to Application Descriptor into source group bms.
-*! The file (UNASSIGNED/application-conf/Transfer.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/info/exclude). Skipped.
-* Adding file UNASSIGNED/src/cobol/flemssub.cbl to Application Descriptor into source group cobol.
-* Adding file UNASSIGNED/src/cobol/oldacdb1.cbl to Application Descriptor into source group cobol.
-*! A hidden file found (.git/refs/heads/main). Skipped.
-*! A hidden file found (.git/hooks/applypatch-msg.sample). Skipped.
-* Adding file UNASSIGNED/src/bms/epsmlis.bms to Application Descriptor into source group bms.
-*! A hidden file found (.git/objects/df/36b23c0258c461dbd1d9b47e9cab5fd4a1fc38). Skipped.
-*! The file (UNASSIGNED/application-conf/ACBgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/sendemail-validate.sample). Skipped.
-*! A hidden file found (.git/hooks/pre-receive.sample). Skipped.
-*! The file (UNASSIGNED/application-conf/ZunitConfig.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/prepare-commit-msg.sample). Skipped.
-*! The file (UNASSIGNED/application-conf/CRB.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc). Skipped.
-*! A hidden file found (.git/objects/e3/df501f6a5529aff989412d6c4af4b43a9897d1). Skipped.
-*! A hidden file found (.git/objects/56/62d387361e223a44d43d9f9152b94492222355). Skipped.
-*! The file (UNASSIGNED/application-conf/REXX.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd). Skipped.
-*! A hidden file found (.git/objects/b9/cb87f77cc02aa7e5537aeb97901f4a34561cc9). Skipped.
-*! The file (UNASSIGNED/application-conf/LinkEdit.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/23/8aafb5fbd27ed05fd516e566f9ba78cec0c688). Skipped.
-*! The file (UNASSIGNED/application-conf/PSBgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/post-update.sample). Skipped.
-*! A hidden file found (.git/objects/72/b5040d6cc91160887c2a6a8ee4fe37a2482b01). Skipped.
-*! A hidden file found (.git/hooks/pre-merge-commit.sample). Skipped.
-*! A hidden file found (.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c). Skipped.
-*! A hidden file found (.git/COMMIT_EDITMSG). Skipped.
-*! A hidden file found (.git/objects/a0/f87d9391c2f3626352c39999b631af70552f86). Skipped.
-*! A hidden file found (.git/HEAD). Skipped.
-*! A hidden file found (.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9). Skipped.
-*! The file (UNASSIGNED/application-conf/Easytrieve.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/hooks/fsmonitor-watchman.sample). Skipped.
-*! A hidden file found (.git/logs/refs/heads/main). Skipped.
-*! A hidden file found (.git/objects/d3/f1290864542e156079c4e165497994f1675139). Skipped.
-*! A hidden file found (.git/objects/70/8fdfbe162a13d3e1af05064b0c41a6077231a4). Skipped.
-*! A hidden file found (.git/objects/6f/3549f765104b58d630d2a4ce871fc1b9e4bb7a). Skipped.
-*! A hidden file found (.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4). Skipped.
-*! The file (UNASSIGNED/application-conf/DBDgen.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/1c/b8db96a22a09cba20ddf3d7bb37fb098963100). Skipped.
-*! A hidden file found (.git/objects/e3/34046d9c91d6a27d5b73a55fca62038df214e9). Skipped.
-*! The file (UNASSIGNED/application-conf/MFS.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/refs/tags/rel-1.0.0). Skipped.
-*! The file (UNASSIGNED/application-conf/bind.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/description). Skipped.
-*! A hidden file found (.git/objects/2a/d1a2ba3dc994398cbf308b3e6bdb30db9c1f1b). Skipped.
-*! A hidden file found (.git/logs/HEAD). Skipped.
-*! A hidden file found (.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1). Skipped.
-*! The file (UNASSIGNED/application-conf/file.properties) did not match any rule defined in the repository path mapping configuration.
-*! The file (UNASSIGNED/application-conf/Assembler.properties) did not match any rule defined in the repository path mapping configuration.
-*! A hidden file found (.git/objects/a7/e4ad4c1bde8c6ad9144199468403799cdd0e26). Skipped.
-*! A hidden file found (.git/index). Skipped.
-* Created Application Description file /u/mdalbin/Migration-Modeler-DBEHM-work/applications/UNASSIGNED/UNASSIGNED.yaml
-** Build finished
-*******************************************************************
-Assess Include files & Programs usage for CBSA
-*******************************************************************
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   metadatastore -> /u/mdalbin/Migration-Modeler-DBEHM-work/dbb-metadatastore
-   application -> CBSA
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-CBSA-assessUsage.log
-   applicationDir -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA
-   moveFiles -> false
-** Getting the list of files of 'Include File' type.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/datastr.cpy'.
-        Files depending on 'CBSA/src/copy/datastr.cpy' :
-        'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy3.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy5.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy2.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy1.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy4.cbl' in 'CBSA' application context
-        ==> 'datastr' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'datastr' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1ccm.cpy'.
-        Files depending on 'CBSA/src/copy/bnk1ccm.cpy' :
-        'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in 'CBSA' application context
-        ==> 'bnk1ccm' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'bnk1ccm' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dam.cpy'.
-        Files depending on 'CBSA/src/copy/bnk1dam.cpy' :
-        'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
-        ==> 'bnk1dam' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'bnk1dam' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/paydbcr.cpy'.
-        Files depending on 'CBSA/src/copy/paydbcr.cpy' :
-        'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
-        ==> 'paydbcr' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'paydbcr' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cam.cpy'.
-        Files depending on 'CBSA/src/copy/bnk1cam.cpy' :
-        'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
-        ==> 'bnk1cam' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'bnk1cam' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/creacc.cpy'.
-        Files depending on 'CBSA/src/copy/creacc.cpy' :
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        ==> 'creacc' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'creacc' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dcm.cpy'.
-        Files depending on 'CBSA/src/copy/bnk1dcm.cpy' :
-        'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-        ==> 'bnk1dcm' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'bnk1dcm' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/procdb2.cpy'.
-        The Include File 'procdb2' is not referenced at all.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constdb2.cpy'.
-        The Include File 'constdb2' is not referenced at all.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/abndinfo.cpy'.
-        Files depending on 'CBSA/src/copy/abndinfo.cpy' :
-        'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1cca.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy3.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/acctctrl.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy2.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnkmenu.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy1.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1cra.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy5.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/abndproc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/custctrl.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy4.cbl' in 'CBSA' application context
-        ==> 'abndinfo' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'abndinfo' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1tfm.cpy'.
-        Files depending on 'CBSA/src/copy/bnk1tfm.cpy' :
-        'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in 'CBSA' application context
-        ==> 'bnk1tfm' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'bnk1tfm' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1acc.cpy'.
-        Files depending on 'CBSA/src/copy/bnk1acc.cpy' :
-        'CBSA/CBSA/src/cobol/bnk1cca.cbl' in 'CBSA' application context
-        ==> 'bnk1acc' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'bnk1acc' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/proctran.cpy'.
-        Files depending on 'CBSA/src/copy/proctran.cpy' :
-        'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        ==> 'proctran' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'proctran' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/sortcode.cpy'.
-        Files depending on 'CBSA/src/copy/sortcode.cpy' :
-        'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy3.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy5.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/acctctrl.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy2.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/getscode.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/custctrl.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy1.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crdtagy4.cbl' in 'CBSA' application context
-        ==> 'sortcode' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'sortcode' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/acctctrl.cpy'.
-        Files depending on 'CBSA/src/copy/acctctrl.cpy' :
-        'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/acctctrl.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        ==> 'acctctrl' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'acctctrl' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/custctrl.cpy'.
-        Files depending on 'CBSA/src/copy/custctrl.cpy' :
-        'CBSA/CBSA/src/cobol/custctrl.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-        ==> 'custctrl' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'custctrl' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/xfrfun.cpy'.
-        Files depending on 'CBSA/src/copy/xfrfun.cpy' :
-        'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-        ==> 'xfrfun' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'xfrfun' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/crecust.cpy'.
-        Files depending on 'CBSA/src/copy/crecust.cpy' :
-        'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-        ==> 'crecust' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'crecust' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacccu.cpy'.
-        Files depending on 'CBSA/src/copy/inqacccu.cpy' :
-        'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1cca.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        ==> 'inqacccu' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'inqacccu' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cdm.cpy'.
-        Files depending on 'CBSA/src/copy/bnk1cdm.cpy' :
-        'CBSA/CBSA/src/cobol/bnk1cra.cbl' in 'CBSA' application context
-        ==> 'bnk1cdm' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'bnk1cdm' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getscode.cpy'.
-        Files depending on 'CBSA/src/copy/getscode.cpy' :
-        'CBSA/CBSA/src/cobol/getscode.cbl' in 'CBSA' application context
-        ==> 'getscode' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'getscode' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/consent.cpy'.
-        Files depending on 'CBSA/src/copy/consent.cpy' :
-        'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
-        ==> 'consent' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'consent' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1mai.cpy'.
-        Files depending on 'CBSA/src/copy/bnk1mai.cpy' :
-        'CBSA/CBSA/src/cobol/bnkmenu.cbl' in 'CBSA' application context
-        ==> 'bnk1mai' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'bnk1mai' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constapi.cpy'.
-        Files depending on 'CBSA/src/copy/constapi.cpy' :
-        'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/consttst.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
-        ==> 'constapi' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'constapi' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delacc.cpy'.
-        Files depending on 'CBSA/src/copy/delacc.cpy' :
-        'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-        ==> 'delacc' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'delacc' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delcus.cpy'.
-        Files depending on 'CBSA/src/copy/delcus.cpy' :
-        'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-        ==> 'delcus' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'delcus' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getcompy.cpy'.
-        Files depending on 'CBSA/src/copy/getcompy.cpy' :
-        'CBSA/CBSA/src/cobol/getcompy.cbl' in 'CBSA' application context
-        ==> 'getcompy' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'getcompy' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/accdb2.cpy'.
-        The Include File 'accdb2' is not referenced at all.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/contdb2.cpy'.
-        The Include File 'contdb2' is not referenced at all.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqcust.cpy'.
-        Files depending on 'CBSA/src/copy/inqcust.cpy' :
-        'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-        ==> 'inqcust' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'inqcust' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updacc.cpy'.
-        Files depending on 'CBSA/src/copy/updacc.cpy' :
-        'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
-        ==> 'updacc' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'updacc' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacc.cpy'.
-        Files depending on 'CBSA/src/copy/inqacc.cpy' :
-        'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
-        ==> 'inqacc' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'inqacc' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updcust.cpy'.
-        Files depending on 'CBSA/src/copy/updcust.cpy' :
-        'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-        ==> 'updcust' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'updcust' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1uam.cpy'.
-        Files depending on 'CBSA/src/copy/bnk1uam.cpy' :
-        'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
-        ==> 'bnk1uam' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'bnk1uam' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/account.cpy'.
-        Files depending on 'CBSA/src/copy/account.cpy' :
-        'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        ==> 'account' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'account' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/customer.cpy'.
-        Files depending on 'CBSA/src/copy/customer.cpy' :
-        'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-        'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-        ==> 'customer' is owned by the 'CBSA' application
-        ==> Updating usage of Include File 'customer' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/CBSA/CBSA.yaml'.
-** Getting the list of files of 'Program' type.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cac.cbl'.
-        The Program 'bnk1cac' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/proload.cbl'.
-        The Program 'proload' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dac.cbl'.
-        The Program 'bnk1dac' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpayapi.cbl'.
-        The Program 'dpayapi' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpaytst.cbl'.
-        The Program 'dpaytst' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accoffl.cbl'.
-        The Program 'accoffl' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy5.cbl'.
-        The Program 'crdtagy5' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/creacc.cbl'.
-        The Program 'creacc' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy4.cbl'.
-        The Program 'crdtagy4' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnkmenu.cbl'.
-        The Program 'bnkmenu' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bankdata.cbl'.
-        The Program 'bankdata' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/prooffl.cbl'.
-        The Program 'prooffl' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1tfn.cbl'.
-        The Program 'bnk1tfn' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cca.cbl'.
-        The Program 'bnk1cca' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dbcrfun.cbl'.
-        The Program 'dbcrfun' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/acctctrl.cbl'.
-        The Program 'acctctrl' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/custctrl.cbl'.
-        The Program 'custctrl' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/xfrfun.cbl'.
-        The Program 'xfrfun' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crecust.cbl'.
-        The Program 'crecust' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacccu.cbl'.
-        The Program 'inqacccu' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getscode.cbl'.
-        The Program 'getscode' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consent.cbl'.
-        The Program 'consent' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy3.cbl'.
-        The Program 'crdtagy3' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delacc.cbl'.
-        The Program 'delacc' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delcus.cbl'.
-        The Program 'delcus' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dcs.cbl'.
-        The Program 'bnk1dcs' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy2.cbl'.
-        The Program 'crdtagy2' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/abndproc.cbl'.
-        The Program 'abndproc' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1ccs.cbl'.
-        The Program 'bnk1ccs' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy1.cbl'.
-        The Program 'crdtagy1' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cra.cbl'.
-        The Program 'bnk1cra' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getcompy.cbl'.
-        The Program 'getcompy' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accload.cbl'.
-        The Program 'accload' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqcust.cbl'.
-        The Program 'inqcust' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1uac.cbl'.
-        The Program 'bnk1uac' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updacc.cbl'.
-        The Program 'updacc' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consttst.cbl'.
-        The Program 'consttst' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacc.cbl'.
-        The Program 'inqacc' is not called by any other program.
-** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updcust.cbl'.
-        The Program 'updcust' is not called by any other program.
-** Build finished
-*******************************************************************
-Assess Include files & Programs usage for GenApp
-*******************************************************************
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   metadatastore -> /u/mdalbin/Migration-Modeler-DBEHM-work/dbb-metadatastore
-   application -> GenApp
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-GenApp-assessUsage.log
-   applicationDir -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications/GenApp
-   moveFiles -> false
-** Getting the list of files of 'Include File' type.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgpolicy.cpy'.
-        Files depending on 'GenApp/src/copy/lgpolicy.cpy' :
-        'GenApp/GenApp/src/cobol/lgacdb02.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgacus01.cbl' in 'GenApp' application context
-        'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in 'UNASSIGNED' application context
-        'GenApp/GenApp/src/cobol/lgipol01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgacdb01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgicus01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgicdb01.cbl' in 'GenApp' application context
-        'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in 'UNASSIGNED' application context
-        ==> 'lgpolicy' referenced by multiple applications - [UNASSIGNED, GenApp]
-        ==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/GenApp/GenApp.yaml'.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmared.cpy'.
-        The Include File 'lgcmared' is not referenced at all.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmarea.cpy'.
-        Files depending on 'GenApp/src/copy/lgcmarea.cpy' :
-        'GenApp/GenApp/src/cobol/lgapol01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgtestc1.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgupvs01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgacus01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgastat1.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgdpol01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgacvs01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgipol01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgdpvs01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgtestp1.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgapvs01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgucus01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgupol01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgtestp2.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgtestp4.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgucvs01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgicus01.cbl' in 'GenApp' application context
-        'GenApp/GenApp/src/cobol/lgtestp3.cbl' in 'GenApp' application context
-        ==> 'lgcmarea' is owned by the 'GenApp' application
-        ==> Updating usage of Include File 'lgcmarea' to 'private' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/GenApp/GenApp.yaml'.
-** Getting the list of files of 'Program' type.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicus01.cbl'.
-        The Program 'lgicus01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpol01.cbl'.
-        The Program 'lgdpol01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipdb01.cbl'.
-        The Program 'lgipdb01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp3.cbl'.
-        The Program 'lgtestp3' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp4.cbl'.
-        The Program 'lgtestp4' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacvs01.cbl'.
-        The Program 'lgacvs01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgsetup.cbl'.
-        The Program 'lgsetup' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapol01.cbl'.
-        The Program 'lgapol01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipvs01.cbl'.
-        The Program 'lgipvs01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupol01.cbl'.
-        The Program 'lgupol01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb01.cbl'.
-        The Program 'lgacdb01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb02.cbl'.
-        The Program 'lgacdb02' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgstsq.cbl'.
-        The Program 'lgstsq' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp1.cbl'.
-        The Program 'lgtestp1' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp2.cbl'.
-        The Program 'lgtestp2' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpdb01.cbl'.
-        The Program 'lgdpdb01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucus01.cbl'.
-        The Program 'lgucus01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapvs01.cbl'.
-        The Program 'lgapvs01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucdb01.cbl'.
-        The Program 'lgucdb01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpvs01.cbl'.
-        The Program 'lgdpvs01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestc1.cbl'.
-        The Program 'lgtestc1' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgastat1.cbl'.
-        The Program 'lgastat1' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapdb01.cbl'.
-        The Program 'lgapdb01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicvs01.cbl'.
-        The Program 'lgicvs01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipol01.cbl'.
-        The Program 'lgipol01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacus01.cbl'.
-        The Program 'lgacus01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgwebst5.cbl'.
-        The Program 'lgwebst5' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucvs01.cbl'.
-        The Program 'lgucvs01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupdb01.cbl'.
-        The Program 'lgupdb01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicdb01.cbl'.
-        The Program 'lgicdb01' is not called by any other program.
-** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupvs01.cbl'.
-        The Program 'lgupvs01' is not called by any other program.
-** Build finished
-*******************************************************************
-Assess Include files & Programs usage for RetirementCalculator
-*******************************************************************
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   metadatastore -> /u/mdalbin/Migration-Modeler-DBEHM-work/dbb-metadatastore
-   application -> RetirementCalculator
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-RetirementCalculator-assessUsage.log
-   applicationDir -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications/RetirementCalculator
-   moveFiles -> false
-** Getting the list of files of 'Include File' type.
-** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/copy/linput.cpy'.
-        Files depending on 'RetirementCalculator/src/copy/linput.cpy' :
-        'RetirementCalculator/RetirementCalculator/src/cobol/ebud01.cbl' in 'RetirementCalculator' application context
-        'GenApp/GenApp/src/cobol/lgacdb01.cbl' in 'GenApp' application context
-        'RetirementCalculator/RetirementCalculator/src/cobol/ebud0run.cbl' in 'RetirementCalculator' application context
-        ==> 'linput' referenced by multiple applications - [GenApp, RetirementCalculator]
-        ==> Updating usage of Include File 'linput' to 'public' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/RetirementCalculator/RetirementCalculator.yaml'.
-** Getting the list of files of 'Program' type.
-** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/cobol/ebud01.cbl'.
-        The Program 'ebud01' is not called by any other program.
-** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/cobol/ebud03.cbl'.
-        The Program 'ebud03' is not called by any other program.
-** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/cobol/ebud02.cbl'.
-        Files depending on 'RetirementCalculator/src/cobol/ebud02.cbl' :
-        'CBSA/CBSA/src/cobol/abndproc.cbl' in 'CBSA' application context
-        ==> 'ebud02' is called from the 'CBSA' application
-Adding dependency to application CBSA
-        ==> Updating usage of Program 'ebud02' to 'service submodule' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/RetirementCalculator/RetirementCalculator.yaml'.
-** Analyzing impacted applications for file 'RetirementCalculator/RetirementCalculator/src/cobol/ebud0run.cbl'.
-        The Program 'ebud0run' is not called by any other program.
-** Build finished
-*******************************************************************
-Assess Include files & Programs usage for UNASSIGNED
-*******************************************************************
-** Script configuration:
-   workspace -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications
-   metadatastore -> /u/mdalbin/Migration-Modeler-DBEHM-work/dbb-metadatastore
-   application -> UNASSIGNED
-   logFile -> /u/mdalbin/Migration-Modeler-DBEHM-work/logs/3-UNASSIGNED-assessUsage.log
-   applicationDir -> /u/mdalbin/Migration-Modeler-DBEHM-work/applications/UNASSIGNED
-   moveFiles -> false
-** Getting the list of files of 'Include File' type.
-*** No source found with 'Include File' type.
-** Getting the list of files of 'Program' type.
-** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/cobol/flemssub.cbl'.
-        Files depending on 'UNASSIGNED/src/cobol/flemssub.cbl' :
-        'UNASSIGNED/UNASSIGNED/src/cobol/flemsmai.cbl' in 'UNASSIGNED' application context
-        ==> 'flemssub' is called from the 'UNASSIGNED' application
-        ==> Updating usage of Program 'flemssub' to 'internal submodule' in '/u/mdalbin/Migration-Modeler-DBEHM-work/applications/UNASSIGNED/UNASSIGNED.yaml'.
-** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl'.
-        The Program 'oldacdb2' is not called by any other program.
-** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl'.
-        The Program 'oldacdb1' is not called by any other program.
-** Analyzing impacted applications for file 'UNASSIGNED/UNASSIGNED/src/cobol/flemsmai.cbl'.
-        The Program 'flemsmai' is not called by any other program.
-** Build finished
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-scan.log
+2025-04-09 13:52:36.462 ** Script configuration:
+2025-04-09 13:52:36.505 	PIPELINE_USER -> ADO
+2025-04-09 13:52:36.508 	application -> CBSA
+2025-04-09 13:52:36.511 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 13:52:36.514 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
+2025-04-09 13:52:36.517 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-scan.log
+2025-04-09 13:52:36.520 	DBB_MODELER_METADATASTORE_TYPE -> db2
+2025-04-09 13:52:36.522 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-09 13:52:36.525 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
+2025-04-09 13:52:36.528 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-09 13:52:36.533 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
+2025-04-09 13:52:36.536 	APPLICATION_DEFAULT_BRANCH -> main
+2025-04-09 13:52:36.971 ** Scanning the files.
+2025-04-09 13:52:37.144 	Scanning file CBSA/CBSA/application-conf/DBDgen.properties 
+2025-04-09 13:52:37.282 	Scanning file CBSA/CBSA/src/cobol/getscode.cbl 
+2025-04-09 13:52:37.366 	Scanning file CBSA/CBSA/src/cobol/bnk1cca.cbl 
+2025-04-09 13:52:37.436 	Scanning file CBSA/CBSA/src/copy/contdb2.cpy 
+2025-04-09 13:52:37.444 	Scanning file CBSA/CBSA/src/cobol/updcust.cbl 
+2025-04-09 13:52:37.485 	Scanning file CBSA/CBSA/src/cobol/bnk1cac.cbl 
+2025-04-09 13:52:37.558 	Scanning file CBSA/CBSA/src/copy/bnk1dcm.cpy 
+2025-04-09 13:52:37.656 	Scanning file CBSA/CBSA/src/cobol/xfrfun.cbl 
+2025-04-09 13:52:37.742 	Scanning file CBSA/CBSA/src/copy/consent.cpy 
+2025-04-09 13:52:37.758 	Scanning file CBSA/CBSA/src/cobol/bnk1ccs.cbl 
+2025-04-09 13:52:37.827 	Scanning file CBSA/CBSA/src/copy/sortcode.cpy 
+2025-04-09 13:52:37.831 	Scanning file CBSA/CBSA/application-conf/file.properties 
+2025-04-09 13:52:37.871 	Scanning file CBSA/CBSA/src/copy/custctrl.cpy 
+2025-04-09 13:52:37.880 	Scanning file CBSA/CBSA/application-conf/PLI.properties 
+2025-04-09 13:52:37.895 	Scanning file CBSA/CBSA/src/cobol/crdtagy1.cbl 
+2025-04-09 13:52:37.917 	Scanning file CBSA/CBSA/src/cobol/bankdata.cbl 
+2025-04-09 13:52:37.996 	Scanning file CBSA/CBSA/src/cobol/crecust.cbl 
+2025-04-09 13:52:38.071 	Scanning file CBSA/CBSA/application-conf/TazUnitTest.properties 
+2025-04-09 13:52:38.083 	Scanning file CBSA/CBSA.yaml 
+2025-04-09 13:52:38.118 	Scanning file CBSA/CBSA/src/copy/delacc.cpy 
+2025-04-09 13:52:38.131 	Scanning file CBSA/CBSA/src/cobol/dpayapi.cbl 
+2025-04-09 13:52:38.155 	Scanning file CBSA/CBSA/src/copy/constapi.cpy 
+2025-04-09 13:52:38.166 	Scanning file CBSA/applicationDescriptor.yml 
+2025-04-09 13:52:38.200 	Scanning file CBSA/CBSA/src/copy/bnk1cam.cpy 
+2025-04-09 13:52:38.315 	Scanning file CBSA/CBSA/src/cobol/consttst.cbl 
+2025-04-09 13:52:38.327 	Scanning file CBSA/CBSA/src/cobol/crdtagy3.cbl 
+2025-04-09 13:52:38.346 	Scanning file CBSA/CBSA/src/cobol/delcus.cbl 
+2025-04-09 13:52:38.385 	Scanning file CBSA/CBSA/application-conf/Assembler.properties 
+2025-04-09 13:52:38.405 	Scanning file CBSA/CBSA/src/cobol/accoffl.cbl 
+2025-04-09 13:52:38.425 	Scanning file CBSA/CBSA/src/copy/updacc.cpy 
+2025-04-09 13:52:38.435 	Scanning file CBSA/.gitattributes 
+2025-04-09 13:52:38.448 	Scanning file CBSA/CBSA/src/copy/datastr.cpy 
+2025-04-09 13:52:38.453 	Scanning file CBSA/CBSA/application-conf/application.properties 
+2025-04-09 13:52:38.485 	Scanning file CBSA/CBSA/src/cobol/crdtagy4.cbl 
+2025-04-09 13:52:38.498 	Scanning file CBSA/CBSA/src/cobol/accload.cbl 
+2025-04-09 13:52:38.513 	Scanning file CBSA/CBSA/application-conf/Transfer.properties 
+2025-04-09 13:52:38.516 	Scanning file CBSA/tagging/createReleaseCandidate.yml 
+2025-04-09 13:52:38.548 	Scanning file CBSA/CBSA/src/copy/bnk1ccm.cpy 
+2025-04-09 13:52:38.594 	Scanning file CBSA/CBSA/application-conf/Cobol.properties 
+2025-04-09 13:52:38.607 	Scanning file CBSA/deployment/deployReleasePackage.yml 
+2025-04-09 13:52:38.623 	Scanning file CBSA/CBSA/application-conf/CRB.properties 
+2025-04-09 13:52:38.626 	Scanning file CBSA/CBSA/application-conf/bind.properties 
+2025-04-09 13:52:38.632 	Scanning file CBSA/CBSA/src/cobol/inqacc.cbl 
+2025-04-09 13:52:38.652 	Scanning file CBSA/CBSA/src/cobol/bnk1dac.cbl 
+2025-04-09 13:52:38.670 	Scanning file CBSA/CBSA/src/copy/customer.cpy 
+2025-04-09 13:52:38.677 	Scanning file CBSA/CBSA/src/copy/crecust.cpy 
+2025-04-09 13:52:38.683 	Scanning file CBSA/CBSA/src/copy/creacc.cpy 
+2025-04-09 13:52:38.692 	Scanning file CBSA/CBSA/application-conf/languageConfigurationMapping.properties 
+2025-04-09 13:52:38.696 	Scanning file CBSA/CBSA/application-conf/LinkEdit.properties 
+2025-04-09 13:52:38.706 	Scanning file CBSA/CBSA/src/cobol/dbcrfun.cbl 
+2025-04-09 13:52:38.724 	Scanning file CBSA/CBSA/src/copy/bnk1acc.cpy 
+2025-04-09 13:52:38.735 	Scanning file CBSA/CBSA/src/copy/bnk1uam.cpy 
+2025-04-09 13:52:38.776 	Scanning file CBSA/CBSA/src/cobol/abndproc.cbl 
+2025-04-09 13:52:38.782 	Scanning file CBSA/CBSA/src/cobol/acctctrl.cbl 
+2025-04-09 13:52:38.787 	Scanning file CBSA/CBSA/src/copy/procdb2.cpy 
+2025-04-09 13:52:38.792 	Scanning file CBSA/CBSA/application-conf/ACBgen.properties 
+2025-04-09 13:52:38.794 	Scanning file CBSA/tagging/createProductionReleaseTag.yml 
+2025-04-09 13:52:38.801 	Scanning file CBSA/CBSA/application-conf/MFS.properties 
+2025-04-09 13:52:38.806 	Scanning file CBSA/CBSA/application-conf/reports.properties 
+2025-04-09 13:52:38.816 	Scanning file CBSA/CBSA/src/copy/abndinfo.cpy 
+2025-04-09 13:52:38.821 	Scanning file CBSA/CBSA/src/copy/xfrfun.cpy 
+2025-04-09 13:52:38.824 	Scanning file CBSA/CBSA/application-conf/PSBgen.properties 
+2025-04-09 13:52:38.829 	Scanning file CBSA/CBSA/src/cobol/inqcust.cbl 
+2025-04-09 13:52:38.841 	Scanning file CBSA/CBSA/application-conf/Easytrieve.properties 
+2025-04-09 13:52:38.850 	Scanning file CBSA/CBSA/src/copy/constdb2.cpy 
+2025-04-09 13:52:38.855 	Scanning file CBSA/CBSA/src/copy/getcompy.cpy 
+2025-04-09 13:52:38.857 	Scanning file CBSA/CBSA/src/cobol/consent.cbl 
+2025-04-09 13:52:38.865 	Scanning file CBSA/CBSA/src/cobol/crdtagy2.cbl 
+2025-04-09 13:52:38.873 	Scanning file CBSA/CBSA/src/cobol/delacc.cbl 
+2025-04-09 13:52:38.884 	Scanning file CBSA/CBSA/application-conf/REXX.properties 
+2025-04-09 13:52:38.892 	Scanning file CBSA/zapp.yaml 
+2025-04-09 13:52:38.895 	Scanning file CBSA/CBSA/src/copy/inqacccu.cpy 
+2025-04-09 13:52:38.901 	Scanning file CBSA/CBSA/src/cobol/bnk1tfn.cbl 
+2025-04-09 13:52:38.914 	Scanning file CBSA/CBSA/src/cobol/proload.cbl 
+2025-04-09 13:52:38.921 	Scanning file CBSA/CBSA/src/cobol/inqacccu.cbl 
+2025-04-09 13:52:38.930 	Scanning file CBSA/CBSA/src/copy/bnk1cdm.cpy 
+2025-04-09 13:52:38.941 	Scanning file CBSA/CBSA/src/cobol/dpaytst.cbl 
+2025-04-09 13:52:38.945 	Scanning file CBSA/CBSA/src/cobol/bnk1cra.cbl 
+2025-04-09 13:52:38.956 	Scanning file CBSA/CBSA/src/cobol/prooffl.cbl 
+2025-04-09 13:52:38.962 	Scanning file CBSA/CBSA/src/cobol/updacc.cbl 
+2025-04-09 13:52:38.972 	Scanning file CBSA/CBSA/src/copy/acctctrl.cpy 
+2025-04-09 13:52:38.975 	Scanning file CBSA/CBSA/src/copy/delcus.cpy 
+2025-04-09 13:52:38.979 	Scanning file CBSA/CBSA/src/copy/proctran.cpy 
+2025-04-09 13:52:38.992 	Scanning file CBSA/CBSA/src/copy/updcust.cpy 
+2025-04-09 13:52:38.996 	Scanning file CBSA/CBSA/src/copy/getscode.cpy 
+2025-04-09 13:52:38.997 	Scanning file CBSA/CBSA/src/cobol/creacc.cbl 
+2025-04-09 13:52:39.011 	Scanning file CBSA/CBSA/src/cobol/crdtagy5.cbl 
+2025-04-09 13:52:39.018 	Scanning file CBSA/CBSA/src/copy/account.cpy 
+2025-04-09 13:52:39.024 	Scanning file CBSA/CBSA/src/copy/bnk1dam.cpy 
+2025-04-09 13:52:39.050 	Scanning file CBSA/CBSA/src/copy/paydbcr.cpy 
+2025-04-09 13:52:39.053 	Scanning file CBSA/CBSA/src/cobol/getcompy.cbl 
+2025-04-09 13:52:39.056 	Scanning file CBSA/CBSA/src/cobol/custctrl.cbl 
+2025-04-09 13:52:39.060 	Scanning file CBSA/CBSA/src/copy/accdb2.cpy 
+2025-04-09 13:52:39.063 	Scanning file CBSA/CBSA/application-conf/BMS.properties 
+2025-04-09 13:52:39.068 	Scanning file CBSA/CBSA/src/copy/inqacc.cpy 
+2025-04-09 13:52:39.072 	Scanning file CBSA/CBSA/src/copy/bnk1mai.cpy 
+2025-04-09 13:52:39.079 	Scanning file CBSA/CBSA/src/cobol/bnk1dcs.cbl 
+2025-04-09 13:52:39.096 	Scanning file CBSA/azure-pipelines.yml 
+2025-04-09 13:52:39.111 	Scanning file CBSA/CBSA/src/cobol/bnk1uac.cbl 
+2025-04-09 13:52:39.124 	Scanning file CBSA/CBSA/src/cobol/bnkmenu.cbl 
+2025-04-09 13:52:39.136 	Scanning file CBSA/CBSA/application-conf/README.md 
+2025-04-09 13:52:39.198 	Scanning file CBSA/CBSA/src/copy/inqcust.cpy 
+2025-04-09 13:52:39.201 	Scanning file CBSA/CBSA/src/copy/bnk1tfm.cpy 
+2025-04-09 13:52:39.217 ** Storing results in the 'CBSA-main' DBB Collection.
+2025-04-09 13:52:41.165 ** Setting collection owner to ADO
+[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/recreateApplicationDescriptor.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-createApplicationDescriptor.log
+2025-04-09 14:03:27.588 ** Script configuration:
+2025-04-09 14:03:27.617 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/repositoryPathsMapping.yaml
+2025-04-09 14:03:27.620 	application -> CBSA
+2025-04-09 14:03:27.624 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 14:03:27.628 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
+2025-04-09 14:03:27.631 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-createApplicationDescriptor.log
+2025-04-09 14:03:27.634 ** Reading the Repository Layout Mapping definition.
+2025-04-09 14:03:27.864 ** Importing existing Application Descriptor and reset source groups, dependencies and consumers.
+2025-04-09 14:03:27.906 ** Getting List of files /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA
+2025-04-09 14:03:28.112 *! [WARNING] '.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16' is a hidden file. Skipped.
+2025-04-09 14:03:28.113 *! [WARNING] '.git/objects/46/3a5519cbcb1b8db463d628173cafc3751fb323' is a hidden file. Skipped.
+2025-04-09 14:03:28.115 *! [WARNING] '.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5' is a hidden file. Skipped.
+2025-04-09 14:03:28.116 *! [WARNING] '.git/objects/c2/1945e6c7fac12410c0d444fc1956f6b9ef090a' is a hidden file. Skipped.
+2025-04-09 14:03:28.164 *! [WARNING] 'CBSA/application-conf/BMS.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.164 *! [WARNING] '.git/objects/12/c04ff4762844463e6e8d5b3a92c150fbb3c6ce' is a hidden file. Skipped.
+2025-04-09 14:03:28.168 ** Adding 'CBSA/src/cobol/delacc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.183 *! [WARNING] '.git/objects/2b/b5e69e60b48517664e8bc178ce5047d2dc6239' is a hidden file. Skipped.
+2025-04-09 14:03:28.183 *! [WARNING] '.git/objects/29/ef69588ebc7fb77045dc42407df52eb89b771b' is a hidden file. Skipped.
+2025-04-09 14:03:28.184 *! [WARNING] '.git/objects/e0/05e38176803fd06ebf016edf56c6347f7ebcca' is a hidden file. Skipped.
+2025-04-09 14:03:28.185 ** Adding 'CBSA/src/cobol/bnk1cac.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.189 *! [WARNING] '.git/objects/71/95a42c31f86e0f70315660d9da6d62f9769d1e' is a hidden file. Skipped.
+2025-04-09 14:03:28.189 *! [WARNING] '.git/objects/71/aba7981c900888d8f74ef1f3aa3e1efe91d405' is a hidden file. Skipped.
+2025-04-09 14:03:28.190 *! [WARNING] 'CBSA/application-conf/TazUnitTest.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.190 *! [WARNING] '.git/objects/b0/2d733e80ba87c613c4becba1438cfea345bb63' is a hidden file. Skipped.
+2025-04-09 14:03:28.192 ** Adding 'CBSA/src/cobol/creacc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.194 ** Adding 'CBSA/src/cobol/bnkmenu.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.196 *! [WARNING] 'CBSA/application-conf/Transfer.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.196 *! [WARNING] '.git/objects/e4/a208249eb9f188dac631a80aa69560a1b5c812' is a hidden file. Skipped.
+2025-04-09 14:03:28.197 *! [WARNING] '.git/objects/bb/6a183c5808c83f435ffe292d40ce3c1e78182e' is a hidden file. Skipped.
+2025-04-09 14:03:28.198 ** Adding 'CBSA/src/copy/datastr.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.199 *! [WARNING] '.git/objects/30/ec95859415287a39af962b759792828e403684' is a hidden file. Skipped.
+2025-04-09 14:03:28.199 *! [WARNING] '.git/objects/d3/e104ac3f1682cf5c81e6a4df77a916b5601adb' is a hidden file. Skipped.
+2025-04-09 14:03:28.199 *! [WARNING] '.git/hooks/prepare-commit-msg.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.200 ** Adding 'CBSA/src/copy/bnk1mai.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.201 *! [WARNING] '.git/objects/c8/6c28e6b894571ccad1c6beaa040d1b916a1a77' is a hidden file. Skipped.
+2025-04-09 14:03:28.201 *! [WARNING] '.git/objects/b6/deb95fdbfe6a2f08acb265c23cccc973e8b031' is a hidden file. Skipped.
+2025-04-09 14:03:28.203 *! [WARNING] 'CBSA/application-conf/PSBgen.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.203 *! [WARNING] '.git/objects/35/1b0c08fb96d69ec8f2e5c4a71121da780037dd' is a hidden file. Skipped.
+2025-04-09 14:03:28.203 *! [WARNING] '.git/objects/1d/7f5fcdba85d4c4d0bc6ab0bab4b287e69242db' is a hidden file. Skipped.
+2025-04-09 14:03:28.203 *! [WARNING] '.git/objects/de/ce936b7a48fba884a6d376305fbce1a2fc99e5' is a hidden file. Skipped.
+2025-04-09 14:03:28.204 *! [WARNING] '.git/objects/c8/82661ae39a9a8ed30486a8433c1b186cbc5159' is a hidden file. Skipped.
+2025-04-09 14:03:28.204 ** Adding 'CBSA/src/cobol/crdtagy3.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.206 *! [WARNING] '.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9' is a hidden file. Skipped.
+2025-04-09 14:03:28.206 *! [WARNING] '.git/objects/7e/0340c01a352c55eaf478a5c7dbe8c290e50728' is a hidden file. Skipped.
+2025-04-09 14:03:28.206 *! [WARNING] '.git/objects/94/08dd2f2709f23766aa4d1ef89e6e175974b396' is a hidden file. Skipped.
+2025-04-09 14:03:28.206 *! [WARNING] '.git/objects/97/0f6a926b868353d6a285d20b07d29abfba4292' is a hidden file. Skipped.
+2025-04-09 14:03:28.207 ** Adding 'CBSA/src/cobol/bnk1uac.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.210 *! [WARNING] '.git/objects/d0/c5bf02bc846be691c4ea906c10118719d3bed3' is a hidden file. Skipped.
+2025-04-09 14:03:28.210 *! [WARNING] '.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4' is a hidden file. Skipped.
+2025-04-09 14:03:28.210 *! [WARNING] '.git/objects/ff/86efc8e05a7fc5e66defbf50820da4ab3bad95' is a hidden file. Skipped.
+2025-04-09 14:03:28.211 *! [WARNING] '.git/objects/ab/80f99d7e1e2cf005e04f11f43b710b6cfc765c' is a hidden file. Skipped.
+2025-04-09 14:03:28.211 *! [WARNING] '.git/objects/fb/741632c192243a1f4e7799371635f854bd40db' is a hidden file. Skipped.
+2025-04-09 14:03:28.211 *! [WARNING] '.git/objects/b6/97ad559100281f7737764166ced34b4398ae0d' is a hidden file. Skipped.
+2025-04-09 14:03:28.212 ** Adding 'CBSA/src/cobol/inqcust.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.213 *! [WARNING] '.git/objects/c0/6aacd0c94d044b5fb1d2cb22bc796b946bcf6f' is a hidden file. Skipped.
+2025-04-09 14:03:28.213 *! [WARNING] '.git/logs/HEAD' is a hidden file. Skipped.
+2025-04-09 14:03:28.214 *! [WARNING] 'CBSA/application-conf/PLI.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.214 *! [WARNING] '.git/objects/27/0fd7eb4a2109c25b62d78595d8ddd044de4983' is a hidden file. Skipped.
+2025-04-09 14:03:28.214 *! [WARNING] '.git/objects/6e/ba9fb7a278153965978bde08e8b79d7549a6e5' is a hidden file. Skipped.
+2025-04-09 14:03:28.214 *! [WARNING] '.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53' is a hidden file. Skipped.
+2025-04-09 14:03:28.215 ** Adding 'CBSA/src/copy/getcompy.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.216 *! [WARNING] '.git/objects/b9/91d0ce37c9ca4668b3329286418980cdb49f42' is a hidden file. Skipped.
+2025-04-09 14:03:28.217 ** Adding 'CBSA/src/copy/updacc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.218 *! [WARNING] 'CBSA/application-conf/README.md' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.219 ** Adding 'CBSA/src/cobol/bankdata.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.220 ** Adding 'CBSA/src/cobol/dpaytst.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.222 ** Adding 'CBSA/src/cobol/prooffl.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.223 *! [WARNING] '.git/config' is a hidden file. Skipped.
+2025-04-09 14:03:28.224 *! [WARNING] '.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2' is a hidden file. Skipped.
+2025-04-09 14:03:28.224 *! [WARNING] 'deployment/deployReleasePackage.yml' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.224 *! [WARNING] '.git/objects/58/fd7a3493875afbad7928a3b9156e5a83894735' is a hidden file. Skipped.
+2025-04-09 14:03:28.225 ** Adding 'CBSA/src/copy/inqcust.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.226 *! [WARNING] '.git/hooks/pre-push.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.226 *! [WARNING] '.git/objects/5e/014abb1c1c7b87e5b7487894a0dd577ecd6903' is a hidden file. Skipped.
+2025-04-09 14:03:28.227 ** Adding 'CBSA/src/copy/accdb2.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.229 ** Adding 'CBSA/src/copy/abndinfo.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.230 *! [WARNING] '.git/objects/51/51bf1873f82fc708b223aaecccf9c628c35b1b' is a hidden file. Skipped.
+2025-04-09 14:03:28.230 *! [WARNING] '.git/objects/37/1a19b8d93fa4d1f491a4174865ff3b5dc57b6f' is a hidden file. Skipped.
+2025-04-09 14:03:28.230 *! [WARNING] '.git/objects/1a/6cc27fb0468b5f7c2a6608e4b3e64009467e22' is a hidden file. Skipped.
+2025-04-09 14:03:28.231 *! [WARNING] '.git/hooks/pre-rebase.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.231 *! [WARNING] '.git/info/exclude' is a hidden file. Skipped.
+2025-04-09 14:03:28.232 ** Adding 'CBSA/src/cobol/bnk1dac.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.233 *! [WARNING] 'CBSA/application-conf/ACBgen.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.233 *! [WARNING] '.git/hooks/applypatch-msg.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.234 *! [WARNING] 'CBSA/application-conf/Assembler.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.234 *! [WARNING] '.git/objects/2f/bc2fdb9097a629e3d0d899d0d4912a5ce4a678' is a hidden file. Skipped.
+2025-04-09 14:03:28.234 *! [WARNING] '.git/objects/57/a7db352970bbfae82cf24c95aa6cecc159b0e0' is a hidden file. Skipped.
+2025-04-09 14:03:28.235 ** Adding 'CBSA/src/cobol/getcompy.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.236 ** Adding 'CBSA/src/cobol/crecust.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.238 *! [WARNING] '.git/objects/f7/fbe29970a3bd547fcfd6e82df58e45190d46a8' is a hidden file. Skipped.
+2025-04-09 14:03:28.238 ** Adding 'applicationDescriptor.yml' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.239 *! [WARNING] '.git/hooks/pre-merge-commit.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.239 *! [WARNING] '.git/objects/d9/c46c2b0b76ac752b67f451dd45995cd5bc96d1' is a hidden file. Skipped.
+2025-04-09 14:03:28.239 *! [WARNING] '.git/objects/56/5ded23ee5a835cf93564fb69486880ef001304' is a hidden file. Skipped.
+2025-04-09 14:03:28.240 *! [WARNING] '.git/objects/c9/5be47dd3ede400e93ba367b5f5ac433a714d5a' is a hidden file. Skipped.
+2025-04-09 14:03:28.240 *! [WARNING] '.git/HEAD' is a hidden file. Skipped.
+2025-04-09 14:03:28.241 ** Adding 'CBSA/src/copy/bnk1dcm.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.242 ** Adding 'CBSA/src/cobol/crdtagy4.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.243 ** Adding 'CBSA/src/copy/bnk1acc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.245 ** Adding 'CBSA/src/copy/inqacc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.246 ** Adding 'azure-pipelines.yml' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.248 ** Adding 'CBSA/src/cobol/consttst.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.249 ** Adding 'CBSA/src/copy/crecust.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.250 *! [WARNING] '.git/objects/d4/c22ba5bfb0742e2395037184f5fc4174577a8c' is a hidden file. Skipped.
+2025-04-09 14:03:28.250 *! [WARNING] '.git/objects/63/a545e907d8944efa88a4cc3619141468ee9446' is a hidden file. Skipped.
+2025-04-09 14:03:28.250 *! [WARNING] '.git/objects/d3/7d2d4704218babc4ab9871cc3ea1f5271dc80d' is a hidden file. Skipped.
+2025-04-09 14:03:28.251 *! [WARNING] '.git/objects/89/7bf2e97ca69ede559524c31bae8d639ae1b81d' is a hidden file. Skipped.
+2025-04-09 14:03:28.251 ** Adding 'CBSA/src/cobol/bnk1cra.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.253 ** Adding 'CBSA/src/cobol/delcus.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.254 *! [WARNING] '.git/refs/tags/rel-1.4.0' is a hidden file. Skipped.
+2025-04-09 14:03:28.255 *! [WARNING] '.git/description' is a hidden file. Skipped.
+2025-04-09 14:03:28.255 *! [WARNING] '.git/objects/d9/7584fe7d7c5e0120ab762194b119287f6bc91d' is a hidden file. Skipped.
+2025-04-09 14:03:28.256 ** Adding 'CBSA/src/copy/bnk1ccm.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.257 ** Adding 'CBSA/src/cobol/accload.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.258 *! [WARNING] '.git/objects/7e/b890a9162ae1995c768e29ce41093b6189ca19' is a hidden file. Skipped.
+2025-04-09 14:03:28.258 *! [WARNING] '.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec' is a hidden file. Skipped.
+2025-04-09 14:03:28.258 *! [WARNING] '.gitattributes' is a hidden file. Skipped.
+2025-04-09 14:03:28.258 *! [WARNING] '.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88' is a hidden file. Skipped.
+2025-04-09 14:03:28.259 ** Adding 'CBSA/src/cobol/bnk1ccs.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.260 *! [WARNING] '.git/objects/41/c1fc24c5c355423d1cdad4477113b6c6f0945f' is a hidden file. Skipped.
+2025-04-09 14:03:28.261 ** Adding 'CBSA/src/copy/updcust.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.262 ** Adding 'CBSA/src/copy/bnk1uam.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.263 ** Adding 'CBSA/src/copy/delacc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.264 ** Adding 'CBSA/src/cobol/crdtagy5.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.265 ** Adding 'CBSA/src/cobol/bnk1cca.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.266 *! [WARNING] '.git/objects/9d/8cdd3cfd001f9ff47534b9a741f61f757cc90c' is a hidden file. Skipped.
+2025-04-09 14:03:28.266 *! [WARNING] '.git/objects/04/a5b554ae15152a060f462fe894e09e7188e394' is a hidden file. Skipped.
+2025-04-09 14:03:28.266 *! [WARNING] '.git/objects/f5/0cc01256b3b2f272a59bed37caeb1a61f5ba4c' is a hidden file. Skipped.
+2025-04-09 14:03:28.266 *! [WARNING] '.git/hooks/push-to-checkout.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.267 *! [WARNING] 'CBSA/application-conf/CRB.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.268 ** Adding 'CBSA/src/copy/customer.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.268 *! [WARNING] '.git/logs/refs/heads/rel-1.4.0' is a hidden file. Skipped.
+2025-04-09 14:03:28.268 *! [WARNING] '.git/refs/heads/main' is a hidden file. Skipped.
+2025-04-09 14:03:28.269 *! [WARNING] '.git/objects/d3/70465392addcb5a86920019826deec0e531a77' is a hidden file. Skipped.
+2025-04-09 14:03:28.269 *! [WARNING] '.git/objects/55/57d232d69aa70962e5580123403d3662157e2a' is a hidden file. Skipped.
+2025-04-09 14:03:28.269 ** Adding 'CBSA/src/copy/sortcode.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.271 ** Adding 'CBSA/src/cobol/custctrl.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.271 *! [WARNING] '.git/refs/heads/rel-1.4.0' is a hidden file. Skipped.
+2025-04-09 14:03:28.272 ** Adding 'CBSA/src/copy/custctrl.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.273 *! [WARNING] 'CBSA/application-conf/Easytrieve.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.273 *! [WARNING] '.git/objects/9c/3aec3ef67cd80287d375f825fe1b7abfb8be4d' is a hidden file. Skipped.
+2025-04-09 14:03:28.274 ** Adding 'CBSA/src/copy/bnk1cdm.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.275 *! [WARNING] 'tagging/createReleaseCandidate.yml' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.275 *! [WARNING] '.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc' is a hidden file. Skipped.
+2025-04-09 14:03:28.275 *! [WARNING] '.git/objects/bc/ecf21e6187f0d2dba5c129c53954a8363f0d0e' is a hidden file. Skipped.
+2025-04-09 14:03:28.276 ** Adding 'zapp.yaml' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.277 *! [WARNING] '.git/objects/e2/f2519db2ebf10fdce9c1d18535aa730e9cc942' is a hidden file. Skipped.
+2025-04-09 14:03:28.277 *! [WARNING] '.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd' is a hidden file. Skipped.
+2025-04-09 14:03:28.277 *! [WARNING] '.git/objects/56/364507a259c6881a4e9a961213a9aa5a6405e7' is a hidden file. Skipped.
+2025-04-09 14:03:28.278 *! [WARNING] '.git/objects/14/833274735adb257e1062eaa63d495febe9e962' is a hidden file. Skipped.
+2025-04-09 14:03:28.278 *! [WARNING] 'CBSA.yaml' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.279 ** Adding 'CBSA/src/cobol/abndproc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.280 *! [WARNING] '.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c' is a hidden file. Skipped.
+2025-04-09 14:03:28.280 *! [WARNING] 'CBSA/application-conf/LinkEdit.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.281 ** Adding 'CBSA/src/copy/proctran.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.282 *! [WARNING] '.git/objects/02/20c1299e5ed367b9d602d8a11c9909a081c026' is a hidden file. Skipped.
+2025-04-09 14:03:28.282 *! [WARNING] '.git/objects/b1/8656b5144b139b6a3b4515d4883a5d0e9ee2ce' is a hidden file. Skipped.
+2025-04-09 14:03:28.282 *! [WARNING] '.git/objects/91/4e9ff51f5d103fd6d253b345de9ae1c3cd34d4' is a hidden file. Skipped.
+2025-04-09 14:03:28.282 ** Adding 'CBSA/src/copy/xfrfun.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.283 *! [WARNING] '.git/logs/refs/heads/main' is a hidden file. Skipped.
+2025-04-09 14:03:28.284 *! [WARNING] 'CBSA/application-conf/bind.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.284 ** Adding 'CBSA/src/cobol/bnk1dcs.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.285 ** Adding 'CBSA/src/cobol/updcust.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.286 *! [WARNING] '.git/objects/b4/de9dd27006fd84de0770e4a4fc0c9a0393e2f0' is a hidden file. Skipped.
+2025-04-09 14:03:28.287 ** Adding 'CBSA/src/cobol/acctctrl.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.288 ** Adding 'CBSA/src/copy/bnk1tfm.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.289 *! [WARNING] '.git/objects/f4/33cbfff90207efad95d399c2632acc1684f942' is a hidden file. Skipped.
+2025-04-09 14:03:28.289 ** Adding 'CBSA/src/copy/acctctrl.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.290 *! [WARNING] '.git/objects/57/9fef02baff9b735fc28867aef660f088b64710' is a hidden file. Skipped.
+2025-04-09 14:03:28.290 *! [WARNING] 'CBSA/application-conf/MFS.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.291 ** Adding 'CBSA/src/cobol/crdtagy1.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.292 *! [WARNING] '.git/objects/b1/7e73e90052cbe5144318dc9cf00cdf04589042' is a hidden file. Skipped.
+2025-04-09 14:03:28.292 ** Adding 'CBSA/src/copy/paydbcr.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.293 *! [WARNING] '.git/objects/01/d96e12b164d97cc7f2c72489c8cd3205a8b69f' is a hidden file. Skipped.
+2025-04-09 14:03:28.293 *! [WARNING] '.git/objects/b0/aed0954293fc2763f3c02ec65cbaa53603015d' is a hidden file. Skipped.
+2025-04-09 14:03:28.294 *! [WARNING] 'tagging/createProductionReleaseTag.yml' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.294 *! [WARNING] '.git/objects/e4/96c6a4e7a960de791e1fd97a02ae6614769936' is a hidden file. Skipped.
+2025-04-09 14:03:28.294 *! [WARNING] '.git/objects/aa/3a09c5ec672fef16b4d689127e80ca5ce595ce' is a hidden file. Skipped.
+2025-04-09 14:03:28.295 ** Adding 'CBSA/src/copy/account.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.296 *! [WARNING] '.git/objects/fa/3508648b495e92bc320f8110bfd3d78a4d5a3a' is a hidden file. Skipped.
+2025-04-09 14:03:28.296 *! [WARNING] '.git/objects/56/eec383e79ddc7d93386976ba31b6f06180c1a0' is a hidden file. Skipped.
+2025-04-09 14:03:28.297 ** Adding 'CBSA/src/copy/creacc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.298 ** Adding 'CBSA/src/copy/getscode.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.299 ** Adding 'CBSA/src/cobol/getscode.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.300 ** Adding 'CBSA/src/copy/bnk1dam.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.301 *! [WARNING] '.git/index' is a hidden file. Skipped.
+2025-04-09 14:03:28.301 ** Adding 'CBSA/src/cobol/bnk1tfn.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.302 ** Adding 'CBSA/src/cobol/proload.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.303 *! [WARNING] '.git/objects/a1/4465df829b167bbb644dffc1027434adbf3c32' is a hidden file. Skipped.
+2025-04-09 14:03:28.304 ** Adding 'CBSA/src/copy/bnk1cam.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.305 *! [WARNING] '.git/objects/04/9cc7eb352d85ce38026a8f3029f22e711b8b9a' is a hidden file. Skipped.
+2025-04-09 14:03:28.305 *! [WARNING] '.git/objects/8e/b541c571cd537e557c27e56eb472e9cafb0308' is a hidden file. Skipped.
+2025-04-09 14:03:28.305 *! [WARNING] '.git/objects/47/f9f61e0fdb34ee5ebbf7fc11529e50b079a04b' is a hidden file. Skipped.
+2025-04-09 14:03:28.306 ** Adding 'CBSA/src/copy/delcus.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.306 *! [WARNING] '.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894' is a hidden file. Skipped.
+2025-04-09 14:03:28.307 ** Adding 'CBSA/src/cobol/dbcrfun.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.308 *! [WARNING] '.git/objects/94/7a658dffaf7b8a8a1348ad9dabbdca1f87fbb0' is a hidden file. Skipped.
+2025-04-09 14:03:28.308 ** Adding 'CBSA/src/cobol/updacc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.309 ** Adding 'CBSA/src/cobol/consent.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.310 *! [WARNING] '.git/objects/33/44cbdf7b601794f0ef2341235f09f126fe4562' is a hidden file. Skipped.
+2025-04-09 14:03:28.310 *! [WARNING] '.git/hooks/update.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.311 ** Adding 'CBSA/src/copy/inqacccu.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.312 *! [WARNING] '.git/hooks/pre-applypatch.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.312 *! [WARNING] '.git/hooks/pre-commit.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.312 *! [WARNING] '.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809' is a hidden file. Skipped.
+2025-04-09 14:03:28.313 *! [WARNING] 'CBSA/application-conf/application.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.313 *! [WARNING] 'CBSA/application-conf/file.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.314 ** Adding 'CBSA/src/cobol/xfrfun.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.315 *! [WARNING] '.git/hooks/commit-msg.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.315 *! [WARNING] '.git/objects/cb/75236314e2fba04aca378ad29061942e6900a5' is a hidden file. Skipped.
+2025-04-09 14:03:28.315 *! [WARNING] '.git/objects/b8/33431450f198af575ebdf622a8144df7c0962a' is a hidden file. Skipped.
+2025-04-09 14:03:28.315 ** Adding 'CBSA/src/copy/consent.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/objects/01/61b1e6bcf09c021887fb147e8223ca06b5cd38' is a hidden file. Skipped.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/objects/ff/7f1a74d6d78a6d35e4559b32cdff813a5fb12e' is a hidden file. Skipped.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/objects/21/b32b59cad6603ee75673876be89e6c04c4c122' is a hidden file. Skipped.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/hooks/sendemail-validate.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/hooks/pre-receive.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.318 ** Adding 'CBSA/src/cobol/inqacccu.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.319 ** Adding 'CBSA/src/cobol/crdtagy2.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.320 ** Adding 'CBSA/src/copy/constapi.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.321 ** Adding 'CBSA/src/copy/constdb2.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.322 *! [WARNING] '.git/hooks/post-update.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.322 *! [WARNING] '.git/objects/a5/3363cedacbac465382e28beb8d10c843b769cb' is a hidden file. Skipped.
+2025-04-09 14:03:28.322 *! [WARNING] '.git/COMMIT_EDITMSG' is a hidden file. Skipped.
+2025-04-09 14:03:28.322 *! [WARNING] '.git/objects/33/4b8f087b5e1bd5c05036a920378e8e1f3c0276' is a hidden file. Skipped.
+2025-04-09 14:03:28.323 ** Adding 'CBSA/src/cobol/inqacc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.324 *! [WARNING] '.git/objects/b5/6eafbe98c4e46afb0c8c60ee97cf437292a68c' is a hidden file. Skipped.
+2025-04-09 14:03:28.324 ** Adding 'CBSA/src/copy/procdb2.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.325 *! [WARNING] '.git/hooks/fsmonitor-watchman.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.325 *! [WARNING] '.git/objects/6f/3549f765104b58d630d2a4ce871fc1b9e4bb7a' is a hidden file. Skipped.
+2025-04-09 14:03:28.325 *! [WARNING] '.git/objects/f5/5399eea902ae9bc01584c1e3bc71f4db98eef6' is a hidden file. Skipped.
+2025-04-09 14:03:28.326 *! [WARNING] 'CBSA/application-conf/Cobol.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.326 *! [WARNING] '.git/objects/a6/ee2080f7c783724cafee89a81049a3f2893e75' is a hidden file. Skipped.
+2025-04-09 14:03:28.326 *! [WARNING] '.git/objects/34/390dbd6e6f281f6101d179897949a51393c264' is a hidden file. Skipped.
+2025-04-09 14:03:28.326 *! [WARNING] 'CBSA/application-conf/REXX.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.327 *! [WARNING] 'CBSA/application-conf/reports.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.327 *! [WARNING] 'CBSA/application-conf/languageConfigurationMapping.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.327 *! [WARNING] '.git/objects/02/166f4a72bce317273224f2a3d700916aca7d37' is a hidden file. Skipped.
+2025-04-09 14:03:28.328 *! [WARNING] '.git/objects/c2/432e4bf3b85f883fdcaff1adb419b1ebf3fd18' is a hidden file. Skipped.
+2025-04-09 14:03:28.328 *! [WARNING] '.git/objects/30/7bdf0f7c3097788578484f004d2a0fa05d9271' is a hidden file. Skipped.
+2025-04-09 14:03:28.328 *! [WARNING] '.git/objects/66/afa88844c422af69da0d35243993d4e50dac3c' is a hidden file. Skipped.
+2025-04-09 14:03:28.328 ** Adding 'CBSA/src/cobol/accoffl.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.329 *! [WARNING] '.git/objects/31/52dd3e66ff2ee3aa671a03aa7e3cb41ca864a5' is a hidden file. Skipped.
+2025-04-09 14:03:28.330 ** Adding 'CBSA/src/cobol/dpayapi.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.331 *! [WARNING] '.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1' is a hidden file. Skipped.
+2025-04-09 14:03:28.331 *! [WARNING] '.git/objects/b4/79ed3b38c3f9680850dc34a3c9d10e24ddb52f' is a hidden file. Skipped.
+2025-04-09 14:03:28.331 ** Adding 'CBSA/src/copy/contdb2.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.332 *! [WARNING] '.git/objects/b6/f7290235118fd79e38875919d38e2885dc2335' is a hidden file. Skipped.
+2025-04-09 14:03:28.333 *! [WARNING] 'CBSA/application-conf/DBDgen.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.453 ** Created Application Description file '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA.yaml'
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--moveFiles 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-assessUsage.log
+2025-04-09 14:03:55.371 ** Script configuration:
+2025-04-09 14:03:55.413 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs
+2025-04-09 14:03:55.416 	application -> CBSA
+2025-04-09 14:03:55.419 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 14:03:55.423 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
+2025-04-09 14:03:55.427 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-assessUsage.log
+2025-04-09 14:03:55.430 	DBB_MODELER_METADATASTORE_TYPE -> db2
+2025-04-09 14:03:55.433 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-09 14:03:55.435 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
+2025-04-09 14:03:55.438 	moveFiles -> true
+2025-04-09 14:03:55.441 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-09 14:03:55.444 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
+2025-04-09 14:03:56.121 ** Getting the list of files of 'Include File' type.
+2025-04-09 14:03:56.197 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/datastr.cpy'.
+2025-04-09 14:03:56.711 	Files depending on 'CBSA/src/copy/datastr.cpy' :
+2025-04-09 14:03:56.720 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.721 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.722 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.723 	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.724 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.724 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.725 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.726 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.727 	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.728 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.729 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.730 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.730 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.731 	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.732 	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.733 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.734 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.735 	==> 'datastr' is owned by the 'CBSA' application
+2025-04-09 14:03:56.747 	==> Updating usage of Include File 'datastr' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:56.862 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1ccm.cpy'.
+2025-04-09 14:03:57.058 	Files depending on 'CBSA/src/copy/bnk1ccm.cpy' :
+2025-04-09 14:03:57.058 	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.058 	==> 'bnk1ccm' is owned by the 'CBSA' application
+2025-04-09 14:03:57.059 	==> Updating usage of Include File 'bnk1ccm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.107 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dam.cpy'.
+2025-04-09 14:03:57.197 	Files depending on 'CBSA/src/copy/bnk1dam.cpy' :
+2025-04-09 14:03:57.197 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.197 	==> 'bnk1dam' is owned by the 'CBSA' application
+2025-04-09 14:03:57.198 	==> Updating usage of Include File 'bnk1dam' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.238 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/paydbcr.cpy'.
+2025-04-09 14:03:57.311 	Files depending on 'CBSA/src/copy/paydbcr.cpy' :
+2025-04-09 14:03:57.311 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.311 	==> 'paydbcr' is owned by the 'CBSA' application
+2025-04-09 14:03:57.313 	==> Updating usage of Include File 'paydbcr' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.346 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cam.cpy'.
+2025-04-09 14:03:57.417 	Files depending on 'CBSA/src/copy/bnk1cam.cpy' :
+2025-04-09 14:03:57.417 	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.417 	==> 'bnk1cam' is owned by the 'CBSA' application
+2025-04-09 14:03:57.418 	==> Updating usage of Include File 'bnk1cam' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.448 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/creacc.cpy'.
+2025-04-09 14:03:57.509 	Files depending on 'CBSA/src/copy/creacc.cpy' :
+2025-04-09 14:03:57.510 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.510 	==> 'creacc' is owned by the 'CBSA' application
+2025-04-09 14:03:57.511 	==> Updating usage of Include File 'creacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.539 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dcm.cpy'.
+2025-04-09 14:03:57.602 	Files depending on 'CBSA/src/copy/bnk1dcm.cpy' :
+2025-04-09 14:03:57.602 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.602 	==> 'bnk1dcm' is owned by the 'CBSA' application
+2025-04-09 14:03:57.603 	==> Updating usage of Include File 'bnk1dcm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.631 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/procdb2.cpy'.
+2025-04-09 14:03:57.685 	The Include File 'procdb2' is not referenced at all.
+2025-04-09 14:03:57.715 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constdb2.cpy'.
+2025-04-09 14:03:57.765 	The Include File 'constdb2' is not referenced at all.
+2025-04-09 14:03:57.791 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/abndinfo.cpy'.
+2025-04-09 14:03:57.899 	Files depending on 'CBSA/src/copy/abndinfo.cpy' :
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/custctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/acctctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/abndproc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/bnkmenu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.903 	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.903 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.903 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.903 	==> 'abndinfo' is owned by the 'CBSA' application
+2025-04-09 14:03:57.904 	==> Updating usage of Include File 'abndinfo' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.931 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1tfm.cpy'.
+2025-04-09 14:03:57.989 	Files depending on 'CBSA/src/copy/bnk1tfm.cpy' :
+2025-04-09 14:03:57.989 	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.989 	==> 'bnk1tfm' is owned by the 'CBSA' application
+2025-04-09 14:03:57.990 	==> Updating usage of Include File 'bnk1tfm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.016 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1acc.cpy'.
+2025-04-09 14:03:58.078 	Files depending on 'CBSA/src/copy/bnk1acc.cpy' :
+2025-04-09 14:03:58.079 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.079 	==> 'bnk1acc' is owned by the 'CBSA' application
+2025-04-09 14:03:58.080 	==> Updating usage of Include File 'bnk1acc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.106 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/proctran.cpy'.
+2025-04-09 14:03:58.176 	Files depending on 'CBSA/src/copy/proctran.cpy' :
+2025-04-09 14:03:58.176 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.176 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	==> 'proctran' is owned by the 'CBSA' application
+2025-04-09 14:03:58.178 	==> Updating usage of Include File 'proctran' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.203 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/sortcode.cpy'.
+2025-04-09 14:03:58.285 	Files depending on 'CBSA/src/copy/sortcode.cpy' :
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/custctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/getscode.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/acctctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	==> 'sortcode' is owned by the 'CBSA' application
+2025-04-09 14:03:58.289 	==> Updating usage of Include File 'sortcode' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.315 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/acctctrl.cpy'.
+2025-04-09 14:03:58.375 	Files depending on 'CBSA/src/copy/acctctrl.cpy' :
+2025-04-09 14:03:58.375 	'CBSA/CBSA/src/cobol/acctctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.375 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.376 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.376 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.376 	==> 'acctctrl' is owned by the 'CBSA' application
+2025-04-09 14:03:58.380 	==> Updating usage of Include File 'acctctrl' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.408 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/custctrl.cpy'.
+2025-04-09 14:03:58.484 	Files depending on 'CBSA/src/copy/custctrl.cpy' :
+2025-04-09 14:03:58.485 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.485 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.485 	'CBSA/CBSA/src/cobol/custctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.485 	==> 'custctrl' is owned by the 'CBSA' application
+2025-04-09 14:03:58.489 	==> Updating usage of Include File 'custctrl' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.519 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/xfrfun.cpy'.
+2025-04-09 14:03:58.568 	Files depending on 'CBSA/src/copy/xfrfun.cpy' :
+2025-04-09 14:03:58.568 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.568 	==> 'xfrfun' is owned by the 'CBSA' application
+2025-04-09 14:03:58.569 	==> Updating usage of Include File 'xfrfun' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.595 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/crecust.cpy'.
+2025-04-09 14:03:58.636 	Files depending on 'CBSA/src/copy/crecust.cpy' :
+2025-04-09 14:03:58.636 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.636 	==> 'crecust' is owned by the 'CBSA' application
+2025-04-09 14:03:58.637 	==> Updating usage of Include File 'crecust' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.667 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacccu.cpy'.
+2025-04-09 14:03:58.717 	Files depending on 'CBSA/src/copy/inqacccu.cpy' :
+2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.717 	==> 'inqacccu' is owned by the 'CBSA' application
+2025-04-09 14:03:58.718 	==> Updating usage of Include File 'inqacccu' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.743 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cdm.cpy'.
+2025-04-09 14:03:58.791 	Files depending on 'CBSA/src/copy/bnk1cdm.cpy' :
+2025-04-09 14:03:58.792 	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.792 	==> 'bnk1cdm' is owned by the 'CBSA' application
+2025-04-09 14:03:58.792 	==> Updating usage of Include File 'bnk1cdm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.816 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getscode.cpy'.
+2025-04-09 14:03:58.854 	Files depending on 'CBSA/src/copy/getscode.cpy' :
+2025-04-09 14:03:58.854 	'CBSA/CBSA/src/cobol/getscode.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.854 	==> 'getscode' is owned by the 'CBSA' application
+2025-04-09 14:03:58.855 	==> Updating usage of Include File 'getscode' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.878 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/consent.cpy'.
+2025-04-09 14:03:58.922 	Files depending on 'CBSA/src/copy/consent.cpy' :
+2025-04-09 14:03:58.922 	'CBSA/CBSA/src/cobol/dpayapi.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.922 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.922 	'CBSA/CBSA/src/cobol/consent.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.922 	==> 'consent' is owned by the 'CBSA' application
+2025-04-09 14:03:58.923 	==> Updating usage of Include File 'consent' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.947 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1mai.cpy'.
+2025-04-09 14:03:58.991 	Files depending on 'CBSA/src/copy/bnk1mai.cpy' :
+2025-04-09 14:03:58.991 	'CBSA/CBSA/src/cobol/bnkmenu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.991 	==> 'bnk1mai' is owned by the 'CBSA' application
+2025-04-09 14:03:58.992 	==> Updating usage of Include File 'bnk1mai' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.020 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constapi.cpy'.
+2025-04-09 14:03:59.080 	Files depending on 'CBSA/src/copy/constapi.cpy' :
+2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/dpayapi.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/consttst.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/consent.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.081 	==> 'constapi' is owned by the 'CBSA' application
+2025-04-09 14:03:59.081 	==> Updating usage of Include File 'constapi' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.108 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delacc.cpy'.
+2025-04-09 14:03:59.147 	Files depending on 'CBSA/src/copy/delacc.cpy' :
+2025-04-09 14:03:59.147 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.147 	==> 'delacc' is owned by the 'CBSA' application
+2025-04-09 14:03:59.148 	==> Updating usage of Include File 'delacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.173 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delcus.cpy'.
+2025-04-09 14:03:59.222 	Files depending on 'CBSA/src/copy/delcus.cpy' :
+2025-04-09 14:03:59.223 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.223 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.223 	==> 'delcus' is owned by the 'CBSA' application
+2025-04-09 14:03:59.223 	==> Updating usage of Include File 'delcus' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.247 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getcompy.cpy'.
+2025-04-09 14:03:59.288 	Files depending on 'CBSA/src/copy/getcompy.cpy' :
+2025-04-09 14:03:59.288 	'CBSA/CBSA/src/cobol/getcompy.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.288 	==> 'getcompy' is owned by the 'CBSA' application
+2025-04-09 14:03:59.289 	==> Updating usage of Include File 'getcompy' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.314 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/accdb2.cpy'.
+2025-04-09 14:03:59.351 	The Include File 'accdb2' is not referenced at all.
+2025-04-09 14:03:59.374 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/contdb2.cpy'.
+2025-04-09 14:03:59.416 	The Include File 'contdb2' is not referenced at all.
+2025-04-09 14:03:59.440 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqcust.cpy'.
+2025-04-09 14:03:59.487 	Files depending on 'CBSA/src/copy/inqcust.cpy' :
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	==> 'inqcust' is owned by the 'CBSA' application
+2025-04-09 14:03:59.488 	==> Updating usage of Include File 'inqcust' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.513 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updacc.cpy'.
+2025-04-09 14:03:59.551 	Files depending on 'CBSA/src/copy/updacc.cpy' :
+2025-04-09 14:03:59.551 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.551 	==> 'updacc' is owned by the 'CBSA' application
+2025-04-09 14:03:59.552 	==> Updating usage of Include File 'updacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.575 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacc.cpy'.
+2025-04-09 14:03:59.622 	Files depending on 'CBSA/src/copy/inqacc.cpy' :
+2025-04-09 14:03:59.623 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.623 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.623 	==> 'inqacc' is owned by the 'CBSA' application
+2025-04-09 14:03:59.624 	==> Updating usage of Include File 'inqacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.647 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updcust.cpy'.
+2025-04-09 14:03:59.691 	Files depending on 'CBSA/src/copy/updcust.cpy' :
+2025-04-09 14:03:59.691 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.691 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.691 	==> 'updcust' is owned by the 'CBSA' application
+2025-04-09 14:03:59.693 	==> Updating usage of Include File 'updcust' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.718 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1uam.cpy'.
+2025-04-09 14:03:59.767 	Files depending on 'CBSA/src/copy/bnk1uam.cpy' :
+2025-04-09 14:03:59.767 	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.767 	==> 'bnk1uam' is owned by the 'CBSA' application
+2025-04-09 14:03:59.767 	==> Updating usage of Include File 'bnk1uam' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.791 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/account.cpy'.
+2025-04-09 14:03:59.844 	Files depending on 'CBSA/src/copy/account.cpy' :
+2025-04-09 14:03:59.844 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.844 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.844 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/consent.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	==> 'account' is owned by the 'CBSA' application
+2025-04-09 14:03:59.846 	==> Updating usage of Include File 'account' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.870 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/customer.cpy'.
+2025-04-09 14:03:59.922 	Files depending on 'CBSA/src/copy/customer.cpy' :
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	==> 'customer' is owned by the 'CBSA' application
+2025-04-09 14:03:59.924 	==> Updating usage of Include File 'customer' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.951 ** Getting the list of files of 'Program' type.
+2025-04-09 14:03:59.976 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cac.cbl'.
+2025-04-09 14:04:00.019 	The Program 'bnk1cac' is not called by any other program.
+2025-04-09 14:04:00.120 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/proload.cbl'.
+2025-04-09 14:04:00.163 	The Program 'proload' is not called by any other program.
+2025-04-09 14:04:00.188 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dac.cbl'.
+2025-04-09 14:04:00.225 	The Program 'bnk1dac' is not called by any other program.
+2025-04-09 14:04:00.248 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpayapi.cbl'.
+2025-04-09 14:04:00.288 	The Program 'dpayapi' is not called by any other program.
+2025-04-09 14:04:00.312 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpaytst.cbl'.
+2025-04-09 14:04:00.351 	The Program 'dpaytst' is not called by any other program.
+2025-04-09 14:04:00.399 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accoffl.cbl'.
+2025-04-09 14:04:00.435 	The Program 'accoffl' is not called by any other program.
+2025-04-09 14:04:00.461 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy5.cbl'.
+2025-04-09 14:04:00.496 	The Program 'crdtagy5' is not called by any other program.
+2025-04-09 14:04:00.519 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/creacc.cbl'.
+2025-04-09 14:04:00.540 	The Program 'creacc' is not called by any other program.
+2025-04-09 14:04:00.584 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy4.cbl'.
+2025-04-09 14:04:00.623 	The Program 'crdtagy4' is not called by any other program.
+2025-04-09 14:04:00.646 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnkmenu.cbl'.
+2025-04-09 14:04:00.680 	The Program 'bnkmenu' is not called by any other program.
+2025-04-09 14:04:00.705 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bankdata.cbl'.
+2025-04-09 14:04:00.746 	The Program 'bankdata' is not called by any other program.
+2025-04-09 14:04:00.774 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/prooffl.cbl'.
+2025-04-09 14:04:00.812 	The Program 'prooffl' is not called by any other program.
+2025-04-09 14:04:00.835 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1tfn.cbl'.
+2025-04-09 14:04:00.867 	The Program 'bnk1tfn' is not called by any other program.
+2025-04-09 14:04:00.890 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cca.cbl'.
+2025-04-09 14:04:00.924 	The Program 'bnk1cca' is not called by any other program.
+2025-04-09 14:04:00.948 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dbcrfun.cbl'.
+2025-04-09 14:04:00.980 	The Program 'dbcrfun' is not called by any other program.
+2025-04-09 14:04:01.008 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/acctctrl.cbl'.
+2025-04-09 14:04:01.027 	The Program 'acctctrl' is not called by any other program.
+2025-04-09 14:04:01.052 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/custctrl.cbl'.
+2025-04-09 14:04:01.070 	The Program 'custctrl' is not called by any other program.
+2025-04-09 14:04:01.092 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/xfrfun.cbl'.
+2025-04-09 14:04:01.116 	The Program 'xfrfun' is not called by any other program.
+2025-04-09 14:04:01.137 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crecust.cbl'.
+2025-04-09 14:04:01.159 	The Program 'crecust' is not called by any other program.
+2025-04-09 14:04:01.182 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacccu.cbl'.
+2025-04-09 14:04:01.201 	The Program 'inqacccu' is not called by any other program.
+2025-04-09 14:04:01.223 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getscode.cbl'.
+2025-04-09 14:04:01.239 	The Program 'getscode' is not called by any other program.
+2025-04-09 14:04:01.261 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consent.cbl'.
+2025-04-09 14:04:01.278 	The Program 'consent' is not called by any other program.
+2025-04-09 14:04:01.300 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy3.cbl'.
+2025-04-09 14:04:01.334 	The Program 'crdtagy3' is not called by any other program.
+2025-04-09 14:04:01.356 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delacc.cbl'.
+2025-04-09 14:04:01.377 	The Program 'delacc' is not called by any other program.
+2025-04-09 14:04:01.398 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delcus.cbl'.
+2025-04-09 14:04:01.429 	The Program 'delcus' is not called by any other program.
+2025-04-09 14:04:01.450 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dcs.cbl'.
+2025-04-09 14:04:01.490 	The Program 'bnk1dcs' is not called by any other program.
+2025-04-09 14:04:01.513 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy2.cbl'.
+2025-04-09 14:04:01.548 	The Program 'crdtagy2' is not called by any other program.
+2025-04-09 14:04:01.571 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/abndproc.cbl'.
+2025-04-09 14:04:01.610 	The Program 'abndproc' is not called by any other program.
+2025-04-09 14:04:01.642 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1ccs.cbl'.
+2025-04-09 14:04:01.684 	The Program 'bnk1ccs' is not called by any other program.
+2025-04-09 14:04:01.708 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy1.cbl'.
+2025-04-09 14:04:01.744 	The Program 'crdtagy1' is not called by any other program.
+2025-04-09 14:04:01.770 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cra.cbl'.
+2025-04-09 14:04:01.807 	The Program 'bnk1cra' is not called by any other program.
+2025-04-09 14:04:01.832 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getcompy.cbl'.
+2025-04-09 14:04:01.865 	The Program 'getcompy' is not called by any other program.
+2025-04-09 14:04:01.901 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accload.cbl'.
+2025-04-09 14:04:01.939 	The Program 'accload' is not called by any other program.
+2025-04-09 14:04:01.963 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqcust.cbl'.
+2025-04-09 14:04:01.982 	The Program 'inqcust' is not called by any other program.
+2025-04-09 14:04:02.007 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1uac.cbl'.
+2025-04-09 14:04:02.053 	The Program 'bnk1uac' is not called by any other program.
+2025-04-09 14:04:02.077 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updacc.cbl'.
+2025-04-09 14:04:02.100 	The Program 'updacc' is not called by any other program.
+2025-04-09 14:04:02.123 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consttst.cbl'.
+2025-04-09 14:04:02.160 	The Program 'consttst' is not called by any other program.
+2025-04-09 14:04:02.185 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacc.cbl'.
+2025-04-09 14:04:02.206 	The Program 'inqacc' is not called by any other program.
+2025-04-09 14:04:02.230 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updcust.cbl'.
+2025-04-09 14:04:02.245 	The Program 'updcust' is not called by any other program.
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-rescan.log
+2025-04-09 14:04:40.138 ** Script configuration:
+2025-04-09 14:04:40.175 	PIPELINE_USER -> ADO
+2025-04-09 14:04:40.178 	application -> CBSA
+2025-04-09 14:04:40.182 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 14:04:40.185 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
+2025-04-09 14:04:40.187 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-rescan.log
+2025-04-09 14:04:40.190 	DBB_MODELER_METADATASTORE_TYPE -> db2
+2025-04-09 14:04:40.193 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-09 14:04:40.196 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
+2025-04-09 14:04:40.198 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-09 14:04:40.201 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
+2025-04-09 14:04:40.204 	APPLICATION_DEFAULT_BRANCH -> main
+2025-04-09 14:04:40.660 ** Scanning the files.
+2025-04-09 14:04:40.819 	Scanning file CBSA/CBSA/application-conf/DBDgen.properties 
+2025-04-09 14:04:40.922 	Scanning file CBSA/CBSA/src/cobol/getscode.cbl 
+2025-04-09 14:04:40.949 	Scanning file CBSA/CBSA/src/cobol/bnk1cca.cbl 
+2025-04-09 14:04:41.106 	Scanning file CBSA/CBSA/src/copy/contdb2.cpy 
+2025-04-09 14:04:41.116 	Scanning file CBSA/CBSA/src/cobol/updcust.cbl 
+2025-04-09 14:04:41.156 	Scanning file CBSA/CBSA/src/cobol/bnk1cac.cbl 
+2025-04-09 14:04:41.230 	Scanning file CBSA/CBSA/src/copy/bnk1dcm.cpy 
+2025-04-09 14:04:41.328 	Scanning file CBSA/CBSA/src/cobol/xfrfun.cbl 
+2025-04-09 14:04:41.437 	Scanning file CBSA/CBSA/src/copy/consent.cpy 
+2025-04-09 14:04:41.452 	Scanning file CBSA/CBSA/src/cobol/bnk1ccs.cbl 
+2025-04-09 14:04:41.528 	Scanning file CBSA/CBSA/src/copy/sortcode.cpy 
+2025-04-09 14:04:41.532 	Scanning file CBSA/CBSA/application-conf/file.properties 
+2025-04-09 14:04:41.575 	Scanning file CBSA/CBSA/src/copy/custctrl.cpy 
+2025-04-09 14:04:41.584 	Scanning file CBSA/CBSA/application-conf/PLI.properties 
+2025-04-09 14:04:41.599 	Scanning file CBSA/CBSA/src/cobol/crdtagy1.cbl 
+2025-04-09 14:04:41.623 	Scanning file CBSA/CBSA/src/cobol/bankdata.cbl 
+2025-04-09 14:04:41.710 	Scanning file CBSA/CBSA/src/cobol/crecust.cbl 
+2025-04-09 14:04:41.789 	Scanning file CBSA/CBSA/application-conf/TazUnitTest.properties 
+2025-04-09 14:04:41.802 	Scanning file CBSA/CBSA.yaml 
+2025-04-09 14:04:41.839 	Scanning file CBSA/CBSA/src/copy/delacc.cpy 
+2025-04-09 14:04:41.853 	Scanning file CBSA/CBSA/src/cobol/dpayapi.cbl 
+2025-04-09 14:04:41.881 	Scanning file CBSA/CBSA/src/copy/constapi.cpy 
+2025-04-09 14:04:41.892 	Scanning file CBSA/applicationDescriptor.yml 
+2025-04-09 14:04:41.927 	Scanning file CBSA/CBSA/src/copy/bnk1cam.cpy 
+2025-04-09 14:04:41.999 	Scanning file CBSA/CBSA/src/cobol/consttst.cbl 
+2025-04-09 14:04:42.016 	Scanning file CBSA/CBSA/src/cobol/crdtagy3.cbl 
+2025-04-09 14:04:42.032 	Scanning file CBSA/CBSA/src/cobol/delcus.cbl 
+2025-04-09 14:04:42.064 	Scanning file CBSA/CBSA/application-conf/Assembler.properties 
+2025-04-09 14:04:42.082 	Scanning file CBSA/CBSA/src/cobol/accoffl.cbl 
+2025-04-09 14:04:42.098 	Scanning file CBSA/CBSA/src/copy/updacc.cpy 
+2025-04-09 14:04:42.107 	Scanning file CBSA/.gitattributes 
+2025-04-09 14:04:42.119 	Scanning file CBSA/CBSA/src/copy/datastr.cpy 
+2025-04-09 14:04:42.124 	Scanning file CBSA/CBSA/application-conf/application.properties 
+2025-04-09 14:04:42.154 	Scanning file CBSA/CBSA/src/cobol/crdtagy4.cbl 
+2025-04-09 14:04:42.167 	Scanning file CBSA/CBSA/src/cobol/accload.cbl 
+2025-04-09 14:04:42.180 	Scanning file CBSA/CBSA/application-conf/Transfer.properties 
+2025-04-09 14:04:42.183 	Scanning file CBSA/tagging/createReleaseCandidate.yml 
+2025-04-09 14:04:42.256 	Scanning file CBSA/CBSA/src/copy/bnk1ccm.cpy 
+2025-04-09 14:04:42.301 	Scanning file CBSA/CBSA/application-conf/Cobol.properties 
+2025-04-09 14:04:42.317 	Scanning file CBSA/deployment/deployReleasePackage.yml 
+2025-04-09 14:04:42.336 	Scanning file CBSA/CBSA/application-conf/CRB.properties 
+2025-04-09 14:04:42.339 	Scanning file CBSA/CBSA/application-conf/bind.properties 
+2025-04-09 14:04:42.347 	Scanning file CBSA/CBSA/src/cobol/inqacc.cbl 
+2025-04-09 14:04:42.368 	Scanning file CBSA/CBSA/src/cobol/bnk1dac.cbl 
+2025-04-09 14:04:42.390 	Scanning file CBSA/CBSA/src/copy/customer.cpy 
+2025-04-09 14:04:42.399 	Scanning file CBSA/CBSA/src/copy/crecust.cpy 
+2025-04-09 14:04:42.405 	Scanning file CBSA/CBSA/src/copy/creacc.cpy 
+2025-04-09 14:04:42.414 	Scanning file CBSA/CBSA/application-conf/languageConfigurationMapping.properties 
+2025-04-09 14:04:42.419 	Scanning file CBSA/CBSA/application-conf/LinkEdit.properties 
+2025-04-09 14:04:42.431 	Scanning file CBSA/CBSA/src/cobol/dbcrfun.cbl 
+2025-04-09 14:04:42.453 	Scanning file CBSA/CBSA/src/copy/bnk1acc.cpy 
+2025-04-09 14:04:42.466 	Scanning file CBSA/CBSA/src/copy/bnk1uam.cpy 
+2025-04-09 14:04:42.510 	Scanning file CBSA/CBSA/src/cobol/abndproc.cbl 
+2025-04-09 14:04:42.519 	Scanning file CBSA/CBSA/src/cobol/acctctrl.cbl 
+2025-04-09 14:04:42.525 	Scanning file CBSA/CBSA/src/copy/procdb2.cpy 
+2025-04-09 14:04:42.530 	Scanning file CBSA/CBSA/application-conf/ACBgen.properties 
+2025-04-09 14:04:42.533 	Scanning file CBSA/tagging/createProductionReleaseTag.yml 
+2025-04-09 14:04:42.540 	Scanning file CBSA/CBSA/application-conf/MFS.properties 
+2025-04-09 14:04:42.546 	Scanning file CBSA/CBSA/application-conf/reports.properties 
+2025-04-09 14:04:42.557 	Scanning file CBSA/CBSA/src/copy/abndinfo.cpy 
+2025-04-09 14:04:42.562 	Scanning file CBSA/CBSA/src/copy/xfrfun.cpy 
+2025-04-09 14:04:42.566 	Scanning file CBSA/CBSA/application-conf/PSBgen.properties 
+2025-04-09 14:04:42.574 	Scanning file CBSA/CBSA/src/cobol/inqcust.cbl 
+2025-04-09 14:04:42.592 	Scanning file CBSA/CBSA/application-conf/Easytrieve.properties 
+2025-04-09 14:04:42.600 	Scanning file CBSA/CBSA/src/copy/constdb2.cpy 
+2025-04-09 14:04:42.606 	Scanning file CBSA/CBSA/src/copy/getcompy.cpy 
+2025-04-09 14:04:42.608 	Scanning file CBSA/CBSA/src/cobol/consent.cbl 
+2025-04-09 14:04:42.617 	Scanning file CBSA/CBSA/src/cobol/crdtagy2.cbl 
+2025-04-09 14:04:42.626 	Scanning file CBSA/CBSA/src/cobol/delacc.cbl 
+2025-04-09 14:04:42.639 	Scanning file CBSA/CBSA/application-conf/REXX.properties 
+2025-04-09 14:04:42.647 	Scanning file CBSA/zapp.yaml 
+2025-04-09 14:04:42.651 	Scanning file CBSA/CBSA/src/copy/inqacccu.cpy 
+2025-04-09 14:04:42.658 	Scanning file CBSA/CBSA/src/cobol/bnk1tfn.cbl 
+2025-04-09 14:04:42.675 	Scanning file CBSA/CBSA/src/cobol/proload.cbl 
+2025-04-09 14:04:42.683 	Scanning file CBSA/CBSA/src/cobol/inqacccu.cbl 
+2025-04-09 14:04:42.696 	Scanning file CBSA/CBSA/src/copy/bnk1cdm.cpy 
+2025-04-09 14:04:42.712 	Scanning file CBSA/CBSA/src/cobol/dpaytst.cbl 
+2025-04-09 14:04:42.717 	Scanning file CBSA/CBSA/src/cobol/bnk1cra.cbl 
+2025-04-09 14:04:42.734 	Scanning file CBSA/CBSA/src/cobol/prooffl.cbl 
+2025-04-09 14:04:42.742 	Scanning file CBSA/CBSA/src/cobol/updacc.cbl 
+2025-04-09 14:04:42.752 	Scanning file CBSA/CBSA/src/copy/acctctrl.cpy 
+2025-04-09 14:04:42.757 	Scanning file CBSA/CBSA/src/copy/delcus.cpy 
+2025-04-09 14:04:42.761 	Scanning file CBSA/CBSA/src/copy/proctran.cpy 
+2025-04-09 14:04:42.779 	Scanning file CBSA/CBSA/src/copy/updcust.cpy 
+2025-04-09 14:04:42.783 	Scanning file CBSA/CBSA/src/copy/getscode.cpy 
+2025-04-09 14:04:42.785 	Scanning file CBSA/CBSA/src/cobol/creacc.cbl 
+2025-04-09 14:04:42.803 	Scanning file CBSA/CBSA/src/cobol/crdtagy5.cbl 
+2025-04-09 14:04:42.810 	Scanning file CBSA/CBSA/src/copy/account.cpy 
+2025-04-09 14:04:42.816 	Scanning file CBSA/CBSA/src/copy/bnk1dam.cpy 
+2025-04-09 14:04:42.839 	Scanning file CBSA/CBSA/src/copy/paydbcr.cpy 
+2025-04-09 14:04:42.842 	Scanning file CBSA/CBSA/src/cobol/getcompy.cbl 
+2025-04-09 14:04:42.845 	Scanning file CBSA/CBSA/src/cobol/custctrl.cbl 
+2025-04-09 14:04:42.849 	Scanning file CBSA/CBSA/src/copy/accdb2.cpy 
+2025-04-09 14:04:42.853 	Scanning file CBSA/CBSA/application-conf/BMS.properties 
+2025-04-09 14:04:42.857 	Scanning file CBSA/CBSA/src/copy/inqacc.cpy 
+2025-04-09 14:04:42.862 	Scanning file CBSA/CBSA/src/copy/bnk1mai.cpy 
+2025-04-09 14:04:42.867 	Scanning file CBSA/CBSA/src/cobol/bnk1dcs.cbl 
+2025-04-09 14:04:42.883 	Scanning file CBSA/azure-pipelines.yml 
+2025-04-09 14:04:42.895 	Scanning file CBSA/CBSA/src/cobol/bnk1uac.cbl 
+2025-04-09 14:04:42.908 	Scanning file CBSA/CBSA/src/cobol/bnkmenu.cbl 
+2025-04-09 14:04:42.920 	Scanning file CBSA/CBSA/application-conf/README.md 
+2025-04-09 14:04:42.974 	Scanning file CBSA/CBSA/src/copy/inqcust.cpy 
+2025-04-09 14:04:42.976 	Scanning file CBSA/CBSA/src/copy/bnk1tfm.cpy 
+2025-04-09 14:04:42.987 ** Storing results in the 'CBSA-main' DBB Collection.
+2025-04-09 14:04:44.955 ** Setting collection owner to ADO
 ~~~~
 
 </details>
 
 # Migrations scenarios for Migration-Modeler-Start script
 
-## A group of datasets belongs to the same application
+## A group of datasets belongs to one application
 
-In this situation, a group of datasets already contain all artifacts that belong to the application. These identified artifacts can be spread across multiples libraries but you are certain they are all owned by the same application.
+In this situation, a group of datasets contains the artifacts that belong to only one application. These identified artifacts can be spread across multiples libraries but you are certain they are all owned by the same application.
 
-To limit the scope of the extraction, this list of datasets to analyze must be passed to the [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh).
-In this use case, a specific `Applications Mapping` YAML file for each application should be passed to the [Extract Applications script](./src/scripts/utils/1-extractApplications.sh) via the Migration Modeler configuration file, with a universal filter being used as naming convention.
+This list of datasets to analyze are defined in the Applications mapping file and are passed to the [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh). In this use case, a specific `Applications Mapping` YAML file for the application should be passed to the [Extract Applications script](./src/scripts/utils/1-extractApplications.sh) via the DBB Git Migration Modeler configuration file, with a universal filter being used as naming convention. This Applications Mapping file is meant to be found in the folder specified by the `DBB_MODELER_APPCONFIG_DIR`parameter.
 
 The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
 ~~~~YAML
+datasets:
+  - CATMAN.COBOL
+  - CATMAN.COPY
+  - CATMAN.BMS
 applications:
   - application: "Catalog Manager"
     description: "Catalog Manager"
@@ -2959,26 +2078,17 @@ applications:
       - ........
 ~~~~
 
-To extract the files, a sample command like the following should be used:
-
-~~~~
-./1-extractApplications.sh -c /u/dbehm/git/dbb-git-migration-modeler-mathieu/DBB_GIT_MIGRATION_MODELER-CATMAN.config
-~~~~
-
-While the `DBB_GIT_MIGRATION_MODELER-CATMAN.config` contains the CATMAN specific datasets:
-~~~~
-...
-APPLICATION_DATASETS=GITLAB.CATMAN.RELEASE.COBOL,GITLAB.CATMAN.RELEASE.COPY,GITLAB.CATMAN.RELEASE.ASM,GITLAB.CATMAN.RELEASE.BMS,GITLAB.CATMAN.RELEASE.LINK
-...
-~~~~
-
-The result of this command is an Application Descriptor file that documents all the artifacts contained in the list of the given datasets, and a DBB Migration mapping file to manages all the members found.
+When running the Migration-Modeler-Start.sh script with this Applications Mapping file, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the CatalogManager application. The result of this command is an Application Descriptor file that documents all the artifacts contained in the given datasets, and a DBB Migration mapping file to manages all the members found.
 
 ## A group of datasets contains artifacts that belong to multiple applications
 
-In this configuration, the list of datasets provided as input contain artifacts from different applications, but a naming convention can be leveraged to filter members. In the following example, the naming convention is based on the first 3 letters of the members' name. There is one exception, where we have a fully qualified member name (*LINPUT*) that is owned by the *RetirementCalculator* application:
+In this configuration, the list of datasets defined in the Applications Mapping file contain artifacts from different applications, but a naming convention can be used to filter members. In the following example, the naming convention is based on the first 3 letters of the members' name. There is one exception, where we have a fully qualified member name (*LINPUT*) that is owned by the *RetirementCalculator* application:
 
 ~~~~YAML
+datasets:
+  - APPS.COBOL
+  - APPS.COPY
+  - APPS.BMS
 applications:
   - application: "RetirementCalculator"
     description: "RetirementCalculator"
@@ -3022,7 +2132,7 @@ applications:
       - ZUN.....
 ~~~~
 
-The result of this command is a set of Application Descriptor files and DBB Migratin mamming files for each discovered application.
+The result of this command is a set of Application Descriptor files and DBB Migration mapping files for each discovered application.
 If a member doesn't match any naming convention, it is assigned to a special application called *UNASSIGNED*.
 
 ## Working with the special *UNASSIGNED* application
@@ -3031,6 +2141,8 @@ A good strategy could be to store all the shared Include Files in this *UNASSIGN
 This can be done in several ways: as mentioned earlier, all artifacts for which no naming convention is matching will be assigned to this special application.
 Otherwise, if a library is known to contain only shared Include Files, a specific `Applications Mapping` file could be used, as follows:
 ~~~~YAML
+datasets:
+  - SHARED.COPY
 applications:
   - application: "UNASSIGNED"
     description: "Shared include files"
@@ -3041,17 +2153,14 @@ applications:
 
 ## Combining use cases
 
-There can be situations where scenarios must be combined to extract the applications. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply different naming conventions patterns for copybooks. 
+There can be combined scenarios to extract the applications. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply different naming conventions patterns for copybooks. 
 
-In that case, the solution is to run the [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh) multiple times with different input configuration files.
-The [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) can be customized in this way to contain multiple extractions:
+In that case, the solution is to configure multiple Applications mapping files:
+- One Applications Mapping file would contain the definition for the datasets having artifacts for only one application
+- A second Applications Mapping file would contain the definitions for the datasets having artifacts from multiple applications.
 
-~~~~bash
-# Configuration specifies an applictionMappings file for CATMAN and the CATMAN PDS libraries
-./1-extractApplications.sh -c /u/dbehm/git/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER-CATMAN.config
-# Configuration specifies an applictionMappings file the perceived SHARED components
-./1-extractApplications.sh -c /u/dbehm/git/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER-SHARED.config
-~~~~
+Based on requirements, additional Applications mapping files can be defined, to support different scenarios and combinations.
+Only one execution of the [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) is necessary, to extract definitions from multiple Applications Mapping files. The latest enhancements to the DBB Git Migration Modeler allow the processing of multiple Applications Mapping files in one go.
 
 ## Generating properties
 
