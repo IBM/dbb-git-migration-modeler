@@ -60,7 +60,6 @@ DBB_MODELER_APPCONFIG_DIR="$DBB_MODELER_WORK/modeler-configs"
 DBB_MODELER_APPLICATION_DIR="$DBB_MODELER_WORK/applications"
 DBB_MODELER_LOGS="$DBB_MODELER_WORK/logs"
 DBB_MODELER_DEFAULT_GIT_CONFIG="$DBB_MODELER_WORK/git-config"
-DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/applications-mappings"
 
 # Migration Modeler MetaDataStore configuration
 # Default value for the Metadatastore type - Valid values are "file" or "db2"
@@ -80,6 +79,8 @@ DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD=""
 #    https://www.ibm.com/docs/en/dbb/2.0?topic=customization-encrypting-metadata-store-passwords#dbb-db2-password-file
 DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=""
 
+# Reference to the folder containing the Applications mapping files
+DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/applications-mappings"
 # Reference to the repository paths mapping file
 REPOSITORY_PATH_MAPPING_FILE=$DBB_MODELER_WORK/repositoryPathsMapping.yaml
 # Reference to the type mapping file
@@ -125,8 +126,8 @@ PIPELINE_USER_GROUP=JENKINSG
 PIPELINE_CI=1
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
-path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_GIT_CONFIG DBB_MODELER_APPMAPPINGS_DIR)
-input_array=(REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD PIPELINE_USER PIPELINE_USER_GROUP)
+path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_GIT_CONFIG)
+input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD PIPELINE_USER PIPELINE_USER_GROUP)
 
 # Create work dir
 echo
@@ -142,19 +143,7 @@ if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 	else
 		mkdir -p $DBB_MODELER_WORK
 		rc=$?
-		if [ $rc -eq 0 ]; then
-			cp $DBB_MODELER_HOME/samples/*.* $DBB_MODELER_WORK/
-			rc=$?
-		fi
 		
-		if [ $rc -eq 0 ]; then
-			if [ ! -d "${DBB_MODELER_APPMAPPINGS_DIR}" ]; then
-				mkdir -p $DBB_MODELER_APPMAPPINGS_DIR
-			fi
-			cp $DBB_MODELER_HOME/samples/applications-mapping/*.* $DBB_MODELER_APPMAPPINGS_DIR/
-			rc=$?
-		fi
-
 		if [ $rc -eq 0 ]; then
 			if [ ! -d "${DBB_MODELER_DEFAULT_GIT_CONFIG}" ]; then
 				mkdir -p $DBB_MODELER_DEFAULT_GIT_CONFIG
@@ -218,6 +207,27 @@ if [ $rc -eq 0 ]; then
 			declare ${config}="${variable}"
 		fi
 	done
+
+	if [ ! -d "${DBB_MODELER_APPMAPPINGS_DIR}" ]; then
+		mkdir -p $DBB_MODELER_APPMAPPINGS_DIR
+		rc=$?
+	fi
+	if [ $rc -eq 0 ]; then
+		cp $DBB_MODELER_HOME/samples/applications-mapping/*.* $DBB_MODELER_APPMAPPINGS_DIR/
+		rc=$?
+	fi
+	if [ $rc -eq 0 ]; then
+		cp $DBB_MODELER_HOME/samples/repositoryPathsMapping.yaml $REPOSITORY_PATH_MAPPING_FILE
+		rc=$?
+	fi
+	if [ $rc -eq 0 ]; then
+		cp $DBB_MODELER_HOME/samples/types.txt $APPLICATION_MEMBER_TYPE_MAPPING
+		rc=$?
+	fi
+	if [ $rc -eq 0 ]; then
+		cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE		
+		rc=$?
+	fi
 fi
 
 # Save DBB Git Migration Modeler Configuration
@@ -321,10 +331,10 @@ if [ $rc -eq 0 ]; then
 		echo
 		echo "********************************************* SUGGESTED ACTION *********************************************"
 		echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
-		echo "  - $APPLICATION_MAPPING_FILE "
-		echo "  - $REPOSITORY_PATH_MAPPING_FILE "
-		echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional) "
-		echo "  - $TYPE_CONFIGURATIONS_FILE (optional) "
+		echo "  - Applications Mapping file(s) located in $DBB_MODELER_APPMAPPINGS_DIR"
+		echo "  - $REPOSITORY_PATH_MAPPING_FILE"
+		echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional)"
+		echo "  - $TYPE_CONFIGURATIONS_FILE (optional)"
 		echo
 		echo "Once tailored, run the following command:"
 		echo "'$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
