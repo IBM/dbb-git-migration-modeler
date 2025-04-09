@@ -4,6 +4,16 @@
   "description": "JSON Schema for Application Mapping",
   "type": "object",
   "properties": {
+    "datasets": {
+      "type": "array",
+      "title": "Collection of datasets.",
+      "description": "List of datasets where source are located. The Migration Modeler will apply the applications' naming conventions defined in the applications mapping file to these datasets members.",
+      "items": {
+        "type": "string",
+        "title": "Dataset name",
+        "description": "Dataset where the source code (members) are located."
+      }
+    },      
     "applications": {
       "type": "array",
       "title": "Collection of application mappings.",
@@ -54,6 +64,7 @@
     }
   },
   "required": [
+  	"datasets",
     "applications"
   ]
 }
