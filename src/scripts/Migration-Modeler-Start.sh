@@ -131,7 +131,7 @@ if [ $rc -eq 0 ]; then
 	
 	if [ $rc -eq 0 ]; then
 		echo
-		echo "[PHASE] Extract applications from using Applications Mapping files '$DBB_MODELER_APPMAPPINGS_DIR'"
+		echo "[PHASE] Extract applications from using Applications Mapping files located at '$DBB_MODELER_APPMAPPINGS_DIR'"
 		if [[ $INTERACTIVE_RUN == "true" ]]; then
 			read -p "Do you want run the application extraction (Y/n): " variable
 		else
