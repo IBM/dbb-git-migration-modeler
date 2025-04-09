@@ -132,8 +132,7 @@ input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATIO
 # Create work dir
 echo
 echo "[SETUP] Creating DBB Git Migration Modeler work directory '$DBB_MODELER_WORK'"
-echo "[SETUP] Copying DBB Git Migration Modeler configuration files to '$DBB_MODELER_WORK'"
-read -p "Do you want to create the directory '$DBB_MODELER_WORK' and copy the DBB Git Migration Modeler configuration files to it (Y/n): " variable
+read -p "Do you want to create the directory '$DBB_MODELER_WORK' (Y/n): " variable
 
 if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 	if [ -d "${DBB_MODELER_WORK}" ]; then
@@ -207,7 +206,30 @@ if [ $rc -eq 0 ]; then
 			declare ${config}="${variable}"
 		fi
 	done
+	echo "Specify the pipeline orchestration technology to use."
+	read -p "1 for 'AzureDevOps', 2 for 'GitlabCI', 3 for 'Jenkins' or 4 for 'GitHubActions' [default: 1]: " variable
+	if [ "$variable" ]; then
+		declare PIPELINE_CI="${variable}"
+	else
+		declare PIPELINE_CI="1"
+	fi
+	case ${PIPELINE_CI} in
+	"1")
+		PIPELINE_CI="AzureDevOps"
+		;;
+	"2")
+		PIPELINE_CI="GitlabCI"
+		;;
+	"3")
+		PIPELINE_CI="Jenkins"
+		;;
+	"4")
+		PIPELINE_CI="GitHubActions"
+		;;
+	esac	
 
+	echo
+	echo "[SETUP] Copying DBB Git Migration Modeler configuration files to '$DBB_MODELER_WORK'"
 	if [ ! -d "${DBB_MODELER_APPMAPPINGS_DIR}" ]; then
 		mkdir -p $DBB_MODELER_APPMAPPINGS_DIR
 		rc=$?
@@ -271,34 +293,10 @@ if [ $rc -eq 0 ]; then
 
 	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	echo "# DBB Git Migration Modeler input files" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-
 	for config in ${input_array[@]}; do
 		echo "${config}=${!config}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	done
-
-	echo "Specify the pipeline orchestration technology to use."
-	read -p "1 for 'AzureDevOps', 2 for 'GitlabCI', 3 for 'Jenkins' or 4 for 'GitHubActions' [default: 1]: " variable
-	if [ "$variable" ]; then
-		declare PIPELINE_CI="${variable}"
-	else
-		declare PIPELINE_CI="1"
-	fi
-	case ${PIPELINE_CI} in
-	"1")
-		PIPELINE_CI="AzureDevOps"
-		;;
-	"2")
-		PIPELINE_CI="GitlabCI"
-		;;
-	"3")
-		PIPELINE_CI="Jenkins"
-		;;
-	"4")
-		PIPELINE_CI="GitHubActions"
-		;;
-	esac		
 	echo "PIPELINE_CI=${PIPELINE_CI}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-
 
 	echo
 	echo "[SETUP] DBB Git Migration Modeler configuration saved to '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
