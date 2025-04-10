@@ -106,7 +106,7 @@ applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 }
 
 
-logger.logMessage("** Iterating through the applications.")
+logger.logMessage("** Iterating through the provided datasets and mapped applications.")
 datasetsMap.each() { dataset, applicationsList ->
 	String qdsn = constructPDSForZFileOperation(dataset)
 	if (ZFile.dsExists(qdsn)) {

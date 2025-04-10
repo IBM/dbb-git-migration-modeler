@@ -159,8 +159,8 @@ Four types of configuration files need to be reviewed and potentially adapted to
 
 1. The [Applications Mapping file](./samples/applicationsMapping.yaml) (YAML format) contains the list of existing applications with their naming convention patterns used for filtering members. It can be created manually or can be filled with information coming from external databases or provided by a report from an SCM solution. Instead of patterns for naming conventions, the file also accepts fully qualified member names that can be extracted from an existing data source or report provided by your legacy tool.  
 If no naming convention is applied for a given application, or if all the members of a given dataset belong to the same application, a naming convention whose value is `........` should be defined.
-Members in the input PDSs libraries that do not match any convention will be associated to the *UNASSIGNED* application and be treated as shared code.  
-Multiple Applications Mapping files can be specified, each using a different set of datasets. The DBB Git Migration Modeler will process all the files first and build internal mappings, before applying the naming conventions. This configuration helps for more granularity and advanced scenarios, where datasets can contain members from multiples applications or only contains members for a given application.
+Members in the input PDSs libraries that do not match any convention will be associated to the *UNASSIGNED* application. This is often applicable for copybooks that do not have an owner assigned. 
+Multiple Applications Mapping files can be specified that can define one or multiple application configurations. The DBB Git Migration Modeler will import all files first, before processing the mapping. This configuration helps for more granular configurations and advanced scenarios, for instance when the input datasets contain members from only one application or when collecting the application configurations from the application owners.
 
 2. The [Repository Paths Mapping file](./samples/repositoryPathsMapping.yaml) (YAML format) is required and describes the folder structure on z/OS UNIX System Services (USS) that will contain the files to are moved from the datasets. It is recommended to use the definitions provided in the template, and keep consistent definitions for all applications being migrated.
 The file controls how dataset members should be assigned to target subfolders on USS during the migration process. 
@@ -2058,11 +2058,11 @@ Output log:
 
 # Migrations scenarios for Migration-Modeler-Start script
 
-## A group of datasets belongs to one application
+## A set of datasets contains artifacts of one application
 
-In this situation, a group of datasets contains the artifacts that belong to only one application. These identified artifacts can be spread across multiples libraries but you are certain they are all owned by the same application.
+In this scenario, a set of datasets contains only artifacts that belong to one application exclusively.
 
-This list of datasets to analyze are defined in the Applications mapping file and are passed to the [Extract Applications script (1-extractApplication.sh)](./src/scripts/utils/1-extractApplications.sh). In this use case, a specific `Applications Mapping` YAML file for the application should be passed to the [Extract Applications script](./src/scripts/utils/1-extractApplications.sh) via the DBB Git Migration Modeler configuration file, with a universal filter being used as naming convention. This Applications Mapping file is meant to be found in the folder specified by the `DBB_MODELER_APPCONFIG_DIR`parameter.
+To configure this case, provide a dedicated  `Applications Mapping` YAML file for the application in the applications mappings folder specified by the `DBB_MODELER_APPCONFIG_DIR` parameter. Use universal naming convention filter like in the below sample, because all files from the input datasets are mapped to application automatically.
 
 The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
 ~~~~YAML
@@ -2135,16 +2135,15 @@ applications:
 The result of this command is a set of Application Descriptor files and DBB Migration mapping files for each discovered application.
 If a member doesn't match any naming convention, it is assigned to a special application called *UNASSIGNED*.
 
-## Working with the special *UNASSIGNED* application
+## Working with source code that is known to be shared
 
-A good strategy could be to store all the shared Include Files in this *UNASSIGNED* application.
-This can be done in several ways: as mentioned earlier, all artifacts for which no naming convention is matching will be assigned to this special application.
-Otherwise, if a library is known to contain only shared Include Files, a specific `Applications Mapping` file could be used, as follows:
+For files that are already known as shared between applications, you can define an application mapping configuration to define their dedicated context. 
+If one library already contains these known shared include files, configure a specific `Applications Mapping` file alike the below sample:
 ~~~~YAML
 datasets:
   - SHARED.COPY
 applications:
-  - application: "UNASSIGNED"
+  - application: "SHARED"
     description: "Shared include files"
     owner: "Shared ownership"
     namingConventions:
