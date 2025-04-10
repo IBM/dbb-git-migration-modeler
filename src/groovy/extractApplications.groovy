@@ -110,7 +110,8 @@ logger.logMessage("** Iterating through the provided datasets and mapped applica
 datasetsMap.each() { dataset, applicationsList ->
 	String qdsn = constructPDSForZFileOperation(dataset)
 	if (ZFile.dsExists(qdsn)) {
-		logger.logMessage("**** Found '$dataset'");
+		def applications = applicationsList.collect { "'${it.application}'" }
+		logger.logMessage("**** Found '$dataset' referenced by applications ${applications.toString().replaceAll("\\[|\\]", "")}");
 		try {
 			PdsDirectory directoryList = new PdsDirectory(qdsn)
 			Iterator directoryListIterator = directoryList.iterator();
