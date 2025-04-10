@@ -159,8 +159,8 @@ Four types of configuration files need to be reviewed and potentially adapted to
 
 1. The [Applications Mapping file](./samples/applicationsMapping.yaml) (YAML format) contains the list of existing applications with their naming convention patterns used for filtering members. It can be created manually or can be filled with information coming from external databases or provided by a report from an SCM solution. Instead of patterns for naming conventions, the file also accepts fully qualified member names that can be extracted from an existing data source or report provided by your legacy tool.  
 If no naming convention is applied for a given application, or if all the members of a given dataset belong to the same application, a naming convention whose value is `........` should be defined.
-Members in the input PDSs libraries that do not match any convention will be associated to the *UNASSIGNED* application. This is often applicable for copybooks that do not have an owner assigned. 
-Multiple Applications Mapping files can be specified that can define one or multiple application configurations. The DBB Git Migration Modeler will import all files first, before processing the mapping. This configuration helps for more granular configurations and advanced scenarios, for instance when the input datasets contain members from only one application or when collecting the application configurations from the application owners.
+Members in the input PDSs libraries that do not match any convention will be associated to the *UNASSIGNED* application. This is often applicable for include files that do not have an owner assigned.
+Multiple Applications Mapping files can be specified, that define one or multiple application configurations. The DBB Git Migration Modeler will import all the Applications Mapping files first, before processing the mappings. This configuration helps for more granular configurations and advanced scenarios, for instance when the input datasets contain members from only one application or when multiple applications ahve artifacts mixed in the same goup of datasets.
 
 2. The [Repository Paths Mapping file](./samples/repositoryPathsMapping.yaml) (YAML format) is required and describes the folder structure on z/OS UNIX System Services (USS) that will contain the files to are moved from the datasets. It is recommended to use the definitions provided in the template, and keep consistent definitions for all applications being migrated.
 The file controls how dataset members should be assigned to target subfolders on USS during the migration process. 
@@ -181,11 +181,194 @@ This file is only used during the [Property Generation phase](#the-property-gene
 Each Type Configuration defines properties that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework.
 Types can be combined depending on definitions found in the [Types file](./samples/types.txt), to generate composite types combining different properties.
 
-## Required input libraries
+## Required input datasets
 
 The utility is operating on a set of provided PDS libraries that contain a copy of the codebase to be migrated. Depending on your configuration, it may be required to unload the source files from the legacy SCM's storage, prior to using the DBB Git Migration Modeler. These datasets should be extracted from the legacy SCM system, using a SCM-provided utility or mechanism. The list of datasets that contain source files is defined [Applications Mapping file](./samples/applicationsMapping.yaml) for a set of applications.
 
 Also, the latest steps of the whole migration process are performing a preview build and the packaging of existing artifacts. These existing artifacts (loadmodules, DBRMs, and any other artifacts meant to be deployed belonging to the applications) are expected to be found in datasets, following the naming convention in dbb-zAppBuild for output datasets. Typically, loadmodules are stored in to a `HLQ.LOAD` library, object decks in a `HLQ.OBJ` library and DBRMS in a `HLQ.DBRM` library. The HLQ used during this phase is provided through the `APPLICATION_ARTIFACTS_HLQ` environment variable defined during the execution of the [Setup script](./Setup.sh).
+
+## Datasets-to-Applications mapping scenarios
+
+### A group of datasets contains artifacts belonging to one application
+
+In this scenario, a group of datasets only contains artifacts that belong to one application exclusively.
+
+To configure this case, a specific `Applications Mapping` file for the application should be provided, in the Applications Mappings folder specified by the `DBB_MODELER_APPCONFIG_DIR` parameter. An universal naming convention filter like in the below sample should be used, because all files from the input datasets are mapped to the defined application.
+
+The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
+~~~~YAML
+datasets:
+  - CATMAN.COBOL
+  - CATMAN.COPY
+  - CATMAN.BMS
+applications:
+  - application: "Catalog Manager"
+    description: "Catalog Manager"
+    owner: "MDALBIN"
+    namingConventions:
+      - ........
+~~~~
+
+When running the Migration-Modeler-Start.sh script with this Applications Mapping file, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application. The result of this command is an Application Descriptor file that documents all the artifacts contained in the given datasets, and a DBB Migration mapping file to manages all the members found.
+
+### A group of datasets contains artifacts belonging to multiple applications
+
+In this configuration, the list of datasets defined in the `Applications Mapping` file contain artifacts from different applications, but a naming convention can be used to filter members. In the following example, the naming convention is based on the first 3 letters of the members' name. There is one exception, where we have a fully qualified member name (*LINPUT*) that is owned by the *RetirementCalculator* application:
+
+~~~~YAML
+datasets:
+  - APPS.COBOL
+  - APPS.COPY
+  - APPS.BMS
+applications:
+  - application: "RetirementCalculator"
+    description: "RetirementCalculator"
+    owner: "MDALBIN"
+    namingConventions:
+      - EBU.....
+      - LINPUT..
+  - application: "GenApp"
+    description: "GenApp"
+    owner: "DBEHM"
+    namingConventions:
+      - LGA.....
+      - LGD.....
+      - LGI.....
+      - LGT.....
+      - LGU.....
+      - LGS.....
+      - LGW.....
+      - OLD.....
+      - FLE.....
+  - application: "CBSA"
+    description: "CBSA"
+    owner: "MDALBIN"
+    namingConventions:
+      - ABN.....
+      - ACC.....
+      - BAN.....
+      - BNK.....
+      - CON.....
+      - CRD.....
+      - CRE.....
+      - CUS.....
+      - DBC.....
+      - DEL.....
+      - DPA.....
+      - GET.....
+      - INQ.....
+      - PRO.....
+      - UPD.....
+      - XFR.....
+      - ZUN.....
+~~~~
+
+The result of this command is a set of Application Descriptor files and DBB Migration mapping files for each discovered application.
+If a member of the input datasets doesn't match any naming convention, it is assigned to a special application called *UNASSIGNED*.
+
+### Working with source code that is known to be shared
+
+For files that are already known as shared between applications, you can define an Applications Mapping configuration to define their dedicated context. 
+If one library already contains these known shared include files, configure a specific `Applications Mapping` file alike the below sample:
+~~~~YAML
+datasets:
+  - SHARED.COPY
+applications:
+  - application: "SHARED"
+    description: "Shared include files"
+    owner: "Shared ownership"
+    namingConventions:
+      - ........
+~~~~
+
+### Combining use cases
+
+There can be combined scenarios to extract the applications. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply specific naming conventions for include files.
+
+In that case, the solution is to configure multiple Applications Mapping files:
+- One Applications Mapping file would contain the definition for the datasets having artifacts belonging to only one application
+- A second Applications Mapping file would contain the definitions for the datasets having artifacts from multiple applications.
+
+Based on requirements, additional Applications Mapping files can be defined, to support different scenarios and combinations.
+Only one execution of the [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) is necessary, to extract definitions from multiple Applications Mapping files. The latest enhancements to the DBB Git Migration Modeler allow the processing of multiple Applications Mapping files in one go.
+
+## Generating properties
+
+We encourage, as much as possible, to use simple scenarios, to avoid unnecessary complexity in the combination of types configurations.
+However, some configuration may require to use combination of types, depending on how properties are set in the originating SCM solution.
+
+### Common scenario
+
+In a simple scenario, each artifact is assigned with one single type, that designates a known configuration in the legacy SCM tool.
+
+For instance, the [Types file](./samples/types.txt) could contain the following lines:
+~~~~
+PGM001, COBBATCH
+PGM002, COBCICSD
+PMG003, PLIIMSDB
+~~~~
+
+Where *COBBATCH*, *COBCICSD* and *PLIIMSDB* represent configurations with specific properties. These types should be defined in the [Types Configurations file](./samples/typesConfigurations.yaml) accordingly, for instance:
+
+~~~~YAML
+- typeConfiguration: "COBBATCH"
+  cobol_compileParms: "LIB,SOURCE"
+  cobol_linkedit: true
+  isCICS: false
+  isSQL: false
+- typeConfiguration: "COBCICSD"
+  cobol_compileParms: "LIB,SOURCE,CICS,SQL"
+  cobol_linkedit: true
+  isCICS: true
+  isSQL: true
+- typeConfiguration: "PLIIMSDB"
+  pli_compileParms: "PP(INCLUDE('ID(++INCLUDE)')),SYSTEM(IMS)"
+  pli_linkedit: true
+  isCICS: false
+  isSQL: false
+  isDLI: true
+~~~~
+
+With this configuration, the [Property Generation script](./src/scripts/utils//4-generateProperties.sh) will generate Language Configurations for each of these types.
+
+### Advanced scenario
+In more sophisticated scenarios, which depend on how properties are set in the legacy SCM tool, multiple types can be assigned to an artifact:
+~~~~
+PGM001, COBOL, BATCH
+PGM002, COBOL, CICSDB2
+PMG003, PLI, IMSDB
+~~~~
+
+Each type configuration would be defined separately in the [Types Configurations file](./samples/typesConfigurations.yaml), for instance:
+
+~~~~YAML
+- typeConfiguration: "COBOL"
+  cobol_compileParms: "LIB,SOURCE"
+  cobol_linkedit: true
+- typeConfiguration: "PLI"
+  pli_compileParms: "PP(INCLUDE('ID(++INCLUDE)'))"
+  pli_linkedit: true
+- typeConfiguration: "BATCH"
+  isCICS: false
+- typeConfiguration: "CICSDB2"
+  isCICS: true
+  isSQL: true
+- typeConfiguration: "IMSDB"
+  pli_compileIMSParms: SYSTEM(IMS)  
+  isCICS: false
+  isSQL: false
+  isDLI: true
+~~~~
+
+In this configuration, the [Property Generation script](./src/scripts/utils/4-generateProperties.sh) will generate composite Language Configurations files in *dbb-zAppbuild*'s [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf) folder.
+In this example, 3 files would be created:
+* *BATCH-COBOL.properties* which combines properties from the *BATCH* and the *COBOL* types
+* *CICSDB2-COBOL.properties*, which combines properties from the *CICSDB2* and the *COBOL* types
+* *IMSDB-PLI.properties*, which combines properties from the *IMSDB* and *PLI* types
+
+The name of composite types are based on the names of the originating types sorted alphabetically, to avoid duplication.
+The Language Configuration mapping file in each application's *application-conf* folder contains mappings between artifacts and their associated composite types, also sorted alphabetically.
+
 
 # Working with the DBB Git Migration Modeler utility
 
@@ -264,151 +447,165 @@ Execution of the command:
 
 Output log:
 ~~~~  
-[INFO] /usr/lpp/dbb/v2r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/extractApplications.groovy 		-d DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS 		--applicationsMapping /u/mdalbin/Migration-Modeler-MDLB-work/applicationsMapping.yaml 		--repositoryPathsMapping /u/mdalbin/Migration-Modeler-MDLB-work/repositoryPathsMapping.yaml 		--types /u/mdalbin/Migration-Modeler-MDLB-work/types.txt 		-oc /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs 		-oa /u/mdalbin/Migration-Modeler-MDLB-work/applications 		-l /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
-2024-10-10 11:10:23.931 ** Reading the Repository Layout Mapping definition. 
-2024-10-10 11:10:24.205 ** Reading the Application Mapping definition. 
-2024-10-10 11:10:24.222 ** Reading the Type Mapping definition. 
-2024-10-10 11:10:24.252 ** Iterating through the provided datasets. 
-2024-10-10 11:10:24.285 *** Found DBEHM.MIG.COBOL
-2024-10-10 11:10:24.470 **** 'DBEHM.MIG.COBOL(ABNDPROC)' - Mapped Application: CBSA
-2024-10-10 11:10:24.571 **** 'DBEHM.MIG.COBOL(ACCLOAD)' - Mapped Application: CBSA
-2024-10-10 11:10:24.613 **** 'DBEHM.MIG.COBOL(ACCOFFL)' - Mapped Application: CBSA
-2024-10-10 11:10:24.636 **** 'DBEHM.MIG.COBOL(ACCTCTRL)' - Mapped Application: CBSA
-2024-10-10 11:10:24.661 **** 'DBEHM.MIG.COBOL(BANKDATA)' - Mapped Application: CBSA
-2024-10-10 11:10:24.691 **** 'DBEHM.MIG.COBOL(BNKMENU)' - Mapped Application: CBSA
-2024-10-10 11:10:24.721 **** 'DBEHM.MIG.COBOL(BNK1CAC)' - Mapped Application: CBSA
-2024-10-10 11:10:24.745 **** 'DBEHM.MIG.COBOL(BNK1CCA)' - Mapped Application: CBSA
-2024-10-10 11:10:24.766 **** 'DBEHM.MIG.COBOL(BNK1CCS)' - Mapped Application: CBSA
-2024-10-10 11:10:24.783 **** 'DBEHM.MIG.COBOL(BNK1CRA)' - Mapped Application: CBSA
-2024-10-10 11:10:24.801 **** 'DBEHM.MIG.COBOL(BNK1DAC)' - Mapped Application: CBSA
-2024-10-10 11:10:24.831 **** 'DBEHM.MIG.COBOL(BNK1DCS)' - Mapped Application: CBSA
-2024-10-10 11:10:24.842 **** 'DBEHM.MIG.COBOL(BNK1TFN)' - Mapped Application: CBSA
-2024-10-10 11:10:24.853 **** 'DBEHM.MIG.COBOL(BNK1UAC)' - Mapped Application: CBSA
-2024-10-10 11:10:24.866 **** 'DBEHM.MIG.COBOL(CONSENT)' - Mapped Application: CBSA
-2024-10-10 11:10:24.875 **** 'DBEHM.MIG.COBOL(CONSTTST)' - Mapped Application: CBSA
-2024-10-10 11:10:24.885 **** 'DBEHM.MIG.COBOL(CRDTAGY1)' - Mapped Application: CBSA
-2024-10-10 11:10:24.893 **** 'DBEHM.MIG.COBOL(CRDTAGY2)' - Mapped Application: CBSA
-2024-10-10 11:10:24.901 **** 'DBEHM.MIG.COBOL(CRDTAGY3)' - Mapped Application: CBSA
-2024-10-10 11:10:24.909 **** 'DBEHM.MIG.COBOL(CRDTAGY4)' - Mapped Application: CBSA
-2024-10-10 11:10:24.917 **** 'DBEHM.MIG.COBOL(CRDTAGY5)' - Mapped Application: CBSA
-2024-10-10 11:10:24.926 **** 'DBEHM.MIG.COBOL(CREACC)' - Mapped Application: CBSA
-2024-10-10 11:10:24.936 **** 'DBEHM.MIG.COBOL(CRECUST)' - Mapped Application: CBSA
-2024-10-10 11:10:24.946 **** 'DBEHM.MIG.COBOL(CUSTCTRL)' - Mapped Application: CBSA
-2024-10-10 11:10:24.954 **** 'DBEHM.MIG.COBOL(DBCRFUN)' - Mapped Application: CBSA
-2024-10-10 11:10:24.964 **** 'DBEHM.MIG.COBOL(DELACC)' - Mapped Application: CBSA
-2024-10-10 11:10:25.009 **** 'DBEHM.MIG.COBOL(DELCUS)' - Mapped Application: CBSA
-2024-10-10 11:10:25.017 **** 'DBEHM.MIG.COBOL(DPAYAPI)' - Mapped Application: CBSA
-2024-10-10 11:10:25.036 **** 'DBEHM.MIG.COBOL(DPAYTST)' - Mapped Application: CBSA
-2024-10-10 11:10:25.043 **** 'DBEHM.MIG.COBOL(EBUD0RUN)' - Mapped Application: RetirementCalculator
-2024-10-10 11:10:25.051 **** 'DBEHM.MIG.COBOL(EBUD01)' - Mapped Application: RetirementCalculator
-2024-10-10 11:10:25.058 **** 'DBEHM.MIG.COBOL(EBUD02)' - Mapped Application: RetirementCalculator
-2024-10-10 11:10:25.065 **** 'DBEHM.MIG.COBOL(EBUD03)' - Mapped Application: RetirementCalculator
-2024-10-10 11:10:25.072 **** 'DBEHM.MIG.COBOL(GETCOMPY)' - Mapped Application: CBSA
-2024-10-10 11:10:25.079 **** 'DBEHM.MIG.COBOL(GETSCODE)' - Mapped Application: CBSA
-2024-10-10 11:10:25.085 **** 'DBEHM.MIG.COBOL(INQACC)' - Mapped Application: CBSA
-2024-10-10 11:10:25.092 **** 'DBEHM.MIG.COBOL(INQACCCU)' - Mapped Application: CBSA
-2024-10-10 11:10:25.099 **** 'DBEHM.MIG.COBOL(INQCUST)' - Mapped Application: CBSA
-2024-10-10 11:10:25.107 **** 'DBEHM.MIG.COBOL(LGACDB01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.118 **** 'DBEHM.MIG.COBOL(LGACDB02)' - Mapped Application: GenApp
-2024-10-10 11:10:25.124 **** 'DBEHM.MIG.COBOL(LGACUS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.132 **** 'DBEHM.MIG.COBOL(LGACVS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.143 **** 'DBEHM.MIG.COBOL(LGAPDB01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.150 **** 'DBEHM.MIG.COBOL(LGAPOL01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.158 **** 'DBEHM.MIG.COBOL(LGAPVS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.165 **** 'DBEHM.MIG.COBOL(LGASTAT1)' - Mapped Application: GenApp
-2024-10-10 11:10:25.172 **** 'DBEHM.MIG.COBOL(LGDPDB01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.178 **** 'DBEHM.MIG.COBOL(LGDPOL01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.185 **** 'DBEHM.MIG.COBOL(LGDPVS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.191 **** 'DBEHM.MIG.COBOL(LGICDB01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.199 **** 'DBEHM.MIG.COBOL(LGICUS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.205 **** 'DBEHM.MIG.COBOL(LGICVS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.213 **** 'DBEHM.MIG.COBOL(LGIPDB01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.220 **** 'DBEHM.MIG.COBOL(LGIPOL01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.227 **** 'DBEHM.MIG.COBOL(LGIPVS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.236 **** 'DBEHM.MIG.COBOL(LGSETUP)' - Mapped Application: GenApp
-2024-10-10 11:10:25.243 **** 'DBEHM.MIG.COBOL(LGSTSQ)' - Mapped Application: GenApp
-2024-10-10 11:10:25.249 **** 'DBEHM.MIG.COBOL(LGTESTC1)' - Mapped Application: GenApp
-2024-10-10 11:10:25.257 **** 'DBEHM.MIG.COBOL(LGTESTP1)' - Mapped Application: GenApp
-2024-10-10 11:10:25.265 **** 'DBEHM.MIG.COBOL(LGTESTP2)' - Mapped Application: GenApp
-2024-10-10 11:10:25.271 **** 'DBEHM.MIG.COBOL(LGTESTP3)' - Mapped Application: GenApp
-2024-10-10 11:10:25.280 **** 'DBEHM.MIG.COBOL(LGTESTP4)' - Mapped Application: GenApp
-2024-10-10 11:10:25.290 **** 'DBEHM.MIG.COBOL(LGUCDB01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.296 **** 'DBEHM.MIG.COBOL(LGUCUS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.302 **** 'DBEHM.MIG.COBOL(LGUCVS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.309 **** 'DBEHM.MIG.COBOL(LGUPDB01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.316 **** 'DBEHM.MIG.COBOL(LGUPOL01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.323 **** 'DBEHM.MIG.COBOL(LGUPVS01)' - Mapped Application: GenApp
-2024-10-10 11:10:25.329 **** 'DBEHM.MIG.COBOL(LGWEBST5)' - Mapped Application: GenApp
-2024-10-10 11:10:25.337 **** 'DBEHM.MIG.COBOL(OLDACDB1)' - Mapped Application: UNASSIGNED
-2024-10-10 11:10:25.344 **** 'DBEHM.MIG.COBOL(OLDACDB2)' - Mapped Application: UNASSIGNED
-2024-10-10 11:10:25.352 **** 'DBEHM.MIG.COBOL(PROLOAD)' - Mapped Application: CBSA
-2024-10-10 11:10:25.359 **** 'DBEHM.MIG.COBOL(PROOFFL)' - Mapped Application: CBSA
-2024-10-10 11:10:25.365 **** 'DBEHM.MIG.COBOL(UPDACC)' - Mapped Application: CBSA
-2024-10-10 11:10:25.371 **** 'DBEHM.MIG.COBOL(UPDCUST)' - Mapped Application: CBSA
-2024-10-10 11:10:25.378 **** 'DBEHM.MIG.COBOL(XFRFUN)' - Mapped Application: CBSA
-2024-10-10 11:10:25.390 *** Found DBEHM.MIG.COPY
-2024-10-10 11:10:25.396 **** 'DBEHM.MIG.COPY(ABNDINFO)' - Mapped Application: CBSA
-2024-10-10 11:10:25.402 **** 'DBEHM.MIG.COPY(ACCDB2)' - Mapped Application: CBSA
-2024-10-10 11:10:25.411 **** 'DBEHM.MIG.COPY(ACCOUNT)' - Mapped Application: CBSA
-2024-10-10 11:10:25.418 **** 'DBEHM.MIG.COPY(ACCTCTRL)' - Mapped Application: CBSA
-2024-10-10 11:10:25.426 **** 'DBEHM.MIG.COPY(BNK1ACC)' - Mapped Application: CBSA
-2024-10-10 11:10:25.434 **** 'DBEHM.MIG.COPY(BNK1CAM)' - Mapped Application: CBSA
-2024-10-10 11:10:25.441 **** 'DBEHM.MIG.COPY(BNK1CCM)' - Mapped Application: CBSA
-2024-10-10 11:10:25.453 **** 'DBEHM.MIG.COPY(BNK1CDM)' - Mapped Application: CBSA
-2024-10-10 11:10:25.460 **** 'DBEHM.MIG.COPY(BNK1DAM)' - Mapped Application: CBSA
-2024-10-10 11:10:25.468 **** 'DBEHM.MIG.COPY(BNK1DCM)' - Mapped Application: CBSA
-2024-10-10 11:10:25.476 **** 'DBEHM.MIG.COPY(BNK1MAI)' - Mapped Application: CBSA
-2024-10-10 11:10:25.483 **** 'DBEHM.MIG.COPY(BNK1TFM)' - Mapped Application: CBSA
-2024-10-10 11:10:25.490 **** 'DBEHM.MIG.COPY(BNK1UAM)' - Mapped Application: CBSA
-2024-10-10 11:10:25.498 **** 'DBEHM.MIG.COPY(CONSENT)' - Mapped Application: CBSA
-2024-10-10 11:10:25.506 **** 'DBEHM.MIG.COPY(CONSTAPI)' - Mapped Application: CBSA
-2024-10-10 11:10:25.511 **** 'DBEHM.MIG.COPY(CONSTDB2)' - Mapped Application: CBSA
-2024-10-10 11:10:25.516 **** 'DBEHM.MIG.COPY(CONTDB2)' - Mapped Application: CBSA
-2024-10-10 11:10:25.521 **** 'DBEHM.MIG.COPY(CREACC)' - Mapped Application: CBSA
-2024-10-10 11:10:25.525 **** 'DBEHM.MIG.COPY(CRECUST)' - Mapped Application: CBSA
-2024-10-10 11:10:25.530 **** 'DBEHM.MIG.COPY(CUSTCTRL)' - Mapped Application: CBSA
-2024-10-10 11:10:25.540 **** 'DBEHM.MIG.COPY(CUSTOMER)' - Mapped Application: CBSA
-2024-10-10 11:10:25.546 **** 'DBEHM.MIG.COPY(DATASTR)' - Mapped Application: UNASSIGNED
-2024-10-10 11:10:25.552 **** 'DBEHM.MIG.COPY(DELACC)' - Mapped Application: CBSA
-2024-10-10 11:10:25.557 **** 'DBEHM.MIG.COPY(DELCUS)' - Mapped Application: CBSA
-2024-10-10 11:10:25.562 **** 'DBEHM.MIG.COPY(GETCOMPY)' - Mapped Application: CBSA
-2024-10-10 11:10:25.570 **** 'DBEHM.MIG.COPY(GETSCODE)' - Mapped Application: CBSA
-2024-10-10 11:10:25.575 **** 'DBEHM.MIG.COPY(INQACC)' - Mapped Application: CBSA
-2024-10-10 11:10:25.580 **** 'DBEHM.MIG.COPY(INQACCCU)' - Mapped Application: CBSA
-2024-10-10 11:10:25.585 **** 'DBEHM.MIG.COPY(INQCUST)' - Mapped Application: CBSA
-2024-10-10 11:10:25.591 **** 'DBEHM.MIG.COPY(LGCMAREA)' - Mapped Application: GenApp
-2024-10-10 11:10:25.597 **** 'DBEHM.MIG.COPY(LGCMARED)' - Mapped Application: GenApp
-2024-10-10 11:10:25.602 **** 'DBEHM.MIG.COPY(LGPOLICY)' - Mapped Application: GenApp
-2024-10-10 11:10:25.608 **** 'DBEHM.MIG.COPY(LINPUT)' - Mapped Application: RetirementCalculator
-2024-10-10 11:10:25.613 **** 'DBEHM.MIG.COPY(PAYDBCR)' - Mapped Application: UNASSIGNED
-2024-10-10 11:10:25.618 **** 'DBEHM.MIG.COPY(PROCDB2)' - Mapped Application: CBSA
-2024-10-10 11:10:25.623 **** 'DBEHM.MIG.COPY(PROCTRAN)' - Mapped Application: CBSA
-2024-10-10 11:10:25.627 **** 'DBEHM.MIG.COPY(SORTCODE)' - Mapped Application: UNASSIGNED
-2024-10-10 11:10:25.632 **** 'DBEHM.MIG.COPY(UPDACC)' - Mapped Application: CBSA
-2024-10-10 11:10:25.639 **** 'DBEHM.MIG.COPY(UPDCUST)' - Mapped Application: CBSA
-2024-10-10 11:10:25.645 **** 'DBEHM.MIG.COPY(XFRFUN)' - Mapped Application: CBSA
-2024-10-10 11:10:25.651 *** Found DBEHM.MIG.BMS
-2024-10-10 11:10:25.658 **** 'DBEHM.MIG.BMS(EPSMLIS)' - Mapped Application: UNASSIGNED
-2024-10-10 11:10:25.663 **** 'DBEHM.MIG.BMS(EPSMORT)' - Mapped Application: UNASSIGNED
-2024-10-10 11:10:25.669 **** 'DBEHM.MIG.BMS(SSMAP)' - Mapped Application: GenApp
-2024-10-10 11:10:25.688 ** Generating Applications Configurations files. 
-2024-10-10 11:10:25.690 ** Generating Configuration files for application UNASSIGNED. 
-2024-10-10 11:10:25.830 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/UNASSIGNED.mapping
-2024-10-10 11:10:25.929 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/UNASSIGNED.yml
-2024-10-10 11:10:25.930 	Estimated storage size of migrated members: 36,244 bytes
-2024-10-10 11:10:25.931 ** Generating Configuration files for application CBSA. 
-2024-10-10 11:10:26.033 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/CBSA.mapping
-2024-10-10 11:10:26.092 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/CBSA.yml
-2024-10-10 11:10:26.093 	Estimated storage size of migrated members: 1,147,571 bytes
-2024-10-10 11:10:26.093 ** Generating Configuration files for application GenApp. 
-2024-10-10 11:10:26.144 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.mapping
-2024-10-10 11:10:26.186 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.yml
-2024-10-10 11:10:26.186 	Estimated storage size of migrated members: 463,697 bytes
-2024-10-10 11:10:26.187 ** Generating Configuration files for application RetirementCalculator. 
-2024-10-10 11:10:26.225 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/RetirementCalculator.mapping
-2024-10-10 11:10:26.256 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/RetirementCalculator.yml
-2024-10-10 11:10:26.256 	Estimated storage size of migrated members: 12,838 bytes
-2024-10-10 11:10:26.259 ** Estimated storage size of all migrated members: 1,660,350 bytes
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/extractApplications.groovy 		--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 		--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
+2025-04-10 14:13:13.409 ** Script configuration:
+2025-04-10 14:13:13.443 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs
+2025-04-10 14:13:13.446 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/repositoryPathsMapping.yaml
+2025-04-10 14:13:13.450 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-10 14:13:13.452 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
+2025-04-10 14:13:13.455 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
+2025-04-10 14:13:13.457 	DBB_MODELER_APPMAPPINGS_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications-mappings
+2025-04-10 14:13:13.460 	APPLICATION_MEMBER_TYPE_MAPPING -> /u/mdalbin/Migration-Modeler-MDLB-work/types.txt
+2025-04-10 14:13:13.463 	SCAN_DATASET_MEMBERS_ENCODING -> IBM-1047
+2025-04-10 14:13:13.465 	SCAN_DATASET_MEMBERS -> false
+2025-04-10 14:13:13.467 ** Reading the Repository Layout Mapping definition.
+2025-04-10 14:13:13.691 ** Reading the Type Mapping definition.
+2025-04-10 14:13:13.712 ** Loading the provided Applications Mapping files.
+2025-04-10 14:13:13.720 *** Importing 'applicationsMapping.yaml'
+2025-04-10 14:13:13.743 *** Importing 'applicationsMapping-retirementCalculator.yaml'
+2025-04-10 14:13:13.752 ** Iterating through the provided datasets and mapped applications.
+2025-04-10 14:13:13.779 **** Found 'DBEHM.MIG.BMS' referenced by applications 'GenApp', 'CBSA'
+2025-04-10 14:13:14.064 ***** 'DBEHM.MIG.BMS(EPSMLIS)' - Mapped Application: UNASSIGNED
+2025-04-10 14:13:14.124 ***** 'DBEHM.MIG.BMS(EPSMORT)' - Mapped Application: UNASSIGNED
+2025-04-10 14:13:14.205 ***** 'DBEHM.MIG.BMS(SSMAP)' - Mapped Application: GenApp
+2025-04-10 14:13:14.211 **** Found 'DBEHM.MIG.RETCALC.COPY' referenced by applications 'RetirementCalculator'
+2025-04-10 14:13:14.220 ***** 'DBEHM.MIG.RETCALC.COPY(LINPUT)' - Mapped Application: RetirementCalculator
+2025-04-10 14:13:14.222 **** Found 'DBEHM.MIG.OTHER.COBOL' referenced by applications 'GenApp', 'CBSA'
+2025-04-10 14:13:14.238 ***** 'DBEHM.MIG.OTHER.COBOL(ABNDPROC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.248 ***** 'DBEHM.MIG.OTHER.COBOL(ACCLOAD)' - Mapped Application: CBSA
+2025-04-10 14:13:14.255 ***** 'DBEHM.MIG.OTHER.COBOL(ACCOFFL)' - Mapped Application: CBSA
+2025-04-10 14:13:14.261 ***** 'DBEHM.MIG.OTHER.COBOL(ACCTCTRL)' - Mapped Application: CBSA
+2025-04-10 14:13:14.269 ***** 'DBEHM.MIG.OTHER.COBOL(BANKDATA)' - Mapped Application: CBSA
+2025-04-10 14:13:14.276 ***** 'DBEHM.MIG.OTHER.COBOL(BNKMENU)' - Mapped Application: CBSA
+2025-04-10 14:13:14.284 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1CAC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.288 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1CCA)' - Mapped Application: CBSA
+2025-04-10 14:13:14.291 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1CCS)' - Mapped Application: CBSA
+2025-04-10 14:13:14.294 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1CRA)' - Mapped Application: CBSA
+2025-04-10 14:13:14.297 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1DAC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.301 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1DCS)' - Mapped Application: CBSA
+2025-04-10 14:13:14.306 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1TFN)' - Mapped Application: CBSA
+2025-04-10 14:13:14.309 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1UAC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.312 ***** 'DBEHM.MIG.OTHER.COBOL(CONSENT)' - Mapped Application: CBSA
+2025-04-10 14:13:14.315 ***** 'DBEHM.MIG.OTHER.COBOL(CONSTTST)' - Mapped Application: CBSA
+2025-04-10 14:13:14.317 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY1)' - Mapped Application: CBSA
+2025-04-10 14:13:14.320 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY2)' - Mapped Application: CBSA
+2025-04-10 14:13:14.323 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY3)' - Mapped Application: CBSA
+2025-04-10 14:13:14.326 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY4)' - Mapped Application: CBSA
+2025-04-10 14:13:14.329 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY5)' - Mapped Application: CBSA
+2025-04-10 14:13:14.332 ***** 'DBEHM.MIG.OTHER.COBOL(CREACC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.336 ***** 'DBEHM.MIG.OTHER.COBOL(CRECUST)' - Mapped Application: CBSA
+2025-04-10 14:13:14.339 ***** 'DBEHM.MIG.OTHER.COBOL(CUSTCTRL)' - Mapped Application: CBSA
+2025-04-10 14:13:14.342 ***** 'DBEHM.MIG.OTHER.COBOL(DBCRFUN)' - Mapped Application: CBSA
+2025-04-10 14:13:14.346 ***** 'DBEHM.MIG.OTHER.COBOL(DELACC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.349 ***** 'DBEHM.MIG.OTHER.COBOL(DELCUS)' - Mapped Application: CBSA
+2025-04-10 14:13:14.353 ***** 'DBEHM.MIG.OTHER.COBOL(DPAYAPI)' - Mapped Application: CBSA
+2025-04-10 14:13:14.356 ***** 'DBEHM.MIG.OTHER.COBOL(DPAYTST)' - Mapped Application: CBSA
+2025-04-10 14:13:14.360 ***** 'DBEHM.MIG.OTHER.COBOL(GETCOMPY)' - Mapped Application: CBSA
+2025-04-10 14:13:14.363 ***** 'DBEHM.MIG.OTHER.COBOL(GETSCODE)' - Mapped Application: CBSA
+2025-04-10 14:13:14.367 ***** 'DBEHM.MIG.OTHER.COBOL(INQACC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.371 ***** 'DBEHM.MIG.OTHER.COBOL(INQACCCU)' - Mapped Application: CBSA
+2025-04-10 14:13:14.375 ***** 'DBEHM.MIG.OTHER.COBOL(INQCUST)' - Mapped Application: CBSA
+2025-04-10 14:13:14.379 ***** 'DBEHM.MIG.OTHER.COBOL(LGACDB01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.382 ***** 'DBEHM.MIG.OTHER.COBOL(LGACDB02)' - Mapped Application: GenApp
+2025-04-10 14:13:14.386 ***** 'DBEHM.MIG.OTHER.COBOL(LGACUS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.390 ***** 'DBEHM.MIG.OTHER.COBOL(LGACVS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.394 ***** 'DBEHM.MIG.OTHER.COBOL(LGAPDB01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.398 ***** 'DBEHM.MIG.OTHER.COBOL(LGAPOL01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.401 ***** 'DBEHM.MIG.OTHER.COBOL(LGAPVS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.405 ***** 'DBEHM.MIG.OTHER.COBOL(LGASTAT1)' - Mapped Application: GenApp
+2025-04-10 14:13:14.409 ***** 'DBEHM.MIG.OTHER.COBOL(LGDPDB01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.413 ***** 'DBEHM.MIG.OTHER.COBOL(LGDPOL01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.417 ***** 'DBEHM.MIG.OTHER.COBOL(LGDPVS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.421 ***** 'DBEHM.MIG.OTHER.COBOL(LGICDB01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.425 ***** 'DBEHM.MIG.OTHER.COBOL(LGICUS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.428 ***** 'DBEHM.MIG.OTHER.COBOL(LGICVS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.432 ***** 'DBEHM.MIG.OTHER.COBOL(LGIPDB01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.436 ***** 'DBEHM.MIG.OTHER.COBOL(LGIPOL01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.440 ***** 'DBEHM.MIG.OTHER.COBOL(LGIPVS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.444 ***** 'DBEHM.MIG.OTHER.COBOL(LGSETUP)' - Mapped Application: GenApp
+2025-04-10 14:13:14.448 ***** 'DBEHM.MIG.OTHER.COBOL(LGSTSQ)' - Mapped Application: GenApp
+2025-04-10 14:13:14.451 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTC1)' - Mapped Application: GenApp
+2025-04-10 14:13:14.455 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTP1)' - Mapped Application: GenApp
+2025-04-10 14:13:14.459 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTP2)' - Mapped Application: GenApp
+2025-04-10 14:13:14.463 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTP3)' - Mapped Application: GenApp
+2025-04-10 14:13:14.466 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTP4)' - Mapped Application: GenApp
+2025-04-10 14:13:14.470 ***** 'DBEHM.MIG.OTHER.COBOL(LGUCDB01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.474 ***** 'DBEHM.MIG.OTHER.COBOL(LGUCUS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.478 ***** 'DBEHM.MIG.OTHER.COBOL(LGUCVS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.482 ***** 'DBEHM.MIG.OTHER.COBOL(LGUPDB01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.485 ***** 'DBEHM.MIG.OTHER.COBOL(LGUPOL01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.489 ***** 'DBEHM.MIG.OTHER.COBOL(LGUPVS01)' - Mapped Application: GenApp
+2025-04-10 14:13:14.493 ***** 'DBEHM.MIG.OTHER.COBOL(LGWEBST5)' - Mapped Application: GenApp
+2025-04-10 14:13:14.497 ***** 'DBEHM.MIG.OTHER.COBOL(OLDACDB1)' - Mapped Application: UNASSIGNED
+2025-04-10 14:13:14.504 ***** 'DBEHM.MIG.OTHER.COBOL(OLDACDB2)' - Mapped Application: UNASSIGNED
+2025-04-10 14:13:14.509 ***** 'DBEHM.MIG.OTHER.COBOL(PROLOAD)' - Mapped Application: CBSA
+2025-04-10 14:13:14.513 ***** 'DBEHM.MIG.OTHER.COBOL(PROOFFL)' - Mapped Application: CBSA
+2025-04-10 14:13:14.517 ***** 'DBEHM.MIG.OTHER.COBOL(UPDACC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.521 ***** 'DBEHM.MIG.OTHER.COBOL(UPDCUST)' - Mapped Application: CBSA
+2025-04-10 14:13:14.524 ***** 'DBEHM.MIG.OTHER.COBOL(XFRFUN)' - Mapped Application: CBSA
+2025-04-10 14:13:14.527 **** Found 'DBEHM.MIG.OTHER.COPY' referenced by applications 'GenApp', 'CBSA'
+2025-04-10 14:13:14.533 ***** 'DBEHM.MIG.OTHER.COPY(ABNDINFO)' - Mapped Application: CBSA
+2025-04-10 14:13:14.535 ***** 'DBEHM.MIG.OTHER.COPY(ACCDB2)' - Mapped Application: CBSA
+2025-04-10 14:13:14.537 ***** 'DBEHM.MIG.OTHER.COPY(ACCOUNT)' - Mapped Application: CBSA
+2025-04-10 14:13:14.539 ***** 'DBEHM.MIG.OTHER.COPY(ACCTCTRL)' - Mapped Application: CBSA
+2025-04-10 14:13:14.540 ***** 'DBEHM.MIG.OTHER.COPY(BNK1ACC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.542 ***** 'DBEHM.MIG.OTHER.COPY(BNK1CAM)' - Mapped Application: CBSA
+2025-04-10 14:13:14.544 ***** 'DBEHM.MIG.OTHER.COPY(BNK1CCM)' - Mapped Application: CBSA
+2025-04-10 14:13:14.546 ***** 'DBEHM.MIG.OTHER.COPY(BNK1CDM)' - Mapped Application: CBSA
+2025-04-10 14:13:14.548 ***** 'DBEHM.MIG.OTHER.COPY(BNK1DAM)' - Mapped Application: CBSA
+2025-04-10 14:13:14.550 ***** 'DBEHM.MIG.OTHER.COPY(BNK1DCM)' - Mapped Application: CBSA
+2025-04-10 14:13:14.551 ***** 'DBEHM.MIG.OTHER.COPY(BNK1MAI)' - Mapped Application: CBSA
+2025-04-10 14:13:14.553 ***** 'DBEHM.MIG.OTHER.COPY(BNK1TFM)' - Mapped Application: CBSA
+2025-04-10 14:13:14.555 ***** 'DBEHM.MIG.OTHER.COPY(BNK1UAM)' - Mapped Application: CBSA
+2025-04-10 14:13:14.557 ***** 'DBEHM.MIG.OTHER.COPY(CONSENT)' - Mapped Application: CBSA
+2025-04-10 14:13:14.559 ***** 'DBEHM.MIG.OTHER.COPY(CONSTAPI)' - Mapped Application: CBSA
+2025-04-10 14:13:14.560 ***** 'DBEHM.MIG.OTHER.COPY(CONSTDB2)' - Mapped Application: CBSA
+2025-04-10 14:13:14.562 ***** 'DBEHM.MIG.OTHER.COPY(CONTDB2)' - Mapped Application: CBSA
+2025-04-10 14:13:14.564 ***** 'DBEHM.MIG.OTHER.COPY(CREACC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.566 ***** 'DBEHM.MIG.OTHER.COPY(CRECUST)' - Mapped Application: CBSA
+2025-04-10 14:13:14.568 ***** 'DBEHM.MIG.OTHER.COPY(CUSTCTRL)' - Mapped Application: CBSA
+2025-04-10 14:13:14.570 ***** 'DBEHM.MIG.OTHER.COPY(CUSTOMER)' - Mapped Application: CBSA
+2025-04-10 14:13:14.573 ***** 'DBEHM.MIG.OTHER.COPY(DATASTR)' - Mapped Application: UNASSIGNED
+2025-04-10 14:13:14.577 ***** 'DBEHM.MIG.OTHER.COPY(DELACC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.579 ***** 'DBEHM.MIG.OTHER.COPY(DELCUS)' - Mapped Application: CBSA
+2025-04-10 14:13:14.581 ***** 'DBEHM.MIG.OTHER.COPY(GETCOMPY)' - Mapped Application: CBSA
+2025-04-10 14:13:14.584 ***** 'DBEHM.MIG.OTHER.COPY(GETSCODE)' - Mapped Application: CBSA
+2025-04-10 14:13:14.586 ***** 'DBEHM.MIG.OTHER.COPY(INQACC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.589 ***** 'DBEHM.MIG.OTHER.COPY(INQACCCU)' - Mapped Application: CBSA
+2025-04-10 14:13:14.591 ***** 'DBEHM.MIG.OTHER.COPY(INQCUST)' - Mapped Application: CBSA
+2025-04-10 14:13:14.594 ***** 'DBEHM.MIG.OTHER.COPY(LGCMAREA)' - Mapped Application: GenApp
+2025-04-10 14:13:14.597 ***** 'DBEHM.MIG.OTHER.COPY(LGCMARED)' - Mapped Application: GenApp
+2025-04-10 14:13:14.600 ***** 'DBEHM.MIG.OTHER.COPY(LGPOLICY)' - Mapped Application: GenApp
+2025-04-10 14:13:14.603 ***** 'DBEHM.MIG.OTHER.COPY(PAYDBCR)' - Mapped Application: UNASSIGNED
+2025-04-10 14:13:14.608 ***** 'DBEHM.MIG.OTHER.COPY(PROCDB2)' - Mapped Application: CBSA
+2025-04-10 14:13:14.611 ***** 'DBEHM.MIG.OTHER.COPY(PROCTRAN)' - Mapped Application: CBSA
+2025-04-10 14:13:14.614 ***** 'DBEHM.MIG.OTHER.COPY(SORTCODE)' - Mapped Application: UNASSIGNED
+2025-04-10 14:13:14.618 ***** 'DBEHM.MIG.OTHER.COPY(UPDACC)' - Mapped Application: CBSA
+2025-04-10 14:13:14.621 ***** 'DBEHM.MIG.OTHER.COPY(UPDCUST)' - Mapped Application: CBSA
+2025-04-10 14:13:14.624 ***** 'DBEHM.MIG.OTHER.COPY(XFRFUN)' - Mapped Application: CBSA
+2025-04-10 14:13:14.626 **** Found 'DBEHM.MIG.RETCALC.COBOL' referenced by applications 'RetirementCalculator'
+2025-04-10 14:13:14.631 ***** 'DBEHM.MIG.RETCALC.COBOL(EBUD0RUN)' - Mapped Application: RetirementCalculator
+2025-04-10 14:13:14.631 ***** 'DBEHM.MIG.RETCALC.COBOL(EBUD01)' - Mapped Application: RetirementCalculator
+2025-04-10 14:13:14.632 ***** 'DBEHM.MIG.RETCALC.COBOL(EBUD02)' - Mapped Application: RetirementCalculator
+2025-04-10 14:13:14.633 ***** 'DBEHM.MIG.RETCALC.COBOL(EBUD03)' - Mapped Application: RetirementCalculator
+2025-04-10 14:13:14.645 ** Generating Applications Configurations files.
+2025-04-10 14:13:14.647 ** Generating Configuration files for application UNASSIGNED.
+2025-04-10 14:13:14.953 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/UNASSIGNED.mapping
+2025-04-10 14:13:15.208 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/UNASSIGNED.yml
+2025-04-10 14:13:15.263 	Estimated storage size of migrated members: 36,244 bytes
+2025-04-10 14:13:15.263 ** Generating Configuration files for application CBSA.
+2025-04-10 14:13:15.493 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/CBSA.mapping
+2025-04-10 14:13:15.718 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/CBSA.yml
+2025-04-10 14:13:15.928 	Estimated storage size of migrated members: 1,147,571 bytes
+2025-04-10 14:13:15.929 ** Generating Configuration files for application GenApp.
+2025-04-10 14:13:16.136 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.mapping
+2025-04-10 14:13:16.331 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.yml
+2025-04-10 14:13:16.429 	Estimated storage size of migrated members: 463,749 bytes
+2025-04-10 14:13:16.429 ** Generating Configuration files for application RetirementCalculator.
+2025-04-10 14:13:16.621 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/RetirementCalculator.mapping
+2025-04-10 14:13:16.822 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/RetirementCalculator.yml
+2025-04-10 14:13:16.839 	Estimated storage size of migrated members: 12,838 bytes
+2025-04-10 14:13:16.841 ** Estimated storage size of all migrated members: 1,660,402 bytes
 ~~~~
 </details>
 
@@ -425,86 +622,46 @@ Execution of the command:
 
 Output log:  
 ~~~~
-[INFO] /usr/lpp/dbb/v2r0/bin/groovyz /usr/lpp/dbb/v2r0/migration/bin/migrate.groovy -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/2-CBSA.migration.log -np info -r /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/CBSA.mapping
-Messages will be saved in /u/mdalbin/Migration-Modeler-MDLB-work/logs/2-CBSA.migration.log
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /usr/lpp/dbb/v3r0/migration/bin/migrate.groovy -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/2-GenApp.migration.log -np info -r /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.mapping
+Messages will be saved in /u/mdalbin/Migration-Modeler-MDLB-work/logs/2-GenApp.migration.log
 Non-printable scan level is info
-Local GIT repository: /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA
-Migrate data sets using mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/CBSA.mapping
-Copying [DBEHM.MIG.COPY, CUSTCTRL] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/custctrl.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, ACCTCTRL] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/acctctrl.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, DELACC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/delacc.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, BNK1CAC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bnk1cac.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, GETCOMPY] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/getcompy.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, XFRFUN] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/xfrfun.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, CREACC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/creacc.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, BNK1CCM] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/bnk1ccm.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, UPDCUST] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/updcust.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, ABNDINFO] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/abndinfo.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, BNK1CAM] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/bnk1cam.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, UPDACC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/updacc.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, BNK1UAC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bnk1uac.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, CRDTAGY3] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/crdtagy3.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, BNK1CCS] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bnk1ccs.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, PAYDBCR] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/paydbcr.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, CRDTAGY4] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/crdtagy4.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, CONSTDB2] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/constdb2.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, BNK1ACC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/bnk1acc.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, INQACCCU] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/inqacccu.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, CONSENT] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/consent.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, PROLOAD] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/proload.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, ACCLOAD] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/accload.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, UPDACC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/updacc.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, BNK1TFM] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/bnk1tfm.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, INQACCCU] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/inqacccu.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, ABNDPROC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/abndproc.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, ACCOUNT] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/account.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, CRECUST] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/crecust.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, PROCTRAN] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/proctran.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, DELCUS] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/delcus.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, BNK1CRA] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bnk1cra.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, DPAYAPI] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/dpayapi.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, CRDTAGY5] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/crdtagy5.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, GETCOMPY] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/getcompy.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, INQCUST] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/inqcust.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, SORTCODE] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/sortcode.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, CRECUST] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/crecust.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, BNK1MAI] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/bnk1mai.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, BNK1CCA] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bnk1cca.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, DELCUS] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/delcus.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, CONSENT] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/consent.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, INQACC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/inqacc.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, BNKMENU] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bnkmenu.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, CREACC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/creacc.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, DBCRFUN] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/dbcrfun.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, BNK1CDM] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/bnk1cdm.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, ACCDB2] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/accdb2.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, PROOFFL] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/prooffl.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, GETSCODE] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/getscode.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, ACCTCTRL] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/acctctrl.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, ACCOFFL] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/accoffl.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, BNK1TFN] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bnk1tfn.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, UPDCUST] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/updcust.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, CRDTAGY1] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/crdtagy1.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, CUSTCTRL] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/custctrl.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, BNK1UAM] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/bnk1uam.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, INQCUST] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/inqcust.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, DPAYTST] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/dpaytst.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, CONSTAPI] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/constapi.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, DELACC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/delacc.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, BNK1DAC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bnk1dac.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, PROCDB2] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/procdb2.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, BANKDATA] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bankdata.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, BNK1DCM] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/bnk1dcm.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, DATASTR] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/datastr.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, BNK1DAM] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/bnk1dam.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, CONTDB2] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/contdb2.cpy using IBM-1047
-Copying [DBEHM.MIG.COBOL, GETSCODE] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/getscode.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, BNK1DCS] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/bnk1dcs.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, CRDTAGY2] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/crdtagy2.cbl using IBM-1047
-Copying [DBEHM.MIG.COBOL, CONSTTST] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/cobol/consttst.cbl using IBM-1047
-Copying [DBEHM.MIG.COPY, INQACC] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/inqacc.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, CUSTOMER] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/customer.cpy using IBM-1047
-Copying [DBEHM.MIG.COPY, XFRFUN] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA/src/copy/xfrfun.cpy using IBM-1047
+Local GIT repository: /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp
+Migrate data sets using mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.mapping
+Copying [DBEHM.MIG.OTHER.COBOL, LGASTAT1] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgastat1.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGSTSQ] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgstsq.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COPY, LGCMAREA] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/copy/lgcmarea.cpy using IBM-1047
+Copying [DBEHM.MIG.BMS, SSMAP] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/bms/ssmap.bms using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP3] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestp3.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGDPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgdpol01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP1] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestp1.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGICDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgicdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgupvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgupol01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUCDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgucdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGWEBST5] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgwebst5.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGAPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgapvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUCUS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgucus01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGACUS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgacus01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGACVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgacvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGIPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgipol01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COPY, LGPOLICY] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/copy/lgpolicy.cpy using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGDPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgdpvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGACDB02] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgacdb02.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGAPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgapol01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGICVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgicvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGIPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgipvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGDPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgdpdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUCVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgucvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COPY, LGCMARED] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/copy/lgcmared.cpy using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP4] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestp4.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP2] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestp2.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgupdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGICUS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgicus01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGAPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgapdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTC1] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestc1.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGSETUP] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgsetup.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGIPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgipdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGACDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgacdb01.cbl using IBM-1047
 ~~~~
 </details>
 
@@ -525,386 +682,224 @@ Execution of the command:
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v2r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 			-w /u/mdalbin/Migration-Modeler-MDLB-work/applications 			-a CBSA 			-m /u/mdalbin/Migration-Modeler-MDLB-work/dbb-metadatastore 			-l /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-scan.log
-2024-10-10 11:20:48.270 ** Scanning the files.
-2024-10-10 11:20:48.569 	 Scanning file CBSA/CBSA/src/cobol/getscode.cbl 
-2024-10-10 11:20:48.666 	 Scanning file CBSA/CBSA/src/cobol/acctctrl.cbl 
-2024-10-10 11:20:48.710 	 Scanning file CBSA/CBSA/src/copy/procdb2.cpy 
-2024-10-10 11:20:48.725 	 Scanning file CBSA/CBSA/src/cobol/bnk1cca.cbl 
-2024-10-10 11:20:48.793 	 Scanning file CBSA/CBSA/src/copy/contdb2.cpy 
-2024-10-10 11:20:48.801 	 Scanning file CBSA/CBSA/src/cobol/bnk1cac.cbl 
-2024-10-10 11:20:48.880 	 Scanning file CBSA/CBSA/src/cobol/updcust.cbl 
-2024-10-10 11:20:48.918 	 Scanning file CBSA/CBSA/src/copy/abndinfo.cpy 
-2024-10-10 11:20:48.932 	 Scanning file CBSA/CBSA/src/copy/bnk1dcm.cpy 
-2024-10-10 11:20:49.040 	 Scanning file CBSA/CBSA/src/cobol/xfrfun.cbl 
-2024-10-10 11:20:49.123 	 Scanning file CBSA/CBSA/src/copy/consent.cpy 
-2024-10-10 11:20:49.131 	 Scanning file CBSA/CBSA/src/cobol/bnk1ccs.cbl 
-2024-10-10 11:20:49.150 	 Scanning file CBSA/CBSA/src/copy/sortcode.cpy 
-2024-10-10 11:20:49.152 	 Scanning file CBSA/CBSA/src/copy/custctrl.cpy 
-2024-10-10 11:20:49.160 	 Scanning file CBSA/CBSA/src/copy/xfrfun.cpy 
-2024-10-10 11:20:49.165 	 Scanning file CBSA/CBSA/src/cobol/inqcust.cbl 
-2024-10-10 11:20:49.176 	 Scanning file CBSA/CBSA/src/cobol/crdtagy1.cbl 
-2024-10-10 11:20:49.182 	 Scanning file CBSA/CBSA/src/copy/constdb2.cpy 
-2024-10-10 11:20:49.186 	 Scanning file CBSA/CBSA/src/cobol/bankdata.cbl 
-2024-10-10 11:20:49.201 	 Scanning file CBSA/CBSA/src/cobol/crecust.cbl 
-2024-10-10 11:20:49.217 	 Scanning file CBSA/CBSA/src/copy/getcompy.cpy 
-2024-10-10 11:20:49.218 	 Scanning file CBSA/CBSA/src/cobol/consent.cbl 
-2024-10-10 11:20:49.223 	 Scanning file CBSA/CBSA/src/copy/delacc.cpy 
-2024-10-10 11:20:49.226 	 Scanning file CBSA/CBSA/src/cobol/crdtagy2.cbl 
-2024-10-10 11:20:49.233 	 Scanning file CBSA/CBSA/src/cobol/delacc.cbl 
-2024-10-10 11:20:49.239 	 Scanning file CBSA/CBSA/src/cobol/dpayapi.cbl 
-2024-10-10 11:20:49.243 	 Scanning file CBSA/CBSA/src/copy/inqacccu.cpy 
-2024-10-10 11:20:49.246 	 Scanning file CBSA/CBSA/src/cobol/bnk1tfn.cbl 
-2024-10-10 11:20:49.253 	 Scanning file CBSA/CBSA/src/copy/constapi.cpy 
-2024-10-10 11:20:49.257 	 Scanning file CBSA/CBSA/src/cobol/proload.cbl 
-2024-10-10 11:20:49.261 	 Scanning file CBSA/CBSA/src/cobol/inqacccu.cbl 
-2024-10-10 11:20:49.266 	 Scanning file CBSA/CBSA/src/copy/bnk1cam.cpy 
-2024-10-10 11:20:49.311 	 Scanning file CBSA/CBSA/src/copy/bnk1cdm.cpy 
-2024-10-10 11:20:49.318 	 Scanning file CBSA/CBSA/src/cobol/dpaytst.cbl 
-2024-10-10 11:20:49.321 	 Scanning file CBSA/CBSA/src/cobol/consttst.cbl 
-2024-10-10 11:20:49.324 	 Scanning file CBSA/CBSA/src/cobol/bnk1cra.cbl 
-2024-10-10 11:20:49.331 	 Scanning file CBSA/CBSA/src/cobol/prooffl.cbl 
-2024-10-10 11:20:49.335 	 Scanning file CBSA/CBSA/src/cobol/crdtagy3.cbl 
-2024-10-10 11:20:49.339 	 Scanning file CBSA/CBSA/src/cobol/updacc.cbl 
-2024-10-10 11:20:49.344 	 Scanning file CBSA/CBSA/src/cobol/delcus.cbl 
-2024-10-10 11:20:49.351 	 Scanning file CBSA/CBSA/src/copy/acctctrl.cpy 
-2024-10-10 11:20:49.353 	 Scanning file CBSA/CBSA/src/cobol/accoffl.cbl 
-2024-10-10 11:20:49.356 	 Scanning file CBSA/CBSA/src/copy/updacc.cpy 
-2024-10-10 11:20:49.359 	 Scanning file CBSA/CBSA/src/copy/delcus.cpy 
-2024-10-10 11:20:49.361 	 Scanning file CBSA/.gitattributes 
-2024-10-10 11:20:49.363 	 Scanning file CBSA/CBSA/src/copy/proctran.cpy 
-2024-10-10 11:20:49.368 	 Scanning file CBSA/CBSA/src/copy/datastr.cpy 
-2024-10-10 11:20:49.369 	 Scanning file CBSA/CBSA/src/copy/updcust.cpy 
-2024-10-10 11:20:49.371 	 Scanning file CBSA/CBSA/src/cobol/crdtagy4.cbl 
-2024-10-10 11:20:49.375 	 Scanning file CBSA/CBSA/src/copy/getscode.cpy 
-2024-10-10 11:20:49.377 	 Scanning file CBSA/CBSA/src/cobol/creacc.cbl 
-2024-10-10 11:20:49.386 	 Scanning file CBSA/CBSA/src/cobol/crdtagy5.cbl 
-2024-10-10 11:20:49.389 	 Scanning file CBSA/CBSA/src/cobol/accload.cbl 
-2024-10-10 11:20:49.393 	 Scanning file CBSA/CBSA/src/copy/account.cpy 
-2024-10-10 11:20:49.395 	 Scanning file CBSA/CBSA/src/copy/bnk1ccm.cpy 
-2024-10-10 11:20:49.405 	 Scanning file CBSA/CBSA/src/copy/bnk1dam.cpy 
-2024-10-10 11:20:49.416 	 Scanning file CBSA/CBSA/src/copy/paydbcr.cpy 
-2024-10-10 11:20:49.419 	 Scanning file CBSA/CBSA/src/cobol/getcompy.cbl 
-2024-10-10 11:20:49.421 	 Scanning file CBSA/CBSA/src/cobol/custctrl.cbl 
-2024-10-10 11:20:49.423 	 Scanning file CBSA/CBSA/src/copy/accdb2.cpy 
-2024-10-10 11:20:49.425 	 Scanning file CBSA/CBSA/src/copy/inqacc.cpy 
-2024-10-10 11:20:49.428 	 Scanning file CBSA/CBSA/src/copy/bnk1mai.cpy 
-2024-10-10 11:20:49.431 	 Scanning file CBSA/CBSA/src/cobol/inqacc.cbl 
-2024-10-10 11:20:49.438 	 Scanning file CBSA/CBSA/src/cobol/bnk1dcs.cbl 
-2024-10-10 11:20:49.449 	 Scanning file CBSA/CBSA/src/cobol/bnk1dac.cbl 
-2024-10-10 11:20:49.456 	 Scanning file CBSA/CBSA/src/cobol/bnk1uac.cbl 
-2024-10-10 11:20:49.463 	 Scanning file CBSA/CBSA/src/copy/customer.cpy 
-2024-10-10 11:20:49.466 	 Scanning file CBSA/CBSA/src/copy/crecust.cpy 
-2024-10-10 11:20:49.468 	 Scanning file CBSA/CBSA/src/copy/creacc.cpy 
-2024-10-10 11:20:49.470 	 Scanning file CBSA/CBSA/src/cobol/bnkmenu.cbl 
-2024-10-10 11:20:49.477 	 Scanning file CBSA/CBSA/src/cobol/dbcrfun.cbl 
-2024-10-10 11:20:49.486 	 Scanning file CBSA/CBSA/src/copy/bnk1acc.cpy 
-2024-10-10 11:20:49.490 	 Scanning file CBSA/CBSA/src/copy/bnk1uam.cpy 
-2024-10-10 11:20:49.499 	 Scanning file CBSA/CBSA/src/copy/inqcust.cpy 
-2024-10-10 11:20:49.502 	 Scanning file CBSA/CBSA/src/cobol/abndproc.cbl 
-2024-10-10 11:20:49.505 	 Scanning file CBSA/CBSA/src/copy/bnk1tfm.cpy 
-2024-10-10 11:20:49.512 ** Storing results in the 'CBSA' DBB Collection.
-[INFO] /usr/lpp/dbb/v2r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy 			--workspace /u/mdalbin/Migration-Modeler-MDLB-work/applications 			--configurations /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs 			--metadatastore /u/mdalbin/Migration-Modeler-MDLB-work/dbb-metadatastore 			--application CBSA 			--moveFiles 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-assessUsage.log
-2024-10-10 11:21:12.787 ** Getting the list of files of 'Include File' type.
-2024-10-10 11:21:12.952 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1ccm.cpy'.
-2024-10-10 11:21:13.161 	Files depending on 'CBSA/src/copy/bnk1ccm.cpy' :
-2024-10-10 11:21:13.169 	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.171 	==> 'bnk1ccm' is owned by the 'CBSA' application
-2024-10-10 11:21:13.186 	==> Updating usage of Include File 'bnk1ccm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:13.299 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dam.cpy'.
-2024-10-10 11:21:13.329 	Files depending on 'CBSA/src/copy/bnk1dam.cpy' :
-2024-10-10 11:21:13.329 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.330 	==> 'bnk1dam' is owned by the 'CBSA' application
-2024-10-10 11:21:13.331 	==> Updating usage of Include File 'bnk1dam' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:13.383 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cam.cpy'.
-2024-10-10 11:21:13.427 	Files depending on 'CBSA/src/copy/bnk1cam.cpy' :
-2024-10-10 11:21:13.427 	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.428 	==> 'bnk1cam' is owned by the 'CBSA' application
-2024-10-10 11:21:13.429 	==> Updating usage of Include File 'bnk1cam' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:13.480 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/creacc.cpy'.
-2024-10-10 11:21:13.502 	Files depending on 'CBSA/src/copy/creacc.cpy' :
-2024-10-10 11:21:13.502 	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.502 	==> 'creacc' is owned by the 'CBSA' application
-2024-10-10 11:21:13.503 	==> Updating usage of Include File 'creacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:13.550 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dcm.cpy'.
-2024-10-10 11:21:13.575 	Files depending on 'CBSA/src/copy/bnk1dcm.cpy' :
-2024-10-10 11:21:13.576 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.576 	==> 'bnk1dcm' is owned by the 'CBSA' application
-2024-10-10 11:21:13.576 	==> Updating usage of Include File 'bnk1dcm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:13.622 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/procdb2.cpy'.
-2024-10-10 11:21:13.635 	The Include File 'procdb2' is not referenced at all.
-2024-10-10 11:21:13.679 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constdb2.cpy'.
-2024-10-10 11:21:13.688 	The Include File 'constdb2' is not referenced at all.
-2024-10-10 11:21:13.732 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/abndinfo.cpy'.
-2024-10-10 11:21:13.823 	Files depending on 'CBSA/src/copy/abndinfo.cpy' :
-2024-10-10 11:21:13.824 	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.824 	'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.824 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.824 	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.825 	'CBSA/CBSA/src/cobol/acctctrl.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.825 	'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.825 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.825 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.825 	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.825 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.827 	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.827 	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.827 	'CBSA/CBSA/src/cobol/bnkmenu.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.827 	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.827 	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.827 	'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.828 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.828 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.828 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.828 	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.828 	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.828 	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.829 	'CBSA/CBSA/src/cobol/abndproc.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.829 	'CBSA/CBSA/src/cobol/custctrl.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.829 	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.829 	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.829 	'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.830 	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.830 	==> 'abndinfo' is owned by the 'CBSA' application
-2024-10-10 11:21:13.831 	==> Updating usage of Include File 'abndinfo' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:13.875 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1tfm.cpy'.
-2024-10-10 11:21:13.886 	Files depending on 'CBSA/src/copy/bnk1tfm.cpy' :
-2024-10-10 11:21:13.886 	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.887 	==> 'bnk1tfm' is owned by the 'CBSA' application
-2024-10-10 11:21:13.887 	==> Updating usage of Include File 'bnk1tfm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:13.930 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1acc.cpy'.
-2024-10-10 11:21:13.937 	Files depending on 'CBSA/src/copy/bnk1acc.cpy' :
-2024-10-10 11:21:13.938 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in 'CBSA' application context
-2024-10-10 11:21:13.938 	==> 'bnk1acc' is owned by the 'CBSA' application
-2024-10-10 11:21:13.939 	==> Updating usage of Include File 'bnk1acc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:13.977 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/proctran.cpy'.
-2024-10-10 11:21:14.001 	Files depending on 'CBSA/src/copy/proctran.cpy' :
-2024-10-10 11:21:14.001 	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.001 	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.002 	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.002 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.002 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.002 	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.002 	==> 'proctran' is owned by the 'CBSA' application
-2024-10-10 11:21:14.003 	==> Updating usage of Include File 'proctran' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.046 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/acctctrl.cpy'.
-2024-10-10 11:21:14.063 	Files depending on 'CBSA/src/copy/acctctrl.cpy' :
-2024-10-10 11:21:14.063 	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.063 	'CBSA/CBSA/src/cobol/acctctrl.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.063 	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.063 	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.063 	==> 'acctctrl' is owned by the 'CBSA' application
-2024-10-10 11:21:14.064 	==> Updating usage of Include File 'acctctrl' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.095 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/custctrl.cpy'.
-2024-10-10 11:21:14.108 	Files depending on 'CBSA/src/copy/custctrl.cpy' :
-2024-10-10 11:21:14.108 	'CBSA/CBSA/src/cobol/custctrl.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.108 	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.108 	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.108 	==> 'custctrl' is owned by the 'CBSA' application
-2024-10-10 11:21:14.109 	==> Updating usage of Include File 'custctrl' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.139 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/xfrfun.cpy'.
-2024-10-10 11:21:14.147 	Files depending on 'CBSA/src/copy/xfrfun.cpy' :
-2024-10-10 11:21:14.147 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.147 	==> 'xfrfun' is owned by the 'CBSA' application
-2024-10-10 11:21:14.148 	==> Updating usage of Include File 'xfrfun' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.177 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/crecust.cpy'.
-2024-10-10 11:21:14.183 	Files depending on 'CBSA/src/copy/crecust.cpy' :
-2024-10-10 11:21:14.183 	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.184 	==> 'crecust' is owned by the 'CBSA' application
-2024-10-10 11:21:14.184 	==> Updating usage of Include File 'crecust' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.215 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacccu.cpy'.
-2024-10-10 11:21:14.230 	Files depending on 'CBSA/src/copy/inqacccu.cpy' :
-2024-10-10 11:21:14.230 	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.230 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.231 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.231 	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.231 	==> 'inqacccu' is owned by the 'CBSA' application
-2024-10-10 11:21:14.234 	==> Updating usage of Include File 'inqacccu' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.266 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cdm.cpy'.
-2024-10-10 11:21:14.273 	Files depending on 'CBSA/src/copy/bnk1cdm.cpy' :
-2024-10-10 11:21:14.273 	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.274 	==> 'bnk1cdm' is owned by the 'CBSA' application
-2024-10-10 11:21:14.274 	==> Updating usage of Include File 'bnk1cdm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.301 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getscode.cpy'.
-2024-10-10 11:21:14.306 	Files depending on 'CBSA/src/copy/getscode.cpy' :
-2024-10-10 11:21:14.306 	'CBSA/CBSA/src/cobol/getscode.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.307 	==> 'getscode' is owned by the 'CBSA' application
-2024-10-10 11:21:14.307 	==> Updating usage of Include File 'getscode' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.335 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/consent.cpy'.
-2024-10-10 11:21:14.343 	Files depending on 'CBSA/src/copy/consent.cpy' :
-2024-10-10 11:21:14.343 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.343 	'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.343 	'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.343 	==> 'consent' is owned by the 'CBSA' application
-2024-10-10 11:21:14.344 	==> Updating usage of Include File 'consent' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.371 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1mai.cpy'.
-2024-10-10 11:21:14.377 	Files depending on 'CBSA/src/copy/bnk1mai.cpy' :
-2024-10-10 11:21:14.377 	'CBSA/CBSA/src/cobol/bnkmenu.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.377 	==> 'bnk1mai' is owned by the 'CBSA' application
-2024-10-10 11:21:14.378 	==> Updating usage of Include File 'bnk1mai' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.406 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constapi.cpy'.
-2024-10-10 11:21:14.414 	Files depending on 'CBSA/src/copy/constapi.cpy' :
-2024-10-10 11:21:14.415 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.415 	'CBSA/CBSA/src/cobol/consttst.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.415 	'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.415 	'CBSA/CBSA/src/cobol/dpayapi.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.415 	==> 'constapi' is owned by the 'CBSA' application
-2024-10-10 11:21:14.416 	==> Updating usage of Include File 'constapi' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.443 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delacc.cpy'.
-2024-10-10 11:21:14.449 	Files depending on 'CBSA/src/copy/delacc.cpy' :
-2024-10-10 11:21:14.449 	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.449 	==> 'delacc' is owned by the 'CBSA' application
-2024-10-10 11:21:14.449 	==> Updating usage of Include File 'delacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.477 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delcus.cpy'.
-2024-10-10 11:21:14.484 	Files depending on 'CBSA/src/copy/delcus.cpy' :
-2024-10-10 11:21:14.484 	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.484 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.485 	==> 'delcus' is owned by the 'CBSA' application
-2024-10-10 11:21:14.485 	==> Updating usage of Include File 'delcus' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.514 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getcompy.cpy'.
-2024-10-10 11:21:14.520 	Files depending on 'CBSA/src/copy/getcompy.cpy' :
-2024-10-10 11:21:14.520 	'CBSA/CBSA/src/cobol/getcompy.cbl' in 'CBSA' application context
-2024-10-10 11:21:14.520 	==> 'getcompy' is owned by the 'CBSA' application
-2024-10-10 11:21:14.521 	==> Updating usage of Include File 'getcompy' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:14.548 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/accdb2.cpy'.
-2024-10-10 11:21:14.555 	The Include File 'accdb2' is not referenced at all.
-2024-10-10 11:21:14.581 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/contdb2.cpy'.
-2024-10-10 11:21:14.586 	The Include File 'contdb2' is not referenced at all.
-2024-10-10 11:21:14.990 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqcust.cpy'.
-2024-10-10 11:21:15.002 	Files depending on 'CBSA/src/copy/inqcust.cpy' :
-2024-10-10 11:21:15.002 	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.003 	'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.003 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.003 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.003 	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.003 	==> 'inqcust' is owned by the 'CBSA' application
-2024-10-10 11:21:15.004 	==> Updating usage of Include File 'inqcust' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:15.037 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updacc.cpy'.
-2024-10-10 11:21:15.043 	Files depending on 'CBSA/src/copy/updacc.cpy' :
-2024-10-10 11:21:15.044 	'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.044 	==> 'updacc' is owned by the 'CBSA' application
-2024-10-10 11:21:15.044 	==> Updating usage of Include File 'updacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:15.073 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacc.cpy'.
-2024-10-10 11:21:15.079 	Files depending on 'CBSA/src/copy/inqacc.cpy' :
-2024-10-10 11:21:15.079 	'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.079 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.079 	==> 'inqacc' is owned by the 'CBSA' application
-2024-10-10 11:21:15.080 	==> Updating usage of Include File 'inqacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:15.107 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updcust.cpy'.
-2024-10-10 11:21:15.112 	Files depending on 'CBSA/src/copy/updcust.cpy' :
-2024-10-10 11:21:15.112 	'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.113 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.113 	==> 'updcust' is owned by the 'CBSA' application
-2024-10-10 11:21:15.113 	==> Updating usage of Include File 'updcust' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:15.140 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1uam.cpy'.
-2024-10-10 11:21:15.149 	Files depending on 'CBSA/src/copy/bnk1uam.cpy' :
-2024-10-10 11:21:15.149 	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.149 	==> 'bnk1uam' is owned by the 'CBSA' application
-2024-10-10 11:21:15.149 	==> Updating usage of Include File 'bnk1uam' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:15.178 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/account.cpy'.
-2024-10-10 11:21:15.204 	Files depending on 'CBSA/src/copy/account.cpy' :
-2024-10-10 11:21:15.204 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.204 	'CBSA/CBSA/src/cobol/delacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.204 	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.204 	'CBSA/CBSA/src/cobol/consent.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.204 	'CBSA/CBSA/src/cobol/inqacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.204 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.204 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.204 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.205 	'CBSA/CBSA/src/cobol/updacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.205 	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.205 	==> 'account' is owned by the 'CBSA' application
-2024-10-10 11:21:15.205 	==> Updating usage of Include File 'account' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:15.235 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/customer.cpy'.
-2024-10-10 11:21:15.247 	Files depending on 'CBSA/src/copy/customer.cpy' :
-2024-10-10 11:21:15.247 	'CBSA/CBSA/src/cobol/delcus.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.247 	'CBSA/CBSA/src/cobol/updcust.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.247 	'CBSA/CBSA/src/cobol/inqcust.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.247 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.247 	'CBSA/CBSA/src/cobol/bankdata.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.247 	'CBSA/CBSA/src/cobol/crecust.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.247 	'CBSA/CBSA/src/cobol/creacc.cbl' in 'CBSA' application context
-2024-10-10 11:21:15.247 	==> 'customer' is owned by the 'CBSA' application
-2024-10-10 11:21:15.248 	==> Updating usage of Include File 'customer' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
-2024-10-10 11:21:15.276 ** Getting the list of files of 'Program' type.
-2024-10-10 11:21:15.300 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cac.cbl'.
-2024-10-10 11:21:15.314 	The Program 'bnk1cac' is not called by any other program.
-2024-10-10 11:21:15.342 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/proload.cbl'.
-2024-10-10 11:21:15.348 	The Program 'proload' is not called by any other program.
-2024-10-10 11:21:15.375 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dac.cbl'.
-2024-10-10 11:21:15.384 	The Program 'bnk1dac' is not called by any other program.
-2024-10-10 11:21:15.413 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpayapi.cbl'.
-2024-10-10 11:21:15.419 	The Program 'dpayapi' is not called by any other program.
-2024-10-10 11:21:15.446 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpaytst.cbl'.
-2024-10-10 11:21:15.454 	The Program 'dpaytst' is not called by any other program.
-2024-10-10 11:21:15.485 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accoffl.cbl'.
-2024-10-10 11:21:15.490 	The Program 'accoffl' is not called by any other program.
-2024-10-10 11:21:15.524 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy5.cbl'.
-2024-10-10 11:21:15.532 	The Program 'crdtagy5' is not called by any other program.
-2024-10-10 11:21:15.571 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/creacc.cbl'.
-2024-10-10 11:21:15.587 	The Program 'creacc' is not called by any other program.
-2024-10-10 11:21:15.618 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy4.cbl'.
-2024-10-10 11:21:15.624 	The Program 'crdtagy4' is not called by any other program.
-2024-10-10 11:21:15.660 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnkmenu.cbl'.
-2024-10-10 11:21:15.669 	The Program 'bnkmenu' is not called by any other program.
-2024-10-10 11:21:15.697 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bankdata.cbl'.
-2024-10-10 11:21:15.707 	The Program 'bankdata' is not called by any other program.
-2024-10-10 11:21:15.737 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/prooffl.cbl'.
-2024-10-10 11:21:15.742 	The Program 'prooffl' is not called by any other program.
-2024-10-10 11:21:15.777 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1tfn.cbl'.
-2024-10-10 11:21:15.786 	The Program 'bnk1tfn' is not called by any other program.
-2024-10-10 11:21:15.819 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cca.cbl'.
-2024-10-10 11:21:15.827 	The Program 'bnk1cca' is not called by any other program.
-2024-10-10 11:21:15.857 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dbcrfun.cbl'.
-2024-10-10 11:21:15.974 	The Program 'dbcrfun' is not called by any other program.
-2024-10-10 11:21:16.007 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/acctctrl.cbl'.
-2024-10-10 11:21:16.012 	The Program 'acctctrl' is not called by any other program.
-2024-10-10 11:21:16.051 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/custctrl.cbl'.
-2024-10-10 11:21:16.057 	The Program 'custctrl' is not called by any other program.
-2024-10-10 11:21:16.085 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/xfrfun.cbl'.
-2024-10-10 11:21:16.098 	The Program 'xfrfun' is not called by any other program.
-2024-10-10 11:21:16.127 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crecust.cbl'.
-2024-10-10 11:21:16.137 	The Program 'crecust' is not called by any other program.
-2024-10-10 11:21:16.165 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacccu.cbl'.
-2024-10-10 11:21:16.173 	The Program 'inqacccu' is not called by any other program.
-2024-10-10 11:21:16.200 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getscode.cbl'.
-2024-10-10 11:21:16.204 	The Program 'getscode' is not called by any other program.
-2024-10-10 11:21:16.230 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consent.cbl'.
-2024-10-10 11:21:16.236 	The Program 'consent' is not called by any other program.
-2024-10-10 11:21:16.263 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy3.cbl'.
-2024-10-10 11:21:16.269 	The Program 'crdtagy3' is not called by any other program.
-2024-10-10 11:21:16.296 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delacc.cbl'.
-2024-10-10 11:21:16.303 	The Program 'delacc' is not called by any other program.
-2024-10-10 11:21:16.330 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delcus.cbl'.
-2024-10-10 11:21:16.338 	The Program 'delcus' is not called by any other program.
-2024-10-10 11:21:16.365 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dcs.cbl'.
-2024-10-10 11:21:16.377 	The Program 'bnk1dcs' is not called by any other program.
-2024-10-10 11:21:16.985 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy2.cbl'.
-2024-10-10 11:21:16.992 	The Program 'crdtagy2' is not called by any other program.
-2024-10-10 11:21:17.027 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/abndproc.cbl'.
-2024-10-10 11:21:17.032 	The Program 'abndproc' is not called by any other program.
-2024-10-10 11:21:17.060 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1ccs.cbl'.
-2024-10-10 11:21:17.071 	The Program 'bnk1ccs' is not called by any other program.
-2024-10-10 11:21:17.097 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy1.cbl'.
-2024-10-10 11:21:17.101 	The Program 'crdtagy1' is not called by any other program.
-2024-10-10 11:21:17.127 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cra.cbl'.
-2024-10-10 11:21:17.135 	The Program 'bnk1cra' is not called by any other program.
-2024-10-10 11:21:17.160 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getcompy.cbl'.
-2024-10-10 11:21:17.164 	The Program 'getcompy' is not called by any other program.
-2024-10-10 11:21:17.191 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accload.cbl'.
-2024-10-10 11:21:17.197 	The Program 'accload' is not called by any other program.
-2024-10-10 11:21:17.224 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqcust.cbl'.
-2024-10-10 11:21:17.231 	The Program 'inqcust' is not called by any other program.
-2024-10-10 11:21:17.258 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1uac.cbl'.
-2024-10-10 11:21:17.268 	The Program 'bnk1uac' is not called by any other program.
-2024-10-10 11:21:17.293 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updacc.cbl'.
-2024-10-10 11:21:17.306 	The Program 'updacc' is not called by any other program.
-2024-10-10 11:21:17.333 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consttst.cbl'.
-2024-10-10 11:21:17.339 	The Program 'consttst' is not called by any other program.
-2024-10-10 11:21:17.364 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacc.cbl'.
-2024-10-10 11:21:17.373 	The Program 'inqacc' is not called by any other program.
-2024-10-10 11:21:17.400 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updcust.cbl'.
-2024-10-10 11:21:17.406 	The Program 'updcust' is not called by any other program.
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 			--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
+2025-04-10 14:27:43.213 ** Script configuration:
+2025-04-10 14:27:43.247 	PIPELINE_USER -> ADO
+2025-04-10 14:27:43.250 	application -> GenApp
+2025-04-10 14:27:43.254 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-10 14:27:43.257 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
+2025-04-10 14:27:43.260 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
+2025-04-10 14:27:43.264 	DBB_MODELER_METADATASTORE_TYPE -> db2
+2025-04-10 14:27:43.267 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-10 14:27:43.270 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
+2025-04-10 14:27:43.274 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-10 14:27:43.276 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
+2025-04-10 14:27:43.279 	APPLICATION_DEFAULT_BRANCH -> main
+2025-04-10 14:27:43.733 ** Scanning the files.
+2025-04-10 14:27:43.841 	Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
+2025-04-10 14:27:44.005 	Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
+2025-04-10 14:27:44.042 	Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
+2025-04-10 14:27:44.070 	Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
+2025-04-10 14:27:44.094 	Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
+2025-04-10 14:27:44.185 	Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
+2025-04-10 14:27:44.214 	Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
+2025-04-10 14:27:44.239 	Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
+2025-04-10 14:27:44.312 	Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
+2025-04-10 14:27:44.351 	Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
+2025-04-10 14:27:44.406 	Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
+2025-04-10 14:27:44.470 	Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
+2025-04-10 14:27:44.503 	Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
+2025-04-10 14:27:44.535 	Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
+2025-04-10 14:27:44.555 	Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
+2025-04-10 14:27:44.581 	Scanning file GenApp/.gitattributes 
+2025-04-10 14:27:44.583 	Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
+2025-04-10 14:27:44.602 	Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
+2025-04-10 14:27:44.620 	Scanning file GenApp/GenApp/src/bms/ssmap.bms 
+2025-04-10 14:27:44.865 	Scanning file GenApp/GenApp/src/copy/lgcmared.cpy 
+2025-04-10 14:27:44.877 	Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
+2025-04-10 14:27:44.887 	Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
+2025-04-10 14:27:44.897 	Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
+2025-04-10 14:27:44.906 	Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
+2025-04-10 14:27:44.916 	Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
+2025-04-10 14:27:44.926 	Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
+2025-04-10 14:27:44.938 	Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
+2025-04-10 14:27:44.952 	Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
+2025-04-10 14:27:44.961 	Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
+2025-04-10 14:27:44.970 	Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
+2025-04-10 14:27:44.979 	Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
+2025-04-10 14:27:44.988 	Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
+2025-04-10 14:27:44.997 	Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
+2025-04-10 14:27:45.013 	Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
+2025-04-10 14:27:45.022 	Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
+2025-04-10 14:27:45.033 	Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
+2025-04-10 14:27:45.058 ** Storing results in the 'GenApp-main' DBB Collection.
+2025-04-10 14:27:46.395 ** Setting collection owner to ADO
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy 			--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--moveFiles 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
+2025-04-10 14:28:43.396 ** Script configuration:
+2025-04-10 14:28:43.447 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs
+2025-04-10 14:28:43.450 	application -> GenApp
+2025-04-10 14:28:43.453 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-10 14:28:43.456 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
+2025-04-10 14:28:43.459 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
+2025-04-10 14:28:43.462 	DBB_MODELER_METADATASTORE_TYPE -> db2
+2025-04-10 14:28:43.465 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-10 14:28:43.469 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
+2025-04-10 14:28:43.472 	moveFiles -> true
+2025-04-10 14:28:43.475 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-10 14:28:43.478 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
+2025-04-10 14:28:44.162 ** Getting the list of files of 'Include File' type.
+2025-04-10 14:28:44.195 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgpolicy.cpy'.
+2025-04-10 14:28:44.597 	Files depending on 'GenApp/src/copy/lgpolicy.cpy' :
+2025-04-10 14:28:44.605 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
+2025-04-10 14:28:44.606 	'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:44.606 	'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:44.607 	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:44.608 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
+2025-04-10 14:28:44.609 	'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:44.609 	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:44.610 	'GenApp/GenApp/src/cobol/lgacdb02.cbl' in  Application  'GenApp'
+2025-04-10 14:28:44.612 	==> 'lgpolicy' referenced by multiple applications - [UNASSIGNED, GenApp]
+2025-04-10 14:28:44.613 	==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/applicationDescriptor.yml'.
+2025-04-10 14:28:45.152 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmared.cpy'.
+2025-04-10 14:28:45.260 	The Include File 'lgcmared' is not referenced at all.
+2025-04-10 14:28:45.462 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmarea.cpy'.
+2025-04-10 14:28:45.578 	Files depending on 'GenApp/src/copy/lgcmarea.cpy' :
+2025-04-10 14:28:45.578 	'GenApp/GenApp/src/cobol/lgdpol01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.578 	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgupol01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgucvs01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgastat1.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgapvs01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgacvs01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgupvs01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgucus01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgtestp4.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgdpvs01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.583 	'GenApp/GenApp/src/cobol/lgapol01.cbl' in  Application  'GenApp'
+2025-04-10 14:28:45.585 	==> 'lgcmarea' is owned by the 'GenApp' application
+2025-04-10 14:28:45.586 	==> Updating usage of Include File 'lgcmarea' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/applicationDescriptor.yml'.
+2025-04-10 14:28:45.788 ** Getting the list of files of 'Program' type.
+2025-04-10 14:28:45.813 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicus01.cbl'.
+2025-04-10 14:28:45.873 	The Program 'lgicus01' is not called by any other program.
+2025-04-10 14:28:46.076 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpol01.cbl'.
+2025-04-10 14:28:46.146 	The Program 'lgdpol01' is not called by any other program.
+2025-04-10 14:28:46.338 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipdb01.cbl'.
+2025-04-10 14:28:46.406 	The Program 'lgipdb01' is not called by any other program.
+2025-04-10 14:28:46.610 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp3.cbl'.
+2025-04-10 14:28:46.662 	The Program 'lgtestp3' is not called by any other program.
+2025-04-10 14:28:46.853 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp4.cbl'.
+2025-04-10 14:28:46.904 	The Program 'lgtestp4' is not called by any other program.
+2025-04-10 14:28:47.102 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacvs01.cbl'.
+2025-04-10 14:28:47.151 	The Program 'lgacvs01' is not called by any other program.
+2025-04-10 14:28:47.364 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgsetup.cbl'.
+2025-04-10 14:28:47.415 	The Program 'lgsetup' is not called by any other program.
+2025-04-10 14:28:47.604 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapol01.cbl'.
+2025-04-10 14:28:47.655 	The Program 'lgapol01' is not called by any other program.
+2025-04-10 14:28:47.848 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipvs01.cbl'.
+2025-04-10 14:28:47.893 	The Program 'lgipvs01' is not called by any other program.
+2025-04-10 14:28:48.088 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupol01.cbl'.
+2025-04-10 14:28:48.136 	The Program 'lgupol01' is not called by any other program.
+2025-04-10 14:28:48.325 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb01.cbl'.
+2025-04-10 14:28:48.375 	The Program 'lgacdb01' is not called by any other program.
+2025-04-10 14:28:48.563 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb02.cbl'.
+2025-04-10 14:28:48.607 	The Program 'lgacdb02' is not called by any other program.
+2025-04-10 14:28:48.795 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgstsq.cbl'.
+2025-04-10 14:28:48.857 	The Program 'lgstsq' is not called by any other program.
+2025-04-10 14:28:49.067 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp1.cbl'.
+2025-04-10 14:28:49.108 	The Program 'lgtestp1' is not called by any other program.
+2025-04-10 14:28:49.298 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp2.cbl'.
+2025-04-10 14:28:49.343 	The Program 'lgtestp2' is not called by any other program.
+2025-04-10 14:28:49.535 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpdb01.cbl'.
+2025-04-10 14:28:49.576 	The Program 'lgdpdb01' is not called by any other program.
+2025-04-10 14:28:49.779 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucus01.cbl'.
+2025-04-10 14:28:49.819 	The Program 'lgucus01' is not called by any other program.
+2025-04-10 14:28:50.006 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapvs01.cbl'.
+2025-04-10 14:28:50.051 	The Program 'lgapvs01' is not called by any other program.
+2025-04-10 14:28:50.235 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucdb01.cbl'.
+2025-04-10 14:28:50.275 	The Program 'lgucdb01' is not called by any other program.
+2025-04-10 14:28:50.464 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpvs01.cbl'.
+2025-04-10 14:28:50.501 	The Program 'lgdpvs01' is not called by any other program.
+2025-04-10 14:28:50.524 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestc1.cbl'.
+2025-04-10 14:28:50.558 	The Program 'lgtestc1' is not called by any other program.
+2025-04-10 14:28:50.580 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgastat1.cbl'.
+2025-04-10 14:28:50.618 	The Program 'lgastat1' is not called by any other program.
+2025-04-10 14:28:50.638 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapdb01.cbl'.
+2025-04-10 14:28:50.686 	The Program 'lgapdb01' is not called by any other program.
+2025-04-10 14:28:50.706 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicvs01.cbl'.
+2025-04-10 14:28:50.742 	The Program 'lgicvs01' is not called by any other program.
+2025-04-10 14:28:50.763 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipol01.cbl'.
+2025-04-10 14:28:50.798 	The Program 'lgipol01' is not called by any other program.
+2025-04-10 14:28:50.818 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacus01.cbl'.
+2025-04-10 14:28:50.852 	The Program 'lgacus01' is not called by any other program.
+2025-04-10 14:28:50.873 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgwebst5.cbl'.
+2025-04-10 14:28:50.913 	The Program 'lgwebst5' is not called by any other program.
+2025-04-10 14:28:50.937 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucvs01.cbl'.
+2025-04-10 14:28:50.976 	The Program 'lgucvs01' is not called by any other program.
+2025-04-10 14:28:50.997 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupdb01.cbl'.
+2025-04-10 14:28:51.042 	The Program 'lgupdb01' is not called by any other program.
+2025-04-10 14:28:51.064 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicdb01.cbl'.
+2025-04-10 14:28:51.099 	The Program 'lgicdb01' is not called by any other program.
+2025-04-10 14:28:51.126 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupvs01.cbl'.
+2025-04-10 14:28:51.164 	The Program 'lgupvs01' is not called by any other program.
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 			--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-rescan.log
+2025-04-10 14:29:27.767 ** Script configuration:
+2025-04-10 14:29:27.810 	PIPELINE_USER -> ADO
+2025-04-10 14:29:27.813 	application -> GenApp
+2025-04-10 14:29:27.816 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-10 14:29:27.819 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
+2025-04-10 14:29:27.821 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-rescan.log
+2025-04-10 14:29:27.826 	DBB_MODELER_METADATASTORE_TYPE -> db2
+2025-04-10 14:29:27.829 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-10 14:29:27.832 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
+2025-04-10 14:29:27.834 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-10 14:29:27.838 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
+2025-04-10 14:29:27.840 	APPLICATION_DEFAULT_BRANCH -> main
+2025-04-10 14:29:28.281 ** Scanning the files.
+2025-04-10 14:29:28.390 	Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
+2025-04-10 14:29:28.522 	Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
+2025-04-10 14:29:28.602 	Scanning file GenApp/applicationDescriptor.yml 
+2025-04-10 14:29:28.647 	Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
+2025-04-10 14:29:28.671 	Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
+2025-04-10 14:29:28.693 	Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
+2025-04-10 14:29:28.744 	Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
+2025-04-10 14:29:28.772 	Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
+2025-04-10 14:29:28.796 	Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
+2025-04-10 14:29:28.866 	Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
+2025-04-10 14:29:28.906 	Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
+2025-04-10 14:29:28.958 	Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
+2025-04-10 14:29:29.025 	Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
+2025-04-10 14:29:29.057 	Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
+2025-04-10 14:29:29.084 	Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
+2025-04-10 14:29:29.152 	Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
+2025-04-10 14:29:29.177 	Scanning file GenApp/.gitattributes 
+2025-04-10 14:29:29.178 	Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
+2025-04-10 14:29:29.196 	Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
+2025-04-10 14:29:29.214 	Scanning file GenApp/GenApp/src/bms/ssmap.bms 
+2025-04-10 14:29:29.439 	Scanning file GenApp/GenApp/src/copy/lgcmared.cpy 
+2025-04-10 14:29:29.450 	Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
+2025-04-10 14:29:29.460 	Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
+2025-04-10 14:29:29.470 	Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
+2025-04-10 14:29:29.479 	Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
+2025-04-10 14:29:29.489 	Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
+2025-04-10 14:29:29.498 	Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
+2025-04-10 14:29:29.511 	Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
+2025-04-10 14:29:29.520 	Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
+2025-04-10 14:29:29.531 	Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
+2025-04-10 14:29:29.542 	Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
+2025-04-10 14:29:29.550 	Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
+2025-04-10 14:29:29.557 	Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
+2025-04-10 14:29:29.565 	Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
+2025-04-10 14:29:29.578 	Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
+2025-04-10 14:29:29.585 	Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
+2025-04-10 14:29:29.595 	Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
+2025-04-10 14:29:29.617 ** Storing results in the 'GenApp-main' DBB Collection.
+2025-04-10 14:29:30.884 ** Setting collection owner to ADO
 ~~~~
 </details>
 
@@ -927,20 +922,20 @@ Execution of the command:
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v2r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/generateProperties.groovy 			--workspace /u/mdalbin/Migration-Modeler-MDLB-work/applications 			--application GenApp 			--zAppBuild /var/dbb/dbb-zappbuild-DAT 			--typesConfigurations /u/mdalbin/Migration-Modeler-MDLB-work/typesConfigurations.yaml 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
-2024-10-10 11:24:28.349 ** Reading the Types Configurations definitions from '/u/mdalbin/Migration-Modeler-MDLB-work/typesConfigurations.yaml'. 
-2024-10-10 11:24:28.647 ** Copying default application-conf directory to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf
-2024-10-10 11:24:28.733 ** Getting the list of files.
-2024-10-10 11:24:28.734 *** Generate/Validate Language Configuration properties files.
-2024-10-10 11:24:28.754 	Assessing file lgacdb01 with type CBLCICSDB2.
-2024-10-10 11:24:28.756 	 Generating new Language Configuration /u/mdalbin/Migration-Modeler-MDLB-work/applications/dbb-zappbuild/build-conf/language-conf/CBLCICSDB2.properties for type 'CBLCICSDB2'
-2024-10-10 11:24:28.792 	Assessing file lgacdb02 with type CBLDB2.
-2024-10-10 11:24:28.792 	 Generating new Language Configuration /u/mdalbin/Migration-Modeler-MDLB-work/applications/dbb-zappbuild/build-conf/language-conf/CBLDB2.properties for type 'CBLDB2'
-2024-10-10 11:24:28.795 	Assessing file lgacus01 with type PLICICS.
-2024-10-10 11:24:28.796 	 Generating new Language Configuration /u/mdalbin/Migration-Modeler-MDLB-work/applications/dbb-zappbuild/build-conf/language-conf/PLICICS.properties for type 'PLICICS'
-2024-10-10 11:24:28.810 *** Generate the language configuration mapping file /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf/languageConfigurationMapping.properties.
-2024-10-10 11:24:28.819 *** Generate loadLanguageConfigurationProperties configuration in /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf/file.properties.
-2024-10-10 11:24:29.057 ** INFO: Don't forget to enable the use of Language Configuration by uncommenting the 'loadLanguageConfigurationProperties' property in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf/file.properties'
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/generateProperties.groovy 			--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
+2025-04-10 14:30:55.834 ** Reading the Types Configurations definitions from '/u/mdalbin/Migration-Modeler-MDLB-work/typesConfigurations.yaml'.
+2025-04-10 14:30:56.090 ** Copying default application-conf directory to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf
+2025-04-10 14:30:56.153 ** Getting the list of files.
+2025-04-10 14:30:56.154 *** Generate/Validate Language Configuration properties files.
+2025-04-10 14:30:56.171 	Assessing file lgacdb01 with type CBLCICSDB2.
+2025-04-10 14:30:56.173 	Generating new Language Configuration /u/mdalbin/Migration-Modeler-MDLB-work/applications/dbb-zappbuild/build-conf/language-conf/CBLCICSDB2.properties for type 'CBLCICSDB2'
+2025-04-10 14:30:56.212 	Assessing file lgacdb02 with type CBLDB2.
+2025-04-10 14:30:56.212 	Generating new Language Configuration /u/mdalbin/Migration-Modeler-MDLB-work/applications/dbb-zappbuild/build-conf/language-conf/CBLDB2.properties for type 'CBLDB2'
+2025-04-10 14:30:56.229 	Assessing file lgacus01 with type PLICICS.
+2025-04-10 14:30:56.230 	Generating new Language Configuration /u/mdalbin/Migration-Modeler-MDLB-work/applications/dbb-zappbuild/build-conf/language-conf/PLICICS.properties for type 'PLICICS'
+2025-04-10 14:30:56.246 *** Generate the language configuration mapping file /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf/languageConfigurationMapping.properties.
+2025-04-10 14:30:56.253 *** Generate loadLanguageConfigurationProperties configuration in /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf/file.properties.
+2025-04-10 14:30:56.486 ** INFO: Don't forget to enable the use of Language Configuration by uncommenting the 'loadLanguageConfigurationProperties' property in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf/file.properties'
 ~~~~
 </details>
 
@@ -958,16 +953,16 @@ Execution of command:
 
 ~~~~
 [CMD] git init --initial-branch=main
-Initialized empty Git repository in /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/.git/
+Initialized empty Git repository in /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/.git/
 [CMD] chtag -c IBM-1047 -t applicationDescriptor.yml
 [CMD] rm .gitattributes
 [CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/git-config/.gitattributes .gitattributes
 [CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/git-config/zapp.yaml zapp.yaml
-[CMD] /usr/lpp/dbb/v2r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/zappUtils.groovy 					-z /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/zapp.yaml -a /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml -b /var/dbb/dbb-zappbuild-DAT
+[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/zappUtils.groovy 					-z /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/zapp.yaml -a /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/applicationDescriptor.yml -b /var/dbb/dbb-zappbuild_300
 ** Build finished
-[CMD] cp /var/dbb/pipelineTemplates/dbb/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/
-[CMD] cp -R /var/dbb/pipelineTemplates/dbb/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/deployment/
-[CMD] cp -R /var/dbb/pipelineTemplates/dbb/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/tagging/
+[CMD] cp /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/
+[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/deployment/
+[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/tagging/
 [CMD] git status
 On branch main
 
@@ -976,64 +971,7 @@ No commits yet
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
 	.gitattributes
-	CBSA/
-	applicationDescriptor.yml
-	azure-pipelines.yml
-	deployment/
-	tagging/
-	zapp.yaml
-
-nothing added to commit but untracked files present (use "git add" to track)
-[CMD] git add --all
-** /usr/lpp/dbb/v2r0/bin/groovyz /var/dbb/dbb-zappbuild-DAT/build.groovy 				--workspace /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA 				--application CBSA 				--outDir /u/mdalbin/Migration-Modeler-MDLB-work/logs/CBSA 				--fullBuild 				--hlq DBEHM.MIG --preview 				--logEncoding UTF-8 				--applicationCurrentBranch main 				--propOverwrites createBuildOutputSubfolder=false 				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
-[CMD] git init --initial-branch=main
-Initialized empty Git repository in /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/.git/
-[CMD] chtag -c IBM-1047 -t applicationDescriptor.yml
-[CMD] rm .gitattributes
-[CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/git-config/.gitattributes .gitattributes
-[CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/git-config/zapp.yaml zapp.yaml
-[CMD] /usr/lpp/dbb/v2r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/zappUtils.groovy 					-z /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/zapp.yaml -a /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml -b /var/dbb/dbb-zappbuild-DAT
-** Build finished
-[CMD] cp /var/dbb/pipelineTemplates/dbb/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/
-[CMD] cp -R /var/dbb/pipelineTemplates/dbb/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/deployment/
-[CMD] cp -R /var/dbb/pipelineTemplates/dbb/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/tagging/
-[CMD] git status
-On branch main
-
-No commits yet
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	.gitattributes
-	CBSA/
-	applicationDescriptor.yml
-	azure-pipelines.yml
-	deployment/
-	tagging/
-	zapp.yaml
-
-nothing added to commit but untracked files present (use "git add" to track)
-[CMD] git add --all
-[CMD] git init --initial-branch=main
-Initialized empty Git repository in /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/.git/
-[CMD] chtag -c IBM-1047 -t applicationDescriptor.yml
-[CMD] rm .gitattributes
-[CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/git-config/.gitattributes .gitattributes
-[CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/git-config/zapp.yaml zapp.yaml
-[CMD] /usr/lpp/dbb/v2r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/zappUtils.groovy 					-z /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/zapp.yaml -a /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml -b /var/dbb/dbb-zappbuild-DAT
-** Build finished
-[CMD] cp /var/dbb/pipelineTemplates/dbb/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/
-[CMD] cp -R /var/dbb/pipelineTemplates/dbb/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/deployment/
-[CMD] cp -R /var/dbb/pipelineTemplates/dbb/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/tagging/
-[CMD] git status
-On branch main
-
-No commits yet
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	.gitattributes
-	CBSA/
+	GenApp/
 	applicationDescriptor.yml
 	azure-pipelines.yml
 	deployment/
@@ -1043,115 +981,75 @@ Untracked files:
 nothing added to commit but untracked files present (use "git add" to track)
 [CMD] git add --all
 [CMD] git commit -m 'Initial Commit'
-[main (root-commit) 7f6b342] Initial Commit
- 102 files changed, 36070 insertions(+)
+[main (root-commit) 086b763] Initial Commit
+ 62 files changed, 13390 insertions(+)
  create mode 100644 .gitattributes
- create mode 100644 CBSA/application-conf/ACBgen.properties
- create mode 100644 CBSA/application-conf/Assembler.properties
- create mode 100644 CBSA/application-conf/BMS.properties
- create mode 100644 CBSA/application-conf/CRB.properties
- create mode 100644 CBSA/application-conf/Cobol.properties
- create mode 100644 CBSA/application-conf/DBDgen.properties
- create mode 100644 CBSA/application-conf/Easytrieve.properties
- create mode 100644 CBSA/application-conf/LinkEdit.properties
- create mode 100644 CBSA/application-conf/MFS.properties
- create mode 100644 CBSA/application-conf/PLI.properties
- create mode 100644 CBSA/application-conf/PSBgen.properties
- create mode 100644 CBSA/application-conf/README.md
- create mode 100644 CBSA/application-conf/REXX.properties
- create mode 100644 CBSA/application-conf/Transfer.properties
- create mode 100755 CBSA/application-conf/ZunitConfig.properties
- create mode 100644 CBSA/application-conf/application.properties
- create mode 100644 CBSA/application-conf/bind.properties
- create mode 100644 CBSA/application-conf/file.properties
- create mode 100644 CBSA/application-conf/languageConfigurationMapping.properties
- create mode 100644 CBSA/application-conf/reports.properties
- create mode 100644 CBSA/src/cobol/abndproc.cbl
- create mode 100644 CBSA/src/cobol/accload.cbl
- create mode 100644 CBSA/src/cobol/accoffl.cbl
- create mode 100644 CBSA/src/cobol/acctctrl.cbl
- create mode 100644 CBSA/src/cobol/bankdata.cbl
- create mode 100644 CBSA/src/cobol/bnk1cac.cbl
- create mode 100644 CBSA/src/cobol/bnk1cca.cbl
- create mode 100644 CBSA/src/cobol/bnk1ccs.cbl
- create mode 100644 CBSA/src/cobol/bnk1cra.cbl
- create mode 100644 CBSA/src/cobol/bnk1dac.cbl
- create mode 100644 CBSA/src/cobol/bnk1dcs.cbl
- create mode 100644 CBSA/src/cobol/bnk1tfn.cbl
- create mode 100644 CBSA/src/cobol/bnk1uac.cbl
- create mode 100644 CBSA/src/cobol/bnkmenu.cbl
- create mode 100644 CBSA/src/cobol/consent.cbl
- create mode 100644 CBSA/src/cobol/consttst.cbl
- create mode 100644 CBSA/src/cobol/crdtagy1.cbl
- create mode 100644 CBSA/src/cobol/crdtagy2.cbl
- create mode 100644 CBSA/src/cobol/crdtagy3.cbl
- create mode 100644 CBSA/src/cobol/crdtagy4.cbl
- create mode 100644 CBSA/src/cobol/crdtagy5.cbl
- create mode 100644 CBSA/src/cobol/creacc.cbl
- create mode 100644 CBSA/src/cobol/crecust.cbl
- create mode 100644 CBSA/src/cobol/custctrl.cbl
- create mode 100644 CBSA/src/cobol/dbcrfun.cbl
- create mode 100644 CBSA/src/cobol/delacc.cbl
- create mode 100644 CBSA/src/cobol/delcus.cbl
- create mode 100644 CBSA/src/cobol/dpayapi.cbl
- create mode 100644 CBSA/src/cobol/dpaytst.cbl
- create mode 100644 CBSA/src/cobol/getcompy.cbl
- create mode 100644 CBSA/src/cobol/getscode.cbl
- create mode 100644 CBSA/src/cobol/inqacc.cbl
- create mode 100644 CBSA/src/cobol/inqacccu.cbl
- create mode 100644 CBSA/src/cobol/inqcust.cbl
- create mode 100644 CBSA/src/cobol/proload.cbl
- create mode 100644 CBSA/src/cobol/prooffl.cbl
- create mode 100644 CBSA/src/cobol/updacc.cbl
- create mode 100644 CBSA/src/cobol/updcust.cbl
- create mode 100644 CBSA/src/cobol/xfrfun.cbl
- create mode 100644 CBSA/src/copy/abndinfo.cpy
- create mode 100644 CBSA/src/copy/accdb2.cpy
- create mode 100644 CBSA/src/copy/account.cpy
- create mode 100644 CBSA/src/copy/acctctrl.cpy
- create mode 100644 CBSA/src/copy/bnk1acc.cpy
- create mode 100644 CBSA/src/copy/bnk1cam.cpy
- create mode 100644 CBSA/src/copy/bnk1ccm.cpy
- create mode 100644 CBSA/src/copy/bnk1cdm.cpy
- create mode 100644 CBSA/src/copy/bnk1dam.cpy
- create mode 100644 CBSA/src/copy/bnk1dcm.cpy
- create mode 100644 CBSA/src/copy/bnk1mai.cpy
- create mode 100644 CBSA/src/copy/bnk1tfm.cpy
- create mode 100644 CBSA/src/copy/bnk1uam.cpy
- create mode 100644 CBSA/src/copy/consent.cpy
- create mode 100644 CBSA/src/copy/constapi.cpy
- create mode 100644 CBSA/src/copy/constdb2.cpy
- create mode 100644 CBSA/src/copy/contdb2.cpy
- create mode 100644 CBSA/src/copy/creacc.cpy
- create mode 100644 CBSA/src/copy/crecust.cpy
- create mode 100644 CBSA/src/copy/custctrl.cpy
- create mode 100644 CBSA/src/copy/customer.cpy
- create mode 100644 CBSA/src/copy/datastr.cpy
- create mode 100644 CBSA/src/copy/delacc.cpy
- create mode 100644 CBSA/src/copy/delcus.cpy
- create mode 100644 CBSA/src/copy/getcompy.cpy
- create mode 100644 CBSA/src/copy/getscode.cpy
- create mode 100644 CBSA/src/copy/inqacc.cpy
- create mode 100644 CBSA/src/copy/inqacccu.cpy
- create mode 100644 CBSA/src/copy/inqcust.cpy
- create mode 100644 CBSA/src/copy/paydbcr.cpy
- create mode 100644 CBSA/src/copy/procdb2.cpy
- create mode 100644 CBSA/src/copy/proctran.cpy
- create mode 100644 CBSA/src/copy/sortcode.cpy
- create mode 100644 CBSA/src/copy/updacc.cpy
- create mode 100644 CBSA/src/copy/updcust.cpy
- create mode 100644 CBSA/src/copy/xfrfun.cpy
+ create mode 100644 GenApp/application-conf/ACBgen.properties
+ create mode 100644 GenApp/application-conf/Assembler.properties
+ create mode 100644 GenApp/application-conf/BMS.properties
+ create mode 100644 GenApp/application-conf/CRB.properties
+ create mode 100644 GenApp/application-conf/Cobol.properties
+ create mode 100644 GenApp/application-conf/DBDgen.properties
+ create mode 100644 GenApp/application-conf/Easytrieve.properties
+ create mode 100644 GenApp/application-conf/LinkEdit.properties
+ create mode 100644 GenApp/application-conf/MFS.properties
+ create mode 100644 GenApp/application-conf/PLI.properties
+ create mode 100644 GenApp/application-conf/PSBgen.properties
+ create mode 100644 GenApp/application-conf/README.md
+ create mode 100644 GenApp/application-conf/REXX.properties
+ create mode 100755 GenApp/application-conf/TazUnitTest.properties
+ create mode 100644 GenApp/application-conf/Transfer.properties
+ create mode 100644 GenApp/application-conf/application.properties
+ create mode 100644 GenApp/application-conf/bind.properties
+ create mode 100644 GenApp/application-conf/file.properties
+ create mode 100644 GenApp/application-conf/languageConfigurationMapping.properties
+ create mode 100644 GenApp/application-conf/reports.properties
+ create mode 100644 GenApp/src/bms/ssmap.bms
+ create mode 100644 GenApp/src/cobol/lgacdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgacdb02.cbl
+ create mode 100644 GenApp/src/cobol/lgacus01.cbl
+ create mode 100644 GenApp/src/cobol/lgacvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgapdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgapol01.cbl
+ create mode 100644 GenApp/src/cobol/lgapvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgastat1.cbl
+ create mode 100644 GenApp/src/cobol/lgdpdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgdpol01.cbl
+ create mode 100644 GenApp/src/cobol/lgdpvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgicdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgicus01.cbl
+ create mode 100644 GenApp/src/cobol/lgicvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgipdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgipol01.cbl
+ create mode 100644 GenApp/src/cobol/lgipvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgsetup.cbl
+ create mode 100644 GenApp/src/cobol/lgstsq.cbl
+ create mode 100644 GenApp/src/cobol/lgtestc1.cbl
+ create mode 100644 GenApp/src/cobol/lgtestp1.cbl
+ create mode 100644 GenApp/src/cobol/lgtestp2.cbl
+ create mode 100644 GenApp/src/cobol/lgtestp3.cbl
+ create mode 100644 GenApp/src/cobol/lgtestp4.cbl
+ create mode 100644 GenApp/src/cobol/lgucdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgucus01.cbl
+ create mode 100644 GenApp/src/cobol/lgucvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgupdb01.cbl
+ create mode 100644 GenApp/src/cobol/lgupol01.cbl
+ create mode 100644 GenApp/src/cobol/lgupvs01.cbl
+ create mode 100644 GenApp/src/cobol/lgwebst5.cbl
+ create mode 100644 GenApp/src/copy/lgcmarea.cpy
+ create mode 100644 GenApp/src/copy/lgcmared.cpy
+ create mode 100644 GenApp/src/copy/lgpolicy.cpy
  create mode 100644 applicationDescriptor.yml
  create mode 100644 azure-pipelines.yml
  create mode 100644 deployment/deployReleasePackage.yml
  create mode 100644 tagging/createProductionReleaseTag.yml
  create mode 100644 tagging/createReleaseCandidate.yml
  create mode 100644 zapp.yaml
-[CMD] git tag rel-1.4.0
-** /usr/lpp/dbb/v2r0/bin/groovyz /var/dbb/dbb-zappbuild-DAT/build.groovy 				--workspace /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA 				--application CBSA 				--outDir /u/mdalbin/Migration-Modeler-MDLB-work/logs/CBSA 				--fullBuild 				--hlq DBEHM.MIG --preview 				--logEncoding UTF-8 				--applicationCurrentBranch main 				--propOverwrites createBuildOutputSubfolder=false 				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
-** /usr/lpp/dbb/v2r0/bin/groovyz /var/dbb/pipelineTemplates/dbb/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy 				--workDir /u/mdalbin/Migration-Modeler-MDLB-work/logs/CBSA \ 
-				--addExtension 				--branch main 				--version rel-1.4.0 				--tarFileName CBSA-rel-1.4.0.tar 				--owner ADO:JENKINSG -p --artifactRepositoryUrl http://10.3.20.231:8081/artifactory 				     --artifactRepositoryUser admin 				     --artifactRepositoryPassword artifactoryadmin 				     --artifactRepositoryName CBSA
-
+[CMD] git tag rel-2.1.0
+[CMD] git branch rel-2.1.0 refs/tags/rel-2.1.0
+** /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/dbb-zappbuild_300/build.groovy 				--workspace /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp 				--application GenApp 				--outDir /u/mdalbin/Migration-Modeler-MDLB-work/logs/GenApp 				--fullBuild 				--hlq DBEHM.MIG --preview 				--logEncoding UTF-8 				--applicationCurrentBranch main 				--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=db2,metadataStoreDb2ConnectionConf=/u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf --id MDALBIN --pwFile /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt 				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
+** /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/dbb-MD/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy 				--workDir /u/mdalbin/Migration-Modeler-MDLB-work/logs/GenApp \ 
+				--addExtension 				--branch main 				--version rel-2.1.0 				--tarFileName GenApp-rel-2.1.0.tar 				--applicationFolderPath /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp 				--owner ADO:JENKINSG -p --artifactRepositoryUrl http://10.3.20.231:8081/artifactory 				     --artifactRepositoryUser admin 				     --artifactRepositoryPassword artifactoryadmin 				     --artifactRepositoryName GenApp
 ~~~~
 
 </details>
@@ -2055,185 +1953,3 @@ Output log:
 ~~~~
 
 </details>
-
-# Migrations scenarios for Migration-Modeler-Start script
-
-## A set of datasets contains artifacts of one application
-
-In this scenario, a set of datasets contains only artifacts that belong to one application exclusively.
-
-To configure this case, provide a dedicated  `Applications Mapping` YAML file for the application in the applications mappings folder specified by the `DBB_MODELER_APPCONFIG_DIR` parameter. Use universal naming convention filter like in the below sample, because all files from the input datasets are mapped to application automatically.
-
-The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
-~~~~YAML
-datasets:
-  - CATMAN.COBOL
-  - CATMAN.COPY
-  - CATMAN.BMS
-applications:
-  - application: "Catalog Manager"
-    description: "Catalog Manager"
-    owner: "MDALBIN"
-    namingConventions:
-      - ........
-~~~~
-
-When running the Migration-Modeler-Start.sh script with this Applications Mapping file, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the CatalogManager application. The result of this command is an Application Descriptor file that documents all the artifacts contained in the given datasets, and a DBB Migration mapping file to manages all the members found.
-
-## A group of datasets contains artifacts that belong to multiple applications
-
-In this configuration, the list of datasets defined in the Applications Mapping file contain artifacts from different applications, but a naming convention can be used to filter members. In the following example, the naming convention is based on the first 3 letters of the members' name. There is one exception, where we have a fully qualified member name (*LINPUT*) that is owned by the *RetirementCalculator* application:
-
-~~~~YAML
-datasets:
-  - APPS.COBOL
-  - APPS.COPY
-  - APPS.BMS
-applications:
-  - application: "RetirementCalculator"
-    description: "RetirementCalculator"
-    owner: "MDALBIN"
-    namingConventions:
-      - EBU.....
-      - LINPUT..
-  - application: "GenApp"
-    description: "GenApp"
-    owner: "DBEHM"
-    namingConventions:
-      - LGA.....
-      - LGD.....
-      - LGI.....
-      - LGT.....
-      - LGU.....
-      - LGS.....
-      - LGW.....
-      - OLD.....
-      - FLE.....
-  - application: "CBSA"
-    description: "CBSA"
-    owner: "MDALBIN"
-    namingConventions:
-      - ABN.....
-      - ACC.....
-      - BAN.....
-      - BNK.....
-      - CON.....
-      - CRD.....
-      - CRE.....
-      - CUS.....
-      - DBC.....
-      - DEL.....
-      - DPA.....
-      - GET.....
-      - INQ.....
-      - PRO.....
-      - UPD.....
-      - XFR.....
-      - ZUN.....
-~~~~
-
-The result of this command is a set of Application Descriptor files and DBB Migration mapping files for each discovered application.
-If a member doesn't match any naming convention, it is assigned to a special application called *UNASSIGNED*.
-
-## Working with source code that is known to be shared
-
-For files that are already known as shared between applications, you can define an application mapping configuration to define their dedicated context. 
-If one library already contains these known shared include files, configure a specific `Applications Mapping` file alike the below sample:
-~~~~YAML
-datasets:
-  - SHARED.COPY
-applications:
-  - application: "SHARED"
-    description: "Shared include files"
-    owner: "Shared ownership"
-    namingConventions:
-      - ........
-~~~~
-
-## Combining use cases
-
-There can be combined scenarios to extract the applications. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply different naming conventions patterns for copybooks. 
-
-In that case, the solution is to configure multiple Applications mapping files:
-- One Applications Mapping file would contain the definition for the datasets having artifacts for only one application
-- A second Applications Mapping file would contain the definitions for the datasets having artifacts from multiple applications.
-
-Based on requirements, additional Applications mapping files can be defined, to support different scenarios and combinations.
-Only one execution of the [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) is necessary, to extract definitions from multiple Applications Mapping files. The latest enhancements to the DBB Git Migration Modeler allow the processing of multiple Applications Mapping files in one go.
-
-## Generating properties
-
-We encourage, as much as possible, to use simple scenarios, to avoid unnecessary complexity in the combination of types configurations.
-However, some configuration may require to use combination of types, depending on how properties are set in the originating SCM solution.
-
-### Common scenario
-
-In a simple scenario, each artifact is assigned with one single type, that designates a known configuration in the legacy SCM tool.
-
-For instance, the [Types file](./samples/types.txt) could contain the following lines:
-~~~~
-PGM001, COBBATCH
-PGM002, COBCICSD
-PMG003, PLIIMSDB
-~~~~
-
-Where *COBBATCH*, *COBCICSD* and *PLIIMSDB* represent configurations with specific properties. These types should be defined in the [Types Configurations file](./samples/typesConfigurations.yaml) accordingly, for instance:
-
-~~~~YAML
-- typeConfiguration: "COBBATCH"
-  cobol_compileParms: "LIB,SOURCE"
-  cobol_linkedit: true
-  isCICS: false
-  isSQL: false
-- typeConfiguration: "COBCICSD"
-  cobol_compileParms: "LIB,SOURCE,CICS,SQL"
-  cobol_linkedit: true
-  isCICS: true
-  isSQL: true
-- typeConfiguration: "PLIIMSDB"
-  pli_compileParms: "PP(INCLUDE('ID(++INCLUDE)')),SYSTEM(IMS)"
-  pli_linkedit: true
-  isCICS: false
-  isSQL: false
-  isDLI: true
-~~~~
-
-With this configuration, the [Property Generation script](./src/scripts/utils//4-generateProperties.sh) will generate Language Configurations for each of these types.
-
-### Advanced scenario
-In more sophisticated scenarios, which depend on how properties are set in the legacy SCM tool, multiple types can be assigned to an artifact:
-~~~~
-PGM001, COBOL, BATCH
-PGM002, COBOL, CICSDB2
-PMG003, PLI, IMSDB
-~~~~
-
-Each type configuration would be defined separately in the [Types Configurations file](./samples/typesConfigurations.yaml), for instance:
-
-~~~~YAML
-- typeConfiguration: "COBOL"
-  cobol_compileParms: "LIB,SOURCE"
-  cobol_linkedit: true
-- typeConfiguration: "PLI"
-  pli_compileParms: "PP(INCLUDE('ID(++INCLUDE)'))"
-  pli_linkedit: true
-- typeConfiguration: "BATCH"
-  isCICS: false
-- typeConfiguration: "CICSDB2"
-  isCICS: true
-  isSQL: true
-- typeConfiguration: "IMSDB"
-  pli_compileIMSParms: SYSTEM(IMS)  
-  isCICS: false
-  isSQL: false
-  isDLI: true
-~~~~
-
-In this configuration, the [Property Generation script](./src/scripts/utils/4-generateProperties.sh) will generate composite Language Configurations files in *dbb-zAppbuild*'s [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf) folder.
-In this example, 3 files would be created:
-* *BATCH-COBOL.properties* which combines properties from the *BATCH* and the *COBOL* types
-* *CICSDB2-COBOL.properties*, which combines properties from the *CICSDB2* and the *COBOL* types
-* *IMSDB-PLI.properties*, which combines properties from the *IMSDB* and *PLI* types
-
-The name of composite types are based on the names of the originating types sorted alphabetically, to avoid duplication.
-The Language Configuration mapping file in each application's *application-conf* folder contains mappings between artifacts and their associated composite types, also sorted alphabetically.
