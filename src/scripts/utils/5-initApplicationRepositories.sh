@@ -287,13 +287,13 @@ if [ $rc -eq 0 ]; then
 				--version $version \
 				--tarFileName $applicationDir-$version-baseline.tar \
 				--applicationFolderPath $DBB_MODELER_APPLICATION_DIR/$applicationDir \
-				--artifactRepositoryDirectory release \
 				--owner $PIPELINE_USER:$PIPELINE_USER_GROUP"
 			if [ "$PUBLISH_ARTIFACTS" == "true" ]; then
 				CMD="${CMD} -p --artifactRepositoryUrl $ARTIFACT_REPOSITORY_SERVER_URL \
 				     --artifactRepositoryUser $ARTIFACT_REPOSITORY_USER \
 				     --artifactRepositoryPassword $ARTIFACT_REPOSITORY_PASSWORD \
-				     --artifactRepositoryName $applicationDir"
+					 --artifactRepositoryDirectory release \
+				     --artifactRepositoryName $applicationDir-$ARTIFACT_REPOSITORY_SUFFIX"
 			fi
 			echo "** $CMD"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 			$CMD > $DBB_MODELER_LOGS/$applicationDir/packaging-preview-$applicationDir.log
