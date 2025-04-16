@@ -36,11 +36,10 @@ CONFIG_DIR="" # Path to store the DBB_GIT_MIGRATION_MODELER.config
 DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 
 #
-export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}'`
+export MigrationModelerRelease=$(cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}')
 Prolog
 
-if [  "$DBB_HOME" = "" ]
-then
+if [ "$DBB_HOME" = "" ]; then
 	echo "[ERROR] Environment variable DBB_HOME is not set. Exiting."
 	exit 1
 fi
@@ -52,7 +51,7 @@ echo "[SETUP] Configuring DBB Git Migration Modeler environment variables"
 DBB_MODELER_WORK="${DBB_MODELER_HOME}-work"
 read -p "Specify the DBB Git Migration Modeler work directory [default: $DBB_MODELER_WORK]: " variable
 if [ "$variable" ]; then
-    DBB_MODELER_WORK="${variable}"
+	DBB_MODELER_WORK="${variable}"
 fi
 
 # Default environment variables
@@ -121,7 +120,7 @@ PIPELINE_USER=ADO
 PIPELINE_USER_GROUP=JENKINSG
 # Pipeline technology used
 # Either '1' for 'AzureDevOps', '2' for 'GitlabCI', '3' for 'Jenkins' or '4' for 'GitHubActions'
-# The parameter will then be translated later in the process to its final value 
+# The parameter will then be translated later in the process to its final value
 # as defined in the Templates folder of the DBB Community repo (without the 'Pipeline' suffix)
 PIPELINE_CI=1
 
@@ -142,16 +141,6 @@ if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 	else
 		mkdir -p $DBB_MODELER_WORK
 		rc=$?
-		
-		if [ $rc -eq 0 ]; then
-			if [ ! -d "${DBB_MODELER_DEFAULT_GIT_CONFIG}" ]; then
-				mkdir -p $DBB_MODELER_DEFAULT_GIT_CONFIG
-			fi
-
-			cp $DBB_MODELER_HOME/samples/git-config/* $DBB_MODELER_DEFAULT_GIT_CONFIG/
-			cp $DBB_MODELER_HOME/samples/git-config/.* $DBB_MODELER_DEFAULT_GIT_CONFIG/
-			rc=$?
-		fi
 	fi
 fi
 
@@ -163,7 +152,7 @@ if [ $rc -eq 0 ]; then
 	if [ "$variable" ]; then
 		declare DBB_MODELER_METADATASTORE_TYPE="${variable}"
 	fi
-	
+
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
 		read -p "Specify the location of the DBB File Metadatastore [default: ${DBB_MODELER_FILE_METADATA_STORE_DIR}]: " variable
 		if [ "$variable" ]; then
@@ -188,12 +177,15 @@ if [ $rc -eq 0 ]; then
 		if [ "$variable" ]; then
 			declare DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="${variable}"
 		fi
-		if [ "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD" = "" ] & [ "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE" = "" ]; then
+		if
+			[ "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD" = "" ] &
+			[ "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE" = "" ]
+		then
 			echo "[ERROR] Either the Db2 JDBC User Password or the Db2 JDBC Password File must be specified. Exiting."
 			rm -rf $DBB_MODELER_WORK
 			exit 1
-		fi		
-	fi	
+		fi
+	fi
 fi
 
 if [ $rc -eq 0 ]; then
@@ -226,10 +218,10 @@ if [ $rc -eq 0 ]; then
 	"4")
 		PIPELINE_CI="GitHubActions"
 		;;
-	esac	
+	esac
 
 	echo
-	echo "[SETUP] Copying DBB Git Migration Modeler configuration files to '$DBB_MODELER_WORK'"
+	echo "[SETUP] Copying DBB Git Migration Modeler sample configuration files to '$DBB_MODELER_WORK'"
 	if [ ! -d "${DBB_MODELER_APPMAPPINGS_DIR}" ]; then
 		mkdir -p $DBB_MODELER_APPMAPPINGS_DIR
 		rc=$?
@@ -247,7 +239,16 @@ if [ $rc -eq 0 ]; then
 		rc=$?
 	fi
 	if [ $rc -eq 0 ]; then
-		cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE		
+		cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE
+		rc=$?
+	fi
+	if [ $rc -eq 0 ]; then
+		if [ ! -d "${DBB_MODELER_DEFAULT_GIT_CONFIG}" ]; then
+			mkdir -p $DBB_MODELER_DEFAULT_GIT_CONFIG
+		fi
+
+		cp $DBB_MODELER_HOME/samples/git-config/* $DBB_MODELER_DEFAULT_GIT_CONFIG/
+		cp $DBB_MODELER_HOME/samples/git-config/.* $DBB_MODELER_DEFAULT_GIT_CONFIG/
 		rc=$?
 	fi
 fi
@@ -267,52 +268,52 @@ fi
 if [ $rc -eq 0 ]; then
 	DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="${CONFIG_DIR}/DBB_GIT_MIGRATION_MODELER.config"
 	touch $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	chtag -tc IBM-1047 $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE 
+	chtag -tc IBM-1047 $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
-	echo "# DBB Git Migration Modeler configuration settings" > $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "# Generated at $(date)" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler configuration settings" >$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# Generated at $(date)" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
-	echo "DBB_MODELER_HOME=${DBB_MODELER_HOME}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_WORK=${DBB_MODELER_WORK}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_HOME=${DBB_MODELER_HOME}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_WORK=${DBB_MODELER_WORK}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
-	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "# DBB Git Migration Modeler working folders" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler working folders" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	for config in ${path_config_array[@]}; do
-	    echo "${config}=${!config}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+		echo "${config}=${!config}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	done
 
-	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "# DBB Git Migration Modeler - DBB Metadatastore configuration" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_METADATASTORE_TYPE=${DBB_MODELER_METADATASTORE_TYPE}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_FILE_METADATA_STORE_DIR=${DBB_MODELER_FILE_METADATA_STORE_DIR}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE=${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_ID=${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler - DBB Metadatastore configuration" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_METADATASTORE_TYPE=${DBB_MODELER_METADATASTORE_TYPE}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_FILE_METADATA_STORE_DIR=${DBB_MODELER_FILE_METADATA_STORE_DIR}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE=${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_ID=${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
-	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "# DBB Git Migration Modeler input files" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler input files" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	for config in ${input_array[@]}; do
-		echo "${config}=${!config}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+		echo "${config}=${!config}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	done
-	echo "PIPELINE_CI=${PIPELINE_CI}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "PIPELINE_CI=${PIPELINE_CI}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
 	echo
 	echo "[SETUP] DBB Git Migration Modeler configuration saved to '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
 	echo "This DBB Git Migration Modeler configuration file will be imported by the DBB Git Migration Modeler process."
 	echo
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-		## Checking DBB Toolkit version		
-		CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 3.0.1`
-		rc=$?	
+		## Checking DBB Toolkit version
+		CURRENT_DBB_TOOLKIT_VERSION=$($DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 3.0.1)
+		rc=$?
 		if [ $rc -ne 0 ]; then
 			rc=8
 			echo "[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the Db2-based MetadataStore, the minimal recommended version for the DBB Toolkit is 3.0.1."
 		fi
 	else
-		## Checking DBB Toolkit version		
-		CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 2.0.2`
+		## Checking DBB Toolkit version
+		CURRENT_DBB_TOOLKIT_VERSION=$($DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 2.0.2)
 		rc=$?
 		if [ $rc -ne 0 ]; then
 			rc=8
@@ -325,7 +326,7 @@ if [ $rc -eq 0 ]; then
 			echo "********************************************* SUGGESTED ACTION *********************************************"
 			echo "Check the successful configuration and access to the Db2-based MetadataStore with the following command:"
 			echo "'$DBB_MODELER_HOME/src/scripts/CheckDb2MetadataStore.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
-		fi		
+		fi
 		echo
 		echo "********************************************* SUGGESTED ACTION *********************************************"
 		echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
