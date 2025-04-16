@@ -124,9 +124,26 @@
                         "type": "string",
                         "description": "Branch name for which the baseline is set"
                     },
-                    "baseline": {
+                    "type": {
                         "type": "string",
-                        "description": "Baseline reference for the given branch"
+                        "title": "The type of build of the baseline archive.",
+                        "description": "Type of build of the baseline archive.",
+                        "default": "release",
+                        "enum": [
+                            "release",
+                            "build"
+                        ]
+                    },
+                    "reference": {
+                        "type": "string",
+                        "title": "The reference of the baseline archive.",
+                        "description": "In case of a release build, the release identifier reference like rel-2.1.0. Or a preliminary build reference by indicating the branch name from where the archive is derived."
+                    }
+                    ,
+                    "buildid": {
+                        "type": "string",
+                        "title": "The build identifier of the baseline archive.",
+                        "description": "The unique identifier of the archive."
                     }
                 }
             }
@@ -145,23 +162,31 @@
                     },
                     "type": {
                         "type": "string",
-                        "title": "The location of the dependency.",
-                        "description": "Location from where the dependency is fetched.",
-                        "default": "artifactrepository",
+                        "title": "The type of build of the dependent archive.",
+                        "description": "Type of build of the dependent archive.",
+                        "default": "release",
                         "enum": [
-                            "artifactrepository"
+                            "release",
+                            "build"
                         ]
                     },
-                    "version": {
+                    "reference": {
                         "type": "string",
-                        "title": "The version of the dependency.",
-                        "description": "Can either be a release version including the unique identifier of the build or a preliminary package."
+                        "title": "The reference of the dependency.",
+                        "description": "In case of a release build, the release identifier reference like rel-2.1.0. Or a preliminary build reference by indicating the branch name from where the archive is derived."
+                    }
+                    ,
+                    "buildid": {
+                        "type": "string",
+                        "title": "The build identifier of the dependent application archive.",
+                        "description": "The unique identifier of the archive."
                     }
                 },
                 "required": [
                     "name",
                     "type",
-                    "version"
+                    "reference",
+                    "buildid"
                 ]
             }
         },
