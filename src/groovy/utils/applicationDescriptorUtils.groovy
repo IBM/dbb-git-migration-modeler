@@ -406,6 +406,6 @@ def addBaseline(ApplicationDescriptor applicationDescriptor, String branch, Stri
 	newBaseline.branch = branch
 	newBaseline.type = type
 	newBaseline.reference = reference
-	newBaseline.buildId = "0000"
+	newBaseline.buildid = "0000"  // hard-coded default identifier
 	applicationDescriptor.baselines.add(newBaseline)
 }
