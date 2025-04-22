@@ -1,5 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/IBM/dbb-git-migration-modeler/refs/heads/main/schema/application-mapping-schema.json
-
+datasets:
+  - DBEHM.MIG.COPY
+  - DBEHM.MIG.COBOL
+  - DBEHM.MIG.BMS
 applications:
   - application: "RetirementCalculator"
     description: "RetirementCalculator"

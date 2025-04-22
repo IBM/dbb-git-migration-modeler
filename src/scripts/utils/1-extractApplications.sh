@@ -57,23 +57,26 @@ if [ $rc -eq 0 ]; then
 	dir=$(dirname "$0")
 	. $dir/0-environment.sh  -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
-	if [ ! -d $DBB_MODELER_APPCONFIG_DIR ] 
-	then
+	if [ ! -d $DBB_MODELER_APPCONFIG_DIR ];	then
 		mkdir -p $DBB_MODELER_APPCONFIG_DIR
 	fi
-
-	if [ ! -d $DBB_MODELER_APPLICATION_DIR ] 
-	then
+	
+	if [ ! -d $DBB_MODELER_APPLICATION_DIR ]; then
 		mkdir -p $DBB_MODELER_APPLICATION_DIR
-	fi
+	fi	
 
+	echo "*******************************************************************"
+	echo "Extract applications using Applications Mapping files in '$DBB_MODELER_APPMAPPINGS_DIR'"
+	echo "*******************************************************************"
+	applicationMapping=`echo $applicationsMappingFile | awk -F '.' '{printf $1}'`
+	
 	touch $DBB_MODELER_LOGS/1-extractApplications.log
 	chtag -tc IBM-1047 $DBB_MODELER_LOGS/1-extractApplications.log
 
 	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
 		--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 		--logFile $DBB_MODELER_LOGS/1-extractApplications.log"
-	
+
 	echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/1-extractApplications.log
 	$CMD
 fi

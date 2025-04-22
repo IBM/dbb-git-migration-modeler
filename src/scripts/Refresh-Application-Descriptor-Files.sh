@@ -74,7 +74,7 @@ fi
 if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
-	$dir/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	. $dir/utils/0-environment.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
 	PGM="Refresh-Application-Descriptor-Files.sh"
 
@@ -162,6 +162,8 @@ if [ $rc -eq 0 ]; then
 			echo "*******************************************************************"
 			echo "Reset Application Descriptor for $applicationDir"
 			echo "*******************************************************************"
+			touch $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
+			chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
 			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/recreateApplicationDescriptor.groovy \
 				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 				--application $applicationDir \

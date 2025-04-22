@@ -131,7 +131,7 @@ def getProgramsFromApplicationDescriptor() {
 
 		// Check if the file physically exists
 		File sourceFile = new File ("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${qualifiedFile}")
-		if (sourceFile.exists()) { 
+		if (sourceFile.exists()) {
 			// Obtain impacts
 			logger.logMessage("** Analyzing impacted applications for file '${props.application}/${qualifiedFile}'.")
 			def impactedFiles = findImpactedFiles(impactSearchRule, props.application + '/' + qualifiedFile)
@@ -457,7 +457,7 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 		}
 	}
 	// Consumer's Application Descriptor file has been found and can be updated
-	if (consumerApplicationDescriptor) {						
+	if (consumerApplicationDescriptor) {
 		applicationDescriptorUtils.addApplicationDependency(consumerApplicationDescriptor, providerApplicationDescriptor.application, "latest", dependencyType)
 		applicationDescriptorUtils.writeApplicationDescriptor(consumerApplicationDescriptorFile, consumerApplicationDescriptor)
 	}

@@ -33,11 +33,6 @@ println("** Recreate Application Descriptor file process started.")
 // Parse arguments from command-line
 parseArgs(args)
 
-// Handle log file
-if (props.logFile) {
-	logger.create(props.logFile)
-}
-
 // Read the repository layout mapping file
 logger.logMessage("** Reading the Repository Layout Mapping definition.")
 
@@ -100,6 +95,8 @@ fileList.each() { file ->
 
 applicationDescriptorUtils.writeApplicationDescriptor(applicationDescriptorFile, applicationDescriptor)
 logger.logMessage("** Created Application Description file '${applicationDescriptorFile.getAbsolutePath()}'")
+
+logger.close()
 
 /**
  * Parse CLI config

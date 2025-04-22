@@ -79,9 +79,8 @@ DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD=""
 #    https://www.ibm.com/docs/en/dbb/2.0?topic=customization-encrypting-metadata-store-passwords#dbb-db2-password-file
 DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=""
 
-# Migration Modeler Configuration files
-# Reference to the configured application mapping file
-APPLICATION_MAPPING_FILE=$DBB_MODELER_WORK/applicationsMapping.yaml
+# Reference to the folder containing the Applications mapping files
+DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/applications-mappings"
 # Reference to the repository paths mapping file
 REPOSITORY_PATH_MAPPING_FILE=$DBB_MODELER_WORK/repositoryPathsMapping.yaml
 # Reference to the type mapping file
@@ -89,7 +88,7 @@ APPLICATION_MEMBER_TYPE_MAPPING=$DBB_MODELER_WORK/types.txt
 # Reference to the type configuration file to generate build configuration
 TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/typesConfigurations.yaml
 # Input files and configuration
-APPLICATION_DATASETS=DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS
+# APPLICATION_DATASETS=DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS
 APPLICATION_ARTIFACTS_HLQ=DBEHM.MIG
 # Scanning options
 SCAN_DATASET_MEMBERS=false
@@ -128,13 +127,12 @@ PIPELINE_CI=1
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_GIT_CONFIG)
-input_array=(APPLICATION_MAPPING_FILE REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_DATASETS APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD PIPELINE_USER PIPELINE_USER_GROUP)
+input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD PIPELINE_USER PIPELINE_USER_GROUP)
 
 # Create work dir
 echo
 echo "[SETUP] Creating DBB Git Migration Modeler work directory '$DBB_MODELER_WORK'"
-echo "[SETUP] Copying DBB Git Migration Modeler configuration files to '$DBB_MODELER_WORK'"
-read -p "Do you want to create the directory '$DBB_MODELER_WORK' and copy the DBB Git Migration Modeler configuration files to it (Y/n): " variable
+read -p "Do you want to create the directory '$DBB_MODELER_WORK' (Y/n): " variable
 
 if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 	if [ -d "${DBB_MODELER_WORK}" ]; then
@@ -144,11 +142,7 @@ if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 	else
 		mkdir -p $DBB_MODELER_WORK
 		rc=$?
-		if [ $rc -eq 0 ]; then
-			cp $DBB_MODELER_HOME/samples/*.* $DBB_MODELER_WORK/
-			rc=$?
-		fi
-
+		
 		if [ $rc -eq 0 ]; then
 			if [ ! -d "${DBB_MODELER_DEFAULT_GIT_CONFIG}" ]; then
 				mkdir -p $DBB_MODELER_DEFAULT_GIT_CONFIG
@@ -212,6 +206,50 @@ if [ $rc -eq 0 ]; then
 			declare ${config}="${variable}"
 		fi
 	done
+	echo "Specify the pipeline orchestration technology to use."
+	read -p "1 for 'AzureDevOps', 2 for 'GitlabCI', 3 for 'Jenkins' or 4 for 'GitHubActions' [default: 1]: " variable
+	if [ "$variable" ]; then
+		declare PIPELINE_CI="${variable}"
+	else
+		declare PIPELINE_CI="1"
+	fi
+	case ${PIPELINE_CI} in
+	"1")
+		PIPELINE_CI="AzureDevOps"
+		;;
+	"2")
+		PIPELINE_CI="GitlabCI"
+		;;
+	"3")
+		PIPELINE_CI="Jenkins"
+		;;
+	"4")
+		PIPELINE_CI="GitHubActions"
+		;;
+	esac	
+
+	echo
+	echo "[SETUP] Copying DBB Git Migration Modeler configuration files to '$DBB_MODELER_WORK'"
+	if [ ! -d "${DBB_MODELER_APPMAPPINGS_DIR}" ]; then
+		mkdir -p $DBB_MODELER_APPMAPPINGS_DIR
+		rc=$?
+	fi
+	if [ $rc -eq 0 ]; then
+		cp $DBB_MODELER_HOME/samples/applications-mapping/*.* $DBB_MODELER_APPMAPPINGS_DIR/
+		rc=$?
+	fi
+	if [ $rc -eq 0 ]; then
+		cp $DBB_MODELER_HOME/samples/repositoryPathsMapping.yaml $REPOSITORY_PATH_MAPPING_FILE
+		rc=$?
+	fi
+	if [ $rc -eq 0 ]; then
+		cp $DBB_MODELER_HOME/samples/types.txt $APPLICATION_MEMBER_TYPE_MAPPING
+		rc=$?
+	fi
+	if [ $rc -eq 0 ]; then
+		cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE		
+		rc=$?
+	fi
 fi
 
 # Save DBB Git Migration Modeler Configuration
@@ -255,40 +293,15 @@ if [ $rc -eq 0 ]; then
 
 	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	echo "# DBB Git Migration Modeler input files" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-
 	for config in ${input_array[@]}; do
 		echo "${config}=${!config}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	done
-
-	echo "Specify the pipeline orchestration technology to use."
-	read -p "1 for 'AzureDevOps', 2 for 'GitlabCI', 3 for 'Jenkins' or 4 for 'GitHubActions' [default: 1]: " variable
-	if [ "$variable" ]; then
-		declare PIPELINE_CI="${variable}"
-	else
-		declare PIPELINE_CI="1"
-	fi
-	case ${PIPELINE_CI} in
-	"1")
-		PIPELINE_CI="AzureDevOps"
-		;;
-	"2")
-		PIPELINE_CI="GitlabCI"
-		;;
-	"3")
-		PIPELINE_CI="Jenkins"
-		;;
-	"4")
-		PIPELINE_CI="GitHubActions"
-		;;
-	esac		
 	echo "PIPELINE_CI=${PIPELINE_CI}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-
 
 	echo
 	echo "[SETUP] DBB Git Migration Modeler configuration saved to '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
 	echo "This DBB Git Migration Modeler configuration file will be imported by the DBB Git Migration Modeler process."
 	echo
-	
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 		## Checking DBB Toolkit version		
 		CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 3.0.1`
@@ -316,10 +329,10 @@ if [ $rc -eq 0 ]; then
 		echo
 		echo "********************************************* SUGGESTED ACTION *********************************************"
 		echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
-		echo "  - $APPLICATION_MAPPING_FILE "
-		echo "  - $REPOSITORY_PATH_MAPPING_FILE "
-		echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional) "
-		echo "  - $TYPE_CONFIGURATIONS_FILE (optional) "
+		echo "  - Applications Mapping file(s) located in $DBB_MODELER_APPMAPPINGS_DIR"
+		echo "  - $REPOSITORY_PATH_MAPPING_FILE"
+		echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional)"
+		echo "  - $TYPE_CONFIGURATIONS_FILE (optional)"
 		echo
 		echo "Once tailored, run the following command:"
 		echo "'$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
