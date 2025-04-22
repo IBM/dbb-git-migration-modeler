@@ -11,7 +11,7 @@ The main capabilities of the DBB Git Migration Modeler utility are:
 * the generation of build properties based on existing types and configuration in the legacy SCM solution
 * the initialization of Git repositories, pipeline templates and other configuration files related to the applications
 
-The different phases of the migration workflow are described in [the Migration Storyboard section](./AdvancedInformation.md#migration-storyboard).
+The different phases of the migration workflow are described in [the Migration Storyboard section](docs/AdvancedInformation.md#migration-storyboard).
 
 ## How does it work
 
@@ -27,14 +27,14 @@ The DBB Git Migration Modeler is using two types of configuration information:
 * Environment variables that are set up during the Setup phase.
 * Configuration files, shipped in the [samples directory](./samples/) that must to tailored to meet requirements.
 
-The environment variables that are populated during the Setup phase are described in [Setting up the DBB Git Migration Modeler configuration](./AdvancedInformation.md#setting-up-the-dbb-git-migration-modeler-configuration) section.
-The different Configuration files are described in the [Tailoring the input files](./AdvancedInformation.md#tailoring-the-input-files) section.
+The environment variables that are populated during the Setup phase are described in [Setting up the DBB Git Migration Modeler configuration](docs/AdvancedInformation.md#setting-up-the-dbb-git-migration-modeler-configuration) section.
+The different Configuration files are described in the [Tailoring the input files](docs/AdvancedInformation.md#tailoring-the-input-files) section.
 
 
 ## Cross-application dependencies and the Application Descriptor files
 
 The DBB Git Migration Modeler utility is used to better scope applications' repositories and helps to understand dependencies between applications.
-After the execution of the [Assessment Phase](./AdvancedInformation.md#the-assessment-phase), the dependencies between applications are knwon and documented in each Application Descriptor file. For a given application, its Application Descriptor file lists:
+After the execution of the [Assessment Phase](docs/AdvancedInformation.md#the-assessment-phase), the dependencies between applications are knwon and documented in each Application Descriptor file. For a given application, its Application Descriptor file lists:
 * the other applications that are considered as dependencies (i.e., the build and the deployment of the given application cannot be correctly performed without these dependencies),
 * the other applications that are consuming a service (either an Include File or a Submodule) that the given application provides
 
@@ -44,6 +44,6 @@ The Application Descriptor files are meant to also describe the list of artifact
 
 The DBB Git Migration Modeler can support multiple scenario, from simple configuration to complex architecture. Complexity is generally due to the number of input datasets that contain sources.
 
-In such situations, it is recommended to run the [Framing phase](./AdvancedInformation.md#the-framing-phase) multiple times, with different *Applications Mapping* files, that may contain different or potentially no naming conventions.
+In such situations, it is recommended to run the [Framing phase](docs/AdvancedInformation.md#the-framing-phase) multiple times, with different *Applications Mapping* files, that may contain different or potentially no naming conventions.
 
-Different migration scenarios are described in the [Migrations scenarios for Migration-Modeler-Start script](./AdvancedInformation.md#migrations-scenarios-for-migration-modeler-start-script) section.
+Different migration scenarios are described in the [Migrations scenarios for Migration-Modeler-Start script](docs/AdvancedInformation.md#migrations-scenarios-for-migration-modeler-start-script) section.
