@@ -46,4 +46,4 @@ The DBB Git Migration Modeler can support multiple scenarios, from simple config
 
 In such situations, it is recommended to run the [Framing phase](docs/AdvancedInformation.md#the-framing-phase) with multiple *Applications Mapping* files, that may contain different input datasets and naming conventions.
 
-Different migration scenarios are described in the [Migrations scenarios for Migration-Modeler-Start script](docs/AdvancedInformation.md#datasets-to-applications-mapping-scenarios) section.
+Different migration scenarios are described in the [Datasets-to-Applications mapping scenarios](docs/AdvancedInformation.md#datasets-to-applications-mapping-scenarios) section.
