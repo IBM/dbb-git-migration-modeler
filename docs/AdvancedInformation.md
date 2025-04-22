@@ -160,7 +160,7 @@ Four types of configuration files need to be reviewed and potentially adapted to
 1. The [Applications Mapping file](./samples/applicationsMapping.yaml) (YAML format) contains the list of existing applications with their naming convention patterns used for filtering members. It can be created manually or can be filled with information coming from external databases or provided by a report from an SCM solution. Instead of patterns for naming conventions, the file also accepts fully qualified member names that can be extracted from an existing data source or report provided by your legacy tool.  
 If no naming convention is applied for a given application, or if all the members of a given dataset belong to the same application, a naming convention whose value is `........` should be defined.
 Members in the input PDSs libraries that do not match any convention will be associated to the *UNASSIGNED* application. This is often applicable for include files that do not have an owner assigned.
-Multiple Applications Mapping files can be specified, that define one or multiple application configurations. The DBB Git Migration Modeler will import all the Applications Mapping files first, before processing the mappings. This configuration helps for more granular configurations and advanced scenarios, for instance when the input datasets contain members from only one application or when multiple applications ahve artifacts mixed in the same goup of datasets.
+Multiple Applications Mapping files can be specified, that define one or multiple application configurations. The DBB Git Migration Modeler will import all the Applications Mapping files first, before processing the mappings. This configuration helps for more granular configurations and advanced scenarios, for instance when the input datasets contain members from only one application or when multiple applications have artifacts mixed in the same group of datasets.
 
 2. The [Repository Paths Mapping file](./samples/repositoryPathsMapping.yaml) (YAML format) is required and describes the folder structure on z/OS UNIX System Services (USS) that will contain the files to are moved from the datasets. It is recommended to use the definitions provided in the template, and keep consistent definitions for all applications being migrated.
 The file controls how dataset members should be assigned to target subfolders on USS during the migration process. 
@@ -188,28 +188,6 @@ The utility is operating on a set of provided PDS libraries that contain a copy 
 Also, the latest steps of the whole migration process are performing a preview build and the packaging of existing artifacts. These existing artifacts (loadmodules, DBRMs, and any other artifacts meant to be deployed belonging to the applications) are expected to be found in datasets, following the naming convention in dbb-zAppBuild for output datasets. Typically, loadmodules are stored in to a `HLQ.LOAD` library, object decks in a `HLQ.OBJ` library and DBRMS in a `HLQ.DBRM` library. The HLQ used during this phase is provided through the `APPLICATION_ARTIFACTS_HLQ` environment variable defined during the execution of the [Setup script](./Setup.sh).
 
 ## Datasets-to-Applications mapping scenarios
-
-### A group of datasets contains artifacts belonging to one application
-
-In this scenario, a group of datasets only contains artifacts that belong to one application exclusively.
-
-To configure this case, a specific `Applications Mapping` file for the application should be provided, in the Applications Mappings folder specified by the `DBB_MODELER_APPCONFIG_DIR` parameter. An universal naming convention filter like in the below sample should be used, because all files from the input datasets are mapped to the defined application.
-
-The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
-~~~~YAML
-datasets:
-  - CATMAN.COBOL
-  - CATMAN.COPY
-  - CATMAN.BMS
-applications:
-  - application: "Catalog Manager"
-    description: "Catalog Manager"
-    owner: "MDALBIN"
-    namingConventions:
-      - ........
-~~~~
-
-When running the Migration-Modeler-Start.sh script with this Applications Mapping file, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application. The result of this command is an Application Descriptor file that documents all the artifacts contained in the given datasets, and a DBB Migration mapping file to manages all the members found.
 
 ### A group of datasets contains artifacts belonging to multiple applications
 
@@ -265,6 +243,28 @@ applications:
 
 The result of this command is a set of Application Descriptor files and DBB Migration mapping files for each discovered application.
 If a member of the input datasets doesn't match any naming convention, it is assigned to a special application called *UNASSIGNED*.
+
+### A group of datasets contains artifacts belonging to one application
+
+In this scenario, a group of datasets only contains artifacts that belong to one application exclusively.
+
+To configure this case, a specific `Applications Mapping` file for the application should be provided, in the Applications Mappings folder specified by the `DBB_MODELER_APPCONFIG_DIR` parameter. An universal naming convention filter like in the below sample should be used, because all files from the input datasets are mapped to the defined application.
+
+The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
+~~~~YAML
+datasets:
+  - CATMAN.COBOL
+  - CATMAN.COPY
+  - CATMAN.BMS
+applications:
+  - application: "Catalog Manager"
+    description: "Catalog Manager"
+    owner: "MDALBIN"
+    namingConventions:
+      - ........
+~~~~
+
+When running the Migration-Modeler-Start.sh script with this Applications Mapping file, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application. The result of this command is an Application Descriptor file that documents all the artifacts contained in the given datasets, and a DBB Migration mapping file to manages all the members found.
 
 ### Working with source code that is known to be shared
 
