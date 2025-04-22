@@ -189,28 +189,6 @@ Also, the latest steps of the whole migration process are performing a preview b
 
 ## Datasets-to-Applications mapping scenarios
 
-### A group of datasets contains artifacts belonging to one application
-
-In this scenario, a group of datasets only contains artifacts that belong to one application exclusively.
-
-To configure this case, a specific `Applications Mapping` file for the application should be provided, in the Applications Mappings folder specified by the `DBB_MODELER_APPCONFIG_DIR` parameter. An universal naming convention filter like in the below sample should be used, because all files from the input datasets are mapped to the defined application.
-
-The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
-~~~~YAML
-datasets:
-  - CATMAN.COBOL
-  - CATMAN.COPY
-  - CATMAN.BMS
-applications:
-  - application: "Catalog Manager"
-    description: "Catalog Manager"
-    owner: "MDALBIN"
-    namingConventions:
-      - ........
-~~~~
-
-When running the Migration-Modeler-Start.sh script with this Applications Mapping file, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application. The result of this command is an Application Descriptor file that documents all the artifacts contained in the given datasets, and a DBB Migration mapping file to manages all the members found.
-
 ### A group of datasets contains artifacts belonging to multiple applications
 
 In this configuration, the list of datasets defined in the `Applications Mapping` file contain artifacts from different applications, but a naming convention can be used to filter members. In the following example, the naming convention is based on the first 3 letters of the members' name. There is one exception, where we have a fully qualified member name (*LINPUT*) that is owned by the *RetirementCalculator* application:
@@ -265,6 +243,28 @@ applications:
 
 The result of this command is a set of Application Descriptor files and DBB Migration mapping files for each discovered application.
 If a member of the input datasets doesn't match any naming convention, it is assigned to a special application called *UNASSIGNED*.
+
+### A group of datasets contains artifacts belonging to one application
+
+In this scenario, a group of datasets only contains artifacts that belong to one application exclusively.
+
+To configure this case, a specific `Applications Mapping` file for the application should be provided, in the Applications Mappings folder specified by the `DBB_MODELER_APPCONFIG_DIR` parameter. An universal naming convention filter like in the below sample should be used, because all files from the input datasets are mapped to the defined application.
+
+The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
+~~~~YAML
+datasets:
+  - CATMAN.COBOL
+  - CATMAN.COPY
+  - CATMAN.BMS
+applications:
+  - application: "Catalog Manager"
+    description: "Catalog Manager"
+    owner: "MDALBIN"
+    namingConventions:
+      - ........
+~~~~
+
+When running the Migration-Modeler-Start.sh script with this Applications Mapping file, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application. The result of this command is an Application Descriptor file that documents all the artifacts contained in the given datasets, and a DBB Migration mapping file to manages all the members found.
 
 ### Working with source code that is known to be shared
 
