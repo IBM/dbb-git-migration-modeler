@@ -39,8 +39,7 @@ DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}'`
 Prolog
 
-if [  "$DBB_HOME" = "" ]
-then
+if [  "$DBB_HOME" = "" ]; then
 	echo "[ERROR] Environment variable DBB_HOME is not set. Exiting."
 	exit 1
 fi
