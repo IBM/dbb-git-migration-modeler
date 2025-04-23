@@ -337,14 +337,14 @@ def generateApplicationFiles(String application) {
 		applicationDescriptor.description = foundApplication.description
 		applicationDescriptor.owner = foundApplication.owner
 		// Adding baseline to ApplicationDescriptor
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main" as String, foundApplication.baseline)
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${foundApplication.baseline}" as String, foundApplication.baseline)	
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", foundApplication.baseline)
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${foundApplication.baseline}", "release", foundApplication.baseline)	
 	} else {
 		applicationDescriptor.application = "UNASSIGNED"
 		applicationDescriptor.description = "Unassigned components"
 		applicationDescriptor.owner = "None"
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main" as String, "rel-1.0.0" as String)
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/rel-1.0.0" as String, "rel-1.0.0" as String)	
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", "rel-1.0.0")
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/rel-1.0.0", "release", "rel-1.0.0")	
 	}
 
 	// Main loop, iterating through the dataset members assigned to the current application

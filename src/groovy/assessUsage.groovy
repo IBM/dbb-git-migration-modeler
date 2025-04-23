@@ -387,6 +387,13 @@ def parseArgs(String[] args) {
 		logger.logMessage("*! [ERROR] The type of MetadataStore (file or db2) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
 	}
+
+	if (configuration.APPLICATION_DEFAULT_BRANCH) {
+		props.APPLICATION_DEFAULT_BRANCH = configuration.APPLICATION_DEFAULT_BRANCH
+	} else {
+		logger.logMessage("*! [ERROR] The default branch name setting APPLICATION_DEFAULT_BRANCH must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
 	
 	if (props.DBB_MODELER_METADATASTORE_TYPE.equals("file")) {
 		if (configuration.DBB_MODELER_FILE_METADATA_STORE_DIR) {
@@ -457,8 +464,11 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 		}
 	}
 	// Consumer's Application Descriptor file has been found and can be updated
-	if (consumerApplicationDescriptor) {
-		applicationDescriptorUtils.addApplicationDependency(consumerApplicationDescriptor, providerApplicationDescriptor.application, "latest", dependencyType)
+	if (consumerApplicationDescriptor) { // fetch the internal baseline that is added
+		providerInternalBaseline=providerApplicationDescriptor.baselines.find() { baselineDefinition ->
+			baselineDefinition.branch.equals(props.APPLICATION_DEFAULT_BRANCH)
+		}
+		applicationDescriptorUtils.addApplicationDependency(consumerApplicationDescriptor, providerApplicationDescriptor.application, providerInternalBaseline.reference , providerInternalBaseline.buildid )
 		applicationDescriptorUtils.writeApplicationDescriptor(consumerApplicationDescriptorFile, consumerApplicationDescriptor)
 	}
 	// update provider's Application Descriptor

@@ -275,7 +275,7 @@ if [ $rc -eq 0 ]; then
 		
 			# mkdir application log directory
 			mkdir -p $DBB_MODELER_LOGS/$applicationDir
-			version=`cat $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml | grep -A 1  "branch: \"${APPLICATION_DEFAULT_BRANCH}\"" | tail -1 | awk -F ':' {'printf $2'} | sed "s/[\" ]//g"`
+			version=`cat $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml | grep -A 2  "branch: \"${APPLICATION_DEFAULT_BRANCH}\"" | tail -1 | awk -F ':' {'printf $2'} | sed "s/[\" ]//g"`
 			if [ -z ${version} ]; then
 			  version="rel-1.0.0"
 			fi
@@ -285,14 +285,15 @@ if [ $rc -eq 0 ]; then
 				--addExtension \
 				--branch $APPLICATION_DEFAULT_BRANCH \
 				--version $version \
-				--tarFileName $applicationDir-$version.tar \
+				--tarFileName $applicationDir-$version-baseline.tar \
 				--applicationFolderPath $DBB_MODELER_APPLICATION_DIR/$applicationDir \
 				--owner $PIPELINE_USER:$PIPELINE_USER_GROUP"
 			if [ "$PUBLISH_ARTIFACTS" == "true" ]; then
 				CMD="${CMD} -p --artifactRepositoryUrl $ARTIFACT_REPOSITORY_SERVER_URL \
 				     --artifactRepositoryUser $ARTIFACT_REPOSITORY_USER \
 				     --artifactRepositoryPassword $ARTIFACT_REPOSITORY_PASSWORD \
-				     --artifactRepositoryName $applicationDir"
+					 --artifactRepositoryDirectory release \
+				     --artifactRepositoryName $applicationDir-$ARTIFACT_REPOSITORY_SUFFIX"
 			fi
 			echo "** $CMD"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 			$CMD > $DBB_MODELER_LOGS/$applicationDir/packaging-preview-$applicationDir.log
