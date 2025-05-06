@@ -83,15 +83,20 @@ DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/applications-mappings"
 # Reference to the repository paths mapping file
 REPOSITORY_PATH_MAPPING_FILE=$DBB_MODELER_WORK/repositoryPathsMapping.yaml
 # Reference to the type mapping file
-APPLICATION_MEMBER_TYPE_MAPPING=$DBB_MODELER_WORK/types.txt
+APPLICATION_MEMBER_TYPE_MAPPING=$DBB_MODELER_WORK/typesMapping.yaml
 # Reference to the type configuration file to generate build configuration
-TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/typesConfigurations.yaml
+TYPE_CONFIGURATIONS_FILE=
 # Input files and configuration
 # APPLICATION_DATASETS=DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS
 APPLICATION_ARTIFACTS_HLQ=DBEHM.MIG
 # Scanning options
 SCAN_DATASET_MEMBERS=false
 SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
+
+# Build Framework to use. Either zBuilder or zAppBuild
+BUILD_FRAMEWORK=zBuilder
+# Build Framework to use. Either zBuilder or zAppBuild
+DBB_ZBUILDER=/var/dbb/zBuilder
 # Reference to zAppBuild
 DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild
 # Reference to DBB Community Repo
@@ -129,7 +134,7 @@ PIPELINE_CI=1
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_GIT_CONFIG)
-input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD ARTIFACT_REPOSITORY_SUFFIX PIPELINE_USER PIPELINE_USER_GROUP)
+input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD ARTIFACT_REPOSITORY_SUFFIX PIPELINE_USER PIPELINE_USER_GROUP)
 
 # Create work dir
 echo
@@ -148,6 +153,34 @@ if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
 fi
 
 if [ $rc -eq 0 ]; then
+	# Specify DBB Build Framework and related options
+	echo
+	echo "[SETUP] Specifying the Build Framework configuration"
+	read -p "Specify the type of the Build Framework to use with DBB ("zBuilder" or "zAppBuild") [default: ${BUILD_FRAMEWORK}]: " variable
+	if [ "$variable" ]; then
+		declare BUILD_FRAMEWORK="${variable}"
+	fi
+	TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/typesConfigurations-$BUILD_FRAMEWORK.yaml
+
+	if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
+		read -p "Specify the location of the DBB zBuilder installation [default: ${DBB_ZBUILDER}]: " variable
+		if [ "$variable" ]; then
+			declare DBB_ZBUILDER="${variable}"
+		fi
+	elif [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
+		read -p "Specify the location of the zAppBuild installation [default: ${DBB_ZAPPBUILD}]: " variable
+		if [ "$variable" ]; then
+			declare DBB_ZAPPBUILD="${variable}"
+		fi
+	else
+		rc=8
+		ERRMSG="[ERROR] The value ${variable} was specified and is invalid (either 'zBuilder' or 'zAppBuild' are valid options). Exiting. rc="$rc
+		echo $ERRMSG
+	fi
+fi
+
+
+if [ $rc -eq 0 ]; then
 	# Specify DBB Metadatastore type and config
 	echo
 	echo "[SETUP] Specifying DBB Metadatastore type and configuration"
@@ -161,9 +194,7 @@ if [ $rc -eq 0 ]; then
 		if [ "$variable" ]; then
 			declare DBB_MODELER_FILE_METADATA_STORE_DIR="${variable}"
 		fi
-	fi
-
-	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
+	elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 		read -p "Specify the location of the DBB Db2 Metadatastore configuration file [default: ${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}]: " variable
 		if [ "$variable" ]; then
 			declare DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE="${variable}"
@@ -185,6 +216,10 @@ if [ $rc -eq 0 ]; then
 			rm -rf $DBB_MODELER_WORK
 			exit 1
 		fi
+	else
+		rc=8
+		ERRMSG="[ERROR] The value ${variable} was specified and is invalid (either 'file' or 'db2' are valid options). Exiting. rc="$rc
+		echo $ERRMSG
 	fi
 fi
 
@@ -235,11 +270,15 @@ if [ $rc -eq 0 ]; then
 		rc=$?
 	fi
 	if [ $rc -eq 0 ]; then
-		cp $DBB_MODELER_HOME/samples/types.txt $APPLICATION_MEMBER_TYPE_MAPPING
+		cp $DBB_MODELER_HOME/samples/typesMapping.yaml $APPLICATION_MEMBER_TYPE_MAPPING
 		rc=$?
 	fi
 	if [ $rc -eq 0 ]; then
-		cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE
+		if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
+			cp $DBB_MODELER_HOME/samples/typesConfigurations-zBuilder.yaml $TYPE_CONFIGURATIONS_FILE
+		else
+			cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE
+		fi
 		rc=$?
 	fi
 	if [ $rc -eq 0 ]; then
@@ -282,6 +321,12 @@ if [ $rc -eq 0 ]; then
 	for config in ${path_config_array[@]}; do
 	    echo "${config}=${!config}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	done
+
+	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler - Build Framework configuration" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "BUILD_FRAMEWORK=${BUILD_FRAMEWORK}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_ZBUILDER=${DBB_ZBUILDER}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_ZAPPBUILD=${DBB_ZAPPBUILD}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
 	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	echo "# DBB Git Migration Modeler - DBB Metadatastore configuration" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
