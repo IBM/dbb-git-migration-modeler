@@ -133,7 +133,7 @@ if [ $rc -eq 0 ]; then
 		echo
 		echo "[PHASE] Extract applications from using Applications Mapping files located at '$DBB_MODELER_APPMAPPINGS_DIR'"
 		if [[ $INTERACTIVE_RUN == "true" ]]; then
-			read -p "Do you want run the application extraction (Y/n): " variable
+			read -p "Do you want to run the application extraction (Y/n): " variable
 		else
 			variable="Y"
 		fi
@@ -187,7 +187,7 @@ if [ $rc -eq 0 ]; then
 		echo
 		echo "[PHASE] Generate build configuration"
 		if [[ $INTERACTIVE_RUN == "true" ]]; then
-			read -p "Do you want to generate the dbb-zAppBuild configurations (Y/n): " variable
+			read -p "Do you want to generate the $BUILD_FRAMEWORK configurations (Y/n): " variable
 		else
 			variable="Y"
 		fi

@@ -65,7 +65,12 @@ if [ $rc -eq 0 ]; then
 		echo "*******************************************************************"
 		touch $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
 		chtag -tc IBM-1047 $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/generateProperties.groovy \
+		if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
+			GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZBuilderProperties.groovy
+		elif [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
+			GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZAppBuildProperties.groovy
+		fi
+		CMD="$DBB_HOME/bin/groovyz $GENERATE_PROPERTIES_SCRIPT \
 			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 			--application $applicationDir \
 			--logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"

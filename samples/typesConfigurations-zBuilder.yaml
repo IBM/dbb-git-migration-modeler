@@ -1,0 +1,29 @@
+typesConfigurations:
+  - typeConfiguration: "PLI"
+    tasks:
+      - "Pli"
+    variables:  
+      - name: compileParms
+        value: "PP(INCLUDE('ID(++INCLUDE)'))"
+      - name: linkedit
+        value: true
+  - typeConfiguration: "CBLDB2"
+    tasks:
+      - "Cobol"
+    variables:
+      - name: compileParms
+        value: "LIB,SOURCE,SQL"
+      - name: isSQL
+        value: true
+      - name: linkedit
+        value: true
+  - typeConfiguration: "CICS"
+    tasks:
+      - "Pli"
+      - "Cobol"
+    variables:  
+      - name: isCICS
+        value: true
+      - name: compileParms
+        value: "${compileParms},CICS"
+      

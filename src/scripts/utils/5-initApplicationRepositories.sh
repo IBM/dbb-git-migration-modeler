@@ -237,36 +237,62 @@ if [ $rc -eq 0 ]; then
 		
 			# mkdir application log directory
 			mkdir -p $DBB_MODELER_LOGS/$applicationDir
-
-			if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-				declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreFileLocation=$DBB_MODELER_FILE_METADATA_STORE_DIR"
-			elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-				if [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD" ]; then
-					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --pw $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD"
-				elif [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE" ]; then
-					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --pwFile $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE"
+			
+			if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
+				if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
+					unset METADATASTORE_OPTIONS
+				elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
+					if [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD" ]; then
+						declare METADATASTORE_OPTIONS="--dbid $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --pw $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD"
+					elif [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE" ]; then
+						declare METADATASTORE_OPTIONS="--dbid $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --dbpw $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE"
+					fi
 				fi
-			fi
-			
-			
-			CMD="$DBB_HOME/bin/groovyz $DBB_ZAPPBUILD/build.groovy \
-				--workspace $DBB_MODELER_APPLICATION_DIR/$applicationDir \
-				--application $applicationDir \
-				--outDir $DBB_MODELER_LOGS/$applicationDir \
-				--fullBuild \
-				--hlq $APPLICATION_ARTIFACTS_HLQ --preview \
-				--logEncoding UTF-8 \
-				--applicationCurrentBranch $APPLICATION_DEFAULT_BRANCH \
-				${METADATASTORE_OPTIONS} \
-				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties"
-			echo "** $CMD"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-			$CMD > $DBB_MODELER_LOGS/$applicationDir/build-preview-$applicationDir.log
-			rc=$?
-			if [ $rc -eq 0 ]; then
-				echo "** Preview Build of application '$applicationDir' completed successfully. rc="$rc
-			else
-				echo "*! [ERROR] Preview Build of application '$applicationDir' failed. rc="$rc
-				echo "** Build logs and reports available at '$DBB_MODELER_LOGS/$applicationDir'"
+
+				export DBB_BUILD=$DBB_ZBUILDER
+				cd $DBB_MODELER_APPLICATION_DIR/$applicationDir
+				CMD="$DBB_HOME/bin/dbb build full \
+					--hlq $APPLICATION_ARTIFACTS_HLQ \
+					--preview \
+					${METADATASTORE_OPTIONS}"
+				echo "** $CMD"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+				$CMD > $DBB_MODELER_LOGS/$applicationDir/build-preview-$applicationDir.log
+				rc=$?
+				if [ $rc -eq 0 ]; then
+					echo "** Preview Build of application '$applicationDir' completed successfully. rc="$rc
+				else
+					echo "*! [ERROR] Preview Build of application '$applicationDir' failed. rc="$rc
+					echo "** Build logs and reports available at '$DBB_MODELER_LOGS/$applicationDir'"
+				fi
+			elif [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
+				if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
+					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreFileLocation=$DBB_MODELER_FILE_METADATA_STORE_DIR"
+				elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
+					if [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD" ]; then
+						declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --pw $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD"
+					elif [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE" ]; then
+						declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --pwFile $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE"
+					fi
+				fi
+				CMD="$DBB_HOME/bin/groovyz $DBB_ZAPPBUILD/build.groovy \
+					--workspace $DBB_MODELER_APPLICATION_DIR/$applicationDir \
+					--application $applicationDir \
+					--outDir $DBB_MODELER_LOGS/$applicationDir \
+					--fullBuild \
+					--hlq $APPLICATION_ARTIFACTS_HLQ --preview \
+					--logEncoding UTF-8 \
+					--applicationCurrentBranch $APPLICATION_DEFAULT_BRANCH \
+					${METADATASTORE_OPTIONS} \
+					--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties"
+				echo "** $CMD"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+				$CMD > $DBB_MODELER_LOGS/$applicationDir/build-preview-$applicationDir.log
+				rc=$?
+				if [ $rc -eq 0 ]; then
+					echo "** Preview Build of application '$applicationDir' completed successfully. rc="$rc
+				else
+					echo "*! [ERROR] Preview Build of application '$applicationDir' failed. rc="$rc
+					echo "** Build logs and reports available at '$DBB_MODELER_LOGS/$applicationDir'"
+				fi
 			fi
 		fi
 	
