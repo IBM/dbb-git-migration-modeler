@@ -9,8 +9,8 @@ This asset takes the user through 4 major phases:
 ## The Framing phase 
 
 For this first phase, the utility is offering a **framework to define which applications exist in today's SCM system**, their owners and which artifacts (COBOL, JCL, PROCs) belong to these applications.
-The schema to define this information is captured in the [Applications Mapping file](./samples/applicationsMapping.yaml) (YAML format).
-Another configuration file used as input, known as the [Repository Paths Mapping file](./samples/repositoryPathsMapping.yaml) allows users to define how artifacts are mapped to a repository structure.
+The schema to define this information is captured in the [Applications Mapping file](../samples/applications-mapping/applicationsMapping.yaml) (YAML format).
+Another configuration file used as input, known as the [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) allows users to define how artifacts are mapped to a repository structure.
 
 The produced files (called **Application Descriptor** files) of this first phase contain the list of artifacts that are owned by each application. This version of the Application Descriptor files can be used to communicate with the application owners, to gain their agreement about the content of the applications they own.
 It can serve as a control point in the planning and the execution of the migration process.
@@ -45,7 +45,7 @@ This stage is optional and allows to statically migrate build configuration from
 We encourage customers to use the dynamic scanners in Dependency Based Build to determine the runtime flags for each build file.
 The outputs of this stage becomes relevant when the final migration is taking place.
 
-The purpose of this stage is to generate properties and property files that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework, based on the information gathered in a specific input file, the [Types file](./samples/types.txt), defined later in this documentation.
+The purpose of this stage is to generate properties and property files that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework, based on the information gathered in a specific input file, the [Types file](../samples/types.txt), defined later in this documentation.
 
 This phase will generate the necessary properties and files required to leverage the [Language configuration  mapping](https://github.com/IBM/dbb-zappbuild/blob/main/docs/FilePropertyManagement.md#language-configuration-mapping) feature available in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/).
 Each composite type will be created (if not already existing) and will combine properties to represent a unique Language Configuration.
@@ -84,7 +84,7 @@ When running this utility, two main types of files will be created for each appl
 This structure of mapping file and how to invoke the DBB Migration utility with a mapping file is described in [the official DBB documentation](https://www.ibm.com/docs/en/dbb/2.0?topic=migrating-source-files-from-zos-git#running-migration-using-a-mapping-file).
 
 For [the Property Generation phase](#the-property-generation-phase), the following output files are created:
-* Language Configuration files, containing properties defined for types configurations (as defined in the [Types Configurations file](./samples/typesConfigurations.yaml)).
+* Language Configuration files, containing properties defined for types configurations (as defined in the [Types Configurations file](../samples/typesConfigurations.yaml)).
 These Language Configuration files are stored in a custom *dbb-zAppBuild* instance which is copied from an original *dbb-zAppbuild* folder.
 The location of these files is the [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf) folder in the custom *dbb-zAppBuild* instance.
 * For each analyzed application, an [application-conf](https://github.com/IBM/dbb-zappbuild/tree/main/samples/application-conf) folder is copied from the original *dbb-zAppBuild* instance, in which two files are customized:
@@ -93,7 +93,7 @@ The location of these files is the [build-conf/language-conf](https://github.com
   * For each artifact of the application, an entry is added in [languageConfigurationMapping.properties](https://github.com/IBM/dbb-zappbuild/blob/main/samples/application-conf/languageConfigurationMapping.properties), which maps the artifact with its Language Configuration defined in [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf)
 
 
-# Configuring the DBB Git Migration Modeler utility
+# Setup the DBB Git Migration Modeler utility
 
 Install the DBB Git Migration Modeler by cloning [this repository](https://github.com/IBM/dbb-git-migration-modeler) to z/OS Unix System Services.
 
@@ -151,43 +151,45 @@ This script prompts for the below environment variables and saves them in a conf
 | PIPELINE_CI | Pipeline technology used - either `AzureDevOps`, `GitlabCI`, `Jenkins` or `GitHubActions` | `AzureDevOps` |
 
 
-## Tailoring the input files
+# Configure Migration Modeler input files
 
-The configuration files required to use the DBB Git Migration Modeler utility are copied by the [Setup.sh script](./Setup.sh) from the [samples](./samples/) folder to the **work** folder that was specified during setup process.
+The configuration files required to use the DBB Git Migration Modeler utility are copied by the [Setup.sh script](./Setup.sh) from the [samples](../samples/) folder to the **work** folder that was specified during setup process.
 
 Four types of configuration files need to be reviewed and potentially adapted to your installation and your needs, before using the DBB Git Migration Modeler: 
 
-1. The [Applications Mapping file](./samples/applicationsMapping.yaml) (YAML format) contains the list of existing applications with their naming convention patterns used for filtering members. It can be created manually or can be filled with information coming from external databases or provided by a report from an SCM solution. Instead of patterns for naming conventions, the file also accepts fully qualified member names that can be extracted from an existing data source or report provided by your legacy tool.  
+1. The [Applications Mapping file(s)](../samples/applications-mapping/applicationsMapping.yaml) (YAML format) contains the list of existing applications with their naming convention patterns used for filtering members. It can be created manually or can be filled with information coming from external databases or provided by a report from an SCM solution. Instead of patterns for naming conventions, the file also accepts fully qualified member names that can be extracted from an existing data source or report provided by your legacy tool.  
 If no naming convention is applied for a given application, or if all the members of a given dataset belong to the same application, a naming convention whose value is `........` should be defined.
 Members in the input PDSs libraries that do not match any convention will be associated to the *UNASSIGNED* application. This is often applicable for include files that do not have an owner assigned.
 Multiple Applications Mapping files can be specified, that define one or multiple application configurations. The DBB Git Migration Modeler will import all the Applications Mapping files first, before processing the mappings. This configuration helps for more granular configurations and advanced scenarios, for instance when the input datasets contain members from only one application or when multiple applications have artifacts mixed in the same group of datasets.
 
-2. The [Repository Paths Mapping file](./samples/repositoryPathsMapping.yaml) (YAML format) is required and describes the folder structure on z/OS UNIX System Services (USS) that will contain the files to are moved from the datasets. It is recommended to use the definitions provided in the template, and keep consistent definitions for all applications being migrated.
+2. The [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) (YAML format) is required and describes the folder structure on z/OS UNIX System Services (USS) that will contain the files to are moved from the datasets. It is recommended to use the definitions provided in the template, and keep consistent definitions for all applications being migrated.
 The file controls how dataset members should be assigned to target subfolders on USS during the migration process. 
-Each *Repository Path* entry described in this file documents the type of artifacts in this folder, their file extension, their encoding, the source group they belong to, the language processor (for instance, the language script in dbb-zAppBuild) and criteria to meet for classification. Thse criterai can either be the low-level qualifiers of the dataset which hold them, or their associated types (if any, as described in the [Types file](./samples/types.txt)) or, if enabled, the scan result provided by the DBB Scanner.  
+Each *Repository Path* entry described in this file documents the type of artifacts in this folder, their file extension, their encoding, the source group they belong to, the language processor (for instance, the language script in dbb-zAppBuild) and criteria to meet for classification. Thse criterai can either be the low-level qualifiers of the dataset which hold them, or their associated types (if any, as described in the [Types file](../samples/types.txt)) or, if enabled, the scan result provided by the DBB Scanner.  
 For each repository path, the `artifactsType` property is used during [the Assessment phase](#the-assessment-phase), to filter out for each type of artifacts to perform the assessment.
 Only artifacts of types `Program` or `Include File` will be included in the analysis.
-It is recommended to keep the current settings defined in the provided [Repository Paths Mapping file](./samples/repositoryPathsMapping.yaml) for the `artifactsType` property.
+It is recommended to keep the current settings defined in the provided [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) for the `artifactsType` property.
 
-3. The [Types file](./samples/types.txt) (CSV format) lists the dataset members and their associated type (like a language definition), as described in the legacy SCM tool. This CSV file is optional, and should be built with an SCM-provided utility or from an SCM-provided report. Types mapping are meant to be used only for programs, not for Includes Files.  
+3. The [Types file](../samples/types.txt) (CSV format) lists the dataset members and their associated type (like a language definition), as described in the legacy SCM tool. This CSV file is optional, and should be built with an SCM-provided utility or from an SCM-provided report. Types mapping are meant to be used only for programs, not for Includes Files.  
 Lines of this file are composed of the artifact's names, followed by a list of comma-separated types. A combination of types can be specified, which will then turn into a composite type definition in dbb-zAppBuild.  
 During the [Framing phase](#the-framing-phase), the *type* information can be used as a criteria to dispatch files.
 If no type is assigned to a given artifact, this information will not be used to dispatch the file and this element will be of type *UNKNOWN* in the Application Descriptor file.  
 The type assigned to each artifact is used in the [Property Generation phase](#the-property-generation-phase) to create Language Configuration in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/)'s configuration.
 
-4. The [Types Configurations file](./samples/typesConfigurations.yaml) (YAML format) defines the build configurations with their *dbb-zAppBuild* build properties and values.
+4. The [Types Configurations file](../samples/typesConfigurations.yaml) (YAML format) defines the build configurations with their *dbb-zAppBuild* build properties and values.
 This information is typically extracted from the legacy SCM tool and mapped to the equivalent build property in *dbb-zAppBuild*. It is recommended to use ad-hoc automation, when applicable, to facilitate the creation of this file.
 This file is only used during the [Property Generation phase](#the-property-generation-phase).
 Each Type Configuration defines properties that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework.
-Types can be combined depending on definitions found in the [Types file](./samples/types.txt), to generate composite types combining different properties.
+Types can be combined depending on definitions found in the [Types file](../samples/types.txt), to generate composite types combining different properties.
 
 ## Required input datasets
 
-The utility is operating on a set of provided PDS libraries that contain a copy of the codebase to be migrated. Depending on your configuration, it may be required to unload the source files from the legacy SCM's storage, prior to using the DBB Git Migration Modeler. These datasets should be extracted from the legacy SCM system, using a SCM-provided utility or mechanism. The list of datasets that contain source files is defined [Applications Mapping file](./samples/applicationsMapping.yaml) for a set of applications.
+The utility is operating on a set of provided PDS libraries that contain a copy of the codebase to be migrated. Depending on your configuration, it may be required to unload the source files from the legacy SCM's storage, prior to using the DBB Git Migration Modeler. These datasets should be extracted from the legacy SCM system, using a SCM-provided utility or mechanism. The list of datasets that contain source files is defined [Applications Mapping file](../samples/applicationsMapping.yaml) for a set of applications.
 
 Also, the latest steps of the whole migration process are performing a preview build and the packaging of existing artifacts. These existing artifacts (loadmodules, DBRMs, and any other artifacts meant to be deployed belonging to the applications) are expected to be found in datasets, following the naming convention in dbb-zAppBuild for output datasets. Typically, loadmodules are stored in to a `HLQ.LOAD` library, object decks in a `HLQ.OBJ` library and DBRMS in a `HLQ.DBRM` library. The HLQ used during this phase is provided through the `APPLICATION_ARTIFACTS_HLQ` environment variable defined during the execution of the [Setup script](./Setup.sh).
 
-## Datasets-to-Applications mapping scenarios
+## Define Applications Mapping files
+
+This section outlines examples how to configure the `Applications Mapping` files to define the known ownership of files for the [framing phase](#the-framing-phase).
 
 ### A group of datasets contains artifacts belonging to multiple applications
 
@@ -204,7 +206,7 @@ applications:
     owner: "MDALBIN"
     namingConventions:
       - EBU.....
-      - LINPUT..
+      - LINPUT
   - application: "GenApp"
     description: "GenApp"
     owner: "DBEHM"
@@ -244,11 +246,75 @@ applications:
 The result of this command is a set of Application Descriptor files and DBB Migration mapping files for each discovered application.
 If a member of the input datasets doesn't match any naming convention, it is assigned to a special application called *UNASSIGNED*.
 
-### A group of datasets contains artifacts belonging to one application
+*Alternatively* you can also split up the configuration in multiple application mapping files, allowing teams to pass in their information separately:
+
+~~~~YAML
+datasets:
+  - APPS.COBOL
+  - APPS.COPY
+  - APPS.BMS
+applications:
+  - application: "RetirementCalculator"
+    description: "RetirementCalculator"
+    owner: "MDALBIN"
+    namingConventions:
+      - EBU.....
+      - LINPUT..
+~~~~
+
+~~~~YAML
+datasets:
+  - APPS.COBOL
+  - APPS.COPY
+  - application: "GenApp"
+    description: "GenApp"
+    owner: "DBEHM"
+    namingConventions:
+      - LGA.....
+      - LGD.....
+      - LGI.....
+      - LGT.....
+      - LGU.....
+      - LGS.....
+      - LGW.....
+      - OLD.....
+      - FLE.....
+~~~~
+
+~~~~YAML
+datasets:
+  - APPS.COBOL
+  - APPS.COPY
+  - application: "CBSA"
+    description: "CBSA"
+    owner: "MDALBIN"
+    namingConventions:
+      - ABN.....
+      - ACC.....
+      - BAN.....
+      - BNK.....
+      - CON.....
+      - CRD.....
+      - CRE.....
+      - CUS.....
+      - DBC.....
+      - DEL.....
+      - DPA.....
+      - GET.....
+      - INQ.....
+      - PRO.....
+      - UPD.....
+      - XFR.....
+      - ZUN.....
+~~~~
+
+### A group of datasets contains artifacts belonging to just one application
 
 In this scenario, a group of datasets only contains artifacts that belong to one application exclusively.
 
-To configure this case, a specific `Applications Mapping` file for the application should be provided, in the Applications Mappings folder specified by the `DBB_MODELER_APPCONFIG_DIR` parameter. An universal naming convention filter like in the below sample should be used, because all files from the input datasets are mapped to the defined application.
+To configure this case, an application-specific `Applications Mapping` file for the application needs to be provided in the folder of the Applications Mappings.
+
+An universal naming convention filter like in the below sample should be used, because all artifacts from the application-specific input datasets are mapped to the defined application.
 
 The following is an example of such an `Applications Mapping` YAML file (named *applicationsMapping-CATMAN.yaml*)
 ~~~~YAML
@@ -264,12 +330,24 @@ applications:
       - ........
 ~~~~
 
-When running the Migration-Modeler-Start.sh script with this Applications Mapping file, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application. The result of this command is an Application Descriptor file that documents all the artifacts contained in the given datasets, and a DBB Migration mapping file to manages all the members found.
+It is common to have shared files that do not belong to an application and are not assigned to applications - for instance copybooks or include files.
+
+To pass information to Migration Modeler about datasets containing the shared copybooks or include files in this scenario, create an Applications Mapping file (* UNASSIGNED.yaml*) pointing to the shared libraries, but don't list any applications:
+
+~~~~YAML
+datasets:
+  - APPS.COPYLIB
+  - APPS.INCLIB
+applications: []
+~~~~
+
+When running the Migration Modeler with these Applications Mapping files, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application, and artifacts found in APPs.COPYLIB and APPS.INCLIB will be assigned to the special application called *UNASSIGNED*.
 
 ### Working with source code that is known to be shared
 
 For files that are already known as shared between applications, you can define an Applications Mapping configuration to define their dedicated context. 
 If one library already contains these known shared include files, configure a specific `Applications Mapping` file alike the below sample:
+
 ~~~~YAML
 datasets:
   - SHARED.COPY
@@ -281,16 +359,17 @@ applications:
       - ........
 ~~~~
 
+If shared code following naming conventions and is planned to managed in their own git repository, you can also provide naming conventions.
+
 ### Combining use cases
 
-There can be combined scenarios to extract the applications. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply specific naming conventions for include files.
+You can combine the above scenarios to configure input to Migration Modeler. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply specific naming conventions for include files.
 
 In that case, the solution is to configure multiple Applications Mapping files:
 - One Applications Mapping file would contain the definition for the datasets having artifacts belonging to only one application
 - A second Applications Mapping file would contain the definitions for the datasets having artifacts from multiple applications.
 
-Based on requirements, additional Applications Mapping files can be defined, to support different scenarios and combinations.
-Only one execution of the [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) is necessary, to extract definitions from multiple Applications Mapping files. The latest enhancements to the DBB Git Migration Modeler allow the processing of multiple Applications Mapping files in one go.
+The [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) will process all available Applications Mapping files. 
 
 ## Generating properties
 
@@ -301,14 +380,14 @@ However, some configuration may require to use combination of types, depending o
 
 In a simple scenario, each artifact is assigned with one single type, that designates a known configuration in the legacy SCM tool.
 
-For instance, the [Types file](./samples/types.txt) could contain the following lines:
+For instance, the [Types file](../samples/types.txt) could contain the following lines:
 ~~~~
 PGM001, COBBATCH
 PGM002, COBCICSD
 PMG003, PLIIMSDB
 ~~~~
 
-Where *COBBATCH*, *COBCICSD* and *PLIIMSDB* represent configurations with specific properties. These types should be defined in the [Types Configurations file](./samples/typesConfigurations.yaml) accordingly, for instance:
+Where *COBBATCH*, *COBCICSD* and *PLIIMSDB* represent configurations with specific properties. These types should be defined in the [Types Configurations file](../samples/typesConfigurations.yaml) accordingly, for instance:
 
 ~~~~YAML
 - typeConfiguration: "COBBATCH"
@@ -339,7 +418,7 @@ PGM002, COBOL, CICSDB2
 PMG003, PLI, IMSDB
 ~~~~
 
-Each type configuration would be defined separately in the [Types Configurations file](./samples/typesConfigurations.yaml), for instance:
+Each type configuration would be defined separately in the [Types Configurations file](../samples/typesConfigurations.yaml), for instance:
 
 ~~~~YAML
 - typeConfiguration: "COBOL"
@@ -420,7 +499,7 @@ The outcome of this script are subfolders created in the `DBB_MODELER_APPLICATIO
 
 4. [Property Generation script (4-generateProperties.sh)](./src/scripts/utils/4-generateProperties.sh): this script generates build properties for [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/).
 This step is optional.  
-The script uses the type of each artifact to generate (or reuse if already existing) Language Configurations, as configured in the [Types Configurations file](./samples/typesConfigurations.yaml).
+The script uses the type of each artifact to generate (or reuse if already existing) Language Configurations, as configured in the [Types Configurations file](../samples/typesConfigurations.yaml).
    * **Outputs**
       * These Language Configurations files are placed into a copy of the dbb-zAppBuild instance pointed by the `DBB_ZAPPBUILD` variable, the copy being stored in the `DBB_MODELER_APPLICATION_DIR` folder.  
       * An **application-conf** folder is created within each application's subfolder in the `DBB_MODELER_APPLICATION_DIR` folder, and contains customized files to enable the use of the Language Configurations. A manual step needs to be performed to completely enable this configuration.
