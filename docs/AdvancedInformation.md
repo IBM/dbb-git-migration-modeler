@@ -330,9 +330,9 @@ applications:
       - ........
 ~~~~
 
-It is common to have shared files that do not belong to an application and are not assigned to applications - for instance copybooks or include files.
+It is common to have shared files that do not have an owner, and do not belong to an application - for instance copybooks or include files.
 
-To pass information to Migration Modeler about datasets containing the shared copybooks or include files in this scenario, create an Applications Mapping file (* UNASSIGNED.yaml*) pointing to the shared libraries, but don't list any applications:
+To pass information to Migration Modeler about datasets containing these shared copybooks or include files in this scenario, create an Applications Mapping file (*UNASSIGNED.yaml*) pointing to the shared libraries, but don't list any applications:
 
 ~~~~YAML
 datasets:
@@ -341,7 +341,7 @@ datasets:
 applications: []
 ~~~~
 
-When running the Migration Modeler with these Applications Mapping files, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application, and artifacts found in APPs.COPYLIB and APPS.INCLIB will be assigned to the special application called *UNASSIGNED*.
+When running the Migration Modeler with these Applications Mapping files, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application, and artifacts found in APPS.COPYLIB and APPS.INCLIB will be initially assigned to the special application called *UNASSIGNED*.
 
 ### Working with source code that is known to be shared
 
