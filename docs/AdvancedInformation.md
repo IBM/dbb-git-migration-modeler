@@ -93,7 +93,7 @@ The location of these files is the [build-conf/language-conf](https://github.com
   * For each artifact of the application, an entry is added in [languageConfigurationMapping.properties](https://github.com/IBM/dbb-zappbuild/blob/main/samples/application-conf/languageConfigurationMapping.properties), which maps the artifact with its Language Configuration defined in [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf)
 
 
-# Setup the DBB Git Migration Modeler utility
+# Setting up the DBB Git Migration Modeler utility
 
 Install the DBB Git Migration Modeler by cloning [this repository](https://github.com/IBM/dbb-git-migration-modeler) to z/OS Unix System Services.
 
@@ -151,7 +151,7 @@ This script prompts for the below environment variables and saves them in a conf
 | PIPELINE_CI | Pipeline technology used - either `AzureDevOps`, `GitlabCI`, `Jenkins` or `GitHubActions` | `AzureDevOps` |
 
 
-# Configure Migration Modeler input files
+# Configuring the Migration Modeler input files 
 
 The configuration files required to use the DBB Git Migration Modeler utility are copied by the [Setup.sh script](./Setup.sh) from the [samples](../samples/) folder to the **work** folder that was specified during setup process.
 
@@ -363,13 +363,13 @@ If shared code following naming conventions and is planned to managed in their o
 
 ### Combining use cases
 
-You can combine the above scenarios to configure input to Migration Modeler. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply specific naming conventions for include files.
+You can combine the above scenarios to configure Applications mapping files to use with the Migration Modeler. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply specific naming conventions for include files.
 
 In that case, the solution is to configure multiple Applications Mapping files:
 - One Applications Mapping file would contain the definition for the datasets having artifacts belonging to only one application
 - A second Applications Mapping file would contain the definitions for the datasets having artifacts from multiple applications.
 
-The [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) will process all available Applications Mapping files. 
+The [Migration-Modeler-Start script](../src/scripts/Migration-Modeler-Start.sh) will process all available Applications Mapping files. 
 
 ## Generating properties
 
