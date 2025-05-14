@@ -364,7 +364,7 @@ If shared code follows naming conventions, you can also provide naming conventio
 
 ### Combining use cases
 
-You can combine the above scenarios to configure Applications mapping files to use with the Migration Modeler. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply specific naming conventions for include files.
+You can combine the above scenarios to configure Applications Mapping files to use with the Migration Modeler. For instance, a given library contains artifacts from one application, while other libraries contain files from multiple applications. Or you need to apply specific naming conventions for include files.
 
 In that case, the solution is to configure multiple Applications Mapping files:
 - One Applications Mapping file would contain the definition for the datasets having artifacts belonging to only one application
