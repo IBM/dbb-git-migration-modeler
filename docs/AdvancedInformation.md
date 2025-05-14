@@ -332,7 +332,7 @@ applications:
 
 It is common to have shared files that do not have an owner, and do not belong to an application - for instance copybooks or include files.
 
-To pass information to Migration Modeler about datasets containing these shared copybooks or include files in this scenario, create an Applications Mapping file (*UNASSIGNED.yaml*) pointing to the shared libraries, but don't list any applications:
+To pass information to Migration Modeler about datasets containing these shared copybooks or include files in this scenario, create an Applications Mapping file (ex: *SHARED.yaml*) pointing to the shared libraries, but don't list any applications:
 
 ~~~~YAML
 datasets:
@@ -345,8 +345,7 @@ When running the Migration Modeler with these Applications Mapping files, all th
 
 ### Working with source code that is known to be shared
 
-For files that are already known as shared between applications, you can define an Applications Mapping configuration to define their dedicated context. 
-If one library already contains these known shared include files, configure a specific `Applications Mapping` file alike the below sample:
+For files that are already known as shared between applications and are planned to be managed in their own git repository, you can define an Applications Mapping configuration to define their dedicated context. If one library already contains these known shared include files, configure a specific `Applications Mapping` file alike the below sample:
 
 ~~~~YAML
 datasets:
@@ -359,7 +358,9 @@ applications:
       - ........
 ~~~~
 
-If shared code following naming conventions and is planned to managed in their own git repository, you can also provide naming conventions.
+With this application mapping file, all files of 'SHARED.COPY' will be initially assigned to the application *SHARED*.
+
+If shared code follows naming conventions, you can also provide naming conventions.
 
 ### Combining use cases
 
