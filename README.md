@@ -28,7 +28,7 @@ The DBB Git Migration Modeler is using two types of configuration information:
 * Configuration files, shipped in the [samples directory](./samples/) that must to tailored to meet requirements.
 
 The environment variables that are populated during the Setup phase are described in [Setting up the DBB Git Migration Modeler configuration](docs/AdvancedInformation.md#setting-up-the-dbb-git-migration-modeler-configuration) section.
-The different Configuration files are described in the [Tailoring the input files](docs/AdvancedInformation.md#tailoring-the-input-files) section.
+The different Configuration files are described in the [Configuring input files](docs/AdvancedInformation.md#configuring-the-migration-modeler-input-files) section.
 
 
 ## Cross-application dependencies and the Application Descriptor files
@@ -44,6 +44,4 @@ The Application Descriptor files are meant to also describe the list of artifact
 
 The DBB Git Migration Modeler can support multiple scenarios, from simple configuration to complex architecture. Complexity is generally due to the number of input datasets that contain sources.
 
-In such situations, it is recommended to run the [Framing phase](docs/AdvancedInformation.md#the-framing-phase) with multiple *Applications Mapping* files, that may contain different input datasets and naming conventions.
-
-Different migration scenarios are described in the [Datasets-to-Applications mapping scenarios](docs/AdvancedInformation.md#datasets-to-applications-mapping-scenarios) section.
+In such situations, it is recommended to run the [Framing phase](docs/AdvancedInformation.md#the-framing-phase) with multiple *Applications Mapping* files, that may contain different input datasets and naming conventions. Different configuration scenarios are outlined in the [Define Applications Mapping files](docs/AdvancedInformation.md#define-applications-mapping-files) section.
