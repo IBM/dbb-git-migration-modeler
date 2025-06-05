@@ -33,7 +33,7 @@ server.xml zos-working-tree-encoding=iso8859-1 git-encoding=utf-8
 *.plbck binary
 *.md zos-working-tree-encoding=IBM-1047 git-encoding=utf-8
 *.yml zos-working-tree-encoding=IBM-1047 git-encoding=utf-8 
-*.yaml zos-working-tree-encoding=IBM-1047 git-encoding=utf-8 
+*.yaml zos-working-tree-encoding=utf-8 git-encoding=utf-8 
 *.md zos-working-tree-encoding=utf-8 git-encoding=utf-8 
 
 .gitattributes zos-working-tree-encoding=ISO8859-1 git-encoding=utf-8

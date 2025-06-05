@@ -30,11 +30,6 @@ import static java.nio.file.StandardCopyOption.*
 // Parse arguments from command-line
 parseArgs(args)
 
-// Handle log file
-if (props.logFile) {
-	logger.create(props.logFile)
-}
-
 def typesConfigurations
 // Build the Types Configuration object from Types Configurations file
 logger.logMessage("** Reading the Types Configurations definitions from '${props.TYPE_CONFIGURATIONS_FILE}'.")

@@ -1,0 +1,11 @@
+types:
+  - type: "CICS"
+    filePatterns:
+      - "LGACDB01"
+      - "LGACUS01"
+  - type: "CBLDB2"
+    filePatterns:
+      - "LGACDB.."
+  - type: "PLI"
+    filePatterns:
+      - "LGACUS01"

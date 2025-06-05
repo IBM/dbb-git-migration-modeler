@@ -1,0 +1,22 @@
+---
+#
+# Licensed materials - Property of IBM
+# 5655-AC5 Copyright IBM Corp. 2024
+# All rights reserved
+# US Government users restricted rights  -  Use, duplication or
+# disclosure restricted by GSA ADP schedule contract with IBM Corp.
+#
+version: 1.0.0
+application:
+  name: 
+  tasks:
+    # Variable overrides for the ImpactAnalysis task
+    - task: ImpactAnalysis
+      variables:
+        - name: impactQueryPatterns
+          value:
+    
+    - task: ScannerInit
+      variables:
+        - name: loadModuleExcludeList
+          value: "${SCEELKED}.*,${SDFHLOAD}.*"
