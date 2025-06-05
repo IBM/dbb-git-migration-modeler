@@ -116,7 +116,6 @@ datasetsMap.each() { dataset, applicationsList ->
 			while (directoryListIterator.hasNext()) {
 				PdsDirectory.MemberInfo memberInfo = (PdsDirectory.MemberInfo) directoryListIterator.next();
 				String member = (memberInfo.getName());
-//				addDatasetToMember(member, dataset)
 				def mappedApplication = findMappedApplicationFromMemberName(applicationsList, member)
 				logger.logMessage("***** '$dataset($member)' - Mapped Application: $mappedApplication");
 				addDatasetMemberToApplication(mappedApplication, "$dataset($member)")
@@ -496,16 +495,6 @@ def findApplication(String applicationName) {
 		return null
 	}
 }
-
-// Add dataset to the list of datasets where the member can be found
-// def addDatasetToMember(String member, String dataset) {
-//	ArrayList<String> datasetsList = membersToDatasetsMap.get(member)
-//	if (!datasetsList) {
-//		datasetsList = new ArrayList<String>()
-//		membersToDatasetsMap.put(member, datasetsList)
-//	}
-//	datasetsList.add(dataset)
-//}
 
 /**
  * Parse the fullname of a qualified dataset and member name
