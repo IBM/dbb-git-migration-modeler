@@ -56,7 +56,7 @@ applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 }
 
 // Initialize the Application Descriptor
-File applicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${props.application}.yaml")
+File applicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
 if (applicationDescriptorFile.exists()) {
 	logger.logMessage("** Importing existing Application Descriptor and reset source groups, dependencies and consumers.")
 	applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
