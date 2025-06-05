@@ -101,7 +101,7 @@ fileList.each() { file ->
 
 		// finding the repository path mapping configuration based on the relative path
 		def matchingRepositoryPath = repositoryPathsMapping.repositoryPaths.find {it ->
-			it.repositoryPath.contains(pathToLookup)
+			it.repositoryPath.equals(pathToLookup)
 		}
 
 		// Loop through directories and append file definitions
