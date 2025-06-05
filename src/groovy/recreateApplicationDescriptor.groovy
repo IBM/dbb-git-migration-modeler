@@ -19,6 +19,7 @@ import static groovy.io.FileType.*
 
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
+@Field def fileUtils = loadScript(new File("utils/fileUtils.groovy"))
 @Field repositoryPathsMapping
 // Lists of applications found in Applications Mapping files
 @Field applicationsList = new ArrayList<Object>()
@@ -58,7 +59,7 @@ applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 // Initialize the Application Descriptor
 File applicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
 if (applicationDescriptorFile.exists()) {
-	logger.logMessage("** Importing existing Application Descriptor and reset source groups, dependencies and consumers.")
+	logger.logMessage("** Importing existing Application Descriptor and reseting source groups, dependencies and consumers.")
 	applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
 	applicationDescriptorUtils.resetAllSourceGroups(applicationDescriptor)
 	applicationDescriptorUtils.resetConsumersAndDependencies(applicationDescriptor)
@@ -88,41 +89,28 @@ if (applicationDescriptorFile.exists()) {
 	}	
 }
 
-logger.logMessage("** Getting List of files ${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
-Set<String> fileList = getFileList("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
+logger.logMessage("** Getting the list of files from '${props.DBB_MODELER_APPLICATION_DIR}/${props.application}'")
 
-fileList.each() { file ->
-	if (!file.startsWith(".")) {
+HashMap<String, String> files = fileUtils.getFilesFromApplication(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping)
 
-		// path to look up in the repository path mapping configuration
-		def pathToLookup = file.replace(props.application, "\$application").replace(new File(file).getName(),"")
-		if (pathToLookup.endsWith('/'))
-			pathToLookup = pathToLookup.take(pathToLookup.length()-1)
-
-		// finding the repository path mapping configuration based on the relative path
-		def matchingRepositoryPath = repositoryPathsMapping.repositoryPaths.find {it ->
-			it.repositoryPath.equals(pathToLookup)
-		}
-
-		// Loop through directories and append file definitions
-		if (matchingRepositoryPath) {
-			type = "UNKNOWN" // TODO - New Service Util
-			usage = "undefined"
-			fileExtension = matchingRepositoryPath.fileExtension
-			// extract basefilename
-			fileName = new File(file).getName()
-			baseFileName = fileName.replace(".$fileExtension","")
-			repositoryPath = file.replace("/${fileName}","")
-
-			logger.logMessage("** Adding '$file' to Application Descriptor into source group '${matchingRepositoryPath.sourceGroup}'.")
-			
-			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, matchingRepositoryPath.sourceGroup, matchingRepositoryPath.language, matchingRepositoryPath.languageProcessor, matchingRepositoryPath.artifactsType, fileExtension, repositoryPath, baseFileName, type, usage)
-		} else {
-			logger.logMessage("*! [WARNING] '$file' did not match any rule defined in the repository path mapping configuration. Skipped.")
-		}
+files.each() { file, repositoryPath ->
+	// finding the repository path mapping configuration based on the relative path
+	def matchingRepositoryPath = repositoryPathsMapping.repositoryPaths.find {it ->
+		it.repositoryPath.equals(repositoryPath)
+	}
+	// If a Repository Path was found in the RepositoryPathsMapping file
+	if (matchingRepositoryPath) {
+		type = "UNKNOWN" // TODO - New Service Util
+		usage = "undefined"
+		fileExtension = matchingRepositoryPath.fileExtension
+		// extract basefilename
+		fileName = new File(file).getName()
+		baseFileName = fileName.replace(".$fileExtension","")
+		repositoryPath = file.replace("/${fileName}","")
+		logger.logMessage("** Adding '$file' to Application Descriptor into source group '${matchingRepositoryPath.sourceGroup}'.")
+		applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, matchingRepositoryPath.sourceGroup, matchingRepositoryPath.language, matchingRepositoryPath.languageProcessor, matchingRepositoryPath.artifactsType, fileExtension, repositoryPath, baseFileName, type, usage)
 	} else {
-		// A hidden file found
-		logger.logMessage("*! [WARNING] '$file' is a hidden file. Skipped.")
+		logger.logMessage("*! [WARNING] '$file' did not match any rule defined in the repository path mapping configuration. Skipped.")
 	}
 }
 
@@ -227,7 +215,7 @@ def parseArgs(String[] args) {
  * 
  */
 
-def getFileList(String dir) {
+/* def getFileList(String dir) {
 	Set<String> fileList = new HashSet();
 	Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
 		@Override
@@ -243,4 +231,37 @@ def getFileList(String dir) {
 		}
 	});
 	return fileList;
+} */
+
+def relativizePath(String path, String root) {
+	if (!path.startsWith('/'))
+		return path
+	String relPath = new File(root).toURI().relativize(new File(path.trim()).toURI()).getPath()
+	// Directories have '/' added to the end.  Lets remove it.
+	if (relPath.endsWith('/'))
+		relPath = relPath.take(relPath.length()-1)
+	return relPath
+}
+
+/**
+ * Get list relative files in the application directory
+ */
+def getFileList(String DBB_MODELER_APPLICATION_DIR, String application, repositoryPathsMapping) {
+	Set<String> fileSet = new HashSet<String>()
+
+	Files.walk(Paths.get("${DBB_MODELER_APPLICATION_DIR}/${application}")).forEach { filePath ->
+		if (Files.isRegularFile(filePath)) {
+			relativeFilePathFromAppDir = relativizePath(filePath.toString(), DBB_MODELER_APPLICATION_DIR)
+			relativeFilePathFromApplication = relativizePath(filePath.toString(), "${DBB_MODELER_APPLICATION_DIR}/${application}")
+			
+			genericRepositoryFolder = Paths.get(relativeFilePathFromApplication.toString().replace(application, "\$application")).getParent().toString()
+			def matchingRepositoryPaths = repositoryPathsMapping.repositoryPaths.findAll() { repositoryPath ->
+				repositoryPath.repositoryPath.equals(genericRepositoryFolder)
+			}
+			if (matchingRepositoryPaths) {
+				fileSet.add(relativeFilePathFromApplication)
+			}
+		}
+	}
+	return fileSet
 }
