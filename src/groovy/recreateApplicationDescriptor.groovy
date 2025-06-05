@@ -80,7 +80,7 @@ if (applicationDescriptorFile.exists()) {
 		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${foundApplication.baseline}", "release", foundApplication.baseline)
 	} else {	
 		logger.logMessage("*! [WARNING] The '${props.application}' Application definition was not found in the provided Applications Mapping files. Using default values.")
-		applicationDescriptor.application = "props.application"
+		applicationDescriptor.application = props.application
 		applicationDescriptor.description = ""
 		applicationDescriptor.owner = "None"
 		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", "rel-1.0.0")
