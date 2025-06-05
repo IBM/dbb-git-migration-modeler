@@ -39,8 +39,6 @@ import java.text.DecimalFormat
 @Field HashMap<String, HashSet<String>> applicationsToDatasetMembersMap = new HashMap<String, HashSet<String>>()
 //Map between datasets and the applications defined in the Applications Mapping files
 @Field HashMap<String, ArrayList<Object>> datasetsMap = new HashMap<String, ArrayList<Object>>()
-//Map between members and datasets
-//@Field HashMap<String, String> membersToDatasetsMap = new HashMap<String, String>()
 
 // Types Configurations
 @Field HashMap<String, String> types
