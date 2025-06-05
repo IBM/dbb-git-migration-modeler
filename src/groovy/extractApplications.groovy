@@ -38,11 +38,7 @@ import java.text.DecimalFormat
 //Map between applications name and owned datasetMembers
 @Field HashMap<String, HashSet<String>> applicationsToDatasetMembersMap = new HashMap<String, HashSet<String>>()
 //Map between datasets and the applications defined in the Applications Mapping files
-//////@Field HashMap<ArrayList<String>, ArrayList<Object>> datasetsMap = new HashMap<ArrayList<String>, ArrayList<Object>>()
 @Field HashMap<String, ArrayList<Object>> datasetsMap = new HashMap<String, ArrayList<Object>>()
-//Map between members and datasets
-//////@Field HashMap<String, ArrayList<String>> membersToDatasetsMap = new HashMap<String, ArrayList<String>>()
-@Field HashMap<String, String> membersToDatasetsMap = new HashMap<String, String>()
 
 // Types Configurations
 @Field HashMap<String, String> types
@@ -118,7 +114,6 @@ datasetsMap.each() { dataset, applicationsList ->
 			while (directoryListIterator.hasNext()) {
 				PdsDirectory.MemberInfo memberInfo = (PdsDirectory.MemberInfo) directoryListIterator.next();
 				String member = (memberInfo.getName());
-				addDatasetToMember(member, dataset)
 				def mappedApplication = findMappedApplicationFromMemberName(applicationsList, member)
 				logger.logMessage("***** '$dataset($member)' - Mapped Application: $mappedApplication");
 				addDatasetMemberToApplication(mappedApplication, "$dataset($member)")
@@ -497,16 +492,6 @@ def findApplication(String applicationName) {
 	} else {
 		return null
 	}
-}
-
-// Add dataset to the list of datasets where the member can be found
-def addDatasetToMember(String member, String dataset) {
-	ArrayList<String> datasetsList = membersToDatasetsMap.get(member)
-	if (!datasetsList) {
-		datasetsList = new ArrayList<String>()
-		membersToDatasetsMap.put(member, datasetsList)
-	}
-	datasetsList.add(dataset)
 }
 
 /**

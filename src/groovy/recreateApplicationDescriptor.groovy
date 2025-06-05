@@ -15,10 +15,13 @@ import groovy.cli.commons.*
 import groovy.yaml.YamlSlurper
 import java.nio.file.*
 import java.nio.file.attribute.*
+import static groovy.io.FileType.*
 
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field repositoryPathsMapping
+// Lists of applications found in Applications Mapping files
+@Field applicationsList = new ArrayList<Object>()
 
 @Field Properties props = new Properties()
 // Internal variables
@@ -35,15 +38,25 @@ parseArgs(args)
 
 // Read the repository layout mapping file
 logger.logMessage("** Reading the Repository Layout Mapping definition.")
-
 if (props.REPOSITORY_PATH_MAPPING_FILE) {
 	File repositoryPathsMappingFile = new File(props.REPOSITORY_PATH_MAPPING_FILE)
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
 	repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
 }
 
+logger.logMessage("** Loading the provided Applications Mapping files.")
+File applicationsMappingsDir = new File(props.DBB_MODELER_APPMAPPINGS_DIR)
+applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
+	logger.logMessage("*** Importing '${applicationsMappingFile.getName()}'")
+	def yamlSlurper = new groovy.yaml.YamlSlurper()
+	applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
+	applicationsMapping.applications.each() { application ->
+		applicationsList.add(application)
+	}
+}
+
 // Initialize the Application Descriptor
-File applicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${props.application}.yaml")
+File applicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
 if (applicationDescriptorFile.exists()) {
 	logger.logMessage("** Importing existing Application Descriptor and reset source groups, dependencies and consumers.")
 	applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
@@ -52,7 +65,27 @@ if (applicationDescriptorFile.exists()) {
 } else {
 	logger.logMessage("** Creating a new Application Descriptor.")
 	applicationDescriptor = applicationDescriptorUtils.createEmptyApplicationDescriptor()
-	applicationDescriptor.application = props.application
+
+	// Populating the AD file with info from the Applications mapping files
+	def foundApplication = applicationsList.find { application ->
+		application.application.equals(props.application)
+	}
+
+	if (foundApplication) {	
+		applicationDescriptor.application = foundApplication.application
+		applicationDescriptor.description = foundApplication.description
+		applicationDescriptor.owner = foundApplication.owner
+		// Adding baseline to ApplicationDescriptor
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", foundApplication.baseline)
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${foundApplication.baseline}", "release", foundApplication.baseline)
+	} else {	
+		logger.logMessage("*! [WARNING] The '${props.application}' Application definition was not found in the provided Applications Mapping files. Using default values.")
+		applicationDescriptor.application = props.application
+		applicationDescriptor.description = ""
+		applicationDescriptor.owner = "None"
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", "rel-1.0.0")
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/rel-1.0.0", "release", "rel-1.0.0")	
+	}	
 }
 
 logger.logMessage("** Getting List of files ${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
@@ -68,7 +101,7 @@ fileList.each() { file ->
 
 		// finding the repository path mapping configuration based on the relative path
 		def matchingRepositoryPath = repositoryPathsMapping.repositoryPaths.find {it ->
-			it.repositoryPath.contains(pathToLookup)
+			it.repositoryPath.equals(pathToLookup)
 		}
 
 		// Loop through directories and append file definitions
@@ -143,6 +176,19 @@ def parseArgs(String[] args) {
 		logger.logMessage("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
 		System.exit(1)
 	}
+
+	if (configuration.DBB_MODELER_APPMAPPINGS_DIR) {
+		File directory = new File(configuration.DBB_MODELER_APPMAPPINGS_DIR)
+		if (directory.exists()) {
+			props.DBB_MODELER_APPMAPPINGS_DIR = configuration.DBB_MODELER_APPMAPPINGS_DIR
+		} else {
+			logger.logMessage("*! [ERROR] The Applications Mappings directory '${configuration.DBB_MODELER_APPMAPPINGS_DIR}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The Applications Mappings directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}	
 
 	if (configuration.DBB_MODELER_APPLICATION_DIR) {
 		File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
