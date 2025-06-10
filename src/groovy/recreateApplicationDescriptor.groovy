@@ -66,7 +66,6 @@ if (applicationDescriptorFile.exists()) {
 } else {
 	logger.logMessage("** Creating a new Application Descriptor.")
 	applicationDescriptor = applicationDescriptorUtils.createEmptyApplicationDescriptor()
-
 	// Populating the AD file with info from the Applications mapping files
 	def foundApplication = applicationsList.find { application ->
 		application.application.equals(props.application)
