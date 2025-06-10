@@ -8,30 +8,43 @@
 ********************************************************************************/
 
 @groovy.transform.BaseScript com.ibm.dbb.groovy.ScriptLoader baseScript
-import com.ibm.dbb.metadata.*
-import com.ibm.dbb.dependency.*
-import com.ibm.dbb.build.*
 import groovy.transform.*
-import com.ibm.dbb.build.report.*
-import com.ibm.dbb.build.report.records.*
 import groovy.yaml.YamlSlurper
 import groovy.lang.GroovyShell
 import groovy.util.*
 import java.nio.file.*
 import groovy.cli.commons.*
+import com.ibm.dbb.metadata.*
+import com.ibm.dbb.dependency.*
+import com.ibm.dbb.build.*
 
 @Field Properties props = new Properties()
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
+@Field def fileUtils = loadScript(new File("utils/fileUtils.groovy"))
+@Field repositoryPathsMapping
 
 // Initialization
 parseArgs(args)
 
 initScriptParameters()
 
+// Read the repository layout mapping file
+logger.logMessage("** Reading the Repository Layout Mapping definition.")
+if (props.REPOSITORY_PATH_MAPPING_FILE) {
+	File repositoryPathsMappingFile = new File(props.REPOSITORY_PATH_MAPPING_FILE)
+	if (!repositoryPathsMappingFile.exists()) {
+		logger.logMessage("*! [WARNING] The Repository Path Mapping file ${props.REPOSITORY_PATH_MAPPING_FILE} was not found. Exiting.")
+		System.exit(1)
+	} else {		
+		def yamlSlurper = new groovy.yaml.YamlSlurper()
+		repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
+	}
+}
+
 logger.logMessage("** Scanning the files.")
-Set<String> appFiles = getFileList()
-List<LogicalFile> logicalFiles = scanFiles(appFiles)
+HashMap<String, String> files = fileUtils.getFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping)
+List<LogicalFile> logicalFiles = scanFiles(files)
 
 logger.logMessage("** Storing results in the '${props.application}-${props.APPLICATION_DEFAULT_BRANCH}' DBB Collection.")
 // Manage Build Groups and Collections
@@ -48,29 +61,14 @@ if (props.PIPELINE_USER) {
 logger.close()
 
 /**
- * Get list relative files in the application directory
- */
-def getFileList() {
-	Set<String> fileSet = new HashSet<String>()
-
-	Files.walk(Paths.get(props.applicationDir)).forEach { filePath ->
-		if (Files.isRegularFile(filePath) && !filePath.startsWith("${props.applicationDir}/.git/")) {
-			relFile = relativizePath(filePath.toString())
-			fileSet.add(relFile)
-		}
-	}
-	return fileSet
-}
-
-/**
  * 
  */
-def scanFiles(fileList) {
+def scanFiles(files) {
 	List<LogicalFile> logicalFiles = new ArrayList<LogicalFile>()
 	DependencyScanner scanner = new DependencyScanner()
 	// Enabling Control Transfer flag in DBB Scanner	
 	scanner.setCollectControlTransfers("true")
-	fileList.each{ file ->
+	files.each { file, repositoryPath ->
 		logger.logMessage("\tScanning file $file ")
 		try {
 			logicalFile = scanner.scan(file, props.DBB_MODELER_APPLICATION_DIR)
@@ -141,7 +139,20 @@ def parseArgs(String[] args) {
 		logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
 	}	
-	
+
+	if (configuration.REPOSITORY_PATH_MAPPING_FILE) {
+		File file = new File(configuration.REPOSITORY_PATH_MAPPING_FILE)
+		if (file.exists()) {
+			props.REPOSITORY_PATH_MAPPING_FILE = configuration.REPOSITORY_PATH_MAPPING_FILE
+		} else {
+			logger.logMessage("*! [ERROR] The Repository Paths Mapping file '${configuration.REPOSITORY_PATH_MAPPING_FILE}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	} else {
+		logger.logMessage("*! [ERROR] The path to the Repository Paths Mapping file must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+
 	if (configuration.DBB_MODELER_METADATASTORE_TYPE) {
 		props.DBB_MODELER_METADATASTORE_TYPE = configuration.DBB_MODELER_METADATASTORE_TYPE
 		if (!props.DBB_MODELER_METADATASTORE_TYPE.equals("file") && !props.DBB_MODELER_METADATASTORE_TYPE.equals("db2")) {
@@ -223,11 +234,9 @@ def parseArgs(String[] args) {
  */
 def initScriptParameters() {
 	// Settings
-	String applicationFolder = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}"
-	if (new File(applicationFolder).exists()){
-		props.applicationDir = applicationFolder
-	} else {
-		logger.logMessage("*! [ERROR] Application Directory '$applicationFolder' does not exist. Exiting.")
+	File applicationFolderFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
+	if (!applicationFolderFile.exists()){
+		logger.logMessage("*! [ERROR] Application Directory '${props.DBB_MODELER_APPLICATION_DIR}/${props.application}' does not exist. Exiting.")
 		System.exit(1)
 	}
 
@@ -244,17 +253,4 @@ def initScriptParameters() {
 			metadataStoreUtils.initializeDb2MetadataStore("${props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", new File(props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE), db2ConnectionProps)
 		}
 	}
-}
-
-/*
- * relativizePath - converts an absolute path to a relative path from the workspace directory
- */
-def relativizePath(String path) {
-	if (!path.startsWith('/'))
-		return path
-	String relPath = new File(props.DBB_MODELER_APPLICATION_DIR).toURI().relativize(new File(path.trim()).toURI()).getPath()
-	// Directories have '/' added to the end.  Lets remove it.
-	if (relPath.endsWith('/'))
-		relPath = relPath.take(relPath.length()-1)
-	return relPath
 }
