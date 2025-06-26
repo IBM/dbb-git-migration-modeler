@@ -24,6 +24,9 @@ import static groovy.io.FileType.*
 // Lists of applications found in Applications Mapping files
 @Field applicationsList = new ArrayList<Object>()
 
+// Types Configurations
+@Field HashMap<String, String> types
+
 @Field Properties props = new Properties()
 // Internal variables
 def applicationDescriptor
@@ -43,6 +46,20 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 	File repositoryPathsMappingFile = new File(props.REPOSITORY_PATH_MAPPING_FILE)
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
 	repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
+}
+
+// Read the Types from file
+logger.logMessage("** Reading the Type Mapping definition.")
+if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
+	def typesFile = new File(props.APPLICATION_MEMBER_TYPE_MAPPING)
+	if (!typesFile.exists()) {
+		logger.logMessage("*! [WARNING] File ${props.APPLICATION_MEMBER_TYPE_MAPPING} not found in the current working directory. All artifacts will use the 'UNKNOWN' type.")
+	} else {
+		types = fileUtils.loadTypes(props.APPLICATION_MEMBER_TYPE_MAPPING)
+//		println("loaded ${props.APPLICATION_MEMBER_TYPE_MAPPING} - ${types}")
+	}
+} else {
+	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
 
 logger.logMessage("** Loading the provided Applications Mapping files.")
@@ -90,7 +107,7 @@ if (applicationDescriptorFile.exists()) {
 
 logger.logMessage("** Getting the list of files from '${props.DBB_MODELER_APPLICATION_DIR}/${props.application}'")
 
-HashMap<String, String> files = fileUtils.getFilesFromApplication(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping)
+HashMap<String, String> files = fileUtils.getFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping)
 
 files.each() { file, repositoryPath ->
 	// finding the repository path mapping configuration based on the relative path
@@ -99,15 +116,16 @@ files.each() { file, repositoryPath ->
 	}
 	// If a Repository Path was found in the RepositoryPathsMapping file
 	if (matchingRepositoryPath) {
-		type = "UNKNOWN" // TODO - New Service Util
 		usage = "undefined"
 		fileExtension = matchingRepositoryPath.fileExtension
 		// extract basefilename
 		fileName = new File(file).getName()
 		baseFileName = fileName.replace(".$fileExtension","")
+		type = fileUtils.getType(types, baseFileName.toUpperCase())
 		repositoryPath = file.replace("/${fileName}","")
+		resolvedRepositoryPath = matchingRepositoryPath.repositoryPath.replaceAll('\\$application', props.application)
 		logger.logMessage("** Adding '$file' to Application Descriptor into source group '${matchingRepositoryPath.sourceGroup}'.")
-		applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, matchingRepositoryPath.sourceGroup, matchingRepositoryPath.language, matchingRepositoryPath.languageProcessor, matchingRepositoryPath.artifactsType, fileExtension, repositoryPath, baseFileName, type, usage)
+		applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, matchingRepositoryPath.sourceGroup, matchingRepositoryPath.language, matchingRepositoryPath.languageProcessor, matchingRepositoryPath.artifactsType, fileExtension, resolvedRepositoryPath, baseFileName, type, usage)
 	} else {
 		logger.logMessage("*! [WARNING] '$file' did not match any rule defined in the repository path mapping configuration. Skipped.")
 	}
@@ -202,6 +220,16 @@ def parseArgs(String[] args) {
 		logger.logMessage("*! [ERROR] The path to the Repository Paths Mapping file must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
 	}
+	
+	if (configuration.APPLICATION_MEMBER_TYPE_MAPPING) {
+		File file = new File(configuration.APPLICATION_MEMBER_TYPE_MAPPING)
+		if (file.exists()) {
+			props.APPLICATION_MEMBER_TYPE_MAPPING = configuration.APPLICATION_MEMBER_TYPE_MAPPING
+		} else {
+			logger.logMessage("*! [ERROR] The Types file '${configuration.APPLICATION_MEMBER_TYPE_MAPPING}' does not exist. Exiting.")
+			System.exit(1)
+		}
+	}	
 
 	logger.logMessage("** Script configuration:")
 	props.each() { k, v ->
