@@ -14,7 +14,7 @@ import java.nio.file.*
 import groovy.cli.commons.*
 
 
-// Reads a HashMap from the MEMBER_TYPEèMAPPING file with comma separator (',') and returns it
+// Reads a HashMap from the MEMBER_TYPE_MAPPING file with comma separator (',') and returns it
 def loadTypes(String APPLICATION_MEMBER_TYPE_MAPPING) {
 	HashMap<String, String> types = new HashMap<>();
 	String line;
@@ -63,7 +63,7 @@ def relativizePath(String path, String root) {
 /**
  * Get list of files relative to DBB_MODELER_APPLICATION_DIR
  */
-def getFilesFromApplicationDir(String DBB_MODELER_APPLICATION_DIR, String application, repositoryPathsMapping) {
+def getFilesFromApplicationDir(String DBB_MODELER_APPLICATION_DIR, String application, repositoryPathsMapping, logger) {
 	HashMap<String, String> filesMap = new HashMap<String, String>()
 
 	Files.walk(Paths.get("${DBB_MODELER_APPLICATION_DIR}/${application}")).forEach { filePath ->
@@ -77,6 +77,10 @@ def getFilesFromApplicationDir(String DBB_MODELER_APPLICATION_DIR, String applic
 			}
 			if (matchingRepositoryPaths) {
 				filesMap.put(relativeFilePathFromAppDir, matchingRepositoryPaths.repositoryPath)
+			} else {
+				if (logger) {
+					logger.logSilentMessage("[INFO] No matching Repository Path was found for file '${filePath}'. Skipping.")
+				}
 			}
 		}
 	}

@@ -107,7 +107,7 @@ if (applicationDescriptorFile.exists()) {
 
 logger.logMessage("** Getting the list of files from '${props.DBB_MODELER_APPLICATION_DIR}/${props.application}'")
 
-HashMap<String, String> files = fileUtils.getFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping)
+HashMap<String, String> files = fileUtils.getFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping, logger)
 
 files.each() { file, repositoryPath ->
 	// finding the repository path mapping configuration based on the relative path
@@ -127,8 +127,12 @@ files.each() { file, repositoryPath ->
 		logger.logMessage("** Adding '$file' to Application Descriptor into source group '${matchingRepositoryPath.sourceGroup}'.")
 		applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, matchingRepositoryPath.sourceGroup, matchingRepositoryPath.language, matchingRepositoryPath.languageProcessor, matchingRepositoryPath.artifactsType, fileExtension, resolvedRepositoryPath, baseFileName, type, usage)
 	} else {
-		logger.logMessage("*! [WARNING] '$file' did not match any rule defined in the repository path mapping configuration. Skipped.")
+		logger.logMessage("*! [WARNING] '$file' did not match any rule defined in the Repository Path Mapping Configuration. Skipped.")
 	}
+}
+
+if (files.size() != Files.list(Paths.get("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")).count()) {
+	logger.logMessage("*! [WARNING] Some files were skipped as no matching Source Group was found based on their path. Check log file '${props.logFile}'.")	
 }
 
 applicationDescriptorUtils.writeApplicationDescriptor(applicationDescriptorFile, applicationDescriptor)

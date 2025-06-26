@@ -20,3 +20,9 @@ def logMessage(String message){
 	}
 	println(message)	
 }
+
+def logSilentMessage(String message){
+	if (logfileWriter != null) {
+		logfileWriter.writeLine(new Date().format("yyyy-MM-dd HH:mm:ss.SSS") + " - Additional message - " + message)
+	}	
+}
