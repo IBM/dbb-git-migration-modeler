@@ -63,7 +63,7 @@ def relativizePath(String path, String root) {
 /**
  * Get list of files relative to DBB_MODELER_APPLICATION_DIR
  */
-def getFilesFromApplicationDir(String DBB_MODELER_APPLICATION_DIR, String application, repositoryPathsMapping, logger) {
+def getMappedFilesFromApplicationDir(String DBB_MODELER_APPLICATION_DIR, String application, repositoryPathsMapping, logger) {
 	HashMap<String, String> filesMap = new HashMap<String, String>()
 
 	Files.walk(Paths.get("${DBB_MODELER_APPLICATION_DIR}/${application}")).forEach { filePath ->
