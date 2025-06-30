@@ -43,7 +43,7 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 }
 
 logger.logMessage("** Retrieving the list of files mapped to Source Groups.")
-HashMap<String, String> files = fileUtils.getFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping, logger)
+HashMap<String, String> files = fileUtils.getMappedFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping, logger)
 logger.logMessage("** Scanning the files.")
 List<LogicalFile> logicalFiles = scanFiles(files)
 

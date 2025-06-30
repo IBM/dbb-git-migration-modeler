@@ -105,9 +105,9 @@ if (applicationDescriptorFile.exists()) {
 	}	
 }
 
-logger.logMessage("** Getting the list of files from '${props.DBB_MODELER_APPLICATION_DIR}/${props.application}'")
+logger.logMessage("** Getting the list of mapped files from '${props.DBB_MODELER_APPLICATION_DIR}/${props.application}'")
 
-HashMap<String, String> files = fileUtils.getFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping, logger)
+HashMap<String, String> files = fileUtils.getMappedFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping, logger)
 
 files.each() { file, repositoryPath ->
 	// finding the repository path mapping configuration based on the relative path
