@@ -42,8 +42,9 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 	}
 }
 
-logger.logMessage("** Scanning the files.")
+logger.logMessage("** Retrieving the list of files mapped to Source Groups.")
 HashMap<String, String> files = fileUtils.getFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping, logger)
+logger.logMessage("** Scanning the files.")
 List<LogicalFile> logicalFiles = scanFiles(files)
 
 logger.logMessage("** Storing results in the '${props.application}-${props.APPLICATION_DEFAULT_BRANCH}' DBB Collection.")
