@@ -34,6 +34,7 @@ import java.text.DecimalFormat
 
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
+@Field def fileUtils = loadScript(new File("utils/fileUtils.groovy"))
 
 //Map between applications name and owned datasetMembers
 @Field HashMap<String, HashSet<String>> applicationsToDatasetMembersMap = new HashMap<String, HashSet<String>>()
@@ -77,7 +78,7 @@ if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
 	if (!typesFile.exists()) {
 		logger.logMessage("*! [WARNING] File ${props.APPLICATION_MEMBER_TYPE_MAPPING} not found in the current working directory. All artifacts will use the 'UNKNOWN' type.")
 	} else {
-		types = loadMapFromFile(props.APPLICATION_MEMBER_TYPE_MAPPING)
+		types = fileUtils.loadTypes(props.APPLICATION_MEMBER_TYPE_MAPPING)
 	}
 } else {
 	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
@@ -354,7 +355,7 @@ def generateApplicationFiles(String application) {
 			(scannedLanguage, scannedFileType) = scanDatasetMember(constructDatasetForZFileOperation(dataset, member))
 		}
 		def lastQualifier = getLastQualifier(dataset)
-		def memberType = getType(member)
+		def memberType = fileUtils.getType(types, member.toUpperCase())
 		// Identifying the matching Repository Path
 		// based on 1) the scan result if enabled
 		// 2) the type if set
@@ -510,39 +511,6 @@ def getDatasetAndMember(String fullname) {
 def getLastQualifier(String dataset) {
 	def qualifiers =  dataset.split("\\.");
 	return qualifiers.last()
-}
-
-// Reads a HashMap from a file with comma separator (',')
-def loadMapFromFile(String filePath) {
-	HashMap<String, String> map = new HashMap<>();
-	String line;
-	try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-		while ((line = reader.readLine()) != null) {
-			String[] keyValuePair = line.split(",", 2);
-			if (keyValuePair.length > 1) {
-				String key = keyValuePair[0].trim();
-				String value = keyValuePair[1].trim().replaceAll(" ", "");
-				map.put(key, value);
-			}
-		}
-		reader.close()
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-	return map;
-}
-
-def getType(String member) {
-	if (!types) {
-		return "UNKNOWN"
-	} else {
-		def type = types.get(member)
-		if (type) {
-			return type
-		} else {
-			return "UNKNOWN"
-		}
-	}
 }
 
 def scanDatasetMember(String datasetMemberToScan) {
