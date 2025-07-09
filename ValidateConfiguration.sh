@@ -9,29 +9,8 @@
 #*******************************************************************************
 # DBB Git Migration Modeler Configuration
 
-Prolog() {
-	echo
-	echo " DBB Git Migration Modeler                                                                                  "
-	echo " Release:     $MigrationModelerRelease                                                                      "
-	echo
-	echo " Script:      ValidateConfiguration.sh                                                                      "
-	echo
-	echo " Description: This script is validating the configuration provided in a configuration file                  "
-	echo "              passed as a parameter (through the '-c' parameter).                                           "
-	echo
-	echo "              This Validation script will automatically verify the pre-requisites are met,                  "
-	echo "              attempt to create work folders and copy samples files to the given folder.                    "
-	echo
-	echo "              For more information please refer to:    https://github.com/IBM/dbb-git-migration-modeler     "
-	echo
-}
-
 # Default is the root of the Git Repo
 DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
-
-#
-export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}'`
-# Prolog
 
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
