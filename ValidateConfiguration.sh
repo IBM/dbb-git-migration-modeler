@@ -178,7 +178,6 @@ fi
 
 if [ $rc -ne 0 ]; then
 	echo ${ERRMSG}
-	rm -rf $DBB_MODELER_WORK
 	exit $rc
 else
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
