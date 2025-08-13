@@ -44,4 +44,4 @@ The Application Descriptor files are meant to also describe the list of artifact
 
 The DBB Git Migration Modeler can support multiple scenarios, from simple configuration to complex architecture. Complexity is generally due to the number of input datasets that contain sources.
 
-In such situations, it is recommended to run the [Framing phase](docs/01-Storyboard.md#the-framing-phase) with multiple *Applications Mapping* files, that may contain different input datasets and naming conventions. Different configuration scenarios are outlined in the [Define Applications Mapping files](docs/AdvancedInformation.md#define-applications-mapping-files) section.
+In such situations, it is recommended to run the [Framing phase](docs/01-Storyboard.md#the-framing-phase) with multiple *Applications Mapping* files, that may contain different input datasets and naming conventions. Different configuration scenarios are outlined in the [Define Applications Mapping files](docs/03-Configuration.md#define-applications-mapping-files) section.
