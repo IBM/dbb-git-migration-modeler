@@ -51,6 +51,7 @@ This script prompts for the below environment variables and saves them in a conf
 | ARTIFACT_REPOSITORY_SERVER_URL | If the `PUBLISH_ARTIFACTS` parameter is set to `true`, the URL of the Artifact Repository Server when baseline archives are meant to be uploaded. | No default value |
 | ARTIFACT_REPOSITORY_USER | If the `PUBLISH_ARTIFACTS` parameter is set to `true`, the user ID to connect to the Artifact Repository Server. | `admin` |
 | ARTIFACT_REPOSITORY_PASSWORD | If the `PUBLISH_ARTIFACTS` parameter is set to `true`, the password to connect to the Artifact Repository Server. | No default value |
+| ARTIFACT_REPOSITORY_SUFFIX | If the `PUBLISH_ARTIFACTS` parameter is set to `true`, this parameter indicates the suffix that is added to the repository name (derived from the application's name) in the Artifactory Repository server. | `zos-local` |
 | PIPELINE_USER | The Security Server User ID of the pipeline user on z/OS. This user is typically the owner of the DBB Collections in the DBB MetadataStore and has authorities to run builds and deployments. This user is often the user the runs the pipeline tasks on z/OS. | `ADO` |
 | PIPELINE_USER_GROUP | The group that the Security Server User ID of the pipeline user belongs to. | `JENKINSG` |
 | PIPELINE_CI | The pipeline orchestrator used. This parameter is used during [The Initialization phase](01-Storyboard.md#the-initialization-phase) to create pipeline configurations. Valid values are `AzureDevOps`, `GitlabCI`, `Jenkins` or `GitHubActions`. | `AzureDevOps` |
