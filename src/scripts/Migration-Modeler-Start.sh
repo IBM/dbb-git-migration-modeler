@@ -68,7 +68,7 @@ fi
 if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
-	. $dir/utils/0-environment.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+	. $dir/utils/0-validateConfiguration.sh -e -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
 	PGM="Migration-Modeler-Start.sh"
 	
@@ -78,7 +78,7 @@ if [ $rc -eq 0 ]; then
 
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 		## Checking DBB Toolkit version		
-		CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 3.0.1`
+		$dir/utils/0-validateConfiguration.sh -v 3.0.1
 		rc=$?	
 		if [ $rc -ne 0 ]; then
 			rc=8
@@ -86,7 +86,7 @@ if [ $rc -eq 0 ]; then
 		fi
 	else
 		## Checking DBB Toolkit version		
-		CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 2.0.2`
+		$dir/utils/0-validateConfiguration.sh -v 2.0.2
 		rc=$?
 		if [ $rc -ne 0 ]; then
 			rc=8

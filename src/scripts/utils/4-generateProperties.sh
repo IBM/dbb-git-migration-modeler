@@ -55,7 +55,7 @@ fi
 if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
-	. $dir/0-environment.sh  -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+	. $dir/0-validateConfiguration.sh  -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`

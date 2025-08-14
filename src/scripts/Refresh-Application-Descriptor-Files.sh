@@ -74,7 +74,7 @@ fi
 if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
-	. $dir/utils/0-environment.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+	. $dir/utils/0-validateConfiguration.sh -e -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
 	PGM="Refresh-Application-Descriptor-Files.sh"
 
@@ -84,7 +84,7 @@ if [ $rc -eq 0 ]; then
 	
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 		## Checking DBB Toolkit version		
-		CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 3.0.1`
+		$dir/utils/0-validateConfiguration.sh -v 3.0.1
 		rc=$?	
 		if [ $rc -ne 0 ]; then
 			rc=8
@@ -92,7 +92,7 @@ if [ $rc -eq 0 ]; then
 		fi
 	else
 		## Checking DBB Toolkit version		
-		CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 2.0.2`
+		$dir/utils/0-validateConfiguration.sh -v 2.0.2
 		rc=$?
 		if [ $rc -ne 0 ]; then
 			rc=8
@@ -104,36 +104,11 @@ if [ $rc -eq 0 ]; then
 		# Build MetadataStore
 		# Drop and recreate the Build MetadataStore folder
 		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-			if [ -z "${DBB_MODELER_FILE_METADATA_STORE_DIR}" ]; then
-				echo "[ERROR] File MetadataStore location is missing from the Configuration file. Exiting."
-				exit 1
-			else
-				if [ -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
-				then
-					rm -rf $DBB_MODELER_FILE_METADATA_STORE_DIR
-				fi
-				if [ ! -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
-				then
-					mkdir -p $DBB_MODELER_FILE_METADATA_STORE_DIR
-				fi
+			if [ -d $DBB_MODELER_FILE_METADATA_STORE_DIR ]; then 
+				rm -rf $DBB_MODELER_FILE_METADATA_STORE_DIR
 			fi
-		elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-			if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" ]; then
-				echo "[ERROR] The Db2 MetadataStore User is missing from the Configuration file. Exiting."
-				exit 1
-			fi
-			if [ -z "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
-				echo "[ERROR] The Db2 Connection configuration file is missing from the Configuration file. Exiting."
-				exit 1
-			else 
-				if [ ! -f "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
-					echo "[ERROR] The Db2 Connection configuration file '${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting."
-					exit 1
-				fi
-			fi
-			if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" ]; then
-				echo "[ERROR] Either the Db2 MetadataStore User's Password or the Db2 MetadataStore Password File are missing from the Configuration file. Exiting."
-				exit 1
+			if [ ! -d $DBB_MODELER_FILE_METADATA_STORE_DIR ]; then 
+				mkdir -p $DBB_MODELER_FILE_METADATA_STORE_DIR
 			fi
 		fi
 	
@@ -192,12 +167,10 @@ if [ $rc -eq 0 ]; then
 		
 		# Drop and recreate the Build Metadatastore folder
 		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-			if [ -d $DBB_MODELER_METADATA_STORE_DIR ] 
-			then
+			if [ -d $DBB_MODELER_FILE_METADATA_STORE_DIR ]; then 
 				rm -rf $DBB_MODELER_FILE_METADATA_STORE_DIR
 			fi
-			if [ ! -d $DBB_MODELER_FILE_METADATA_STORE_DIR ] 
-			then
+			if [ ! -d $DBB_MODELER_FILE_METADATA_STORE_DIR ]; then 
 				mkdir -p $DBB_MODELER_FILE_METADATA_STORE_DIR
 			fi
 		fi
