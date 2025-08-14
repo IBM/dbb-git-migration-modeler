@@ -37,13 +37,11 @@ validateOptions() {
 	if [ -z "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
 		rc=8
 		ERRMSG="[ERROR] Argument to specify DBB Git Migration Modeler configuration file (-c) is required. rc="$rc
-		echo $ERRMSG
 	fi
 	
 	if [ ! -f "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
 		rc=8
 		ERRMSG="[ERROR] DBB Git Migration Modeler configuration file not found. rc="$rc
-		echo $ERRMSG
 	fi
 }
 
@@ -55,45 +53,32 @@ fi
 if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
-	. $dir/utils/0-environment.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+	. $dir/utils/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 	
-	# Build Metadatastore
-	# Exit if File MetadataStore is configured
-	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-		CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 2.0.2`		rc=$?
-		if [ $rc -eq 0 ]; then
-			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkMetadataStore.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE"
-			$CMD
-		else
+	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
+		## Checking DBB Toolkit version		
+		$dir/utils/0-validateConfiguration.sh -v 3.0.1
+		rc=$?	
+		if [ $rc -ne 0 ]; then
 			rc=8
-			echo "[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the Db2-based MetadataStore, the minimal recommended version for the DBB Toolkit is 2.0.2."
-		fi	
-	elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-		CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 3.0.1`
+			ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the Db2-based MetadataStore, the minimal recommended version for the DBB Toolkit is 3.0.1."
+		fi
+	else
+		## Checking DBB Toolkit version		
+		$dir/utils/0-validateConfiguration.sh -v 2.0.2
 		rc=$?
-		if [ $rc -eq 0 ]; then
-			if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" ]; then
-				rc=1
-				echo "[ERROR] The Db2 MetadataStore User is missing from the Configuration file. Exiting."
-			fi
-			if [ -z "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
-				rc=1
-				echo "[ERROR] The Db2 Connection configuration file is missing from the Configuration file. Exiting."
-			else 
-				if [ ! -f "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
-					rc=1
-					echo "[ERROR] The Db2 Connection configuration file '${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting."
-				fi
-			fi
-			if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" ]; then
-				rc=1
-				echo "[ERROR] Either the Db2 MetadataStore User's Password or the Db2 MetadataStore Password File are missing from the Configuration file. Exiting."
-			fi
-			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkMetadataStore.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE"
-			$CMD
-		else
+		if [ $rc -ne 0 ]; then
 			rc=8
-			echo "[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the Db2-based MetadataStore, the minimal recommended version for the DBB Toolkit is 3.0.1."
-		fi	
+			ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the File-based MetadataStore, the minimal recommended version for the DBB Toolkit is 2.0.2."
+		fi
 	fi
+	
+	if [ $rc -eq 0 ]; then
+		$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkMetadataStore.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	fi
+fi
+
+if [ $rc -ne 0 ]; then
+	echo ${ERRMSG}
+	exit $rc
 fi

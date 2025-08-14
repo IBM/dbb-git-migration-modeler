@@ -133,7 +133,8 @@ validateConfigurationFile() {
 	if [ $rc -eq 0 ]; then
 		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 			## Checking DBB Toolkit version
-			CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 3.0.1`
+			REQUIRED_DBB_TOOLKIT_VERSION="3.0.1"
+			validateDBBTookitVersion
 			rc=$?
 			if [ $rc -ne 0 ]; then
 				rc=8
@@ -141,7 +142,8 @@ validateConfigurationFile() {
 			fi
 		else
 			## Checking DBB Toolkit version
-			CURRENT_DBB_TOOLKIT_VERSION=`$DBB_MODELER_HOME/src/scripts/utils/0-environment.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE -v 2.0.2`
+			REQUIRED_DBB_TOOLKIT_VERSION="2.0.2"
+			validateDBBTookitVersion
 			rc=$?
 			if [ $rc -ne 0 ]; then
 				rc=8
