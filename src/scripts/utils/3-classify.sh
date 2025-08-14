@@ -55,7 +55,7 @@ fi
 if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
-	. $dir/0-validateConfiguration.sh  -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
 	# Drop and recreate the Build MetadataStore folder
 	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
