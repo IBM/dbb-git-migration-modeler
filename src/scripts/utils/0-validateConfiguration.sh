@@ -89,6 +89,12 @@ validateEnvironment() {
 		rc=8
 		ERRMSG="[ERROR] Environment variable DBB_HOME is not set. rc="$rc
 	fi
+	GIT_VERSION=`git --version`
+	rc=$?
+	if [ $rc -ne 0 ]; then
+		rc=8
+		ERRMSG="[ERROR] The 'git' command is not available. rc="$rc
+	fi	
 }
 
 # Validate Configuration File
@@ -163,6 +169,34 @@ validateConfigurationFile() {
 		if [ ! -d "${DBB_COMMUNITY_REPO}" ]; then
 			rc=8
 			ERRMSG="[ERROR] The DBB Community repository instance '${DBB_COMMUNITY_REPO}' doesn't exist. Exiting. rc="$rc
+		fi
+	fi
+
+	if [ $rc -eq 0 ]; then
+		if [ "${PUBLISH_ARTIFACTS}" == "true" ]; then
+			if [ -z "${ARTIFACT_REPOSITORY_SERVER_URL}" ]; then
+				rc=8
+				ERRMSG="[ERROR] The URL of the Artifact Repository Server was not specified. Exiting. rc="$rc
+			fi
+			if [ $rc -eq 0 ] & [ -z "${ARTIFACT_REPOSITORY_USER}" ]; then
+				rc=8
+				ERRMSG="[ERROR] The User for the Artifact Repository Server was not specified. Exiting. rc="$rc
+			fi
+			if [ $rc -eq 0 ] & [ -z "${ARTIFACT_REPOSITORY_PASSWORD}" ]; then
+				rc=8
+				ERRMSG="[ERROR] The Password of the User for the Artifact Repository Server was not specified. Exiting. rc="$rc
+			fi
+			if [ $rc -eq 0 ] & [ -z "${ARTIFACT_REPOSITORY_SUFFIX}" ]; then
+				rc=8
+				ERRMSG="[ERROR] The Suffix for Artifact Repositories was not specified. Exiting. rc="$rc
+			fi
+			if [ $rc -eq 0 ]; then
+				HTTP_CODE=`curl -s -S -o /dev/null -w "%{http_code}\n" ${ARTIFACT_REPOSITORY_SERVER_URL}`
+				if [ $HTTP_CODE -ne 200 ] & [ $HTTP_CODE -ne 302 ]; then
+					rc=8
+					ERRMSG="[ERROR] The Artifact Repository Server '${ARTIFACT_REPOSITORY_SERVER_URL}' is not reachable. See cURL error message. Exiting. rc="$rc
+				fi				
+			fi
 		fi
 	fi
 }
