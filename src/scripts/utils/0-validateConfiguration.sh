@@ -85,7 +85,7 @@ validateOptions() {
 
 # Validate Environment Configuration
 validateEnvironment() {
-	if [ "$DBB_HOME" = "" ]; then
+	if [ -z "$DBB_HOME" ]; then
 		rc=8
 		ERRMSG="[ERROR] Environment variable DBB_HOME is not set. rc="$rc
 	fi
