@@ -18,6 +18,7 @@ VALIDATE_CONFIGURATION_FILE="false"
 VALIDATE_ENVIRONMENT="false"
 FINALIZE_SETUP="false"
 VALIDATE_DBB_TOOLKIT_VERSION="false"
+ERRMSG=""
 rc=0
 
 OPTIND=1
@@ -87,13 +88,15 @@ validateOptions() {
 validateEnvironment() {
 	if [ -z "$DBB_HOME" ]; then
 		rc=8
-		ERRMSG="[ERROR] Environment variable DBB_HOME is not set. rc="$rc
+		ERRMSG="[ERROR] Environment variable 'DBB_HOME' is not set. rc="$rc
 	fi
-	GIT_VERSION=`git --version`
-	rc=$?
-	if [ $rc -ne 0 ]; then
-		rc=8
-		ERRMSG="[ERROR] The 'git' command is not available. rc="$rc
+	if [ $rc -eq 0 ]; then
+		GIT_VERSION=`git --version`
+		rc=$?
+		if [ $rc -ne 0 ]; then
+			rc=8
+			ERRMSG="[ERROR] The 'git' command is not available. rc="$rc
+		fi	
 	fi	
 }
 
@@ -194,7 +197,7 @@ validateConfigurationFile() {
 				HTTP_CODE=`curl -s -S -o /dev/null -w "%{http_code}\n" ${ARTIFACT_REPOSITORY_SERVER_URL}`
 				if [ $HTTP_CODE -ne 200 ] & [ $HTTP_CODE -ne 302 ]; then
 					rc=8
-					ERRMSG="[ERROR] The Artifact Repository Server '${ARTIFACT_REPOSITORY_SERVER_URL}' is not reachable. See cURL error message. Exiting. rc="$rc
+					ERRMSG="[ERROR] The Artifact Repository Server '${ARTIFACT_REPOSITORY_SERVER_URL}' is not reachable. See cURL error message with command 'curl -S ${ARTIFACT_REPOSITORY_SERVER_URL}'. Exiting. rc="$rc
 				fi				
 			fi
 		fi
@@ -204,10 +207,8 @@ validateConfigurationFile() {
 # Finalize Setup
 finalizeSetup() {
 	validateConfigurationFile
-	rc=$?
-	if [ $rc -ne 0 ]; then
+	if [ ! -z "$ERRMSG" ]; then
 		rc=8
-		ERRMSG="[ERROR] Unable to source the DBB Git Migration Modeler Configuration file '${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}'. rc="$rc
 	fi	
 
 	if [ $rc -eq 0 ]; then
@@ -326,11 +327,14 @@ fi
 
 # Call Validate DBB Toolkit Version
 if [ $rc -eq 0 ] & [ "${VALIDATE_DBB_TOOLKIT_VERSION}" == "true" ]; then
+	validateEnvironment
 	validateDBBTookitVersion
 fi
 
 if [ $rc -ne 0 ]; then
 	echo ${ERRMSG}
 	export ERRMSG=${ERRMSG}
-	exit $rc
+
 fi
+
+exit $rc

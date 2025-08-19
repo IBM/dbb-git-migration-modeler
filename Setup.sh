@@ -248,39 +248,53 @@ if [ $rc -eq 0 ]; then
 	echo
 	echo "[SETUP] DBB Git Migration Modeler configuration saved to '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
 	echo
-	
+else
+	rc=8
+	echo "[ERROR] Could not create file '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'."
+fi
+
+if [ $rc -eq 0 ]; then
 	echo "[SETUP] Validating environment."
 	./src/scripts/utils/0-validateConfiguration.sh -e
 	rc=$?
-	if [ $rc -eq 0 ]; then
-		echo "[SETUP] Validating Configuration File and finalizing Setup."
-		./src/scripts/utils/0-validateConfiguration.sh -f $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-		rc=$?
+	if [ $rc -ne 0 ]; then
+		echo "[ERROR] Environment check failed. Please correct the environment and run again the Setup script. Exiting." 
 	fi
-	
-	if [ $rc -eq 0 ]; then
-		echo "[SETUP] Checking the access to the DBB MetadataStore."
-		$DBB_MODELER_HOME/src/scripts/CheckMetadataStore.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-		rc=$?
-		
-		if [ $rc -eq 0 ]; then
-			echo "*************************************************************************************************************"
-			echo
-			echo "Congratulations! The validation of the DBB Git Migration Modeler Setup was successful!"
-			echo
-			echo "********************************************* SUGGESTED ACTIONS *********************************************"
-			echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
-			echo "  - Applications Mapping file(s) located in $DBB_MODELER_APPMAPPINGS_DIR"
-			echo "  - $REPOSITORY_PATH_MAPPING_FILE"
-			echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional)"
-			echo "  - $TYPE_CONFIGURATIONS_FILE (optional)"
-			echo
-			echo "Once tailored, run the following command:"
-			echo "'$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
-		fi
-	fi
-	
-else
-	echo "[ERROR] Could not create file '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'."
-	exit 8
 fi
+
+if [ $rc -eq 0 ]; then
+	echo "[SETUP] Validating Configuration File and finalizing Setup."
+	./src/scripts/utils/0-validateConfiguration.sh -f $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	rc=$?
+	if [ $rc -ne 0 ]; then
+		echo "[ERROR] Configuration check failed. Please correct the configuration and run again the Setup script. Exiting." 
+	fi
+fi
+
+
+if [ $rc -eq 0 ]; then
+	echo "[SETUP] Checking the access to the DBB MetadataStore."
+	$DBB_MODELER_HOME/src/scripts/CheckMetadataStore.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	rc=$?
+	
+	if [ $rc -eq 0 ]; then
+		echo "*************************************************************************************************************"
+		echo
+		echo "Congratulations! The validation of the DBB Git Migration Modeler Setup was successful!"
+		echo
+		echo "********************************************* SUGGESTED ACTIONS *********************************************"
+		echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
+		echo "  - Applications Mapping file(s) located in $DBB_MODELER_APPMAPPINGS_DIR"
+		echo "  - $REPOSITORY_PATH_MAPPING_FILE"
+		echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional)"
+		echo "  - $TYPE_CONFIGURATIONS_FILE (optional)"
+		echo
+		echo "Once tailored, run the following command:"
+		echo "'$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
+	else
+		echo "[ERROR] DBB MetadataStore check failed. Please correct the configuration and run again the Setup script. Exiting." 
+	fi
+fi
+	
+
+exit $rc
