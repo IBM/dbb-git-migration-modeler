@@ -73,30 +73,16 @@ if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
 	. $dir/utils/0-validateConfiguration.sh -e -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+	rc=$?
+
+	if [ $rc -ne 0 ]; then
+		exit $rc
+	fi
 
 	PGM="Refresh-Application-Descriptor-Files.sh"
-
 	# Print Prolog
 	export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}'`
 	Prolog
-	
-	if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-		## Checking DBB Toolkit version		
-		$dir/utils/0-validateConfiguration.sh -v 3.0.1
-		rc=$?	
-		if [ $rc -ne 0 ]; then
-			rc=8
-			ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the Db2-based MetadataStore, the minimal recommended version for the DBB Toolkit is 3.0.1."
-		fi
-	else
-		## Checking DBB Toolkit version		
-		$dir/utils/0-validateConfiguration.sh -v 2.0.2
-		rc=$?
-		if [ $rc -ne 0 ]; then
-			rc=8
-			ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the File-based MetadataStore, the minimal recommended version for the DBB Toolkit is 2.0.2."
-		fi
-	fi
 fi
 	
 if [ $rc -eq 0 ]; then

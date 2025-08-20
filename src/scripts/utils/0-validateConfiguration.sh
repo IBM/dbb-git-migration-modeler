@@ -91,6 +91,12 @@ validateEnvironment() {
 		ERRMSG="[ERROR] Environment variable 'DBB_HOME' is not set. rc="$rc
 	fi
 	if [ $rc -eq 0 ]; then
+		if [ ! -f "$DBB_HOME/bin/dbb" ]; then
+			rc=8
+			ERRMSG="[ERROR] The 'dbb' program was not found in DBB_HOME '$DBB_HOME'. rc="$rc
+		fi
+	fi
+	if [ $rc -eq 0 ]; then
 		GIT_VERSION=`git --version`
 		rc=$?
 		if [ $rc -ne 0 ]; then
@@ -286,22 +292,25 @@ finalizeSetup() {
 
 # Validate DBB Toolkit Version
 validateDBBTookitVersion() {
-	export CURRENT_DBB_TOOLKIT_VERSION=`$DBB_HOME/bin/dbb --version | grep "Dependency Based Build version" | awk -F' ' '{print $5}'`
-	currentDBBToolkitVersionMajor=`echo $CURRENT_DBB_TOOLKIT_VERSION | awk -F'.' '{print $1}'`
-	currentDBBToolkitVersionMinor=`echo $CURRENT_DBB_TOOLKIT_VERSION | awk -F'.' '{print $2}'`
-	currentDBBToolkitVersionPatch=`echo $CURRENT_DBB_TOOLKIT_VERSION | awk -F'.' '{print $3}'`
-	expectedDBBToolkitVersionMajor=`echo $REQUIRED_DBB_TOOLKIT_VERSION | awk -F'.' '{print $1}'`
-	expectedDBBToolkitVersionMinor=`echo $REQUIRED_DBB_TOOLKIT_VERSION | awk -F'.' '{print $2}'`
-	expectedDBBToolkitVersionPatch=`echo $REQUIRED_DBB_TOOLKIT_VERSION | awk -F'.' '{print $3}'`
-	
-	if [ "$currentDBBToolkitVersionMajor" -lt "$expectedDBBToolkitVersionMajor" ]; then
-		rc=8
-	elif [ "$currentDBBToolkitVersionMajor" -eq "$expectedDBBToolkitVersionMajor" ]; then
-		if [ "$currentDBBToolkitVersionMinor" -lt "$expectedDBBToolkitVersionMinor" ]; then
+	validateEnvironment
+	if [ $rc -eq 0 ]; then
+		export CURRENT_DBB_TOOLKIT_VERSION=`$DBB_HOME/bin/dbb --version | grep "Dependency Based Build version" | awk -F' ' '{print $5}'`
+		currentDBBToolkitVersionMajor=`echo $CURRENT_DBB_TOOLKIT_VERSION | awk -F'.' '{print $1}'`
+		currentDBBToolkitVersionMinor=`echo $CURRENT_DBB_TOOLKIT_VERSION | awk -F'.' '{print $2}'`
+		currentDBBToolkitVersionPatch=`echo $CURRENT_DBB_TOOLKIT_VERSION | awk -F'.' '{print $3}'`
+		expectedDBBToolkitVersionMajor=`echo $REQUIRED_DBB_TOOLKIT_VERSION | awk -F'.' '{print $1}'`
+		expectedDBBToolkitVersionMinor=`echo $REQUIRED_DBB_TOOLKIT_VERSION | awk -F'.' '{print $2}'`
+		expectedDBBToolkitVersionPatch=`echo $REQUIRED_DBB_TOOLKIT_VERSION | awk -F'.' '{print $3}'`
+		
+		if [ "$currentDBBToolkitVersionMajor" -lt "$expectedDBBToolkitVersionMajor" ]; then
 			rc=8
-		elif [ "$currentDBBToolkitVersionMinor" -eq "$expectedDBBToolkitVersionMinor" ]; then
-			if [ "$currentDBBToolkitVersionPatch" -lt "$expectedDBBToolkitVersionPatch" ]; then
+		elif [ "$currentDBBToolkitVersionMajor" -eq "$expectedDBBToolkitVersionMajor" ]; then
+			if [ "$currentDBBToolkitVersionMinor" -lt "$expectedDBBToolkitVersionMinor" ]; then
 				rc=8
+			elif [ "$currentDBBToolkitVersionMinor" -eq "$expectedDBBToolkitVersionMinor" ]; then
+				if [ "$currentDBBToolkitVersionPatch" -lt "$expectedDBBToolkitVersionPatch" ]; then
+					rc=8
+				fi
 			fi
 		fi
 	fi
@@ -309,32 +318,34 @@ validateDBBTookitVersion() {
 
 
 # Call Validate Environment
-if [ $rc -eq 0 ] & [ "$VALIDATE_ENVIRONMENT" == "true" ]; then
+if [ $rc -eq 0 ] && [ "$VALIDATE_ENVIRONMENT" == "true" ]; then
  	validateEnvironment
 fi
 
 # Call Validate Configuration File
-if [ $rc -eq 0 ] & [ "$VALIDATE_CONFIGURATION_FILE" == "true" ]; then
+if [ $rc -eq 0 ] && [ "$VALIDATE_CONFIGURATION_FILE" == "true" ]; then
  	validateOptions
-	validateConfigurationFile	
+ 	if [ $rc -eq 0 ]; then
+		validateConfigurationFile
+	fi	
 fi
 
 # Call Finalize Setup
-if [ $rc -eq 0 ] & [ "$FINALIZE_SETUP" == "true" ]; then
+if [ $rc -eq 0 ] && [ "$FINALIZE_SETUP" == "true" ]; then
  	validateOptions
-	finalizeSetup
+ 	if [ $rc -eq 0 ]; then
+		finalizeSetup
+	fi
 fi
 
 # Call Validate DBB Toolkit Version
-if [ $rc -eq 0 ] & [ "${VALIDATE_DBB_TOOLKIT_VERSION}" == "true" ]; then
-	validateEnvironment
+if [ $rc -eq 0 ] && [ "${VALIDATE_DBB_TOOLKIT_VERSION}" == "true" ]; then
 	validateDBBTookitVersion
 fi
 
 if [ $rc -ne 0 ]; then
 	echo ${ERRMSG}
 	export ERRMSG=${ERRMSG}
-
+	exit $rc
 fi
 
-exit $rc
