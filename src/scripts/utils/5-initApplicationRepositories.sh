@@ -257,8 +257,7 @@ if [ $rc -eq 0 ]; then
 				--hlq $APPLICATION_ARTIFACTS_HLQ --preview \
 				--logEncoding UTF-8 \
 				--applicationCurrentBranch $APPLICATION_DEFAULT_BRANCH \
-				${METADATASTORE_OPTIONS} \
-				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties"
+				${METADATASTORE_OPTIONS} "
 			echo "** $CMD"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 			$CMD > $DBB_MODELER_LOGS/$applicationDir/build-preview-$applicationDir.log
 			rc=$?
