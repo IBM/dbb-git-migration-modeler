@@ -164,6 +164,28 @@ main=refs/tags/${version}
 release/${version}=refs/tags/${version}""" > $baselineReferenceFile
                 rc=$?
             fi
+            
+            
+            # Create IDZ local project .project file
+            if [ $rc -eq 0 ]; then
+                idzProjectFile="$DBB_MODELER_APPLICATION_DIR/$applicationDir/.project"
+                echo "** Create file IDZ project configuration file '.project'"
+                # Write into file
+                echo """            <?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+    <name>$applicationDir</name>
+    <comment></comment>
+    <projects>
+    </projects>
+    <buildSpec>
+    </buildSpec>
+    <natures>
+        <nature>com.ibm.ftt.ui.views.project.navigator.local</nature>
+        <nature>com.ibm.ftt.dbbz.integration.dbbzprojectnature</nature>
+    </natures>
+</projectDescription>""" > $idzProjectFile
+                rc=$?
+            fi
 			
 			if [ $rc -eq 0 ]; then
 				echo "** Prepare pipeline configuration for $PIPELINE_CI."
