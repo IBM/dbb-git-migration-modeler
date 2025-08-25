@@ -171,7 +171,7 @@ release/${version}=refs/tags/${version}""" > $baselineReferenceFile
                 idzProjectFile="$DBB_MODELER_APPLICATION_DIR/$applicationDir/.project"
                 echo "** Create file IDZ project configuration file '.project'"
                 # Write into file
-                echo """            <?xml version="1.0" encoding="UTF-8"?>
+                echo """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <projectDescription>
     <name>$applicationDir</name>
     <comment></comment>
