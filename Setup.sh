@@ -122,7 +122,7 @@ PIPELINE_USER=ADO
 # Group that the User ID of the pipeline user belongs to
 PIPELINE_USER_GROUP=JENKINSG
 # Pipeline technology used
-# Either '1' for 'AzureDevOps', '2' for 'GitlabCI', '3' for 'Jenkins' or '4' for 'GitHubActions'
+# Either '1' for 'AzureDevOps', '2' for 'GitlabCIPipeline with distributed runner', '3' for 'Jenkins', '4' for 'GitHubActions' or '5' for 'GitlabCIPipeline-for-zos-native-runner'
 # The parameter will then be translated later in the process to its final value
 # as defined in the Templates folder of the DBB Community repo (without the 'Pipeline' suffix)
 PIPELINE_CI=1
@@ -198,24 +198,27 @@ if [ $rc -eq 0 ]; then
 			declare ${config}="${variable}"
 		fi
 	done
-	echo "Specify the pipeline orchestration technology to use."
-	read -p "1 for 'AzureDevOps', 2 for 'GitlabCI', 3 for 'Jenkins' or 4 for 'GitHubActions' [default: 1]: " variable
+	echo "Specify the pipeline orchestration technology to use. See available templates at https://github.com/IBM/dbb/tree/main/Templates"
+	read -p "1 for 'AzureDevOps', 2 for 'GitlabCIPipeline-for-distributed-runner', 3 for 'GitlabCIPipeline-for-zos-native-runner', 4 for 'Jenkins', 5 for 'GitHubActions' [default: 2]: " variable
 	if [ "$variable" ]; then
 		declare PIPELINE_CI="${variable}"
 	else
-		declare PIPELINE_CI="1"
+		declare PIPELINE_CI="2"
 	fi
 	case ${PIPELINE_CI} in
 	"1")
 		PIPELINE_CI="AzureDevOps"
 		;;
 	"2")
-		PIPELINE_CI="GitlabCI"
+		PIPELINE_CI="GitlabCIPipeline-for-distributed-runner"
 		;;
-	"3")
+    "3")
+        PIPELINE_CI="GitlabCIPipeline-for-zos-native-runner"
+        ;;
+	"4")
 		PIPELINE_CI="Jenkins"
 		;;
-	"4")
+	"5")
 		PIPELINE_CI="GitHubActions"
 		;;
 	esac
