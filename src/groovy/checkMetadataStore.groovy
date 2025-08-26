@@ -34,7 +34,6 @@ if (configuration.DBB_MODELER_METADATASTORE_TYPE.equals("file")) {
 } else {
 	Properties db2ConnectionProps = new Properties()
 	db2ConnectionProps.load(new FileInputStream(configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE))
-	// Call correct Db2 MetadataStore constructor
 	if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD) {
 		metadataStoreUtils.initializeDb2MetadataStore("${configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", "${configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}", db2ConnectionProps)
 	} else if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
