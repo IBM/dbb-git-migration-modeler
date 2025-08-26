@@ -346,7 +346,7 @@ fi
 if [ $global_rc -eq 0 ] && [ "$FINALIZE_SETUP" == "true" ]; then
  	validateOptions
  	if [ $rc -eq 0 ]; then
-		finalizeSetup
+		initializeWorkDirectory
 	fi
 fi
 
