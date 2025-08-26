@@ -91,7 +91,7 @@ if [ $rc -eq 0 ]; then
 		if [ $(git rev-parse --is-inside-work-tree 2>/dev/null | wc -l) -eq 1 ]; then
 		    echo "*! [WARNING] '$DBB_MODELER_APPLICATION_DIR/$applicationDir' is already a Git repository"
 		else
-			echo "** Initialize Git repository for application '$applicationDir'"
+			echo "** Initialize Git repository for application '$applicationDir' with initial git branch '${APPLICATION_DEFAULT_BRANCH}'"
 			
 			CMD="git init --initial-branch=${APPLICATION_DEFAULT_BRANCH}"
 			echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
@@ -277,6 +277,7 @@ release/${version}=refs/tags/${version}""" > $baselineReferenceFile
 	
 	        # Git add all changes
 	        if [ $rc -eq 0 ]; then
+	            echo "** Add files new Git repository"
 	            CMD="git add --all"
 	            echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 	            $CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
@@ -298,12 +299,15 @@ release/${version}=refs/tags/${version}""" > $baselineReferenceFile
 				if [ -z ${version} ]; then
 				  version="rel-1.0.0"
 				fi		
+				echo "** Create git tag 'git $version'"
 				CMD="git tag $version"
 				echo "[CMD] ${CMD}"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?
+				
 				if [ $rc -eq 0 ]; then
-					CMD="git branch $version refs/tags/$version"
+				    echo "** Create release maintenance branch 'release/$version'"
+				    CMD="git branch release/$version refs/tags/$version"
 					echo "[CMD] ${CMD}"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					rc=$?
