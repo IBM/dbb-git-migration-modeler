@@ -216,7 +216,7 @@ validateConfigurationFile() {
 }
 
 # Finalize Setup
-finalizeSetup() {
+initializeWorkDirectory() {
 	validateConfigurationFile
 
 	if [ $rc -eq 0 ]; then
