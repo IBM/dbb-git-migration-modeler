@@ -34,11 +34,7 @@ if (configuration.DBB_MODELER_METADATASTORE_TYPE.equals("file")) {
 } else {
 	Properties db2ConnectionProps = new Properties()
 	db2ConnectionProps.load(new FileInputStream(configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE))
-	if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD) {
-		metadataStoreUtils.initializeDb2MetadataStore("${configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", "${configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}", db2ConnectionProps)
-	} else if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
-		metadataStoreUtils.initializeDb2MetadataStore("${configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", new File(configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE), db2ConnectionProps)
-	}
+	metadataStoreUtils.initializeDb2MetadataStoreWithPasswordFile("${configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", new File(configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE), db2ConnectionProps)
 }
 
 Collection collection = metadataStoreUtils.createCollection("DummyCollection-main", "DummyCollection-main")
@@ -105,8 +101,8 @@ def parseArgs(String[] args) {
 		
 			// Checks for correct configuration about MetadataStore
 			if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID && configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE) {
-				if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD && !configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
-					println("*! [ERROR] Missing Password and Password File for Db2 Metadatastore connection. Exiting.")
+				if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
+					println("*! [ERROR] Missing Password File for Db2 MetadataStore connection. Exiting.")
 					System.exit(1)		 
 				}
 			}		

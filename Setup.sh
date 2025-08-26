@@ -73,14 +73,10 @@ DBB_MODELER_FILE_METADATA_STORE_DIR="$DBB_MODELER_WORK/dbb-metadatastore"
 DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE="$DBB_MODELER_HOME/db2Connection.conf"
 # DB2 User ID to connect through the JDBC driver
 DBB_MODELER_DB2_METADATASTORE_JDBC_ID="user"
-# DB2 User ID's Password to connect through the JDBC driver
-# The password has to be encrypted as described in:
-#    https://www.ibm.com/docs/en/dbb/2.0?topic=customization-encrypting-metadata-store-passwords#db2-encrypted-password-argument
-DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD=""
 # Default path for the DB2 Password file to connect through the JDBC driver
 # The password file has to be created as described in:
 #    https://www.ibm.com/docs/en/dbb/2.0?topic=customization-encrypting-metadata-store-passwords#dbb-db2-password-file
-DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=""
+DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="$DBB_MODELER_HOME/db2Password.txt"
 
 # Reference to the folder containing the Applications mapping files
 DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/applications-mappings"
@@ -135,7 +131,6 @@ PIPELINE_CI=1
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_GIT_CONFIG)
 input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD ARTIFACT_REPOSITORY_SUFFIX PIPELINE_USER PIPELINE_USER_GROUP)
 
-
 echo
 echo "[SETUP] Specifying DBB Metadatastore type and configuration"
 read -p "Specify the type of the DBB Metadatastore ("file" or "db2") [default: ${DBB_MODELER_METADATASTORE_TYPE}]: " variable
@@ -159,18 +154,9 @@ if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 	if [ "$variable" ]; then
 		declare DBB_MODELER_DB2_METADATASTORE_JDBC_ID="${variable}"
 	fi
-	read -p "Specify the DBB Db2 Metadatastore JDBC User Password [leave empty if not used]: " variable
-	if [ "$variable" ]; then
-		declare DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD="${variable}"
-	fi
-	read -p "Specify the DBB Db2 Metadatastore JDBC Password File [leave empty if not used]: " variable
+	read -p "Specify the DBB Db2 Metadatastore JDBC Password File [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE} ]: " variable
 	if [ "$variable" ]; then
 		declare DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="${variable}"
-	fi
-	if [ "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD" = "" ] & [ "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE" = "" ]; then
-		echo "[ERROR] Either the Db2 JDBC User Password or the Db2 JDBC Password File must be specified. Exiting."
-		rm -rf $DBB_MODELER_WORK
-		exit 1
 	fi
 fi
 
@@ -235,7 +221,6 @@ if [ $rc -eq 0 ]; then
 	echo "DBB_MODELER_FILE_METADATA_STORE_DIR=${DBB_MODELER_FILE_METADATA_STORE_DIR}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	echo "DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE=${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_ID=${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	
 	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
@@ -258,7 +243,8 @@ if [ $rc -eq 0 ]; then
 	./src/scripts/utils/0-validateConfiguration.sh -e
 	rc=$?
 	if [ $rc -ne 0 ]; then
-		echo "[ERROR] Environment check failed. Please correct the environment and run again the Setup script. Exiting." 
+		echo "[ERROR] Environment check failed. Please correct the environment and run again the Setup script. Exiting."
+		exit $rc 
 	fi
 fi
 
@@ -268,6 +254,7 @@ if [ $rc -eq 0 ]; then
 	rc=$?
 	if [ $rc -ne 0 ]; then
 		echo "[ERROR] Configuration check failed. Please correct the configuration and run again the Setup script. Exiting." 
+		exit $rc 
 	fi
 fi
 
@@ -276,25 +263,24 @@ if [ $rc -eq 0 ]; then
 	echo "[SETUP] Checking the access to the DBB MetadataStore."
 	$DBB_MODELER_HOME/src/scripts/CheckMetadataStore.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	rc=$?
-	
-	if [ $rc -eq 0 ]; then
-		echo "*************************************************************************************************************"
-		echo
-		echo "Congratulations! The validation of the DBB Git Migration Modeler Setup was successful!"
-		echo
-		echo "********************************************* SUGGESTED ACTIONS *********************************************"
-		echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
-		echo "  - Applications Mapping file(s) located in $DBB_MODELER_APPMAPPINGS_DIR"
-		echo "  - $REPOSITORY_PATH_MAPPING_FILE"
-		echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional)"
-		echo "  - $TYPE_CONFIGURATIONS_FILE (optional)"
-		echo
-		echo "Once tailored, run the following command:"
-		echo "'$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
-	else
-		echo "[ERROR] DBB MetadataStore check failed. Please correct the configuration and run again the Setup script. Exiting." 
-	fi
 fi
-	
+
+if [ $rc -eq 0 ]; then
+	echo "*************************************************************************************************************"
+	echo
+	echo "Congratulations! The validation of the DBB Git Migration Modeler Setup was successful!"
+	echo
+	echo "********************************************* SUGGESTED ACTIONS *********************************************"
+	echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
+	echo "  - Applications Mapping file(s) located in $DBB_MODELER_APPMAPPINGS_DIR"
+	echo "  - $REPOSITORY_PATH_MAPPING_FILE"
+	echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional)"
+	echo "  - $TYPE_CONFIGURATIONS_FILE (optional)"
+	echo
+	echo "Once tailored, run the following command:"
+	echo "'$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
+else
+	echo "[ERROR] DBB MetadataStore check failed. Please correct the configuration and run again the Setup script. Exiting." 	
+fi
 
 exit $rc

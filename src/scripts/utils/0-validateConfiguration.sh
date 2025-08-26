@@ -20,6 +20,7 @@ FINALIZE_SETUP="false"
 VALIDATE_DBB_TOOLKIT_VERSION="false"
 ERRMSG=""
 rc=0
+global_rc=0
 
 OPTIND=1
 # Get Options
@@ -31,7 +32,7 @@ if [ $rc -eq 0 ]; then
 			nextchar="$(expr substr $argument 1 1)"
 			if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
 				rc=4
-				ERRMSG="[ERROR] DBB Git Migration Modeler Configuration file required. rc="$rc
+				ERRMSG="[ERROR] DBB Git Migration Modeler Configuration file required."
 				echo $ERRMSG
 				break
 			fi
@@ -46,7 +47,7 @@ if [ $rc -eq 0 ]; then
 			nextchar="$(expr substr $argument 1 1)"
 			if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
 				rc=4
-				ERRMSG="[ERROR] DBB Git Migration Modeler Configuration file required. rc="$rc
+				ERRMSG="[ERROR] DBB Git Migration Modeler Configuration file required."
 				echo $ERRMSG
 				break
 			fi
@@ -58,7 +59,7 @@ if [ $rc -eq 0 ]; then
 			nextchar="$(expr substr $argument 1 1)"
 			if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
 				rc=4
-				ERRMSG="[ERROR] DBB Toolkit Version required. rc="$rc
+				ERRMSG="[ERROR] DBB Toolkit Version required."
 				echo $ERRMSG
 				break
 			fi
@@ -74,36 +75,37 @@ fi
 # Validate Options
 validateOptions() {
 	if [ -z "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
-		rc=8
-		ERRMSG="[ERROR] Argument to specify DBB Git Migration Modeler configuration file (-c) is required. rc="$rc
+		global_rc=8
+		ERRMSG="[ERROR] Argument to specify DBB Git Migration Modeler configuration file (-c) is required."
+		echo $ERRMSG
 	fi
 	
 	if [ ! -f "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
-		rc=8
-		ERRMSG="[ERROR] DBB Git Migration Modeler configuration file not found. rc="$rc
+		global_rc=8
+		ERRMSG="[ERROR] DBB Git Migration Modeler configuration file not found."
+		echo $ERRMSG
 	fi
 }
 
 # Validate Environment Configuration
 validateEnvironment() {
 	if [ -z "$DBB_HOME" ]; then
-		rc=8
-		ERRMSG="[ERROR] Environment variable 'DBB_HOME' is not set. rc="$rc
+		global_rc=8
+		ERRMSG="[ERROR] Environment variable 'DBB_HOME' is not set."
+		echo $ERRMSG
 	fi
-	if [ $rc -eq 0 ]; then
-		if [ ! -f "$DBB_HOME/bin/dbb" ]; then
-			rc=8
-			ERRMSG="[ERROR] The 'dbb' program was not found in DBB_HOME '$DBB_HOME'. rc="$rc
-		fi
+	if [ ! -f "$DBB_HOME/bin/dbb" ]; then
+		global_rc=8
+		ERRMSG="[ERROR] The 'dbb' program was not found in DBB_HOME '$DBB_HOME'."
+		echo $ERRMSG
 	fi
-	if [ $rc -eq 0 ]; then
-		GIT_VERSION=`git --version`
-		rc=$?
-		if [ $rc -ne 0 ]; then
-			rc=8
-			ERRMSG="[ERROR] The 'git' command is not available. rc="$rc
-		fi	
-	fi	
+	GIT_VERSION=`git --version`
+	rc=$?
+	if [ $rc -ne 0 ]; then
+		global_rc=8
+		ERRMSG="[ERROR] The 'git' command is not available."
+		echo $ERRMSG
+	fi
 }
 
 # Validate Configuration File
@@ -111,100 +113,103 @@ validateConfigurationFile() {
 	. $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	rc=$?
 	if [ $rc -ne 0 ]; then
-		rc=8
-		ERRMSG="[ERROR] Unable to source the DBB Git Migration Modeler Configuration file '${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}'. rc="$rc
-	fi	
-
-	if [ $rc -eq 0 ]; then
+		global_rc=8
+		ERRMSG="[ERROR] Unable to source the DBB Git Migration Modeler Configuration file '${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}'."
+		echo $ERRMSG
+	else
 		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 			if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" ]; then
-				rc=8
-				ERRMSG="[ERROR] The Db2 MetadataStore User is missing from the Configuration file. Exiting. rc="$rc
+				global_rc=8
+				ERRMSG="[ERROR] The Db2 MetadataStore User is missing from the Configuration file."
+				echo $ERRMSG
 			fi
 			if [ -z "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
-				rc=8
-				ERRMSG="[ERROR] The Db2 Connection configuration file is missing from the Configuration file. Exiting. rc="$rc
-			else 
-				if [ ! -f "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
-					rc=8
-					ERRMSG="[ERROR] The Db2 Connection configuration file '${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting. rc="$rc
-				fi
+				global_rc=8
+				ERRMSG="[ERROR] The Db2 Connection configuration file is missing from the Configuration file."
+				echo $ERRMSG
 			fi
-			if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}" ] && [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" ]; then
-				rc=8
-				ERRMSG="[ERROR] Either the Db2 MetadataStore User's Password or the Db2 MetadataStore Password File are missing from the Configuration file. Exiting. rc="$rc
+			if [ ! -f "${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" ]; then
+				global_rc=8
+				ERRMSG="[ERROR] The Db2 Connection configuration file '${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist."
+				echo $ERRMSG
+			fi
+			if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" ]; then
+				global_rc=8
+				ERRMSG="[ERROR] The Db2 MetadataStore Password File is missing from the Configuration file."
+				echo $ERRMSG
 			fi	
-		elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-			if [ "$DBB_MODELER_FILE_METADATA_STORE_DIR" = "" ]; then
-				rc=8
-				ERRMSG="[ERROR] The location of the DBB File-based MetadataStore must be specified. Exiting. rc="$rc
+			if [ ! -f "${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" ]; then
+				global_rc=8
+				ERRMSG="[ERROR] The Db2 MetadataStore Password File '${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}' does not exist."
+				echo $ERRMSG
 			fi
-		else
-			rc=8
-			ERRMSG="[ERROR] The specified DBB MetadataStore technology is not 'file' or 'db2'. Exiting. rc="$rc
-		fi
-	fi
-
-	if [ $rc -eq 0 ]; then
-		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-			## Checking DBB Toolkit version
-			REQUIRED_DBB_TOOLKIT_VERSION="3.0.1"
-			validateDBBTookitVersion
-			rc=$?
-			if [ $rc -ne 0 ]; then
-				rc=8
-				ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the Db2-based MetadataStore, the minimal recommended version for the DBB Toolkit is 3.0.1."
-			fi
-		else
 			## Checking DBB Toolkit version
 			REQUIRED_DBB_TOOLKIT_VERSION="2.0.2"
 			validateDBBTookitVersion
 			rc=$?
 			if [ $rc -ne 0 ]; then
-				rc=8
+				global_rc=8
 				ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the File-based MetadataStore, the minimal recommended version for the DBB Toolkit is 2.0.2."
+				echo $ERRMSG
 			fi
+		elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
+			if [ "$DBB_MODELER_FILE_METADATA_STORE_DIR" = "" ]; then
+				global_rc=8
+				ERRMSG="[ERROR] The location of the DBB File-based MetadataStore must be specified."
+				echo $ERRMSG
+			fi
+			## Checking DBB Toolkit version
+			REQUIRED_DBB_TOOLKIT_VERSION="3.0.1"
+			validateDBBTookitVersion
+			
+			if [ $global_rc -ne 0 ]; then
+				global_rc=8
+				ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the Db2-based MetadataStore, the minimal recommended version for the DBB Toolkit is 3.0.1."
+				echo $ERRMSG
+			fi
+		else
+			global_rc=8
+			ERRMSG="[ERROR] The specified DBB MetadataStore technology is not 'file' or 'db2'."
+			echo $ERRMSG
 		fi
-	fi
-	
-	if [ $rc -eq 0 ]; then
 		if [ ! -d "${DBB_ZAPPBUILD}" ]; then
-			rc=8
-			ERRMSG="[ERROR] The dbb-zappbuild instance '${DBB_ZAPPBUILD}' doesn't exist. Exiting. rc="$rc
+			global_rc=8
+			ERRMSG="[ERROR] The dbb-zappbuild instance '${DBB_ZAPPBUILD}' doesn't exist."
+			echo $ERRMSG
 		fi
-	fi
-	
-	if [ $rc -eq 0 ]; then
+		
 		if [ ! -d "${DBB_COMMUNITY_REPO}" ]; then
-			rc=8
-			ERRMSG="[ERROR] The DBB Community repository instance '${DBB_COMMUNITY_REPO}' doesn't exist. Exiting. rc="$rc
+			global_rc=8
+			ERRMSG="[ERROR] The DBB Community repository instance '${DBB_COMMUNITY_REPO}' doesn't exist."
+			echo $ERRMSG
 		fi
-	fi
-
-	if [ $rc -eq 0 ]; then
 		if [ "${PUBLISH_ARTIFACTS}" == "true" ]; then
 			if [ -z "${ARTIFACT_REPOSITORY_SERVER_URL}" ]; then
-				rc=8
-				ERRMSG="[ERROR] The URL of the Artifact Repository Server was not specified. Exiting. rc="$rc
-			fi
-			if [ $rc -eq 0 ] & [ -z "${ARTIFACT_REPOSITORY_USER}" ]; then
-				rc=8
-				ERRMSG="[ERROR] The User for the Artifact Repository Server was not specified. Exiting. rc="$rc
-			fi
-			if [ $rc -eq 0 ] & [ -z "${ARTIFACT_REPOSITORY_PASSWORD}" ]; then
-				rc=8
-				ERRMSG="[ERROR] The Password of the User for the Artifact Repository Server was not specified. Exiting. rc="$rc
-			fi
-			if [ $rc -eq 0 ] & [ -z "${ARTIFACT_REPOSITORY_SUFFIX}" ]; then
-				rc=8
-				ERRMSG="[ERROR] The Suffix for Artifact Repositories was not specified. Exiting. rc="$rc
-			fi
-			if [ $rc -eq 0 ]; then
+				global_rc=8
+				ERRMSG="[ERROR] The URL of the Artifact Repository Server was not specified."
+				echo $ERRMSG
+			else
 				HTTP_CODE=`curl -s -S -o /dev/null -w "%{http_code}\n" ${ARTIFACT_REPOSITORY_SERVER_URL}`
 				if [ $HTTP_CODE -ne 200 ] & [ $HTTP_CODE -ne 302 ]; then
-					rc=8
-					ERRMSG="[ERROR] The Artifact Repository Server '${ARTIFACT_REPOSITORY_SERVER_URL}' is not reachable. See cURL error message with command 'curl -S ${ARTIFACT_REPOSITORY_SERVER_URL}'. Exiting. rc="$rc
+					global_rc=8
+					ERRMSG="[ERROR] The Artifact Repository Server '${ARTIFACT_REPOSITORY_SERVER_URL}' is not reachable. Check cURL error message with command 'curl -S ${ARTIFACT_REPOSITORY_SERVER_URL}'."
+					echo $ERRMSG
 				fi				
+			fi
+			if [ -z "${ARTIFACT_REPOSITORY_USER}" ]; then
+				global_rc=8
+				ERRMSG="[ERROR] The User for the Artifact Repository Server was not specified."
+				echo $ERRMSG
+			fi
+			if [ -z "${ARTIFACT_REPOSITORY_PASSWORD}" ]; then
+				global_rc=8
+				ERRMSG="[ERROR] The Password of the User for the Artifact Repository Server was not specified."
+				echo $ERRMSG
+			fi
+			if [ -z "${ARTIFACT_REPOSITORY_SUFFIX}" ]; then
+				global_rc=8
+				ERRMSG="[ERROR] The Suffix for Artifact Repositories was not specified."
+				echo $ERRMSG
 			fi
 		fi
 	fi
@@ -213,20 +218,19 @@ validateConfigurationFile() {
 # Finalize Setup
 finalizeSetup() {
 	validateConfigurationFile
-	if [ ! -z "$ERRMSG" ]; then
-		rc=8
-	fi	
 
 	if [ $rc -eq 0 ]; then
 		if [ -d "${DBB_MODELER_WORK}" ]; then
 			rc=8
-			ERRMSG="[ERROR] Directory '$DBB_MODELER_WORK' already exists. rc="$rc
+			ERRMSG="[ERROR] Directory '$DBB_MODELER_WORK' already exists."
+			echo $ERRMSG
 		else
 			mkdir -p $DBB_MODELER_WORK
 			rc=$?
 			if [ $rc -ne 0 ]; then
 				rc=8
-				ERRMSG="[ERROR] Unable to create the DBB Git Migration Modeler working folder '${DBB_MODELER_WORK}'. rc="$rc
+				ERRMSG="[ERROR] Unable to create the DBB Git Migration Modeler working folder '${DBB_MODELER_WORK}'."
+				echo $ERRMSG
 			fi	
 		fi
 	fi
@@ -236,35 +240,40 @@ finalizeSetup() {
 			mkdir -p $DBB_MODELER_APPMAPPINGS_DIR
 			rc=$?
 			if [ $rc -ne 0 ]; then
-				ERRMSG="[ERROR] Unable to create the DBB Git Migration Modeler Applications Mappings folder '${DBB_MODELER_APPMAPPINGS_DIR}'. rc="$rc
+				ERRMSG="[ERROR] Unable to create the DBB Git Migration Modeler Applications Mappings folder '${DBB_MODELER_APPMAPPINGS_DIR}'."
+				echo $ERRMSG
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
 			cp $DBB_MODELER_HOME/samples/applications-mapping/*.* $DBB_MODELER_APPMAPPINGS_DIR/
 			rc=$?
 			if [ $rc -ne 0 ]; then
-				ERRMSG="[ERROR] Unable to copy sample Applications Mappings files to folder '${DBB_MODELER_APPMAPPINGS_DIR}'. rc="$rc
+				ERRMSG="[ERROR] Unable to copy sample Applications Mappings files to folder '${DBB_MODELER_APPMAPPINGS_DIR}'."
+				echo $ERRMSG
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
 			cp $DBB_MODELER_HOME/samples/repositoryPathsMapping.yaml $REPOSITORY_PATH_MAPPING_FILE
 			rc=$?
 			if [ $rc -ne 0 ]; then
-				ERRMSG="[ERROR] Unable to copy sample Repository Paths Mapping file to '${$REPOSITORY_PATH_MAPPING_FILE}'. rc="$rc
+				ERRMSG="[ERROR] Unable to copy sample Repository Paths Mapping file to '${$REPOSITORY_PATH_MAPPING_FILE}'."
+				echo $ERRMSG
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
 			cp $DBB_MODELER_HOME/samples/types.txt $APPLICATION_MEMBER_TYPE_MAPPING
 			rc=$?
 			if [ $rc -ne 0 ]; then
-				ERRMSG="[ERROR] Unable to copy sample Types file to '${$APPLICATION_MEMBER_TYPE_MAPPING}'. rc="$rc
+				ERRMSG="[ERROR] Unable to copy sample Types file to '${$APPLICATION_MEMBER_TYPE_MAPPING}'."
+				echo $ERRMSG
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
 			cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE
 			rc=$?
 			if [ $rc -ne 0 ]; then
-				ERRMSG="[ERROR] Unable to copy sample Types Configurations file to '${$TYPE_CONFIGURATIONS_FILE}'. rc="$rc
+				ERRMSG="[ERROR] Unable to copy sample Types Configurations file to '${$TYPE_CONFIGURATIONS_FILE}'."
+				echo $ERRMSG
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
@@ -272,19 +281,22 @@ finalizeSetup() {
 				mkdir -p $DBB_MODELER_DEFAULT_GIT_CONFIG
 				rc=$?
 				if [ $rc -ne 0 ]; then
-					ERRMSG="[ERROR] Unable to create sample Git Configuration folder '${$DBB_MODELER_DEFAULT_GIT_CONFIG}'. rc="$rc
+					ERRMSG="[ERROR] Unable to create sample Git Configuration folder '${$DBB_MODELER_DEFAULT_GIT_CONFIG}'."
+					echo $ERRMSG
 				fi	
 			fi
 	
 			cp $DBB_MODELER_HOME/samples/git-config/* $DBB_MODELER_DEFAULT_GIT_CONFIG/
 			rc=$?
 			if [ $rc -ne 0 ]; then
-				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '${$DBB_MODELER_DEFAULT_GIT_CONFIG}'. rc="$rc
+				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '${$DBB_MODELER_DEFAULT_GIT_CONFIG}'."
+				echo $ERRMSG
 			fi	
 			cp $DBB_MODELER_HOME/samples/git-config/.* $DBB_MODELER_DEFAULT_GIT_CONFIG/
 			rc=$?
 			if [ $rc -ne 0 ]; then
-				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '${$DBB_MODELER_DEFAULT_GIT_CONFIG}'. rc="$rc
+				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '${$DBB_MODELER_DEFAULT_GIT_CONFIG}'."
+				echo $ERRMSG
 			fi	
 		fi
 	fi
@@ -318,12 +330,12 @@ validateDBBTookitVersion() {
 
 
 # Call Validate Environment
-if [ $rc -eq 0 ] && [ "$VALIDATE_ENVIRONMENT" == "true" ]; then
+if [ $global_rc -eq 0 ] && [ "$VALIDATE_ENVIRONMENT" == "true" ]; then
  	validateEnvironment
 fi
 
 # Call Validate Configuration File
-if [ $rc -eq 0 ] && [ "$VALIDATE_CONFIGURATION_FILE" == "true" ]; then
+if [ $global_rc -eq 0 ] && [ "$VALIDATE_CONFIGURATION_FILE" == "true" ]; then
  	validateOptions
  	if [ $rc -eq 0 ]; then
 		validateConfigurationFile
@@ -331,7 +343,7 @@ if [ $rc -eq 0 ] && [ "$VALIDATE_CONFIGURATION_FILE" == "true" ]; then
 fi
 
 # Call Finalize Setup
-if [ $rc -eq 0 ] && [ "$FINALIZE_SETUP" == "true" ]; then
+if [ $global_rc -eq 0 ] && [ "$FINALIZE_SETUP" == "true" ]; then
  	validateOptions
  	if [ $rc -eq 0 ]; then
 		finalizeSetup
@@ -339,13 +351,12 @@ if [ $rc -eq 0 ] && [ "$FINALIZE_SETUP" == "true" ]; then
 fi
 
 # Call Validate DBB Toolkit Version
-if [ $rc -eq 0 ] && [ "${VALIDATE_DBB_TOOLKIT_VERSION}" == "true" ]; then
+if [ $global_rc -eq 0 ] && [ "${VALIDATE_DBB_TOOLKIT_VERSION}" == "true" ]; then
 	validateDBBTookitVersion
 fi
 
-if [ $rc -ne 0 ]; then
-	echo ${ERRMSG}
-	export ERRMSG=${ERRMSG}
-	exit $rc
+if [ $global_rc -ne 0 ]; then
+	echo "[ERROR] Failures detected while checking the DBB Git Migration Modeler configuration. Please see above issues. rc="$global_rc
+	exit $global_rc
 fi
 

@@ -61,6 +61,7 @@ if [ $rc -eq 0 ]; then
 	fi
 	
 	$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkMetadataStore.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	rc=$?
 fi
 
 if [ $rc -ne 0 ]; then
