@@ -53,9 +53,27 @@ if [ "$variable" ]; then
 fi
 
 if [ -d "${DBB_MODELER_WORK}" ]; then
+	CONTINUE_SETUP="N"
 	echo
-	echo "[WARNING] Directory '$DBB_MODELER_WORK' already exists. The Validation phase will fail if the directory already exists."
-	read -p "Press Enter to continue..."
+	echo "[WARNING] Directory '$DBB_MODELER_WORK' already exists!"
+	echo "[WARNING] There might be configuration files and migrated applications already present in '$DBB_MODELER_WORK'."
+	read -p "Do you want to remove this folder and continue the Setup? (N/y) [default: N]: " variable
+	if [ "$variable" ]; then
+		CONTINUE_SETUP="${variable}"
+	fi
+	if [ "${CONTINUE_SETUP}" != "y" ]; then
+		echo "[INFO] You can check the content of the folder '$DBB_MODELER_WORK' and decide to re-use this folder or not."
+		exit 2 
+	else 
+		echo "[INFO] Removing the DBB Git Migration Modeler working folder '$DBB_MODELER_WORK'"
+		rm -rf $DBB_MODELER_WORK
+		rc=$?
+		if [ $rc -ne 0 ]; then
+			echo "[ERROR] Failed to remove the DBB Git Migration Modeler working folder '${DBB_MODELER_WORK}'."
+			exit 8
+		fi	
+		
+	fi
 fi	
 
 # Default environment variables
@@ -192,12 +210,22 @@ case ${PIPELINE_CI} in
 esac
 
 echo
-DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="$(pwd)/DBB_GIT_MIGRATION_MODELER.config"
-read -p "[SETUP] Specify the filename of the newly created DBB Git Migration Modeler Configuration file [default: $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE]: " variable
-if [ "$variable" ]; then
-	DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="${variable}"
-fi
-touch $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="DBB_GIT_MIGRATION_MODELER.config.$(date +%Y-%m-%d.%H%M%S)"
+FOLDER_FOUND="false"
+while [ "${FOLDER_FOUND}" = "false" ]; do
+	DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER="$(pwd)"
+	read -p "[SETUP] Specify the folder where to store the DBB Git Migration Modeler Configuration file '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE' (The specified folder must exist) [default: $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER]: " variable
+	if [ "$variable" ]; then
+		DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER="${variable}"
+	fi
+	if [ ! -d "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER}" ]; then
+		echo "[ERROR] The folder '${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER}' does not exist."
+	else
+		FOLDER_FOUND="true"
+	fi
+done
+	
+touch $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 rc=$?
 if [ $rc -eq 0 ]; then
 	chtag -tc IBM-1047 $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
@@ -263,6 +291,9 @@ if [ $rc -eq 0 ]; then
 	echo "[SETUP] Checking the access to the DBB MetadataStore."
 	$DBB_MODELER_HOME/src/scripts/CheckMetadataStore.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	rc=$?
+	if [ $rc -ne 0 ]; then
+		echo "[ERROR] DBB MetadataStore check failed. Please correct the configuration and run again the Setup script. Exiting."
+	fi
 fi
 
 if [ $rc -eq 0 ]; then
@@ -279,8 +310,6 @@ if [ $rc -eq 0 ]; then
 	echo
 	echo "Once tailored, run the following command:"
 	echo "'$DBB_MODELER_HOME/src/scripts/Migration-Modeler-Start.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
-else
-	echo "[ERROR] DBB MetadataStore check failed. Please correct the configuration and run again the Setup script. Exiting." 	
 fi
 
 exit $rc

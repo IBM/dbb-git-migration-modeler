@@ -221,6 +221,7 @@ initializeWorkDirectory() {
 			ERRMSG="[ERROR] Directory '$DBB_MODELER_WORK' already exists."
 			echo $ERRMSG
 		else
+			echo "  [INFO] Creating the DBB Git Migration Modeler working folder '$DBB_MODELER_WORK'"
 			mkdir -p $DBB_MODELER_WORK
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
@@ -233,6 +234,7 @@ initializeWorkDirectory() {
 	
 	if [ $rc -eq 0 ]; then
 		if [ ! -d "${DBB_MODELER_APPMAPPINGS_DIR}" ]; then
+			echo "  [INFO] Creating the DBB Git Migration Modeler Applications Mappings folder '$DBB_MODELER_APPMAPPINGS_DIR'"
 			mkdir -p $DBB_MODELER_APPMAPPINGS_DIR
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
@@ -242,6 +244,7 @@ initializeWorkDirectory() {
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
+			echo "  [INFO] Copying sample Applications Mappings files to '$DBB_MODELER_APPMAPPINGS_DIR'"
 			cp $DBB_MODELER_HOME/samples/applications-mapping/*.* $DBB_MODELER_APPMAPPINGS_DIR/
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
@@ -251,6 +254,7 @@ initializeWorkDirectory() {
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
+			echo "  [INFO] Copying sample Repository Paths mapping file to '$REPOSITORY_PATH_MAPPING_FILE'"
 			cp $DBB_MODELER_HOME/samples/repositoryPathsMapping.yaml $REPOSITORY_PATH_MAPPING_FILE
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
@@ -260,6 +264,7 @@ initializeWorkDirectory() {
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
+			echo "  [INFO] Copying sample Types file to '$APPLICATION_MEMBER_TYPE_MAPPING'"
 			cp $DBB_MODELER_HOME/samples/types.txt $APPLICATION_MEMBER_TYPE_MAPPING
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
@@ -269,6 +274,7 @@ initializeWorkDirectory() {
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
+			echo "  [INFO] Copying sample Types Configurations file to '$TYPE_CONFIGURATIONS_FILE'"
 			cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
@@ -279,6 +285,7 @@ initializeWorkDirectory() {
 		fi
 		if [ $rc -eq 0 ]; then
 			if [ ! -d "${DBB_MODELER_DEFAULT_GIT_CONFIG}" ]; then
+				echo "  [INFO] Creating the sample Git Configuration folder '$DBB_MODELER_DEFAULT_GIT_CONFIG'"		
 				mkdir -p $DBB_MODELER_DEFAULT_GIT_CONFIG
 				command_rc=$?
 				if [ $command_rc -ne 0 ]; then
@@ -287,7 +294,8 @@ initializeWorkDirectory() {
 					echo $ERRMSG
 				fi	
 			fi
-	
+
+			echo "  [INFO] Copying sample Git Configuration files to '$DBB_MODELER_DEFAULT_GIT_CONFIG'"
 			cp $DBB_MODELER_HOME/samples/git-config/* $DBB_MODELER_DEFAULT_GIT_CONFIG/
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
