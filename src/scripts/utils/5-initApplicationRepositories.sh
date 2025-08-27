@@ -78,6 +78,10 @@ if [ $rc -eq 0 ]; then
 
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in $(ls | grep -v dbb-zappbuild); do
+
+		# reset return code
+		rc=0
+
 		echo "*******************************************************************"
 		echo "Initialize application's directory for application '$applicationDir'"
 		echo "*******************************************************************"
