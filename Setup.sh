@@ -42,8 +42,8 @@ DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}'`
 Prolog
 
-# Configure DBB Migration Modeler Home
-echo "[SETUP] Configuring DBB Git Migration Modeler environment variables"
+# Configure DBB Migration Modeler work folder
+echo "[SETUP] Configuring DBB Git Migration Modeler work directory"
 
 # Configure DBB Migration Modeler Work Directory
 DBB_MODELER_WORK="${DBB_MODELER_HOME}-work"
