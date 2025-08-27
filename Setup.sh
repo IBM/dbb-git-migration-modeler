@@ -199,7 +199,7 @@ if [ $rc -eq 0 ]; then
 		fi
 	done
 	echo "Specify the pipeline orchestration technology to use. See available templates at https://github.com/IBM/dbb/tree/main/Templates"
-	read -p "1 for 'AzureDevOps', 2 for 'GitlabCIPipeline-for-distributed-runner', 3 for 'GitlabCIPipeline-for-zos-native-runner', 4 for 'Jenkins', 5 for 'GitHubActions' [default: 2]: " variable
+	read -p "1 for 'Azure DevOps', 2 for 'GitLab CI with distributed runner', 3 for 'GitLab CI with z/OS-native runner', 4 for 'Jenkins', 5 for 'GitHub Actions' [default: 2]: " variable
 	if [ "$variable" ]; then
 		declare PIPELINE_CI="${variable}"
 	else
@@ -207,7 +207,7 @@ if [ $rc -eq 0 ]; then
 	fi
 	case ${PIPELINE_CI} in
 	"1")
-		PIPELINE_CI="AzureDevOps"
+		PIPELINE_CI="AzureDevOpsPipeline"
 		;;
 	"2")
 		PIPELINE_CI="GitlabCIPipeline-for-distributed-runner"
@@ -216,10 +216,10 @@ if [ $rc -eq 0 ]; then
         PIPELINE_CI="GitlabCIPipeline-for-zos-native-runner"
         ;;
 	"4")
-		PIPELINE_CI="Jenkins"
+		PIPELINE_CI="JenkinsPipeline"
 		;;
 	"5")
-		PIPELINE_CI="GitHubActions"
+		PIPELINE_CI="GitHubActionsPipeline"
 		;;
 	esac
 

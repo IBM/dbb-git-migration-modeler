@@ -91,7 +91,7 @@ if [ $rc -eq 0 ]; then
 		if [ $(git rev-parse --is-inside-work-tree 2>/dev/null | wc -l) -eq 1 ]; then
 		    echo "*! [WARNING] '$DBB_MODELER_APPLICATION_DIR/$applicationDir' is already a Git repository"
 		else
-			echo "** Initialize Git repository for application '$applicationDir' with initial git branch '${APPLICATION_DEFAULT_BRANCH}'"
+			echo "** Initialize Git repository for application '$applicationDir' with initial branch '${APPLICATION_DEFAULT_BRANCH}'"
 			
 			CMD="git init --initial-branch=${APPLICATION_DEFAULT_BRANCH}"
 			echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
@@ -188,9 +188,9 @@ release/${version}=refs/tags/${version}""" > $baselineReferenceFile
             fi
 			
 			if [ $rc -eq 0 ]; then
-				echo "** Prepare pipeline configuration for $PIPELINE_CI."
+				echo "** Prepare pipeline configuration for '$PIPELINE_CI'"
 				if [ "$PIPELINE_CI" == "AzureDevOps" ]; then
-				    CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/azure-pipelines.yml"
+				    CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/azure-pipelines.yml"
                     if [ ! -f "${CIFILE}" ]; then
                         rc=8
                         ERRMSG="[ERROR] The pipeline template file '${CIFILE}' was not found. rc="$rc
@@ -201,12 +201,12 @@ release/${version}=refs/tags/${version}""" > $baselineReferenceFile
     					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
     					rc=$?
     					mkdir -p $DBB_MODELER_APPLICATION_DIR/$applicationDir/deployment
-    					CMD="cp -R $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/templates/deployment/*.yml $DBB_MODELER_APPLICATION_DIR/$applicationDir/deployment/"
+    					CMD="cp -R $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/templates/deployment/*.yml $DBB_MODELER_APPLICATION_DIR/$applicationDir/deployment/"
     					echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
     					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
     					rc=$?
     					mkdir -p $DBB_MODELER_APPLICATION_DIR/$applicationDir/tagging
-    					CMD="cp -R $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/templates/tagging/*.yml $DBB_MODELER_APPLICATION_DIR/$applicationDir/tagging/"
+    					CMD="cp -R $DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/templates/tagging/*.yml $DBB_MODELER_APPLICATION_DIR/$applicationDir/tagging/"
     					echo "[CMD] ${CMD}" >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
     					$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
     					rc=$?
@@ -239,7 +239,7 @@ release/${version}=refs/tags/${version}""" > $baselineReferenceFile
                     fi
                 fi
 				if [ "${PIPELINE_CI}" == "Jenkins" ]; then
-                    CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/Jenkinsfile"
+                    CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/Jenkinsfile"
                     if [ ! -f "${CIFILE}" ]; then
                         rc=8
                         ERRMSG="[ERROR] The pipeline template file '${CIFILE}' was not found. rc="$rc
@@ -252,7 +252,7 @@ release/${version}=refs/tags/${version}""" > $baselineReferenceFile
 					fi
 				fi
 				if [ "${PIPELINE_CI}" == "GitHubActions" ]; then
-				    CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}Pipeline/.github"
+				    CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/.github"
                     if [ ! -f "${CIFILE}" ]; then
                         rc=8
                         ERRMSG="[ERROR] The pipeline template file '${CIFILE}' was not found. rc="$rc
@@ -299,7 +299,7 @@ release/${version}=refs/tags/${version}""" > $baselineReferenceFile
 				if [ -z ${version} ]; then
 				  version="rel-1.0.0"
 				fi		
-				echo "** Create git tag 'git $version'"
+				echo "** Create git tag '$version'"
 				CMD="git tag $version"
 				echo "[CMD] ${CMD}"  >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				$CMD >> $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
