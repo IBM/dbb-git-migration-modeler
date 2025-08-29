@@ -14,11 +14,7 @@ def initializeFileMetadataStore(String fileMetadataStoreLocation) {
 	metadataStore = MetadataStoreFactory.createFileMetadataStore(fileMetadataStoreLocation)
 }
 
-def initializeDb2MetadataStore(String db2User, String db2Password, Properties db2ConnectionProps) {
-	metadataStore = MetadataStoreFactory.createDb2MetadataStore(db2User, db2Password, db2ConnectionProps)
-}
-
-def initializeDb2MetadataStore(String db2User, File db2PasswordFile, Properties db2ConnectionProps) {
+def initializeDb2MetadataStoreWithPasswordFile(String db2User, File db2PasswordFile, Properties db2ConnectionProps) {
 	metadataStore = MetadataStoreFactory.createDb2MetadataStore(db2User, db2PasswordFile, db2ConnectionProps)
 }
 

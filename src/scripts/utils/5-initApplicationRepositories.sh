@@ -55,24 +55,7 @@ fi
 if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
-	. $dir/0-environment.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
-
-	if [ ! -d "$DBB_MODELER_APPLICATION_DIR" ]; then
-		echo "[ERROR] The folder indicated by the 'DBB_MODELER_APPLICATION_DIR' variable does not exist. Exiting."
-		exit 1
-	fi
-
-	if [ ! -d "${DBB_COMMUNITY_REPO}" ]; then
-		rc=4
-		ERRMSG="[ERROR] Directory '$DBB_COMMUNITY_REPO' does not exist. rc="$rc
-		echo $ERRMSG
-	fi
-
-	if [ ! -f "${DBB_COMMUNITY_REPO}/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy" ]; then
-		rc=4
-		ERRMSG="[ERROR] Packaging Script '${DBB_COMMUNITY_REPO}/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy' does not exist. rc="$rc
-		echo $ERRMSG
-	fi
+	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
 	# Initialize Repositories
 

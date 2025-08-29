@@ -37,13 +37,11 @@ validateOptions() {
 	if [ -z "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
 		rc=8
 		ERRMSG="[ERROR] Argument to specify DBB Git Migration Modeler configuration file (-c) is required. rc="$rc
-		echo $ERRMSG
 	fi
 	
 	if [ ! -f "${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}" ]; then
 		rc=8
 		ERRMSG="[ERROR] DBB Git Migration Modeler configuration file not found. rc="$rc
-		echo $ERRMSG
 	fi
 }
 
@@ -55,21 +53,18 @@ fi
 if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
-	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+	. $dir/utils/0-validateConfiguration.sh -e -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+	rc=$?
 
-	cd $DBB_MODELER_APPLICATION_DIR
-	for applicationDir in `ls | grep -v dbb-zappbuild`
-	do
-		echo "*******************************************************************"
-		echo "Generate properties for application '$applicationDir'"
-		echo "*******************************************************************"
-		touch $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/generateProperties.groovy \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--application $applicationDir \
-			--logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
-		$CMD
-	done
+	if [ $rc -ne 0 ]; then
+		exit $rc
+	fi
+	
+	$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkMetadataStore.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	rc=$?
+fi
+
+if [ $rc -ne 0 ]; then
+	echo ${ERRMSG}
+	exit $rc
 fi
