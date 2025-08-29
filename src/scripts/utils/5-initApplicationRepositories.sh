@@ -45,6 +45,10 @@ validateOptions() {
 		ERRMSG="[ERROR] DBB Git Migration Modeler configuration file not found. rc="$rc
 		echo $ERRMSG
 	fi
+	
+	# Environment variables setup
+    dir=$(dirname "$0")
+    . $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 }
 
 # Call validate Options
@@ -52,16 +56,11 @@ if [ $rc -eq 0 ]; then
 	validateOptions
 fi
 
+# Initialize Repositories
 if [ $rc -eq 0 ]; then
-	# Environment variables setup
-	dir=$(dirname "$0")
-	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
-
-	# Initialize Repositories
 
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in $(ls | grep -v dbb-zappbuild); do
-
 		# reset return code
 		rc=0
 
