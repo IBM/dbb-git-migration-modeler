@@ -82,7 +82,7 @@ if (!customLanguageConfigurationFolder.exists()) {
 	customLanguageConfigurationFolder.mkdirs()
 }
 
-def applicationConfFolderPath = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${props.application}/application-conf"
+def applicationConfFolderPath = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/application-conf"
 def sampleApplicationConfFolderPath = "${props.DBB_ZAPPBUILD}/samples/application-conf"
 
 File applicationConfFolder = new File(applicationConfFolderPath)
