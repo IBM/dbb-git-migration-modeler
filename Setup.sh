@@ -121,10 +121,9 @@ ARTIFACT_REPOSITORY_SUFFIX=zos-local
 PIPELINE_USER=ADO
 # Group that the User ID of the pipeline user belongs to
 PIPELINE_USER_GROUP=JENKINSG
-# Pipeline technology used
-# Either '1' for 'AzureDevOps', '2' for 'GitlabCIPipeline with distributed runner', '3' for 'Jenkins', '4' for 'GitHubActions' or '5' for 'GitlabCIPipeline-for-zos-native-runner'
-# The parameter will then be translated later in the process to its final value
-# as defined in the Templates folder of the DBB Community repo (without the 'Pipeline' suffix)
+# Pipeline template for initializing git project 
+# Corresponding to the Templates folder name in the DBB Community repo
+# Default: 1-AzureDevOps
 PIPELINE_CI=1
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
@@ -199,11 +198,9 @@ if [ $rc -eq 0 ]; then
 		fi
 	done
 	echo "Specify the pipeline orchestration technology to use. See available templates at https://github.com/IBM/dbb/tree/main/Templates"
-	read -p "1 for 'Azure DevOps', 2 for 'GitLab CI with distributed runner', 3 for 'GitLab CI with z/OS-native runner', 4 for 'Jenkins', 5 for 'GitHub Actions' [default: 2]: " variable
+	read -p "1 for 'Azure DevOps', 2 for 'GitLab CI with distributed runner', 3 for 'GitLab CI with z/OS-native runner', 4 for 'Jenkins', 5 for 'GitHub Actions' [default: 1]: " variable
 	if [ "$variable" ]; then
-		declare PIPELINE_CI="${variable}"
-	else
-		declare PIPELINE_CI="2"
+		PIPELINE_CI="${variable}"
 	fi
 	case ${PIPELINE_CI} in
 	"1")
@@ -221,6 +218,9 @@ if [ $rc -eq 0 ]; then
 	"5")
 		PIPELINE_CI="GitHubActionsPipeline"
 		;;
+	*)  
+	    echo "[WARNING] The pipeline orchestration technology entered, does not match any of the provided options."
+	    ;;
 	esac
 
 	echo
