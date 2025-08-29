@@ -428,11 +428,10 @@ def parseArgs(String[] args) {
 			System.exit(1)		 
 		}
 	
-		if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD && !configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
-			logger.logMessage("*! [ERROR] Either the Password or the Password File for Db2 Metadatastore JDBC connection must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
+			logger.logMessage("*! [ERROR] The Password File for Db2 Metadatastore JDBC connection must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 			System.exit(1)		 
 		} else {
-			props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD = configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD
 			props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE = configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE			
 		}
 	} else {
@@ -532,11 +531,7 @@ def initScriptParameters() {
 		Properties db2ConnectionProps = new Properties()
 		db2ConnectionProps.load(new FileInputStream(db2ConnectionConfigurationFile))
 		// Call correct Db2 MetadataStore constructor
-		if (props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD) {
-			metadataStoreUtils.initializeDb2MetadataStore("${props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", "${props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD}", db2ConnectionProps)
-		} else if (props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
-			metadataStoreUtils.initializeDb2MetadataStore("${props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", new File(props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE), db2ConnectionProps)
-		}
+		metadataStoreUtils.initializeDb2MetadataStoreWithPasswordFile("${props.DBB_MODELER_DB2_METADATASTORE_JDBC_ID}", new File(props.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE), db2ConnectionProps)
 	}
 	
 	originalApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${props.application}.yml")
