@@ -2,39 +2,38 @@
 * text eol=lf
 
 # file encodings
-*.cpy zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.cbl zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.csd zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.config zos-working-tree-encoding=IBM-1047 git-encoding=utf-8
-*.bms zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.pli zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.mfs zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.bnd zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.lnk zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.lked zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.rexx zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-server.xml zos-working-tree-encoding=iso8859-1 git-encoding=utf-8
-*.txt zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.groovy zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.sh zos-working-tree-encoding=utf-8 git-encoding=utf-8
-*.properties zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.asm zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.assemble zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.jcl zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.mac zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
+*.cpy zos-working-tree-encoding=ibm-1047
+*.cbl zos-working-tree-encoding=ibm-1047
+*.csd zos-working-tree-encoding=ibm-1047
+*.config zos-working-tree-encoding=IBM-1047
+*.bms zos-working-tree-encoding=ibm-1047
+*.pli zos-working-tree-encoding=ibm-1047
+*.mfs zos-working-tree-encoding=ibm-1047
+*.bnd zos-working-tree-encoding=ibm-1047
+*.lnk zos-working-tree-encoding=ibm-1047
+*.lked zos-working-tree-encoding=ibm-1047
+*.rexx zos-working-tree-encoding=ibm-1047
+server.xml zos-working-tree-encoding=iso8859-1
+*.txt zos-working-tree-encoding=ibm-1047
+*.groovy zos-working-tree-encoding=ibm-1047
+*.sh zos-working-tree-encoding=utf-8
+*.properties zos-working-tree-encoding=ibm-1047
+*.asm zos-working-tree-encoding=ibm-1047
+*.assemble zos-working-tree-encoding=ibm-1047
+*.jcl zos-working-tree-encoding=ibm-1047
+*.mac zos-working-tree-encoding=ibm-1047
 *.aar binary
 *.sar binary
 *.jar binary
 *.war binary
 *.pdf binary
-*.xml zos-working-tree-encoding=utf-8 git-encoding=utf-8
-*.json zos-working-tree-encoding=utf-8 git-encoding=utf-8
-*.bzucfg zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
+*.xml zos-working-tree-encoding=utf-8
+*.json zos-working-tree-encoding=utf-8
+*.bzucfg zos-working-tree-encoding=ibm-1047
 *.plbck binary
-*.md zos-working-tree-encoding=IBM-1047 git-encoding=utf-8
-*.yml zos-working-tree-encoding=IBM-1047 git-encoding=utf-8 
-*.yaml zos-working-tree-encoding=IBM-1047 git-encoding=utf-8 
-*.md zos-working-tree-encoding=utf-8 git-encoding=utf-8 
+*.md zos-working-tree-encoding=IBM-1047
+*.yml zos-working-tree-encoding=IBM-1047 
+*.yaml zos-working-tree-encoding=IBM-1047 
 
-.gitattributes zos-working-tree-encoding=ISO8859-1 git-encoding=utf-8
-.gitlab-ci.yml zos-working-tree-encoding=IBM-1047 git-encoding=utf-8
+.gitattributes zos-working-tree-encoding=ISO8859-1
+.gitlab-ci.yml zos-working-tree-encoding=IBM-1047
