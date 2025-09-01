@@ -142,7 +142,7 @@ PIPELINE_USER_GROUP=JENKINSG
 # Pipeline template for initializing git project
 # Corresponding to the Templates folder name in the DBB Community repo
 # Default: 1-AzureDevOps
-PIPELINE_CI=1
+PIPELINE_CI=
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_GIT_CONFIG)
@@ -187,32 +187,39 @@ for config in ${input_array[@]}; do
 	fi
 done
 
-echo "Specify the pipeline orchestration technology to use. See available templates at https://github.com/IBM/dbb/tree/main/Templates"
-read -p "1 for 'Azure DevOps', 2 for 'GitLab CI with distributed runner', 3 for 'GitLab CI with z/OS-native runner', 4 for 'Jenkins', 5 for 'GitHub Actions' [default: 1]: " variable
-if [ "$variable" ]; then
-	PIPELINE_CI="${variable}"
-fi
-case ${PIPELINE_CI} in
-"1")
-	PIPELINE_CI="AzureDevOpsPipeline"
-	;;
-"2")
-	PIPELINE_CI="GitlabCIPipeline-for-distributed-runner"
-	;;
-"3")
-	PIPELINE_CI="GitlabCIPipeline-for-zos-native-runner"
-	;;
-"4")
-	PIPELINE_CI="JenkinsPipeline"
-	;;
-"5")
+# Ask until a valid option was provided
+while [ -z $PIPELINE_CI ]; do
 
-	PIPELINE_CI="GitHubActionsPipeline"
-	;;
-*)
-	echo "[WARNING] The pipeline orchestration technology entered, does not match any of the provided options."
-	;;
-esac
+	echo "Specify the pipeline orchestration technology to use. See available templates at https://github.com/IBM/dbb/tree/main/Templates"
+	read -p "1 for 'Azure DevOps', 2 for 'GitLab CI with distributed runner', 3 for 'GitLab CI with z/OS-native runner', 4 for 'Jenkins', 5 for 'GitHub Actions' [default: 1]: " variable
+	if [ "$variable" ]; then
+		PIPELINE_CI="${variable}"
+	else
+		PIPELINE_CI=1
+	fi
+	case ${PIPELINE_CI} in
+	"1")
+		PIPELINE_CI="AzureDevOpsPipeline"
+		;;
+	"2")
+		PIPELINE_CI="GitlabCIPipeline-for-distributed-runner"
+		;;
+	"3")
+		PIPELINE_CI="GitlabCIPipeline-for-zos-native-runner"
+		;;
+	"4")
+		PIPELINE_CI="JenkinsPipeline"
+		;;
+	"5")
+
+		PIPELINE_CI="GitHubActionsPipeline"
+		;;
+	*)
+		echo "[WARNING] The pipeline orchestration technology entered, does not match any of the provided options. Please provide a valid option."
+		PIPELINE_CI=""
+		;;
+	esac
+done
 
 echo
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="DBB_GIT_MIGRATION_MODELER-$(date +%Y-%m-%d.%H%M%S).config"
