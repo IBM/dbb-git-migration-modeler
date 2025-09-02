@@ -10,9 +10,11 @@ When using a file-based MetadataStore, the location of the MetadataStore is spec
 When using a Db2-based MetadataStore, some configuration steps must be executed prior to using the DBB Git Migration Modeler. A Db2 database and the Db2 tables corresponding to the DBB-provided schema must be created.
 Instructions to create a Db2-based MetadataStore with DBB can be found in this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-zos-as-metadata-database) for Db2 z/OS and this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-luw-as-metadata-database) for Db2 LUW.
 
-The configuration to access the Db2-based MetadataStore with the DBB Git Migration Modeler is performed through the `DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE`, `DBB_MODELER_DB2_METADATASTORE_ID`, `DBB_MODELER_DB2_METADATASTORE_PASSWORD` and `DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE` properties.
-These required properties are collected during the Setup phase, as described in the next section. The Setup script then suggests to use the `CheckDb2MetadataStore.sh` script to verify the correct connectivity to the Db2 database.
+The configuration to access the Db2-based MetadataStore with the DBB Git Migration Modeler is performed through the `DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE`, `DBB_MODELER_DB2_METADATASTORE_ID` and `DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE` properties.
+These required properties are collected during the Setup phase, as described in the next section. 
 Once the Db2 MetadataStore connection is correctly configured and checked, the DBB Git Migration Modeler is ready to be used with a Db2-based MetadataStore.
+
+As part of the Setup process, a validation is performed using the `CheckMetadataStore.sh` script, to verify that the DBB MetadataStore (whether it's a file-based or a Db2-based MetadataStore) can be used.
 
 ## Setting up the DBB Git Migration Modeler configuration
 
@@ -32,7 +34,6 @@ This script prompts for the below environment variables and saves them in a conf
 | DBB_MODELER_FILE_METADATA_STORE_DIR  | If a File-based DBB MetadataStore is used, this parameters indicates the location of the File MetadataStore. | The default value is computed based on the DBB Git Migration Modeler working folder, where a `dbb-metadatastore` subfolder is created: `$DBB_MODELER_WORK/dbb-metadatastore` |
 | DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE  | If a Db2-based DBB MetadataStore is used, this parameters indicates the path to a Db2 MetadataStore Connection configuration file. This file is used to configure the connection details to the Db2 Database Manager (either Db2 z/OS or Db2 LUW). Documentation about this file is available [on this page](https://www.ibm.com/docs/en/adffz/dbb/3.0.0?topic=apis-metadata-store). | The default value is computed based on the DBB Git Migration Modeler working folder: `$DBB_MODELER_WORK/db2Connection.conf` |
 | DBB_MODELER_DB2_METADATASTORE_JDBC_ID  | If a Db2-based DBB MetadataStore is used, this parameters indicates the DB2 JDBC User ID to connect through the JDBC driver. | `user` |
-| DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD  | If a Db2-based DBB MetadataStore is used, this parameters indicates the DB2 JDBC User ID's Password to connect through the JDBC driver. | No default value |
 | DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE  | If a Db2-based DBB MetadataStore is used, this parameters indicates the path to the DB2 JDBC Password file to connect through the JDBC driver. This approach is recommended, documentation can be found [on this page](https://www.ibm.com/docs/en/adffz/dbb/3.0.0?topic=customization-encrypting-metadata-store-passwords). | No default value |
 | **DBB Git Migration Modeler Input files** | | | 
 | DBB_MODELER_APPMAPPINGS_DIR  | The folder containing the Applications Mapping file(s) defining the input datasets for applications and their naming conventions. More information can be found in [Configuring the Migration Modeler input files](03-Configuration.md#configuring-the-migration-modeler-input-files). | The default value is computed based on the DBB Git Migration Modeler working folder, where a `applications-mappings` subfolder is created: `$DBB_MODELER_WORK/applications-mappings` | 
@@ -54,7 +55,7 @@ This script prompts for the below environment variables and saves them in a conf
 | ARTIFACT_REPOSITORY_SUFFIX | If the `PUBLISH_ARTIFACTS` parameter is set to `true`, this parameter indicates the suffix that is added to the repository name (derived from the application's name) in the Artifactory Repository server. | `zos-local` |
 | PIPELINE_USER | The Security Server User ID of the pipeline user on z/OS. This user is typically the owner of the DBB Collections in the DBB MetadataStore and has authorities to run builds and deployments. This user is often the user the runs the pipeline tasks on z/OS. | `ADO` |
 | PIPELINE_USER_GROUP | The group that the Security Server User ID of the pipeline user belongs to. | `JENKINSG` |
-| PIPELINE_CI | The pipeline orchestrator used. This parameter is used during [The Initialization phase](01-Storyboard.md#the-initialization-phase) to create pipeline configurations. Valid values are `AzureDevOps`, `GitlabCI`, `Jenkins` or `GitHubActions`. | `AzureDevOps` |
+| PIPELINE_CI | The pipeline orchestrator used. This parameter is used during [The Initialization phase](01-Storyboard.md#the-initialization-phase) to create pipeline configurations. Valid values are `AzureDevOpsPipeline`, `GitlabCIPipeline-for-distributed-runner`, `GitlabCIPipeline-for-zos-native-runner`, `JenkinsPipeline` or `GitHubActionsPipeline`. | No default value |
 
 # Configuring the Migration Modeler input files
 

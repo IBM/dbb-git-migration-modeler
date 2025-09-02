@@ -54,7 +54,7 @@ The script uses the type of each artifact to generate (or reuse if already exist
       * An **application-conf** folder is created within each application's subfolder in the `DBB_MODELER_APPLICATION_DIR` folder, and contains customized files to enable the use of the Language Configurations. A manual step needs to be performed to completely enable this configuration.
 
 5. [Init Application Repositories script (5-initApplicationRepositories.sh)](./src/scripts/utils/5-initApplicationRepositories.sh) is provided to perform the following steps for each application:
-   1. Initialization of the Git repository using a default `.gitattributes` file, creation of a customized `zapp.yaml` file, copy of the pipeline definitions, creation of a baseline tag and commit of the changes,
+   1. Initialization of the Git repository using a default `.gitattributes` file, creation of a customized `zapp.yaml` file, creation of a customized `.project` file, creation of a `baselineReference.config` file, copy of the pipeline definitions, creation of a baseline tag and commit of the changes,
    2. Execution of a full build with dbb-zAppBuild, using the preview option (no file is actually built) as a preview of the expected outcomes,
    3. Creation of a baseline package using the `PackageBuildOutputs.groovy` script based on the preview build report. The purpose of this step is to package the existing build artifacts (load modules, DBRMs, jobs, etc.) that correspond to the version of the migrated source code files.
 
