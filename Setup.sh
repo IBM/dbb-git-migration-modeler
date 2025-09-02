@@ -39,7 +39,7 @@ CONFIG_DIR="" # Path to store the DBB_GIT_MIGRATION_MODELER.config
 DBB_MODELER_HOME=$(cd "$(dirname "$0")" && pwd)
 
 #
-export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}'`
+export MigrationModelerRelease=$(cat $DBB_MODELER_HOME/release.properties | awk -F '=' '{printf $2}')
 Prolog
 
 # Configure DBB Migration Modeler work folder
@@ -63,18 +63,18 @@ if [ -d "${DBB_MODELER_WORK}" ]; then
 	fi
 	if [ "${CONTINUE_SETUP}" != "y" ]; then
 		echo "[INFO] You can check the content of the folder '$DBB_MODELER_WORK' and decide to re-use this folder or not."
-		exit 2 
-	else 
+		exit 2
+	else
 		echo "[INFO] Removing the DBB Git Migration Modeler working folder '$DBB_MODELER_WORK'"
 		rm -rf $DBB_MODELER_WORK
 		rc=$?
 		if [ $rc -ne 0 ]; then
 			echo "[ERROR] Failed to remove the DBB Git Migration Modeler working folder '${DBB_MODELER_WORK}'."
 			exit 8
-		fi	
-		
+		fi
+
 	fi
-fi	
+fi
 
 # Default environment variables
 DBB_MODELER_APPCONFIG_DIR="$DBB_MODELER_WORK/modeler-configs"
@@ -132,18 +132,17 @@ ARTIFACT_REPOSITORY_USER=user
 # e.q.: ARTIFACT_REPOSITORY_PASSWORD=xxxxx
 ARTIFACT_REPOSITORY_PASSWORD=password
 # Artifact repository naming suffix
-# e.q.: 
+# e.q.:
 ARTIFACT_REPOSITORY_SUFFIX=zos-local
 
 # User ID of the pipeline user
 PIPELINE_USER=ADO
 # Group that the User ID of the pipeline user belongs to
 PIPELINE_USER_GROUP=JENKINSG
-# Pipeline technology used
-# Either '1' for 'AzureDevOps', '2' for 'GitlabCI', '3' for 'Jenkins' or '4' for 'GitHubActions'
-# The parameter will then be translated later in the process to its final value
-# as defined in the Templates folder of the DBB Community repo (without the 'Pipeline' suffix)
-PIPELINE_CI=1
+# Pipeline template for initializing git project
+# Corresponding to the Templates folder name in the DBB Community repo
+# Default: 1-AzureDevOps
+PIPELINE_CI=
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_GIT_CONFIG)
@@ -187,27 +186,40 @@ for config in ${input_array[@]}; do
 		declare ${config}="${variable}"
 	fi
 done
-echo "Specify the pipeline orchestration technology to use."
-read -p "1 for 'AzureDevOps', 2 for 'GitlabCI', 3 for 'Jenkins' or 4 for 'GitHubActions' [default: 1]: " variable
-if [ "$variable" ]; then
-	declare PIPELINE_CI="${variable}"
-else
-	declare PIPELINE_CI="1"
-fi
-case ${PIPELINE_CI} in
-"1")
-	PIPELINE_CI="AzureDevOps"
-	;;
-"2")
-	PIPELINE_CI="GitlabCI"
-	;;
-"3")
-	PIPELINE_CI="Jenkins"
-	;;
-"4")
-	PIPELINE_CI="GitHubActions"
-	;;
-esac
+
+# Ask until a valid option was provided
+while [ -z $PIPELINE_CI ]; do
+
+	echo "Specify the pipeline orchestration technology to use. See available templates at https://github.com/IBM/dbb/tree/main/Templates"
+	read -p "1 for 'Azure DevOps', 2 for 'GitLab CI with distributed runner', 3 for 'GitLab CI with z/OS-native runner', 4 for 'Jenkins', 5 for 'GitHub Actions' [default: 1]: " variable
+	if [ "$variable" ]; then
+		PIPELINE_CI="${variable}"
+	else
+		PIPELINE_CI=1
+	fi
+	case ${PIPELINE_CI} in
+	"1")
+		PIPELINE_CI="AzureDevOpsPipeline"
+		;;
+	"2")
+		PIPELINE_CI="GitlabCIPipeline-for-distributed-runner"
+		;;
+	"3")
+		PIPELINE_CI="GitlabCIPipeline-for-zos-native-runner"
+		;;
+	"4")
+		PIPELINE_CI="JenkinsPipeline"
+		;;
+	"5")
+
+		PIPELINE_CI="GitHubActionsPipeline"
+		;;
+	*)
+		echo "[WARNING] The pipeline orchestration technology entered, does not match any of the provided options. Please provide a valid option."
+		PIPELINE_CI=""
+		;;
+	esac
+done
 
 echo
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="DBB_GIT_MIGRATION_MODELER-$(date +%Y-%m-%d.%H%M%S).config"
@@ -224,40 +236,40 @@ while [ "${FOLDER_FOUND}" = "false" ]; do
 		FOLDER_FOUND="true"
 	fi
 done
-	
+
 touch $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 rc=$?
 if [ $rc -eq 0 ]; then
 	chtag -tc IBM-1047 $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	
-	echo "# DBB Git Migration Modeler configuration settings" > $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "# Generated at $(date)" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	
-	echo "DBB_MODELER_HOME=${DBB_MODELER_HOME}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_WORK=${DBB_MODELER_WORK}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	
-	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "# DBB Git Migration Modeler working folders" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+
+	echo "# DBB Git Migration Modeler configuration settings" >$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# Generated at $(date)" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+
+	echo "DBB_MODELER_HOME=${DBB_MODELER_HOME}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_WORK=${DBB_MODELER_WORK}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+
+	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler working folders" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	for config in ${path_config_array[@]}; do
-	    echo "${config}=${!config}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+		echo "${config}=${!config}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	done
-	
-	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "# DBB Git Migration Modeler - DBB Metadatastore configuration" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_METADATASTORE_TYPE=${DBB_MODELER_METADATASTORE_TYPE}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_FILE_METADATA_STORE_DIR=${DBB_MODELER_FILE_METADATA_STORE_DIR}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE=${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_ID=${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	
-	echo "" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "# DBB Git Migration Modeler input files" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+
+	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler - DBB Metadatastore configuration" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_METADATASTORE_TYPE=${DBB_MODELER_METADATASTORE_TYPE}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_FILE_METADATA_STORE_DIR=${DBB_MODELER_FILE_METADATA_STORE_DIR}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE=${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_ID=${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+
+	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler input files" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	for config in ${input_array[@]}; do
-		echo "${config}=${!config}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+		echo "${config}=${!config}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	done
-	echo "PIPELINE_CI=${PIPELINE_CI}" >> $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	
+	echo "PIPELINE_CI=${PIPELINE_CI}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+
 	echo
 	echo "[SETUP] DBB Git Migration Modeler configuration saved to '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE'"
 	echo
@@ -272,7 +284,7 @@ if [ $rc -eq 0 ]; then
 	rc=$?
 	if [ $rc -ne 0 ]; then
 		echo "[ERROR] Environment check failed. Please correct the environment and run again the Setup script. Exiting."
-		exit $rc 
+		exit $rc
 	fi
 fi
 
@@ -281,11 +293,10 @@ if [ $rc -eq 0 ]; then
 	./src/scripts/utils/0-validateConfiguration.sh -f $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	rc=$?
 	if [ $rc -ne 0 ]; then
-		echo "[ERROR] Configuration check failed. Please correct the configuration and run again the Setup script. Exiting." 
-		exit $rc 
+		echo "[ERROR] Configuration check failed. Please correct the configuration and run again the Setup script. Exiting."
+		exit $rc
 	fi
 fi
-
 
 if [ $rc -eq 0 ]; then
 	echo "[SETUP] Checking the access to the DBB MetadataStore."
