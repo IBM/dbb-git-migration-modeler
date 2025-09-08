@@ -59,7 +59,7 @@ The purpose of this stage is to prepare the applications' Git repositories. It p
 
 ## Refreshing the Application Descriptor files
 
-For applications that are already migrated to Git, the DBB Git Migration Modeler provides a feature to generate Application Descriptor files. More information can be found in the [Refreshing Application Descriptor files](./04-Usage#refreshing-application-descriptor-files) section.
+For applications that are already migrated to Git, the DBB Git Migration Modeler provides a feature to generate Application Descriptor files. More information can be found in the [Refreshing Application Descriptor files](./04-Usage.md#refreshing-application-descriptor-files) section.
 
 ## Outcomes and benefits
 * Documentation about which files are owned by which application.
