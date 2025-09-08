@@ -20,7 +20,7 @@ As part of the Setup process, a validation is performed using the `CheckMetadata
 
 ## Setting up the DBB Git Migration Modeler configuration
 
-Once installed on z/OS Unix System Services, the [Setup.sh script](./Setup.sh) must be run to configure the DBB Git Migration Modeler, and set configuration parameters.
+Once installed on z/OS Unix System Services, the [Setup.sh script](../Setup.sh) must be run to configure the DBB Git Migration Modeler, and set configuration parameters.
 This script prompts for the below environment variables and saves them in a configuration file, that is used as an input for the different DBB Git Migration Modeler scripts.
 
 | Configuration Parameter | Description | Default Value |

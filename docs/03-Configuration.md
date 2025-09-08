@@ -1,6 +1,6 @@
 # Configuring the Migration Modeler input files 
 
-The configuration files required to use the DBB Git Migration Modeler utility are copied by the [Setup.sh script](./Setup.sh) from the [samples](../samples/) folder to the **work** folder that was specified during setup process.
+The configuration files required to use the DBB Git Migration Modeler utility are copied by the [Setup.sh script](../Setup.sh) from the [samples](../samples/) folder to the **work** folder that was specified during setup process.
 
 Four types of configuration files need to be reviewed and potentially adapted to your installation and your needs, before using the DBB Git Migration Modeler: 
 
@@ -12,15 +12,15 @@ Multiple Applications Mapping files can be specified, that define one or multipl
 2. The [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) (YAML format) is required and describes the folder structure on z/OS UNIX System Services (USS) that will contain the files to are moved from the datasets. It is recommended to use the definitions provided in the template, and keep consistent definitions for all applications being migrated.
 The file controls how dataset members should be assigned to target subfolders on USS during the migration process. 
 Each *Repository Path* entry described in this file documents the type of artifacts in this folder, their file extension, their encoding, the source group they belong to, the language processor (for instance, the language script in dbb-zAppBuild) and criteria to meet for classification. Thse criterai can either be the low-level qualifiers of the dataset which hold them, or their associated types (if any, as described in the [Types file](../samples/types.txt)) or, if enabled, the scan result provided by the DBB Scanner.  
-For each repository path, the `artifactsType` property is used during [the Assessment phase](#the-assessment-phase), to filter out for each type of artifacts to perform the assessment.
+For each repository path, the `artifactsType` property is used during [the Assessment phase](01-Storyboard.md#the-assessment-phase), to filter out for each type of artifacts to perform the assessment.
 Only artifacts of types `Program` or `Include File` will be included in the analysis.
 It is recommended to keep the current settings defined in the provided [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) for the `artifactsType` property.
 
 3. The [Types file](../samples/types.txt) (CSV format) lists the dataset members and their associated type (like a language definition), as described in the legacy SCM tool. This CSV file is optional, and should be built with an SCM-provided utility or from an SCM-provided report. Types mapping are meant to be used only for programs, not for Includes Files.  
 Lines of this file are composed of the artifact's names, followed by a list of comma-separated types. A combination of types can be specified, which will then turn into a composite type definition in dbb-zAppBuild.  
-During the [Framing phase](#the-framing-phase), the *type* information can be used as a criteria to dispatch files.
+During the [Framing phase](01-Storyboard.md#the-framing-phase), the *type* information can be used as a criteria to dispatch files.
 If no type is assigned to a given artifact, this information will not be used to dispatch the file and this element will be of type *UNKNOWN* in the Application Descriptor file.  
-The type assigned to each artifact is used in the [Property Generation phase](#the-property-generation-phase) to create Language Configuration in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/)'s configuration.
+The type assigned to each artifact is used in the [Property Generation phase](01-Storyboard.md#the-property-generation-phase) to create Language Configuration in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/)'s configuration.
 
 4. The [Types Configurations file](../samples/typesConfigurations.yaml) (YAML format) defines the build configurations with their *dbb-zAppBuild* build properties and values.
 This information is typically extracted from the legacy SCM tool and mapped to the equivalent build property in *dbb-zAppBuild*. It is recommended to use ad-hoc automation, when applicable, to facilitate the creation of this file.
@@ -36,7 +36,7 @@ Also, the latest steps of the whole migration process are performing a preview b
 
 ## Define Applications Mapping files
 
-This section outlines examples how to configure the `Applications Mapping` files to define the known ownership of files for the [framing phase](#the-framing-phase).
+This section outlines examples how to configure the `Applications Mapping` files to define the known ownership of files for [the framing phase](01-Storyboard.md#the-framing-phase).
 
 ### A group of datasets contains artifacts belonging to multiple applications
 

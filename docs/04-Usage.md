@@ -692,7 +692,7 @@ Additionally, if applications are already migrated to Git and use pipelines, but
 
 A second command is shipped for this workflow. The [Refresh Application Descriptor script](../src/scripts/Refresh-Application-Descriptor-Files.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications. The refresh of the Application Descriptor files must occur on the entire code base like on the initial assessment process.
 
-Like the other scripts, it requires the path to the DBB Git Migration Modeler configuration file as parameter. This configuration file can be created with the [Setup](#setting-up-the-dbb-git-migration-modeler-configuration) instructions.
+Like the other scripts, it requires the path to the DBB Git Migration Modeler configuration file as parameter. This configuration file can be created with the [Setup](./02-Setup.md#setting-up-the-dbb-git-migration-modeler-configuration) instructions.
 
 The main script calls three groovy scripts ([scanApplication.groovy](../src/groovy/scanApplication.groovy), [recreateApplicationDescriptor.groovy](../src/groovy/recreateApplicationDescriptor.groovy) and [assessUsage.groovy](../src/groovy/assessUsage.groovy)) to scan the files of the applications using the DBB Scanner, initialize Application Descriptor files based on the files present in the working directories, and assess how Include Files and Programs are used across the applications landscape:
 
