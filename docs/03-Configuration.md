@@ -1,6 +1,6 @@
 # Configuring the Migration Modeler input files 
 
-The configuration files required to use the DBB Git Migration Modeler utility are copied by the [Setup.sh script](../Setup.sh) from the [samples](../samples/) folder to the **work** folder that was specified during setup process.
+The configuration files required to use the DBB Git Migration Modeler utility are copied by the [Validation](../src/scripts/utils/0-validateConfiguration.sh) script (called by the [Setup](../Setup.sh) script) from the [samples](../samples/) folder to the **work** folder that was specified during setup process.
 
 Four types of configuration files need to be reviewed and potentially adapted to your installation and your needs, before using the DBB Git Migration Modeler: 
 
@@ -24,15 +24,15 @@ The type assigned to each artifact is used in the [Property Generation phase](01
 
 4. The [Types Configurations file](../samples/typesConfigurations.yaml) (YAML format) defines the build configurations with their *dbb-zAppBuild* build properties and values.
 This information is typically extracted from the legacy SCM tool and mapped to the equivalent build property in *dbb-zAppBuild*. It is recommended to use ad-hoc automation, when applicable, to facilitate the creation of this file.
-This file is only used during the [Property Generation phase](#the-property-generation-phase).
+This file is only used during the [Property Generation phase](01-Storyboard.md#the-property-generation-phase).
 Each Type Configuration defines properties that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework.
 Types can be combined depending on definitions found in the [Types file](../samples/types.txt), to generate composite types combining different properties.
 
 ## Required input datasets
 
-The utility is operating on a set of provided PDS libraries that contain a copy of the codebase to be migrated. Depending on your configuration, it may be required to unload the source files from the legacy SCM's storage, prior to using the DBB Git Migration Modeler. These datasets should be extracted from the legacy SCM system, using a SCM-provided utility or mechanism. The list of datasets that contain source files is defined [Applications Mapping file](../samples/applicationsMapping.yaml) for a set of applications.
+The utility is operating on a set of provided PDS libraries that contain a copy of the codebase to be migrated. Depending on your configuration, it may be required to unload the source files from the legacy SCM's storage, prior to using the DBB Git Migration Modeler. These datasets should be extracted from the legacy SCM system, using a SCM-provided utility or mechanism. The list of datasets that contain source files is defined [Applications Mapping file](../samples/applications-mapping/applicationsMapping.yaml) for a set of applications.
 
-Also, the latest steps of the whole migration process are performing a preview build and the packaging of existing artifacts. These existing artifacts (loadmodules, DBRMs, and any other artifacts meant to be deployed belonging to the applications) are expected to be found in datasets, following the naming convention in dbb-zAppBuild for output datasets. Typically, loadmodules are stored in to a `HLQ.LOAD` library, object decks in a `HLQ.OBJ` library and DBRMS in a `HLQ.DBRM` library. The HLQ used during this phase is provided through the `APPLICATION_ARTIFACTS_HLQ` environment variable defined during the execution of the [Setup script](./Setup.sh).
+Also, the latest steps of the whole migration process are performing a preview build and the packaging of existing artifacts. These existing artifacts (loadmodules, DBRMs, and any other artifacts meant to be deployed belonging to the applications) are expected to be found in datasets, following the naming convention in dbb-zAppBuild for output datasets. Typically, loadmodules are stored in to a `HLQ.LOAD` library, object decks in a `HLQ.OBJ` library and DBRMS in a `HLQ.DBRM` library. The HLQ used during this phase is provided through the `APPLICATION_ARTIFACTS_HLQ` environment variable defined during the execution of the [Setup](../Setup.sh) script.
 
 ## Define Applications Mapping files
 
