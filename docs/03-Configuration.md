@@ -256,7 +256,7 @@ Where *COBBATCH*, *COBCICSD* and *PLIIMSDB* represent configurations with specif
   isDLI: true
 ~~~~
 
-With this configuration, the [Property Generation script](./src/scripts/utils//4-generateProperties.sh) will generate Language Configurations for each of these types.
+With this configuration, the [Property Generation script](../src/scripts/utils/4-generateProperties.sh) will generate Language Configurations for each of these types.
 
 ### Advanced scenario
 In more sophisticated scenarios, which depend on how properties are set in the legacy SCM tool, multiple types can be assigned to an artifact:
@@ -287,7 +287,7 @@ Each type configuration would be defined separately in the [Types Configurations
   isDLI: true
 ~~~~
 
-In this configuration, the [Property Generation script](./src/scripts/utils/4-generateProperties.sh) will generate composite Language Configurations files in *dbb-zAppbuild*'s [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf) folder.
+In this configuration, the [Property Generation script](../src/scripts/utils/4-generateProperties.sh) will generate composite Language Configurations files in *dbb-zAppbuild*'s [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf) folder.
 In this example, 3 files would be created:
 * *BATCH-COBOL.properties* which combines properties from the *BATCH* and the *COBOL* types
 * *CICSDB2-COBOL.properties*, which combines properties from the *CICSDB2* and the *COBOL* types
