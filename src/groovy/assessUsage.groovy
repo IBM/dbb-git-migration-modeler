@@ -68,7 +68,7 @@ def getIncludeFilesFromApplicationDescriptor() {
 	if (matchingSources) {
 		matchingSources.each() { matchingSource ->
 			matchingSource.files.each() { file ->
-				def impactSearchRule = 	"search:[:COPY]${props.DBB_MODELER_APPLICATION_DIR}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
+				def impactSearchRule = 	"search:[:COPY,SQL INCLUDE:]${props.DBB_MODELER_APPLICATION_DIR}/?path=${props.application}/${matchingSource.repositoryPath}/*." + matchingSource.fileExtension + ";**/${matchingSource.repositoryPath}/*."  + matchingSource.fileExtension as String
 				HashMap<String, String> properties = new HashMap<String, String>()
 				properties.put("impactSearchRule", impactSearchRule)
 				properties.put("repositoryPath", matchingSource.repositoryPath)
