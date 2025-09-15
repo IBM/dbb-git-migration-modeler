@@ -3,12 +3,14 @@ import groovy.transform.*
 import groovy.lang.GroovyShell
 import groovy.util.*
 import com.ibm.dbb.metadata.*
+import com.ibm.dbb.build.*
 
 /**
  * Utilities to manage the Metadatastore 
  */
  
 @Field def metadataStore
+@Field def logger = loadScript(new File("utils/logger.groovy"))
 
 def initializeFileMetadataStore(String fileMetadataStoreLocation) {
 	metadataStore = MetadataStoreFactory.createFileMetadataStore(fileMetadataStoreLocation)
@@ -56,4 +58,80 @@ def setCollectionOwner(String buildGroupName, String collectionName, String owne
 
 def getBuildGroups() {
 	return metadataStore.getBuildGroups()
+}
+
+def moveLogicalFile(String workspace, String file, String sourceBuildGroupName, String sourceCollectionName, String targetBuildGroupName, String targetCollectionName) {
+
+	def successful = true
+	def logicalFile
+
+	// delete logical file from source collection
+	successful = deleteLogicalFile
+
+	// scan file
+	if (successful.toBoolean()) {
+		logicalFile = scanFile(workspace, file)
+	} 
+	
+	if (successful.toBoolean() && logicalFile) {
+
+	} 
+}
+
+def deleteLogicalFile(String file, String sourceBuildGroupName,  String sourceCollectionName) {
+		sourceBuildGroup metadataStore.getBuildGroup(sourceBuildGroupName)
+	if (sourceBuildGroup) {
+		sourceCollection = sourceBuildGroup.getCollection(sourceCollectionName)
+		if (sourceCollection){
+			if (sourceCollection.getLogicalFile(file)){
+					sourceCollection.deleteLogicalFile(file)
+					return true
+			} else {
+						logger.logMessage("\t*! [WARNING] The source collection '$sourceCollectionName' does not contain a logical file for '$file' .")
+			}
+		} else {
+	logger.logMessage("\t*! [ERROR] The source collection '$sourceCollectionName'  in buildgroup '$sourceBuildGroupName' could not be found .")
+
+		}
+	} else {
+	logger.logMessage("\t*! [ERROR] The source buildgroup '$sourceBuildGroupName' could not be found .")
+	}
+
+	return false
+}
+
+def addLogicalFile(LogicalFile file, String targetBuildGroupName,  String targetCollectionName) {
+		targetBuildGroup metadataStore.getBuildGroup(targetBuildGroupName)
+
+if (targetBuildGroup) {
+		targetCollection = targetBuildGroup.getCollection(targetCollectionName)
+		if (targetCollection){
+					targetCollection.addLogicalFile(file)
+			return true
+		} else {
+	logger.logMessage("\t*! [ERROR] The source collection '$targetCollectionName' in buildgroup '$targetBuildGroupName' could not be found .")
+
+		}
+	} else {
+	logger.logMessage("\t*! [ERROR] The source buildgroup '$targetBuildGroupName' could not be found .")
+	}
+
+}
+
+/**
+ * 
+ */
+def scanFile(String workspace, String file) {
+	LogicalFile logicalFile = null
+	DependencyScanner scanner = new DependencyScanner()
+	// Enabling Control Transfer flag in DBB Scanner	
+	scanner.setCollectControlTransfers("true")
+	logger.logMessage("\tScanning file $file ")
+	try {
+		logicalFile = scanner.scan(file, workspace)
+	} catch (Exception e) {
+		logger.logMessage("\t*! [ERROR] Something went wrong when scanning the file '$file'.")
+		logger.logMessage(e.getMessage())
+	}
+	return logicalFile
 }

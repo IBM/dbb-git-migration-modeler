@@ -185,6 +185,10 @@ def getProgramsFromApplicationDescriptor() {
 							logger.logMessage("\t==> Removing Include File '$file' from Application '${props.application}' described in '${updatedApplicationDescriptorFile.getPath()}'.")
 							// Update application mappings
 							updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, referencingCollections[0], props.DBB_MODELER_APPLICATION_DIR + '/' + props.application + '/' + qualifiedFile, file);
+
+							// Move logical file to new DBB Metadatstore BuildGroup
+							metadataStoreUtils.moveLogicalFile(props.DBB_MODELER_APPLICATION_DIR, props.application + '/' + qualifiedFile, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "source", "${referencingCollections[0]}-${props.APPLICATION_DEFAULT_BRANCH}", "source")
+
 						}
 					} else {
 						// just modify the scope as PUBLIC or SHARED
