@@ -158,11 +158,11 @@ def getProgramsFromApplicationDescriptor() {
 				} else { // Only an other application references this Include File, so update the definitions and maybe move it
 					if (props.moveFiles.toBoolean()) {
 						
-						def owningApplication = ${referencingCollections[0]}
+						def owningApplication = referencingCollections[0]
 						
 						// Update the target Application Descriptor 
-						originalTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/owningApplication.yml")
-						updatedTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/owningApplication/applicationDescriptor.yml")
+						originalTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${owningApplication}.yml")
+						updatedTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${owningApplication}/applicationDescriptor.yml")
 						def targetApplicationDescriptor
 						// determine which YAML file to use
 						if (updatedTargetApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository

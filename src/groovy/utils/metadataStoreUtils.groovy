@@ -60,6 +60,10 @@ def getBuildGroups() {
 	return metadataStore.getBuildGroups()
 }
 
+def getBuildGroup(String buildGroupName) {
+	return metadataStore.getBuildGroup(buildGroupName)
+}
+
 def moveLogicalFile(String workspace, String file, String sourceBuildGroupName, String sourceCollectionName, String targetFilePath, String targetBuildGroupName, String targetCollectionName) {
 
 	def successful = true
