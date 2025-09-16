@@ -38,7 +38,7 @@ if (configuration.DBB_MODELER_METADATASTORE_TYPE.equals("file")) {
 }
 
 if (props.verify) {
-	
+
 	println("** Verifying DBB Metadatastore connection and permissions");
 	Collection collection = metadataStoreUtils.createCollection("DummyCollection-main", "DummyCollection-main")
 	if (collection) {
@@ -52,15 +52,24 @@ if (props.verify) {
 
 // Delete existing build group
 if (props.deleteBuildGroup) {
-	
+
+	// for zBuilder
 	println("** Deleting DBB BuildGroup ${props.buildGroup}");
 	metadataStoreUtils.deleteBuildGroup("${props.buildGroup}")
-	
+
+	// for zAppBuild
+	defaultBG = metadataStoreUtils.getBuildGroup("dbb_default")
+	defaultBG.getCollections().each { collection ->
+		if (collection.getName().contains("${props.buildGroup}")) {
+			println("**  Delete collection ${collection.getName()} from build-group dbb_default");
+			defaultBG.deleteCollection(collection)
+		}
+	}
 }
 
 // Set Collection Owners
 if (props.setBuildGroupOwner) {
-	
+
 	// the buildGroups are used for zBuilder
 	println("** Update Build Group owner to  ${props.buildGroupOwner}");
 	BuildGroup bG = metadataStoreUtils.getBuildGroup("${props.buildGroup}")
@@ -68,16 +77,15 @@ if (props.setBuildGroupOwner) {
 		println("**  Set owner of collection ${collection.getName()} in build-group ${props.buildGroup} to ${props.buildGroupOwner}");
 		collection.setOwner(props.buildGroupOwner)
 	}
-	
+
 	// adjust zAppBuild based
 	defaultBG = metadataStoreUtils.getBuildGroup("dbb_default")
 	defaultBG.getCollections().each { collection ->
 		if (collection.getName().contains("${props.buildGroup}")) {
-		println("**  Set owner of collection ${collection.getName()} in build-group dbb_default to ${props.buildGroupOwner}");
-		collection.setOwner(props.buildGroupOwner)
+			println("**  Set owner of collection ${collection.getName()} in build-group dbb_default to ${props.buildGroupOwner}");
+			collection.setOwner(props.buildGroupOwner)
 		}
 	}
-		
 }
 
 
@@ -102,7 +110,7 @@ def parseArgs(String[] args) {
 
 	if (opts.b) props.buildGroup = opts.b
 	if (opts.o) props.buildGroupOwner = opts.o
-	
+
 	// Action flags including assertions
 	if (opts.v) props.verify = true
 	if (opts.d) {
@@ -114,7 +122,7 @@ def parseArgs(String[] args) {
 		assert (props.buildGroup) : "*! Cli argument (--buildGroup) is required to set buildgroup owner."
 		assert (props.buildGroupOwner) : "*! Cli argument (--buildGroupOwner) is required to set buildgroup owner."
 	}
-	
+
 	if (opts.c) {
 		props.configurationFilePath = opts.c
 		File configurationFile = new File(props.configurationFilePath)
