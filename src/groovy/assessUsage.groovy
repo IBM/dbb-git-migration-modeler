@@ -24,7 +24,7 @@ import static java.nio.file.StandardCopyOption.*
 @Field Properties props = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
-@Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
+@Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtility.groovy"))
 @Field File originalApplicationDescriptorFile //Original Application Descriptor file in CONFIGS
 @Field File updatedApplicationDescriptorFile  //Updated Application Descriptor file in APPLICATIONS
 @Field def applicationDescriptor
@@ -157,9 +157,12 @@ def getProgramsFromApplicationDescriptor() {
 					logger.logMessage("\t==> Updating usage of Include File '$file' to 'private' in '${updatedApplicationDescriptorFile.getPath()}'.")
 				} else { // Only an other application references this Include File, so update the definitions and maybe move it
 					if (props.moveFiles.toBoolean()) {
+						
+						def owningApplication = referencingCollections[0]
+						
 						// Update the target Application Descriptor 
-						originalTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${referencingCollections[0]}.yml")
-						updatedTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${referencingCollections[0]}/applicationDescriptor.yml")
+						originalTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${owningApplication}.yml")
+						updatedTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${owningApplication}/applicationDescriptor.yml")
 						def targetApplicationDescriptor
 						// determine which YAML file to use
 						if (updatedTargetApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
@@ -175,16 +178,23 @@ def getProgramsFromApplicationDescriptor() {
 						// Target Application Descriptor file has been found and can be updated
 						if (targetApplicationDescriptor) {
 							// Move the file
-							copyFileToApplicationFolder(props.application + '/' + qualifiedFile, props.application, referencingCollections[0], file)
-							targetRepositoryPath = computeTargetFilePath(repositoryPath, props.application, referencingCollections[0])
+							copyFileToApplicationFolder(props.application + '/' + qualifiedFile, props.application, owningApplication, file)
+							targetRepositoryPath = computeTargetFilePath(repositoryPath, props.application, owningApplication)
 							applicationDescriptorUtils.appendFileDefinition(targetApplicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, file, type, "private")
-							logger.logMessage("\t==> Adding Include File '$file' with usage 'private' to Application '${referencingCollections[0]}' described in '${updatedTargetApplicationDescriptorFile.getPath()}'.")
+							logger.logMessage("\t==> Adding Include File '$file' with usage 'private' to Application '${owningApplication}' described in '${updatedTargetApplicationDescriptorFile.getPath()}'.")
 							applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
 							// Remove the file for the application
 							applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
 							logger.logMessage("\t==> Removing Include File '$file' from Application '${props.application}' described in '${updatedApplicationDescriptorFile.getPath()}'.")
 							// Update application mappings
-							updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, referencingCollections[0], props.DBB_MODELER_APPLICATION_DIR + '/' + props.application + '/' + qualifiedFile, file);
+							updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, owningApplication, props.DBB_MODELER_APPLICATION_DIR + '/' + props.application + '/' + qualifiedFile, file);
+
+							// Move logical file to new DBB Metadatstore BuildGroup
+							def sourceFilePath = "${props.application}/${qualifiedFile}"
+							def targetFilePath = "${owningApplication}/${targetRepositoryPath}/${file}.${fileExtension}"
+							logger.logMessage("\t==> Moving DBB Metadata for '$file' from buildGroup ${props.application}-${props.APPLICATION_DEFAULT_BRANCH} to new buildgroup ${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}.")
+							metadataStoreUtils.moveLogicalFile(props.DBB_MODELER_APPLICATION_DIR, sourceFilePath, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", targetFilePath, "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}", "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}")
+
 						}
 					} else {
 						// just modify the scope as PUBLIC or SHARED
