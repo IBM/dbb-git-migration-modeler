@@ -184,29 +184,29 @@ if [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
 fi
 
 echo
-echo "[SETUP] Specifying DBB Metadatastore type and configuration"
-read -p "Specify the type of the DBB Metadatastore ("file" or "db2") [default: ${DBB_MODELER_METADATASTORE_TYPE}]: " variable
+echo "[SETUP] Specifying DBB MetadataStore type and configuration"
+read -p "Specify the type of the DBB MetadataStore ("file" or "db2") [default: ${DBB_MODELER_METADATASTORE_TYPE}]: " variable
 if [ "$variable" ]; then
 	declare DBB_MODELER_METADATASTORE_TYPE="${variable}"
 fi
 
 if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-	read -p "Specify the location of the DBB File Metadatastore [default: ${DBB_MODELER_FILE_METADATA_STORE_DIR}]: " variable
+	read -p "Specify the location of the DBB File MetadataStore [default: ${DBB_MODELER_FILE_METADATA_STORE_DIR}]: " variable
 	if [ "$variable" ]; then
 		declare DBB_MODELER_FILE_METADATA_STORE_DIR="${variable}"
 	fi
 fi
 
 if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-	read -p "Specify the location of the DBB Db2 Metadatastore configuration file [default: ${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}]: " variable
+	read -p "Specify the location of the DBB Db2 MetadataStore configuration file [default: ${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}]: " variable
 	if [ "$variable" ]; then
 		declare DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE="${variable}"
 	fi
-	read -p "Specify the DBB Db2 Metadatastore JDBC User ID [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}]: " variable
+	read -p "Specify the DBB Db2 MetadataStore JDBC User ID [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}]: " variable
 	if [ "$variable" ]; then
 		declare DBB_MODELER_DB2_METADATASTORE_JDBC_ID="${variable}"
 	fi
-	read -p "Specify the DBB Db2 Metadatastore JDBC Password File [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE} ]: " variable
+	read -p "Specify the DBB Db2 MetadataStore JDBC Password File [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE} ]: " variable
 	if [ "$variable" ]; then
 		declare DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="${variable}"
 	fi
