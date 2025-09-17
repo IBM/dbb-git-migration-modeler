@@ -25,6 +25,7 @@ import static java.nio.file.StandardCopyOption.*
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtility.groovy"))
+@Field def fileUtils = loadScript(new File("utils/fileUtils.groovy"))
 @Field File originalApplicationDescriptorFile //Original Application Descriptor file in CONFIGS
 @Field File updatedApplicationDescriptorFile  //Updated Application Descriptor file in APPLICATIONS
 @Field def applicationDescriptor
@@ -571,19 +572,6 @@ def computeTargetFilePath(String file, String sourceApplication, String targetAp
 		}
 	}
 	return targetFilename.join('/')
-}
-
-/*
- * relativizePath - converts an absolute path to a relative path from the workspace directory
- */
-def relativizePath(String path) {
-	if (!path.startsWith('/'))
-		return path
-	String relPath = new File(props.DBB_MODELER_APPLICATION_DIR).toURI().relativize(new File(path.trim()).toURI()).getPath()
-	// Directories have '/' added to the end.  Lets remove it.
-	if (relPath.endsWith('/'))
-		relPath = relPath.take(relPath.length()-1)
-	return relPath
 }
 
 def updateMappingFiles(String configurationsDirectory, String sourceApplication, String targetApplication, String file, String shortFile) {
