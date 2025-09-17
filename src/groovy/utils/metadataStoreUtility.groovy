@@ -262,11 +262,17 @@ def parseArgs(String[] args) {
 	if (opts.v) props.verify = true
 	if (opts.d) {
 		props.deleteBuildGroup = true
-		assert (props.buildGroup) : "*! Cli argument (--buildGroup) is required to perform deletion."
+		if (!props.buildGroup) {
+			println("*! [ERROR] The Build Group to delete was not specified with the '--buildGroup' option. Exiting.")
+			System.exit(1)
+		}
 	}
 	if (opts.s) {
 		props.setBuildGroupOwner = opts.s
-		assert (props.buildGroup) : "*! Cli argument (--buildGroup) is required to set buildgroup owner."
+		if (!props.buildGroup) {
+			println("*! [ERROR] The Build Group for which to set the owner was not specified with the '--buildGroup' option. Exiting.")
+			System.exit(1)
+		}
 	}
 
 	if (opts.c) {
