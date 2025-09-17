@@ -291,12 +291,7 @@ initializeWorkDirectory() {
 		if [ $rc -eq 0 ]; then
 			echo "  [INFO] Copying sample Types Configurations file to '$TYPE_CONFIGURATIONS_FILE'"
 			mkdir -p "$(dirname $TYPE_CONFIGURATIONS_FILE)"
-			if [ "${BUILD_FRAMEWORK}" == "zBuilder" ]; then
-				cp $DBB_MODELER_HOME/samples/typesConfigurations-zBuilder.yaml $TYPE_CONFIGURATIONS_FILE
-			fi
-			if [ "${BUILD_FRAMEWORK}" == "zAppBuild" ]; then
-				cp $DBB_MODELER_HOME/samples/typesConfigurations-zAppBuild.yaml $TYPE_CONFIGURATIONS_FILE
-			fi			
+			cp $DBB_MODELER_HOME/samples/typesConfigurations-$BUILD_FRAMEWORK.yaml $TYPE_CONFIGURATIONS_FILE
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8
