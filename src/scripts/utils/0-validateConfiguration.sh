@@ -268,27 +268,29 @@ initializeWorkDirectory() {
 		fi
 		if [ $rc -eq 0 ]; then
 			echo "  [INFO] Copying sample Repository Paths mapping file to '$REPOSITORY_PATH_MAPPING_FILE'"
+			mkdir -p "$(dirname $REPOSITORY_PATH_MAPPING_FILE)"
 			cp $DBB_MODELER_HOME/samples/repositoryPathsMapping.yaml $REPOSITORY_PATH_MAPPING_FILE
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8
-				ERRMSG="[ERROR] Unable to copy sample Repository Paths Mapping file to '${$REPOSITORY_PATH_MAPPING_FILE}'."
+				ERRMSG="[ERROR] Unable to copy sample Repository Paths Mapping file to '$REPOSITORY_PATH_MAPPING_FILE'."
 				echo $ERRMSG
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
 			echo "  [INFO] Copying sample Types file to '$APPLICATION_MEMBER_TYPE_MAPPING'"
+			mkdir -p "$(dirname $APPLICATION_MEMBER_TYPE_MAPPING)"
 			cp $DBB_MODELER_HOME/samples/types.txt $APPLICATION_MEMBER_TYPE_MAPPING
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8
-				ERRMSG="[ERROR] Unable to copy sample Types file to '${$APPLICATION_MEMBER_TYPE_MAPPING}'."
+				ERRMSG="[ERROR] Unable to copy sample Types file to '$APPLICATION_MEMBER_TYPE_MAPPING'."
 				echo $ERRMSG
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
 			echo "  [INFO] Copying sample Types Configurations file to '$TYPE_CONFIGURATIONS_FILE'"
-			
+			mkdir -p "$(dirname $TYPE_CONFIGURATIONS_FILE)"
 			if [ "${BUILD_FRAMEWORK}" == "zBuilder" ]; then
 				cp $DBB_MODELER_HOME/samples/typesConfigurations-zBuilder.yaml $TYPE_CONFIGURATIONS_FILE
 			fi
@@ -298,7 +300,7 @@ initializeWorkDirectory() {
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8
-				ERRMSG="[ERROR] Unable to copy sample Types Configurations file to '${$TYPE_CONFIGURATIONS_FILE}'."
+				ERRMSG="[ERROR] Unable to copy sample Types Configurations file to '$TYPE_CONFIGURATIONS_FILE'."
 				echo $ERRMSG
 			fi	
 		fi
@@ -309,7 +311,7 @@ initializeWorkDirectory() {
 				command_rc=$?
 				if [ $command_rc -ne 0 ]; then
 					rc=8
-					ERRMSG="[ERROR] Unable to create sample Git Configuration folder '${$DBB_MODELER_DEFAULT_GIT_CONFIG}'."
+					ERRMSG="[ERROR] Unable to create sample Git Configuration folder '$DBB_MODELER_DEFAULT_GIT_CONFIG'."
 					echo $ERRMSG
 				fi	
 			fi
@@ -319,14 +321,14 @@ initializeWorkDirectory() {
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8
-				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '${$DBB_MODELER_DEFAULT_GIT_CONFIG}'."
+				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '$DBB_MODELER_DEFAULT_GIT_CONFIG'."
 				echo $ERRMSG
 			fi	
 			cp $DBB_MODELER_HOME/samples/git-config/.* $DBB_MODELER_DEFAULT_GIT_CONFIG/
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8
-				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '${$DBB_MODELER_DEFAULT_GIT_CONFIG}'."
+				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '$DBB_MODELER_DEFAULT_GIT_CONFIG'."
 				echo $ERRMSG
 			fi	
 		fi
