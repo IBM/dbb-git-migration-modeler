@@ -168,7 +168,20 @@ validateConfigurationFile() {
 			ERRMSG="[ERROR] The specified DBB MetadataStore technology is not 'file' or 'db2'."
 			echo $ERRMSG
 		fi
-		if [ ! -d "${DBB_ZAPPBUILD}" ]; then
+
+		if [ "${BUILD_FRAMEWORK}" != "zBuilder" ] || [ "${BUILD_FRAMEWORK}" != "zAppBuild" ]; then
+			rc=8
+			ERRMSG="[ERROR] The specified Build Framework '${BUILD_FRAMEWORK}' is not a valid option ('zBuilder' or 'zAppBuild')."
+			echo $ERRMSG
+		fi
+		
+		if [ "${BUILD_FRAMEWORK}" == "zBuilder" ] && [ ! -d "${DBB_ZBUILDER}"; then
+			rc=8
+			ERRMSG="[ERROR] The zBuilder instance '${DBB_ZBUILDER}' doesn't exist."
+			echo $ERRMSG
+		fi
+		
+		if [ "${BUILD_FRAMEWORK}" == "zAppBuild" ] && [ ! -d "${DBB_ZAPPBUILD}" ]; then
 			rc=8
 			ERRMSG="[ERROR] The dbb-zappbuild instance '${DBB_ZAPPBUILD}' doesn't exist."
 			echo $ERRMSG
@@ -275,7 +288,13 @@ initializeWorkDirectory() {
 		fi
 		if [ $rc -eq 0 ]; then
 			echo "  [INFO] Copying sample Types Configurations file to '$TYPE_CONFIGURATIONS_FILE'"
-			cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE
+			
+			if [ "${BUILD_FRAMEWORK}" == "zBuilder" ]; then
+				cp $DBB_MODELER_HOME/samples/typesConfigurations-zBuilder.yaml $TYPE_CONFIGURATIONS_FILE
+			fi
+			if [ "${BUILD_FRAMEWORK}" == "zAppBuild" ]; then
+				cp $DBB_MODELER_HOME/samples/typesConfigurations-zAppBuild.yaml $TYPE_CONFIGURATIONS_FILE
+			fi			
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8
