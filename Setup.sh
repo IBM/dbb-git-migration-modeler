@@ -97,7 +97,7 @@ DBB_MODELER_DB2_METADATASTORE_JDBC_ID="user"
 DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="$DBB_MODELER_HOME/config/db2Password.txt"
 
 # Reference to the folder containing the Applications mapping files
-DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/config/application-mappings"
+DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/config/applications-mappings"
 # Reference to the repository paths mapping file
 REPOSITORY_PATH_MAPPING_FILE=$DBB_MODELER_WORK/config/repositoryPathsMapping.yaml
 # Reference to the type mapping file
