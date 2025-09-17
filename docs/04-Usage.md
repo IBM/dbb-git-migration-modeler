@@ -70,170 +70,168 @@ When disabled, types and low-level qualifiers of the containing dataset are used
 Execution of the command:
 
 ```
-./src/scripts/utils/1-extractApplications.sh -c /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
+./src/scripts/utils/1-extractApplications.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
 ```
 
 Output log:
 ~~~~  
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/extractApplications.groovy 		--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 		--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
-2025-04-10 14:13:13.409 ** Script configuration:
-2025-04-10 14:13:13.443 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs
-2025-04-10 14:13:13.446 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/repositoryPathsMapping.yaml
-2025-04-10 14:13:13.450 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-10 14:13:13.452 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
-2025-04-10 14:13:13.455 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
-2025-04-10 14:13:13.457 	DBB_MODELER_APPMAPPINGS_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications-mappings
-2025-04-10 14:13:13.460 	APPLICATION_MEMBER_TYPE_MAPPING -> /u/mdalbin/Migration-Modeler-MDLB-work/types.txt
-2025-04-10 14:13:13.463 	SCAN_DATASET_MEMBERS_ENCODING -> IBM-1047
-2025-04-10 14:13:13.465 	SCAN_DATASET_MEMBERS -> false
-2025-04-10 14:13:13.467 ** Reading the Repository Layout Mapping definition.
-2025-04-10 14:13:13.691 ** Reading the Type Mapping definition.
-2025-04-10 14:13:13.712 ** Loading the provided Applications Mapping files.
-2025-04-10 14:13:13.720 *** Importing 'applicationsMapping.yaml'
-2025-04-10 14:13:13.743 *** Importing 'applicationsMapping-retirementCalculator.yaml'
-2025-04-10 14:13:13.752 ** Iterating through the provided datasets and mapped applications.
-2025-04-10 14:13:13.779 **** Found 'DBEHM.MIG.BMS' referenced by applications 'GenApp', 'CBSA'
-2025-04-10 14:13:14.064 ***** 'DBEHM.MIG.BMS(EPSMLIS)' - Mapped Application: UNASSIGNED
-2025-04-10 14:13:14.124 ***** 'DBEHM.MIG.BMS(EPSMORT)' - Mapped Application: UNASSIGNED
-2025-04-10 14:13:14.205 ***** 'DBEHM.MIG.BMS(SSMAP)' - Mapped Application: GenApp
-2025-04-10 14:13:14.211 **** Found 'DBEHM.MIG.RETCALC.COPY' referenced by applications 'RetirementCalculator'
-2025-04-10 14:13:14.220 ***** 'DBEHM.MIG.RETCALC.COPY(LINPUT)' - Mapped Application: RetirementCalculator
-2025-04-10 14:13:14.222 **** Found 'DBEHM.MIG.OTHER.COBOL' referenced by applications 'GenApp', 'CBSA'
-2025-04-10 14:13:14.238 ***** 'DBEHM.MIG.OTHER.COBOL(ABNDPROC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.248 ***** 'DBEHM.MIG.OTHER.COBOL(ACCLOAD)' - Mapped Application: CBSA
-2025-04-10 14:13:14.255 ***** 'DBEHM.MIG.OTHER.COBOL(ACCOFFL)' - Mapped Application: CBSA
-2025-04-10 14:13:14.261 ***** 'DBEHM.MIG.OTHER.COBOL(ACCTCTRL)' - Mapped Application: CBSA
-2025-04-10 14:13:14.269 ***** 'DBEHM.MIG.OTHER.COBOL(BANKDATA)' - Mapped Application: CBSA
-2025-04-10 14:13:14.276 ***** 'DBEHM.MIG.OTHER.COBOL(BNKMENU)' - Mapped Application: CBSA
-2025-04-10 14:13:14.284 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1CAC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.288 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1CCA)' - Mapped Application: CBSA
-2025-04-10 14:13:14.291 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1CCS)' - Mapped Application: CBSA
-2025-04-10 14:13:14.294 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1CRA)' - Mapped Application: CBSA
-2025-04-10 14:13:14.297 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1DAC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.301 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1DCS)' - Mapped Application: CBSA
-2025-04-10 14:13:14.306 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1TFN)' - Mapped Application: CBSA
-2025-04-10 14:13:14.309 ***** 'DBEHM.MIG.OTHER.COBOL(BNK1UAC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.312 ***** 'DBEHM.MIG.OTHER.COBOL(CONSENT)' - Mapped Application: CBSA
-2025-04-10 14:13:14.315 ***** 'DBEHM.MIG.OTHER.COBOL(CONSTTST)' - Mapped Application: CBSA
-2025-04-10 14:13:14.317 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY1)' - Mapped Application: CBSA
-2025-04-10 14:13:14.320 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY2)' - Mapped Application: CBSA
-2025-04-10 14:13:14.323 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY3)' - Mapped Application: CBSA
-2025-04-10 14:13:14.326 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY4)' - Mapped Application: CBSA
-2025-04-10 14:13:14.329 ***** 'DBEHM.MIG.OTHER.COBOL(CRDTAGY5)' - Mapped Application: CBSA
-2025-04-10 14:13:14.332 ***** 'DBEHM.MIG.OTHER.COBOL(CREACC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.336 ***** 'DBEHM.MIG.OTHER.COBOL(CRECUST)' - Mapped Application: CBSA
-2025-04-10 14:13:14.339 ***** 'DBEHM.MIG.OTHER.COBOL(CUSTCTRL)' - Mapped Application: CBSA
-2025-04-10 14:13:14.342 ***** 'DBEHM.MIG.OTHER.COBOL(DBCRFUN)' - Mapped Application: CBSA
-2025-04-10 14:13:14.346 ***** 'DBEHM.MIG.OTHER.COBOL(DELACC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.349 ***** 'DBEHM.MIG.OTHER.COBOL(DELCUS)' - Mapped Application: CBSA
-2025-04-10 14:13:14.353 ***** 'DBEHM.MIG.OTHER.COBOL(DPAYAPI)' - Mapped Application: CBSA
-2025-04-10 14:13:14.356 ***** 'DBEHM.MIG.OTHER.COBOL(DPAYTST)' - Mapped Application: CBSA
-2025-04-10 14:13:14.360 ***** 'DBEHM.MIG.OTHER.COBOL(GETCOMPY)' - Mapped Application: CBSA
-2025-04-10 14:13:14.363 ***** 'DBEHM.MIG.OTHER.COBOL(GETSCODE)' - Mapped Application: CBSA
-2025-04-10 14:13:14.367 ***** 'DBEHM.MIG.OTHER.COBOL(INQACC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.371 ***** 'DBEHM.MIG.OTHER.COBOL(INQACCCU)' - Mapped Application: CBSA
-2025-04-10 14:13:14.375 ***** 'DBEHM.MIG.OTHER.COBOL(INQCUST)' - Mapped Application: CBSA
-2025-04-10 14:13:14.379 ***** 'DBEHM.MIG.OTHER.COBOL(LGACDB01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.382 ***** 'DBEHM.MIG.OTHER.COBOL(LGACDB02)' - Mapped Application: GenApp
-2025-04-10 14:13:14.386 ***** 'DBEHM.MIG.OTHER.COBOL(LGACUS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.390 ***** 'DBEHM.MIG.OTHER.COBOL(LGACVS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.394 ***** 'DBEHM.MIG.OTHER.COBOL(LGAPDB01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.398 ***** 'DBEHM.MIG.OTHER.COBOL(LGAPOL01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.401 ***** 'DBEHM.MIG.OTHER.COBOL(LGAPVS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.405 ***** 'DBEHM.MIG.OTHER.COBOL(LGASTAT1)' - Mapped Application: GenApp
-2025-04-10 14:13:14.409 ***** 'DBEHM.MIG.OTHER.COBOL(LGDPDB01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.413 ***** 'DBEHM.MIG.OTHER.COBOL(LGDPOL01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.417 ***** 'DBEHM.MIG.OTHER.COBOL(LGDPVS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.421 ***** 'DBEHM.MIG.OTHER.COBOL(LGICDB01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.425 ***** 'DBEHM.MIG.OTHER.COBOL(LGICUS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.428 ***** 'DBEHM.MIG.OTHER.COBOL(LGICVS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.432 ***** 'DBEHM.MIG.OTHER.COBOL(LGIPDB01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.436 ***** 'DBEHM.MIG.OTHER.COBOL(LGIPOL01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.440 ***** 'DBEHM.MIG.OTHER.COBOL(LGIPVS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.444 ***** 'DBEHM.MIG.OTHER.COBOL(LGSETUP)' - Mapped Application: GenApp
-2025-04-10 14:13:14.448 ***** 'DBEHM.MIG.OTHER.COBOL(LGSTSQ)' - Mapped Application: GenApp
-2025-04-10 14:13:14.451 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTC1)' - Mapped Application: GenApp
-2025-04-10 14:13:14.455 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTP1)' - Mapped Application: GenApp
-2025-04-10 14:13:14.459 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTP2)' - Mapped Application: GenApp
-2025-04-10 14:13:14.463 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTP3)' - Mapped Application: GenApp
-2025-04-10 14:13:14.466 ***** 'DBEHM.MIG.OTHER.COBOL(LGTESTP4)' - Mapped Application: GenApp
-2025-04-10 14:13:14.470 ***** 'DBEHM.MIG.OTHER.COBOL(LGUCDB01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.474 ***** 'DBEHM.MIG.OTHER.COBOL(LGUCUS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.478 ***** 'DBEHM.MIG.OTHER.COBOL(LGUCVS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.482 ***** 'DBEHM.MIG.OTHER.COBOL(LGUPDB01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.485 ***** 'DBEHM.MIG.OTHER.COBOL(LGUPOL01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.489 ***** 'DBEHM.MIG.OTHER.COBOL(LGUPVS01)' - Mapped Application: GenApp
-2025-04-10 14:13:14.493 ***** 'DBEHM.MIG.OTHER.COBOL(LGWEBST5)' - Mapped Application: GenApp
-2025-04-10 14:13:14.497 ***** 'DBEHM.MIG.OTHER.COBOL(OLDACDB1)' - Mapped Application: UNASSIGNED
-2025-04-10 14:13:14.504 ***** 'DBEHM.MIG.OTHER.COBOL(OLDACDB2)' - Mapped Application: UNASSIGNED
-2025-04-10 14:13:14.509 ***** 'DBEHM.MIG.OTHER.COBOL(PROLOAD)' - Mapped Application: CBSA
-2025-04-10 14:13:14.513 ***** 'DBEHM.MIG.OTHER.COBOL(PROOFFL)' - Mapped Application: CBSA
-2025-04-10 14:13:14.517 ***** 'DBEHM.MIG.OTHER.COBOL(UPDACC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.521 ***** 'DBEHM.MIG.OTHER.COBOL(UPDCUST)' - Mapped Application: CBSA
-2025-04-10 14:13:14.524 ***** 'DBEHM.MIG.OTHER.COBOL(XFRFUN)' - Mapped Application: CBSA
-2025-04-10 14:13:14.527 **** Found 'DBEHM.MIG.OTHER.COPY' referenced by applications 'GenApp', 'CBSA'
-2025-04-10 14:13:14.533 ***** 'DBEHM.MIG.OTHER.COPY(ABNDINFO)' - Mapped Application: CBSA
-2025-04-10 14:13:14.535 ***** 'DBEHM.MIG.OTHER.COPY(ACCDB2)' - Mapped Application: CBSA
-2025-04-10 14:13:14.537 ***** 'DBEHM.MIG.OTHER.COPY(ACCOUNT)' - Mapped Application: CBSA
-2025-04-10 14:13:14.539 ***** 'DBEHM.MIG.OTHER.COPY(ACCTCTRL)' - Mapped Application: CBSA
-2025-04-10 14:13:14.540 ***** 'DBEHM.MIG.OTHER.COPY(BNK1ACC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.542 ***** 'DBEHM.MIG.OTHER.COPY(BNK1CAM)' - Mapped Application: CBSA
-2025-04-10 14:13:14.544 ***** 'DBEHM.MIG.OTHER.COPY(BNK1CCM)' - Mapped Application: CBSA
-2025-04-10 14:13:14.546 ***** 'DBEHM.MIG.OTHER.COPY(BNK1CDM)' - Mapped Application: CBSA
-2025-04-10 14:13:14.548 ***** 'DBEHM.MIG.OTHER.COPY(BNK1DAM)' - Mapped Application: CBSA
-2025-04-10 14:13:14.550 ***** 'DBEHM.MIG.OTHER.COPY(BNK1DCM)' - Mapped Application: CBSA
-2025-04-10 14:13:14.551 ***** 'DBEHM.MIG.OTHER.COPY(BNK1MAI)' - Mapped Application: CBSA
-2025-04-10 14:13:14.553 ***** 'DBEHM.MIG.OTHER.COPY(BNK1TFM)' - Mapped Application: CBSA
-2025-04-10 14:13:14.555 ***** 'DBEHM.MIG.OTHER.COPY(BNK1UAM)' - Mapped Application: CBSA
-2025-04-10 14:13:14.557 ***** 'DBEHM.MIG.OTHER.COPY(CONSENT)' - Mapped Application: CBSA
-2025-04-10 14:13:14.559 ***** 'DBEHM.MIG.OTHER.COPY(CONSTAPI)' - Mapped Application: CBSA
-2025-04-10 14:13:14.560 ***** 'DBEHM.MIG.OTHER.COPY(CONSTDB2)' - Mapped Application: CBSA
-2025-04-10 14:13:14.562 ***** 'DBEHM.MIG.OTHER.COPY(CONTDB2)' - Mapped Application: CBSA
-2025-04-10 14:13:14.564 ***** 'DBEHM.MIG.OTHER.COPY(CREACC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.566 ***** 'DBEHM.MIG.OTHER.COPY(CRECUST)' - Mapped Application: CBSA
-2025-04-10 14:13:14.568 ***** 'DBEHM.MIG.OTHER.COPY(CUSTCTRL)' - Mapped Application: CBSA
-2025-04-10 14:13:14.570 ***** 'DBEHM.MIG.OTHER.COPY(CUSTOMER)' - Mapped Application: CBSA
-2025-04-10 14:13:14.573 ***** 'DBEHM.MIG.OTHER.COPY(DATASTR)' - Mapped Application: UNASSIGNED
-2025-04-10 14:13:14.577 ***** 'DBEHM.MIG.OTHER.COPY(DELACC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.579 ***** 'DBEHM.MIG.OTHER.COPY(DELCUS)' - Mapped Application: CBSA
-2025-04-10 14:13:14.581 ***** 'DBEHM.MIG.OTHER.COPY(GETCOMPY)' - Mapped Application: CBSA
-2025-04-10 14:13:14.584 ***** 'DBEHM.MIG.OTHER.COPY(GETSCODE)' - Mapped Application: CBSA
-2025-04-10 14:13:14.586 ***** 'DBEHM.MIG.OTHER.COPY(INQACC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.589 ***** 'DBEHM.MIG.OTHER.COPY(INQACCCU)' - Mapped Application: CBSA
-2025-04-10 14:13:14.591 ***** 'DBEHM.MIG.OTHER.COPY(INQCUST)' - Mapped Application: CBSA
-2025-04-10 14:13:14.594 ***** 'DBEHM.MIG.OTHER.COPY(LGCMAREA)' - Mapped Application: GenApp
-2025-04-10 14:13:14.597 ***** 'DBEHM.MIG.OTHER.COPY(LGCMARED)' - Mapped Application: GenApp
-2025-04-10 14:13:14.600 ***** 'DBEHM.MIG.OTHER.COPY(LGPOLICY)' - Mapped Application: GenApp
-2025-04-10 14:13:14.603 ***** 'DBEHM.MIG.OTHER.COPY(PAYDBCR)' - Mapped Application: UNASSIGNED
-2025-04-10 14:13:14.608 ***** 'DBEHM.MIG.OTHER.COPY(PROCDB2)' - Mapped Application: CBSA
-2025-04-10 14:13:14.611 ***** 'DBEHM.MIG.OTHER.COPY(PROCTRAN)' - Mapped Application: CBSA
-2025-04-10 14:13:14.614 ***** 'DBEHM.MIG.OTHER.COPY(SORTCODE)' - Mapped Application: UNASSIGNED
-2025-04-10 14:13:14.618 ***** 'DBEHM.MIG.OTHER.COPY(UPDACC)' - Mapped Application: CBSA
-2025-04-10 14:13:14.621 ***** 'DBEHM.MIG.OTHER.COPY(UPDCUST)' - Mapped Application: CBSA
-2025-04-10 14:13:14.624 ***** 'DBEHM.MIG.OTHER.COPY(XFRFUN)' - Mapped Application: CBSA
-2025-04-10 14:13:14.626 **** Found 'DBEHM.MIG.RETCALC.COBOL' referenced by applications 'RetirementCalculator'
-2025-04-10 14:13:14.631 ***** 'DBEHM.MIG.RETCALC.COBOL(EBUD0RUN)' - Mapped Application: RetirementCalculator
-2025-04-10 14:13:14.631 ***** 'DBEHM.MIG.RETCALC.COBOL(EBUD01)' - Mapped Application: RetirementCalculator
-2025-04-10 14:13:14.632 ***** 'DBEHM.MIG.RETCALC.COBOL(EBUD02)' - Mapped Application: RetirementCalculator
-2025-04-10 14:13:14.633 ***** 'DBEHM.MIG.RETCALC.COBOL(EBUD03)' - Mapped Application: RetirementCalculator
-2025-04-10 14:13:14.645 ** Generating Applications Configurations files.
-2025-04-10 14:13:14.647 ** Generating Configuration files for application UNASSIGNED.
-2025-04-10 14:13:14.953 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/UNASSIGNED.mapping
-2025-04-10 14:13:15.208 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/UNASSIGNED.yml
-2025-04-10 14:13:15.263 	Estimated storage size of migrated members: 36,244 bytes
-2025-04-10 14:13:15.263 ** Generating Configuration files for application CBSA.
-2025-04-10 14:13:15.493 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/CBSA.mapping
-2025-04-10 14:13:15.718 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/CBSA.yml
-2025-04-10 14:13:15.928 	Estimated storage size of migrated members: 1,147,571 bytes
-2025-04-10 14:13:15.929 ** Generating Configuration files for application GenApp.
-2025-04-10 14:13:16.136 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.mapping
-2025-04-10 14:13:16.331 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.yml
-2025-04-10 14:13:16.429 	Estimated storage size of migrated members: 463,749 bytes
-2025-04-10 14:13:16.429 ** Generating Configuration files for application RetirementCalculator.
-2025-04-10 14:13:16.621 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/RetirementCalculator.mapping
-2025-04-10 14:13:16.822 	Created Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/RetirementCalculator.yml
-2025-04-10 14:13:16.839 	Estimated storage size of migrated members: 12,838 bytes
-2025-04-10 14:13:16.841 ** Estimated storage size of all migrated members: 1,660,402 bytes
+[INFO] /usr/lpp/dbb//bin/groovyz /u/dbehm/git/dbb-git-migration-modeler/src/groovy/extractApplications.groovy 		--configFile /u/dbehm/git/dbb-git-migration-modeler/DBB_GIT_MIGRATION_MODELER-2025-09-17.151101.config 		--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/1-extractApplications.log
+2025-09-17 15:43:53.117 ** Script configuration:
+2025-09-17 15:43:53.154 	DBB_MODELER_APPCONFIG_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration
+2025-09-17 15:43:53.154 	REPOSITORY_PATH_MAPPING_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/config/repositoryPathsMapping.yaml
+2025-09-17 15:43:53.155 	configurationFilePath -> /u/dbehm/git/dbb-git-migration-modeler/DBB_GIT_MIGRATION_MODELER-2025-09-17.151101.config
+2025-09-17 15:43:53.155 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-09-17 15:43:53.156 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/1-extractApplications.log
+2025-09-17 15:43:53.156 	DBB_MODELER_APPMAPPINGS_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/config/application-mappings
+2025-09-17 15:43:53.156 	APPLICATION_MEMBER_TYPE_MAPPING -> /u/ibmuser/dbb-git-migration-modeler-work/config/types/types.txt
+2025-09-17 15:43:53.157 	SCAN_DATASET_MEMBERS_ENCODING -> IBM-1047
+2025-09-17 15:43:53.157 	SCAN_DATASET_MEMBERS -> false
+2025-09-17 15:43:53.158 ** Reading the Repository Layout Mapping definition.
+2025-09-17 15:43:53.372 ** Reading the Type Mapping definition.
+2025-09-17 15:43:53.388 ** Loading the provided Applications Mapping files.
+2025-09-17 15:43:53.394 *** Importing 'applicationsMapping.yaml'
+2025-09-17 15:43:53.409 ** Iterating through the provided datasets and mapped applications.
+2025-09-17 15:43:53.436 **** Found 'DBEHM.MIG.BMS' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA'
+2025-09-17 15:43:53.511 ***** 'DBEHM.MIG.BMS(EPSMLIS)' - Mapped Application: UNASSIGNED
+2025-09-17 15:43:53.533 ***** 'DBEHM.MIG.BMS(EPSMORT)' - Mapped Application: UNASSIGNED
+2025-09-17 15:43:53.551 ***** 'DBEHM.MIG.BMS(SSMAP)' - Mapped Application: GenApp
+2025-09-17 15:43:53.555 **** Found 'DBEHM.MIG.COPY' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA'
+2025-09-17 15:43:53.566 ***** 'DBEHM.MIG.COPY(ABNDINFO)' - Mapped Application: CBSA
+2025-09-17 15:43:53.570 ***** 'DBEHM.MIG.COPY(ACCDB2)' - Mapped Application: CBSA
+2025-09-17 15:43:53.576 ***** 'DBEHM.MIG.COPY(ACCOUNT)' - Mapped Application: CBSA
+2025-09-17 15:43:53.580 ***** 'DBEHM.MIG.COPY(ACCTCTRL)' - Mapped Application: CBSA
+2025-09-17 15:43:53.583 ***** 'DBEHM.MIG.COPY(BNK1ACC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.587 ***** 'DBEHM.MIG.COPY(BNK1CAM)' - Mapped Application: CBSA
+2025-09-17 15:43:53.591 ***** 'DBEHM.MIG.COPY(BNK1CCM)' - Mapped Application: CBSA
+2025-09-17 15:43:53.594 ***** 'DBEHM.MIG.COPY(BNK1CDM)' - Mapped Application: CBSA
+2025-09-17 15:43:53.597 ***** 'DBEHM.MIG.COPY(BNK1DAM)' - Mapped Application: CBSA
+2025-09-17 15:43:53.600 ***** 'DBEHM.MIG.COPY(BNK1DCM)' - Mapped Application: CBSA
+2025-09-17 15:43:53.604 ***** 'DBEHM.MIG.COPY(BNK1MAI)' - Mapped Application: CBSA
+2025-09-17 15:43:53.607 ***** 'DBEHM.MIG.COPY(BNK1TFM)' - Mapped Application: CBSA
+2025-09-17 15:43:53.610 ***** 'DBEHM.MIG.COPY(BNK1UAM)' - Mapped Application: CBSA
+2025-09-17 15:43:53.614 ***** 'DBEHM.MIG.COPY(CONSENT)' - Mapped Application: CBSA
+2025-09-17 15:43:53.617 ***** 'DBEHM.MIG.COPY(CONSTAPI)' - Mapped Application: CBSA
+2025-09-17 15:43:53.620 ***** 'DBEHM.MIG.COPY(CONSTDB2)' - Mapped Application: CBSA
+2025-09-17 15:43:53.624 ***** 'DBEHM.MIG.COPY(CONTDB2)' - Mapped Application: CBSA
+2025-09-17 15:43:53.627 ***** 'DBEHM.MIG.COPY(CREACC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.632 ***** 'DBEHM.MIG.COPY(CRECUST)' - Mapped Application: CBSA
+2025-09-17 15:43:53.635 ***** 'DBEHM.MIG.COPY(CUSTCTRL)' - Mapped Application: CBSA
+2025-09-17 15:43:53.638 ***** 'DBEHM.MIG.COPY(CUSTOMER)' - Mapped Application: CBSA
+2025-09-17 15:43:53.643 ***** 'DBEHM.MIG.COPY(DATASTR)' - Mapped Application: UNASSIGNED
+2025-09-17 15:43:53.648 ***** 'DBEHM.MIG.COPY(DELACC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.651 ***** 'DBEHM.MIG.COPY(DELCUS)' - Mapped Application: CBSA
+2025-09-17 15:43:53.655 ***** 'DBEHM.MIG.COPY(GETCOMPY)' - Mapped Application: CBSA
+2025-09-17 15:43:53.658 ***** 'DBEHM.MIG.COPY(GETSCODE)' - Mapped Application: CBSA
+2025-09-17 15:43:53.661 ***** 'DBEHM.MIG.COPY(INQACC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.665 ***** 'DBEHM.MIG.COPY(INQACCCU)' - Mapped Application: CBSA
+2025-09-17 15:43:53.668 ***** 'DBEHM.MIG.COPY(INQCUST)' - Mapped Application: CBSA
+2025-09-17 15:43:53.670 ***** 'DBEHM.MIG.COPY(LGCMAREA)' - Mapped Application: GenApp
+2025-09-17 15:43:53.673 ***** 'DBEHM.MIG.COPY(LGCMARED)' - Mapped Application: GenApp
+2025-09-17 15:43:53.676 ***** 'DBEHM.MIG.COPY(LGPOLICY)' - Mapped Application: GenApp
+2025-09-17 15:43:53.679 ***** 'DBEHM.MIG.COPY(LINPUT)' - Mapped Application: RetirementCalculator
+2025-09-17 15:43:53.682 ***** 'DBEHM.MIG.COPY(PAYDBCR)' - Mapped Application: UNASSIGNED
+2025-09-17 15:43:53.686 ***** 'DBEHM.MIG.COPY(PROCDB2)' - Mapped Application: CBSA
+2025-09-17 15:43:53.688 ***** 'DBEHM.MIG.COPY(PROCTRAN)' - Mapped Application: CBSA
+2025-09-17 15:43:53.691 ***** 'DBEHM.MIG.COPY(SORTCODE)' - Mapped Application: UNASSIGNED
+2025-09-17 15:43:53.694 ***** 'DBEHM.MIG.COPY(UPDACC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.697 ***** 'DBEHM.MIG.COPY(UPDCUST)' - Mapped Application: CBSA
+2025-09-17 15:43:53.699 ***** 'DBEHM.MIG.COPY(XFRFUN)' - Mapped Application: CBSA
+2025-09-17 15:43:53.701 **** Found 'DBEHM.MIG.COBOL' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA'
+2025-09-17 15:43:53.706 ***** 'DBEHM.MIG.COBOL(ABNDPROC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.707 ***** 'DBEHM.MIG.COBOL(ACCLOAD)' - Mapped Application: CBSA
+2025-09-17 15:43:53.708 ***** 'DBEHM.MIG.COBOL(ACCOFFL)' - Mapped Application: CBSA
+2025-09-17 15:43:53.710 ***** 'DBEHM.MIG.COBOL(ACCTCTRL)' - Mapped Application: CBSA
+2025-09-17 15:43:53.711 ***** 'DBEHM.MIG.COBOL(BANKDATA)' - Mapped Application: CBSA
+2025-09-17 15:43:53.712 ***** 'DBEHM.MIG.COBOL(BNKMENU)' - Mapped Application: CBSA
+2025-09-17 15:43:53.713 ***** 'DBEHM.MIG.COBOL(BNK1CAC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.715 ***** 'DBEHM.MIG.COBOL(BNK1CCA)' - Mapped Application: CBSA
+2025-09-17 15:43:53.716 ***** 'DBEHM.MIG.COBOL(BNK1CCS)' - Mapped Application: CBSA
+2025-09-17 15:43:53.717 ***** 'DBEHM.MIG.COBOL(BNK1CRA)' - Mapped Application: CBSA
+2025-09-17 15:43:53.718 ***** 'DBEHM.MIG.COBOL(BNK1DAC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.719 ***** 'DBEHM.MIG.COBOL(BNK1DCS)' - Mapped Application: CBSA
+2025-09-17 15:43:53.721 ***** 'DBEHM.MIG.COBOL(BNK1TFN)' - Mapped Application: CBSA
+2025-09-17 15:43:53.722 ***** 'DBEHM.MIG.COBOL(BNK1UAC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.723 ***** 'DBEHM.MIG.COBOL(CONSENT)' - Mapped Application: CBSA
+2025-09-17 15:43:53.724 ***** 'DBEHM.MIG.COBOL(CONSTTST)' - Mapped Application: CBSA
+2025-09-17 15:43:53.725 ***** 'DBEHM.MIG.COBOL(CRDTAGY1)' - Mapped Application: CBSA
+2025-09-17 15:43:53.726 ***** 'DBEHM.MIG.COBOL(CRDTAGY2)' - Mapped Application: CBSA
+2025-09-17 15:43:53.728 ***** 'DBEHM.MIG.COBOL(CRDTAGY3)' - Mapped Application: CBSA
+2025-09-17 15:43:53.729 ***** 'DBEHM.MIG.COBOL(CRDTAGY4)' - Mapped Application: CBSA
+2025-09-17 15:43:53.730 ***** 'DBEHM.MIG.COBOL(CRDTAGY5)' - Mapped Application: CBSA
+2025-09-17 15:43:53.732 ***** 'DBEHM.MIG.COBOL(CREACC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.733 ***** 'DBEHM.MIG.COBOL(CRECUST)' - Mapped Application: CBSA
+2025-09-17 15:43:53.734 ***** 'DBEHM.MIG.COBOL(CUSTCTRL)' - Mapped Application: CBSA
+2025-09-17 15:43:53.736 ***** 'DBEHM.MIG.COBOL(DBCRFUN)' - Mapped Application: CBSA
+2025-09-17 15:43:53.737 ***** 'DBEHM.MIG.COBOL(DELACC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.739 ***** 'DBEHM.MIG.COBOL(DELCUS)' - Mapped Application: CBSA
+2025-09-17 15:43:53.740 ***** 'DBEHM.MIG.COBOL(DPAYAPI)' - Mapped Application: CBSA
+2025-09-17 15:43:53.742 ***** 'DBEHM.MIG.COBOL(DPAYTST)' - Mapped Application: CBSA
+2025-09-17 15:43:53.744 ***** 'DBEHM.MIG.COBOL(EBUD0RUN)' - Mapped Application: RetirementCalculator
+2025-09-17 15:43:53.746 ***** 'DBEHM.MIG.COBOL(EBUD01)' - Mapped Application: RetirementCalculator
+2025-09-17 15:43:53.748 ***** 'DBEHM.MIG.COBOL(EBUD02)' - Mapped Application: RetirementCalculator
+2025-09-17 15:43:53.750 ***** 'DBEHM.MIG.COBOL(EBUD03)' - Mapped Application: RetirementCalculator
+2025-09-17 15:43:53.751 ***** 'DBEHM.MIG.COBOL(GETCOMPY)' - Mapped Application: CBSA
+2025-09-17 15:43:53.753 ***** 'DBEHM.MIG.COBOL(GETSCODE)' - Mapped Application: CBSA
+2025-09-17 15:43:53.754 ***** 'DBEHM.MIG.COBOL(INQACC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.756 ***** 'DBEHM.MIG.COBOL(INQACCCU)' - Mapped Application: CBSA
+2025-09-17 15:43:53.757 ***** 'DBEHM.MIG.COBOL(INQCUST)' - Mapped Application: CBSA
+2025-09-17 15:43:53.759 ***** 'DBEHM.MIG.COBOL(LGACDB01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.760 ***** 'DBEHM.MIG.COBOL(LGACDB02)' - Mapped Application: GenApp
+2025-09-17 15:43:53.762 ***** 'DBEHM.MIG.COBOL(LGACUS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.763 ***** 'DBEHM.MIG.COBOL(LGACVS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.765 ***** 'DBEHM.MIG.COBOL(LGAPDB01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.767 ***** 'DBEHM.MIG.COBOL(LGAPOL01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.769 ***** 'DBEHM.MIG.COBOL(LGAPVS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.771 ***** 'DBEHM.MIG.COBOL(LGASTAT1)' - Mapped Application: GenApp
+2025-09-17 15:43:53.772 ***** 'DBEHM.MIG.COBOL(LGDPDB01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.774 ***** 'DBEHM.MIG.COBOL(LGDPOL01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.775 ***** 'DBEHM.MIG.COBOL(LGDPVS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.777 ***** 'DBEHM.MIG.COBOL(LGICDB01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.778 ***** 'DBEHM.MIG.COBOL(LGICUS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.780 ***** 'DBEHM.MIG.COBOL(LGICVS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.782 ***** 'DBEHM.MIG.COBOL(LGIPDB01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.783 ***** 'DBEHM.MIG.COBOL(LGIPOL01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.785 ***** 'DBEHM.MIG.COBOL(LGIPVS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.786 ***** 'DBEHM.MIG.COBOL(LGSETUP)' - Mapped Application: GenApp
+2025-09-17 15:43:53.788 ***** 'DBEHM.MIG.COBOL(LGSTSQ)' - Mapped Application: GenApp
+2025-09-17 15:43:53.789 ***** 'DBEHM.MIG.COBOL(LGTESTC1)' - Mapped Application: GenApp
+2025-09-17 15:43:53.791 ***** 'DBEHM.MIG.COBOL(LGTESTP1)' - Mapped Application: GenApp
+2025-09-17 15:43:53.793 ***** 'DBEHM.MIG.COBOL(LGTESTP2)' - Mapped Application: GenApp
+2025-09-17 15:43:53.794 ***** 'DBEHM.MIG.COBOL(LGTESTP3)' - Mapped Application: GenApp
+2025-09-17 15:43:53.796 ***** 'DBEHM.MIG.COBOL(LGTESTP4)' - Mapped Application: GenApp
+2025-09-17 15:43:53.797 ***** 'DBEHM.MIG.COBOL(LGUCDB01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.799 ***** 'DBEHM.MIG.COBOL(LGUCUS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.800 ***** 'DBEHM.MIG.COBOL(LGUCVS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.802 ***** 'DBEHM.MIG.COBOL(LGUPDB01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.804 ***** 'DBEHM.MIG.COBOL(LGUPOL01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.807 ***** 'DBEHM.MIG.COBOL(LGUPVS01)' - Mapped Application: GenApp
+2025-09-17 15:43:53.808 ***** 'DBEHM.MIG.COBOL(LGWEBST5)' - Mapped Application: GenApp
+2025-09-17 15:43:53.810 ***** 'DBEHM.MIG.COBOL(OLDACDB1)' - Mapped Application: UNASSIGNED
+2025-09-17 15:43:53.814 ***** 'DBEHM.MIG.COBOL(OLDACDB2)' - Mapped Application: UNASSIGNED
+2025-09-17 15:43:53.816 ***** 'DBEHM.MIG.COBOL(PROLOAD)' - Mapped Application: CBSA
+2025-09-17 15:43:53.818 ***** 'DBEHM.MIG.COBOL(PROOFFL)' - Mapped Application: CBSA
+2025-09-17 15:43:53.819 ***** 'DBEHM.MIG.COBOL(UPDACC)' - Mapped Application: CBSA
+2025-09-17 15:43:53.821 ***** 'DBEHM.MIG.COBOL(UPDCUST)' - Mapped Application: CBSA
+2025-09-17 15:43:53.823 ***** 'DBEHM.MIG.COBOL(XFRFUN)' - Mapped Application: CBSA
+2025-09-17 15:43:53.848 ** Generating Applications Configurations files.
+2025-09-17 15:43:53.849 ** Generating Configuration files for application UNASSIGNED.
+2025-09-17 15:43:53.927 	Created DBB Migration Utility mapping file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/UNASSIGNED.mapping
+2025-09-17 15:43:53.987 	Created Application Description file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/UNASSIGNED.yml
+2025-09-17 15:43:54.034 	Estimated storage size of migrated members: 36,244 bytes
+2025-09-17 15:43:54.034 ** Generating Configuration files for application CBSA.
+2025-09-17 15:43:54.103 	Created DBB Migration Utility mapping file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/CBSA.mapping
+2025-09-17 15:43:54.151 	Created Application Description file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/CBSA.yml
+2025-09-17 15:43:54.401 	Estimated storage size of migrated members: 1,147,571 bytes
+2025-09-17 15:43:54.401 ** Generating Configuration files for application GenApp.
+2025-09-17 15:43:54.432 	Created DBB Migration Utility mapping file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/GenApp.mapping
+2025-09-17 15:43:54.455 	Created Application Description file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/GenApp.yml
+2025-09-17 15:43:54.546 	Estimated storage size of migrated members: 463,749 bytes
+2025-09-17 15:43:54.546 ** Generating Configuration files for application RetirementCalculator.
+2025-09-17 15:43:54.562 	Created DBB Migration Utility mapping file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/RetirementCalculator.mapping
+2025-09-17 15:43:54.580 	Created Application Description file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/RetirementCalculator.yml
+2025-09-17 15:43:54.592 	Estimated storage size of migrated members: 12,838 bytes
+2025-09-17 15:43:54.594 ** Estimated storage size of all migrated members: 1,660,402 bytes
+
 ~~~~
 </details>
 
@@ -246,50 +244,50 @@ It will search for all the DBB Migration mapping files located in the *work-conf
   <summary>Output example for a single application (CBSA)</summary>
 Execution of the command:
 
-`./src/scripts/utils/2-runMigrations.sh -c /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config`
+`./src/scripts/utils/2-runMigrations.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
 Output log:  
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /usr/lpp/dbb/v3r0/migration/bin/migrate.groovy -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/2-GenApp.migration.log -np info -r /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.mapping
-Messages will be saved in /u/mdalbin/Migration-Modeler-MDLB-work/logs/2-GenApp.migration.log
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /usr/lpp/dbb/v3r0/migration/bin/migrate.groovy -l /u/ibmuser/dbb-git-migration-modeler-work/logs/2-GenApp.migration.log -np info -r /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp /u/ibmuser/dbb-git-migration-modeler-work/modeler-configs/GenApp.mapping
+Messages will be saved in /u/ibmuser/dbb-git-migration-modeler-work/logs/2-GenApp.migration.log
 Non-printable scan level is info
-Local GIT repository: /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp
-Migrate data sets using mapping file /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs/GenApp.mapping
-Copying [DBEHM.MIG.OTHER.COBOL, LGASTAT1] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgastat1.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGSTSQ] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgstsq.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COPY, LGCMAREA] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/copy/lgcmarea.cpy using IBM-1047
-Copying [DBEHM.MIG.BMS, SSMAP] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/bms/ssmap.bms using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP3] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestp3.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGDPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgdpol01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP1] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestp1.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGICDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgicdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgupvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgupol01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUCDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgucdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGWEBST5] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgwebst5.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGAPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgapvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUCUS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgucus01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGACUS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgacus01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGACVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgacvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGIPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgipol01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COPY, LGPOLICY] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/copy/lgpolicy.cpy using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGDPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgdpvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGACDB02] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgacdb02.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGAPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgapol01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGICVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgicvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGIPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgipvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGDPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgdpdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUCVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgucvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COPY, LGCMARED] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/copy/lgcmared.cpy using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP4] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestp4.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP2] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestp2.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgupdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGICUS01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgicus01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGAPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgapdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTC1] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgtestc1.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGSETUP] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgsetup.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGIPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgipdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGACDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/src/cobol/lgacdb01.cbl using IBM-1047
+Local GIT repository: /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp
+Migrate data sets using mapping file /u/ibmuser/dbb-git-migration-modeler-work/modeler-configs/GenApp.mapping
+Copying [DBEHM.MIG.OTHER.COBOL, LGASTAT1] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgastat1.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGSTSQ] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgstsq.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COPY, LGCMAREA] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/copy/lgcmarea.cpy using IBM-1047
+Copying [DBEHM.MIG.BMS, SSMAP] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/bms/ssmap.bms using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP3] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestp3.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGDPOL01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgdpol01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP1] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestp1.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGICDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgicdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUPVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgupvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUPOL01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgupol01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUCDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgucdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGWEBST5] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgwebst5.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGAPVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgapvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUCUS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgucus01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGACUS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgacus01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGACVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgacvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGIPOL01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgipol01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COPY, LGPOLICY] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/copy/lgpolicy.cpy using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGDPVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgdpvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGACDB02] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgacdb02.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGAPOL01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgapol01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGICVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgicvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGIPVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgipvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGDPDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgdpdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUCVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgucvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COPY, LGCMARED] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/copy/lgcmared.cpy using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP4] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestp4.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP2] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestp2.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGUPDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgupdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGICUS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgicus01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGAPDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgapdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGTESTC1] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestc1.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGSETUP] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgsetup.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGIPDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgipdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.OTHER.COBOL, LGACDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgacdb01.cbl using IBM-1047
 ~~~~
 </details>
 
@@ -306,21 +304,21 @@ This script works in 2 phases:
   <summary>Output example for a single application (CBSA)</summary>
 Execution of the command:
 
-`./src/scripts/utils/3-classify.sh -c /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config`
+`./src/scripts/utils/3-classify.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 			--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/scanApplication.groovy 			--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-scan.log
 2025-04-10 14:27:43.213 ** Script configuration:
 2025-04-10 14:27:43.247 	PIPELINE_USER -> ADO
 2025-04-10 14:27:43.250 	application -> GenApp
-2025-04-10 14:27:43.254 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-10 14:27:43.257 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
-2025-04-10 14:27:43.260 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
+2025-04-10 14:27:43.254 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-10 14:27:43.257 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-10 14:27:43.260 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-scan.log
 2025-04-10 14:27:43.264 	DBB_MODELER_METADATASTORE_TYPE -> db2
-2025-04-10 14:27:43.267 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-10 14:27:43.267 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
 2025-04-10 14:27:43.270 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
-2025-04-10 14:27:43.274 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-10 14:27:43.274 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
 2025-04-10 14:27:43.276 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
 2025-04-10 14:27:43.279 	APPLICATION_DEFAULT_BRANCH -> main
 2025-04-10 14:27:43.733 ** Scanning the files.
@@ -362,18 +360,18 @@ Output log:
 2025-04-10 14:27:45.033 	Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
 2025-04-10 14:27:45.058 ** Storing results in the 'GenApp-main' DBB Collection.
 2025-04-10 14:27:46.395 ** Setting collection owner to ADO
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy 			--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--moveFiles 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/assessUsage.groovy 			--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--moveFiles 			--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-assessUsage.log
 2025-04-10 14:28:43.396 ** Script configuration:
-2025-04-10 14:28:43.447 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs
+2025-04-10 14:28:43.447 	DBB_MODELER_APPCONFIG_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/modeler-configs
 2025-04-10 14:28:43.450 	application -> GenApp
-2025-04-10 14:28:43.453 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-10 14:28:43.456 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
-2025-04-10 14:28:43.459 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
+2025-04-10 14:28:43.453 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-10 14:28:43.456 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-10 14:28:43.459 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-assessUsage.log
 2025-04-10 14:28:43.462 	DBB_MODELER_METADATASTORE_TYPE -> db2
-2025-04-10 14:28:43.465 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-10 14:28:43.465 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
 2025-04-10 14:28:43.469 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
 2025-04-10 14:28:43.472 	moveFiles -> true
-2025-04-10 14:28:43.475 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-10 14:28:43.475 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
 2025-04-10 14:28:43.478 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
 2025-04-10 14:28:44.162 ** Getting the list of files of 'Include File' type.
 2025-04-10 14:28:44.195 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgpolicy.cpy'.
@@ -387,7 +385,7 @@ Output log:
 2025-04-10 14:28:44.609 	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
 2025-04-10 14:28:44.610 	'GenApp/GenApp/src/cobol/lgacdb02.cbl' in  Application  'GenApp'
 2025-04-10 14:28:44.612 	==> 'lgpolicy' referenced by multiple applications - [UNASSIGNED, GenApp]
-2025-04-10 14:28:44.613 	==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/applicationDescriptor.yml'.
+2025-04-10 14:28:44.613 	==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/applicationDescriptor.yml'.
 2025-04-10 14:28:45.152 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmared.cpy'.
 2025-04-10 14:28:45.260 	The Include File 'lgcmared' is not referenced at all.
 2025-04-10 14:28:45.462 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmarea.cpy'.
@@ -411,7 +409,7 @@ Output log:
 2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in  Application  'GenApp'
 2025-04-10 14:28:45.583 	'GenApp/GenApp/src/cobol/lgapol01.cbl' in  Application  'GenApp'
 2025-04-10 14:28:45.585 	==> 'lgcmarea' is owned by the 'GenApp' application
-2025-04-10 14:28:45.586 	==> Updating usage of Include File 'lgcmarea' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/applicationDescriptor.yml'.
+2025-04-10 14:28:45.586 	==> Updating usage of Include File 'lgcmarea' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/applicationDescriptor.yml'.
 2025-04-10 14:28:45.788 ** Getting the list of files of 'Program' type.
 2025-04-10 14:28:45.813 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicus01.cbl'.
 2025-04-10 14:28:45.873 	The Program 'lgicus01' is not called by any other program.
@@ -475,17 +473,17 @@ Output log:
 2025-04-10 14:28:51.099 	The Program 'lgicdb01' is not called by any other program.
 2025-04-10 14:28:51.126 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupvs01.cbl'.
 2025-04-10 14:28:51.164 	The Program 'lgupvs01' is not called by any other program.
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 			--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-rescan.log
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/scanApplication.groovy 			--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-rescan.log
 2025-04-10 14:29:27.767 ** Script configuration:
 2025-04-10 14:29:27.810 	PIPELINE_USER -> ADO
 2025-04-10 14:29:27.813 	application -> GenApp
-2025-04-10 14:29:27.816 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-10 14:29:27.819 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
-2025-04-10 14:29:27.821 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-rescan.log
+2025-04-10 14:29:27.816 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-10 14:29:27.819 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-10 14:29:27.821 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-rescan.log
 2025-04-10 14:29:27.826 	DBB_MODELER_METADATASTORE_TYPE -> db2
-2025-04-10 14:29:27.829 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-10 14:29:27.829 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
 2025-04-10 14:29:27.832 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
-2025-04-10 14:29:27.834 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-10 14:29:27.834 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
 2025-04-10 14:29:27.838 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
 2025-04-10 14:29:27.840 	APPLICATION_DEFAULT_BRANCH -> main
 2025-04-10 14:29:28.281 ** Scanning the files.
@@ -546,24 +544,24 @@ If configuration was changed, an *INFO* message is shown, explaining that a manu
   <summary>Output example for a single application (GenApp)</summary>
 Execution of the command:
 	
-`./src/scripts/utils/4-generateProperties.sh  -c /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config`
+`./src/scripts/utils/4-generateProperties.sh  -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/generateProperties.groovy 			--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
-2025-04-10 14:30:55.834 ** Reading the Types Configurations definitions from '/u/mdalbin/Migration-Modeler-MDLB-work/typesConfigurations.yaml'.
-2025-04-10 14:30:56.090 ** Copying default application-conf directory to /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/generateProperties.groovy 			--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/4-GenApp-generateProperties.log
+2025-04-10 14:30:55.834 ** Reading the Types Configurations definitions from '/u/ibmuser/dbb-git-migration-modeler-work/typesConfigurations.yaml'.
+2025-04-10 14:30:56.090 ** Copying default application-conf directory to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/application-conf
 2025-04-10 14:30:56.153 ** Getting the list of files.
 2025-04-10 14:30:56.154 *** Generate/Validate Language Configuration properties files.
 2025-04-10 14:30:56.171 	Assessing file lgacdb01 with type CBLCICSDB2.
-2025-04-10 14:30:56.173 	Generating new Language Configuration /u/mdalbin/Migration-Modeler-MDLB-work/applications/dbb-zappbuild/build-conf/language-conf/CBLCICSDB2.properties for type 'CBLCICSDB2'
+2025-04-10 14:30:56.173 	Generating new Language Configuration /u/ibmuser/dbb-git-migration-modeler-work/repositories/dbb-zappbuild/build-conf/language-conf/CBLCICSDB2.properties for type 'CBLCICSDB2'
 2025-04-10 14:30:56.212 	Assessing file lgacdb02 with type CBLDB2.
-2025-04-10 14:30:56.212 	Generating new Language Configuration /u/mdalbin/Migration-Modeler-MDLB-work/applications/dbb-zappbuild/build-conf/language-conf/CBLDB2.properties for type 'CBLDB2'
+2025-04-10 14:30:56.212 	Generating new Language Configuration /u/ibmuser/dbb-git-migration-modeler-work/repositories/dbb-zappbuild/build-conf/language-conf/CBLDB2.properties for type 'CBLDB2'
 2025-04-10 14:30:56.229 	Assessing file lgacus01 with type PLICICS.
-2025-04-10 14:30:56.230 	Generating new Language Configuration /u/mdalbin/Migration-Modeler-MDLB-work/applications/dbb-zappbuild/build-conf/language-conf/PLICICS.properties for type 'PLICICS'
-2025-04-10 14:30:56.246 *** Generate the language configuration mapping file /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf/languageConfigurationMapping.properties.
-2025-04-10 14:30:56.253 *** Generate loadLanguageConfigurationProperties configuration in /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf/file.properties.
-2025-04-10 14:30:56.486 ** INFO: Don't forget to enable the use of Language Configuration by uncommenting the 'loadLanguageConfigurationProperties' property in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/GenApp/application-conf/file.properties'
+2025-04-10 14:30:56.230 	Generating new Language Configuration /u/ibmuser/dbb-git-migration-modeler-work/repositories/dbb-zappbuild/build-conf/language-conf/PLICICS.properties for type 'PLICICS'
+2025-04-10 14:30:56.246 *** Generate the language configuration mapping file /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/application-conf/languageConfigurationMapping.properties.
+2025-04-10 14:30:56.253 *** Generate loadLanguageConfigurationProperties configuration in /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/application-conf/file.properties.
+2025-04-10 14:30:56.486 ** INFO: Don't forget to enable the use of Language Configuration by uncommenting the 'loadLanguageConfigurationProperties' property in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/application-conf/file.properties'
 ~~~~
 </details>
 
@@ -577,20 +575,20 @@ It will search for all applications located in the `DBB_MODELER_APPLICATION_DIR`
   <summary> Output example for a single application (CBSA)</summary>
 Execution of command:
 	
-`./src/scripts/utils/5-initApplicationRepositories.sh -c /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config`
+`./src/scripts/utils/5-initApplicationRepositories.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
 ~~~~
 [CMD] git init --initial-branch=main
-Initialized empty Git repository in /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/.git/
+Initialized empty Git repository in /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/.git/
 [CMD] chtag -c IBM-1047 -t applicationDescriptor.yml
 [CMD] rm .gitattributes
-[CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/git-config/.gitattributes .gitattributes
-[CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/git-config/zapp.yaml zapp.yaml
-[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/zappUtils.groovy 					-z /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/zapp.yaml -a /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/applicationDescriptor.yml -b /var/dbb/dbb-zappbuild_300
+[CMD] cp /u/ibmuser/dbb-git-migration-modeler-work/git-config/.gitattributes .gitattributes
+[CMD] cp /u/ibmuser/dbb-git-migration-modeler-work/git-config/zapp.yaml zapp.yaml
+[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/utils/zappUtils.groovy 					-z /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/zapp.yaml -a /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/applicationDescriptor.yml -b /var/dbb/dbb-zappbuild_300
 ** Build finished
-[CMD] cp /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/
-[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/deployment/
-[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp/tagging/
+[CMD] cp /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/
+[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/deployment/
+[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/tagging/
 [CMD] git status
 On branch main
 
@@ -675,9 +673,9 @@ nothing added to commit but untracked files present (use "git add" to track)
  create mode 100644 zapp.yaml
 [CMD] git tag rel-2.1.0
 [CMD] git branch rel-2.1.0 refs/tags/rel-2.1.0
-** /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/dbb-zappbuild_300/build.groovy 				--workspace /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp 				--application GenApp 				--outDir /u/mdalbin/Migration-Modeler-MDLB-work/logs/GenApp 				--fullBuild 				--hlq DBEHM.MIG --preview 				--logEncoding UTF-8 				--applicationCurrentBranch main 				--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=db2,metadataStoreDb2ConnectionConf=/u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf --id MDALBIN --pwFile /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt 				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
-** /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/dbb-MD/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy 				--workDir /u/mdalbin/Migration-Modeler-MDLB-work/logs/GenApp \ 
-				--addExtension 				--branch main 				--version rel-2.1.0 				--tarFileName GenApp-rel-2.1.0.tar 				--applicationFolderPath /u/mdalbin/Migration-Modeler-MDLB-work/applications/GenApp 				--owner ADO:JENKINSG -p --artifactRepositoryUrl http://10.3.20.231:8081/artifactory 				     --artifactRepositoryUser admin 				     --artifactRepositoryPassword artifactoryadmin 				     --artifactRepositoryName GenApp
+** /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/dbb-zappbuild_300/build.groovy 				--workspace /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp 				--application GenApp 				--outDir /u/ibmuser/dbb-git-migration-modeler-work/logs/GenApp 				--fullBuild 				--hlq DBEHM.MIG --preview 				--logEncoding UTF-8 				--applicationCurrentBranch main 				--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=db2,metadataStoreDb2ConnectionConf=/u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf --id MDALBIN --pwFile /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt 				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
+** /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/dbb-MD/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy 				--workDir /u/ibmuser/dbb-git-migration-modeler-work/logs/GenApp \ 
+				--addExtension 				--branch main 				--version rel-2.1.0 				--tarFileName GenApp-rel-2.1.0.tar 				--applicationFolderPath /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp 				--owner ADO:JENKINSG -p --artifactRepositoryUrl http://10.3.20.231:8081/artifactory 				     --artifactRepositoryUser admin 				     --artifactRepositoryPassword artifactoryadmin 				     --artifactRepositoryName GenApp
 ~~~~
 
 </details>
@@ -726,17 +724,17 @@ Execution of command:
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-scan.log
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/scanApplication.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-scan.log
 2025-04-09 13:52:36.462 ** Script configuration:
 2025-04-09 13:52:36.505 	PIPELINE_USER -> ADO
 2025-04-09 13:52:36.508 	application -> CBSA
-2025-04-09 13:52:36.511 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-09 13:52:36.514 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
-2025-04-09 13:52:36.517 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-scan.log
+2025-04-09 13:52:36.511 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 13:52:36.514 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-09 13:52:36.517 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-scan.log
 2025-04-09 13:52:36.520 	DBB_MODELER_METADATASTORE_TYPE -> db2
-2025-04-09 13:52:36.522 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-09 13:52:36.522 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
 2025-04-09 13:52:36.525 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
-2025-04-09 13:52:36.528 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-09 13:52:36.528 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
 2025-04-09 13:52:36.533 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
 2025-04-09 13:52:36.536 	APPLICATION_DEFAULT_BRANCH -> main
 2025-04-09 13:52:36.971 ** Scanning the files.
@@ -845,16 +843,16 @@ Output log:
 2025-04-09 13:52:39.201 	Scanning file CBSA/CBSA/src/copy/bnk1tfm.cpy 
 2025-04-09 13:52:39.217 ** Storing results in the 'CBSA-main' DBB Collection.
 2025-04-09 13:52:41.165 ** Setting collection owner to ADO
-[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/recreateApplicationDescriptor.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-createApplicationDescriptor.log
+[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/recreateApplicationDescriptor.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-createApplicationDescriptor.log
 2025-04-09 14:03:27.588 ** Script configuration:
-2025-04-09 14:03:27.617 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/repositoryPathsMapping.yaml
+2025-04-09 14:03:27.617 	REPOSITORY_PATH_MAPPING_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/repositoryPathsMapping.yaml
 2025-04-09 14:03:27.620 	application -> CBSA
-2025-04-09 14:03:27.624 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-09 14:03:27.628 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
-2025-04-09 14:03:27.631 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-createApplicationDescriptor.log
+2025-04-09 14:03:27.624 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 14:03:27.628 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-09 14:03:27.631 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-createApplicationDescriptor.log
 2025-04-09 14:03:27.634 ** Reading the Repository Layout Mapping definition.
 2025-04-09 14:03:27.864 ** Importing existing Application Descriptor and reset source groups, dependencies and consumers.
-2025-04-09 14:03:27.906 ** Getting List of files /u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA
+2025-04-09 14:03:27.906 ** Getting List of files /u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA
 2025-04-09 14:03:28.112 *! [WARNING] '.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16' is a hidden file. Skipped.
 2025-04-09 14:03:28.113 *! [WARNING] '.git/objects/46/3a5519cbcb1b8db463d628173cafc3751fb323' is a hidden file. Skipped.
 2025-04-09 14:03:28.115 *! [WARNING] '.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5' is a hidden file. Skipped.
@@ -1095,19 +1093,19 @@ Output log:
 2025-04-09 14:03:28.331 ** Adding 'CBSA/src/copy/contdb2.cpy' to Application Descriptor into source group 'copy'.
 2025-04-09 14:03:28.332 *! [WARNING] '.git/objects/b6/f7290235118fd79e38875919d38e2885dc2335' is a hidden file. Skipped.
 2025-04-09 14:03:28.333 *! [WARNING] 'CBSA/application-conf/DBDgen.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
-2025-04-09 14:03:28.453 ** Created Application Description file '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/CBSA.yaml'
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--moveFiles 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-assessUsage.log
+2025-04-09 14:03:28.453 ** Created Application Description file '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/CBSA.yaml'
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/assessUsage.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--moveFiles 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-assessUsage.log
 2025-04-09 14:03:55.371 ** Script configuration:
-2025-04-09 14:03:55.413 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/modeler-configs
+2025-04-09 14:03:55.413 	DBB_MODELER_APPCONFIG_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/modeler-configs
 2025-04-09 14:03:55.416 	application -> CBSA
-2025-04-09 14:03:55.419 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-09 14:03:55.423 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
-2025-04-09 14:03:55.427 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-assessUsage.log
+2025-04-09 14:03:55.419 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 14:03:55.423 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-09 14:03:55.427 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-assessUsage.log
 2025-04-09 14:03:55.430 	DBB_MODELER_METADATASTORE_TYPE -> db2
-2025-04-09 14:03:55.433 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-09 14:03:55.433 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
 2025-04-09 14:03:55.435 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
 2025-04-09 14:03:55.438 	moveFiles -> true
-2025-04-09 14:03:55.441 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-09 14:03:55.441 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
 2025-04-09 14:03:55.444 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
 2025-04-09 14:03:56.121 ** Getting the list of files of 'Include File' type.
 2025-04-09 14:03:56.197 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/datastr.cpy'.
@@ -1130,37 +1128,37 @@ Output log:
 2025-04-09 14:03:56.733 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in  Application  'CBSA'
 2025-04-09 14:03:56.734 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:56.735 	==> 'datastr' is owned by the 'CBSA' application
-2025-04-09 14:03:56.747 	==> Updating usage of Include File 'datastr' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:56.747 	==> Updating usage of Include File 'datastr' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:56.862 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1ccm.cpy'.
 2025-04-09 14:03:57.058 	Files depending on 'CBSA/src/copy/bnk1ccm.cpy' :
 2025-04-09 14:03:57.058 	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in  Application  'CBSA'
 2025-04-09 14:03:57.058 	==> 'bnk1ccm' is owned by the 'CBSA' application
-2025-04-09 14:03:57.059 	==> Updating usage of Include File 'bnk1ccm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.059 	==> Updating usage of Include File 'bnk1ccm' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:57.107 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dam.cpy'.
 2025-04-09 14:03:57.197 	Files depending on 'CBSA/src/copy/bnk1dam.cpy' :
 2025-04-09 14:03:57.197 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in  Application  'CBSA'
 2025-04-09 14:03:57.197 	==> 'bnk1dam' is owned by the 'CBSA' application
-2025-04-09 14:03:57.198 	==> Updating usage of Include File 'bnk1dam' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.198 	==> Updating usage of Include File 'bnk1dam' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:57.238 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/paydbcr.cpy'.
 2025-04-09 14:03:57.311 	Files depending on 'CBSA/src/copy/paydbcr.cpy' :
 2025-04-09 14:03:57.311 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
 2025-04-09 14:03:57.311 	==> 'paydbcr' is owned by the 'CBSA' application
-2025-04-09 14:03:57.313 	==> Updating usage of Include File 'paydbcr' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.313 	==> Updating usage of Include File 'paydbcr' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:57.346 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cam.cpy'.
 2025-04-09 14:03:57.417 	Files depending on 'CBSA/src/copy/bnk1cam.cpy' :
 2025-04-09 14:03:57.417 	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in  Application  'CBSA'
 2025-04-09 14:03:57.417 	==> 'bnk1cam' is owned by the 'CBSA' application
-2025-04-09 14:03:57.418 	==> Updating usage of Include File 'bnk1cam' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.418 	==> Updating usage of Include File 'bnk1cam' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:57.448 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/creacc.cpy'.
 2025-04-09 14:03:57.509 	Files depending on 'CBSA/src/copy/creacc.cpy' :
 2025-04-09 14:03:57.510 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:57.510 	==> 'creacc' is owned by the 'CBSA' application
-2025-04-09 14:03:57.511 	==> Updating usage of Include File 'creacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.511 	==> Updating usage of Include File 'creacc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:57.539 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dcm.cpy'.
 2025-04-09 14:03:57.602 	Files depending on 'CBSA/src/copy/bnk1dcm.cpy' :
 2025-04-09 14:03:57.602 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
 2025-04-09 14:03:57.602 	==> 'bnk1dcm' is owned by the 'CBSA' application
-2025-04-09 14:03:57.603 	==> Updating usage of Include File 'bnk1dcm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.603 	==> Updating usage of Include File 'bnk1dcm' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:57.631 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/procdb2.cpy'.
 2025-04-09 14:03:57.685 	The Include File 'procdb2' is not referenced at all.
 2025-04-09 14:03:57.715 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constdb2.cpy'.
@@ -1196,17 +1194,17 @@ Output log:
 2025-04-09 14:03:57.903 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in  Application  'CBSA'
 2025-04-09 14:03:57.903 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
 2025-04-09 14:03:57.903 	==> 'abndinfo' is owned by the 'CBSA' application
-2025-04-09 14:03:57.904 	==> Updating usage of Include File 'abndinfo' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.904 	==> Updating usage of Include File 'abndinfo' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:57.931 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1tfm.cpy'.
 2025-04-09 14:03:57.989 	Files depending on 'CBSA/src/copy/bnk1tfm.cpy' :
 2025-04-09 14:03:57.989 	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in  Application  'CBSA'
 2025-04-09 14:03:57.989 	==> 'bnk1tfm' is owned by the 'CBSA' application
-2025-04-09 14:03:57.990 	==> Updating usage of Include File 'bnk1tfm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.990 	==> Updating usage of Include File 'bnk1tfm' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.016 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1acc.cpy'.
 2025-04-09 14:03:58.078 	Files depending on 'CBSA/src/copy/bnk1acc.cpy' :
 2025-04-09 14:03:58.079 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.079 	==> 'bnk1acc' is owned by the 'CBSA' application
-2025-04-09 14:03:58.080 	==> Updating usage of Include File 'bnk1acc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.080 	==> Updating usage of Include File 'bnk1acc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.106 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/proctran.cpy'.
 2025-04-09 14:03:58.176 	Files depending on 'CBSA/src/copy/proctran.cpy' :
 2025-04-09 14:03:58.176 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
@@ -1216,7 +1214,7 @@ Output log:
 2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.177 	==> 'proctran' is owned by the 'CBSA' application
-2025-04-09 14:03:58.178 	==> Updating usage of Include File 'proctran' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.178 	==> Updating usage of Include File 'proctran' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.203 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/sortcode.cpy'.
 2025-04-09 14:03:58.285 	Files depending on 'CBSA/src/copy/sortcode.cpy' :
 2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
@@ -1240,7 +1238,7 @@ Output log:
 2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.288 	==> 'sortcode' is owned by the 'CBSA' application
-2025-04-09 14:03:58.289 	==> Updating usage of Include File 'sortcode' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.289 	==> Updating usage of Include File 'sortcode' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.315 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/acctctrl.cpy'.
 2025-04-09 14:03:58.375 	Files depending on 'CBSA/src/copy/acctctrl.cpy' :
 2025-04-09 14:03:58.375 	'CBSA/CBSA/src/cobol/acctctrl.cbl' in  Application  'CBSA'
@@ -1248,24 +1246,24 @@ Output log:
 2025-04-09 14:03:58.376 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.376 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.376 	==> 'acctctrl' is owned by the 'CBSA' application
-2025-04-09 14:03:58.380 	==> Updating usage of Include File 'acctctrl' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.380 	==> Updating usage of Include File 'acctctrl' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.408 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/custctrl.cpy'.
 2025-04-09 14:03:58.484 	Files depending on 'CBSA/src/copy/custctrl.cpy' :
 2025-04-09 14:03:58.485 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.485 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.485 	'CBSA/CBSA/src/cobol/custctrl.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.485 	==> 'custctrl' is owned by the 'CBSA' application
-2025-04-09 14:03:58.489 	==> Updating usage of Include File 'custctrl' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.489 	==> Updating usage of Include File 'custctrl' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.519 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/xfrfun.cpy'.
 2025-04-09 14:03:58.568 	Files depending on 'CBSA/src/copy/xfrfun.cpy' :
 2025-04-09 14:03:58.568 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.568 	==> 'xfrfun' is owned by the 'CBSA' application
-2025-04-09 14:03:58.569 	==> Updating usage of Include File 'xfrfun' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.569 	==> Updating usage of Include File 'xfrfun' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.595 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/crecust.cpy'.
 2025-04-09 14:03:58.636 	Files depending on 'CBSA/src/copy/crecust.cpy' :
 2025-04-09 14:03:58.636 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.636 	==> 'crecust' is owned by the 'CBSA' application
-2025-04-09 14:03:58.637 	==> Updating usage of Include File 'crecust' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.637 	==> Updating usage of Include File 'crecust' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.667 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacccu.cpy'.
 2025-04-09 14:03:58.717 	Files depending on 'CBSA/src/copy/inqacccu.cpy' :
 2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
@@ -1273,29 +1271,29 @@ Output log:
 2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.717 	==> 'inqacccu' is owned by the 'CBSA' application
-2025-04-09 14:03:58.718 	==> Updating usage of Include File 'inqacccu' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.718 	==> Updating usage of Include File 'inqacccu' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.743 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cdm.cpy'.
 2025-04-09 14:03:58.791 	Files depending on 'CBSA/src/copy/bnk1cdm.cpy' :
 2025-04-09 14:03:58.792 	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.792 	==> 'bnk1cdm' is owned by the 'CBSA' application
-2025-04-09 14:03:58.792 	==> Updating usage of Include File 'bnk1cdm' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.792 	==> Updating usage of Include File 'bnk1cdm' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.816 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getscode.cpy'.
 2025-04-09 14:03:58.854 	Files depending on 'CBSA/src/copy/getscode.cpy' :
 2025-04-09 14:03:58.854 	'CBSA/CBSA/src/cobol/getscode.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.854 	==> 'getscode' is owned by the 'CBSA' application
-2025-04-09 14:03:58.855 	==> Updating usage of Include File 'getscode' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.855 	==> Updating usage of Include File 'getscode' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.878 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/consent.cpy'.
 2025-04-09 14:03:58.922 	Files depending on 'CBSA/src/copy/consent.cpy' :
 2025-04-09 14:03:58.922 	'CBSA/CBSA/src/cobol/dpayapi.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.922 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.922 	'CBSA/CBSA/src/cobol/consent.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.922 	==> 'consent' is owned by the 'CBSA' application
-2025-04-09 14:03:58.923 	==> Updating usage of Include File 'consent' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.923 	==> Updating usage of Include File 'consent' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:58.947 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1mai.cpy'.
 2025-04-09 14:03:58.991 	Files depending on 'CBSA/src/copy/bnk1mai.cpy' :
 2025-04-09 14:03:58.991 	'CBSA/CBSA/src/cobol/bnkmenu.cbl' in  Application  'CBSA'
 2025-04-09 14:03:58.991 	==> 'bnk1mai' is owned by the 'CBSA' application
-2025-04-09 14:03:58.992 	==> Updating usage of Include File 'bnk1mai' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.992 	==> Updating usage of Include File 'bnk1mai' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.020 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constapi.cpy'.
 2025-04-09 14:03:59.080 	Files depending on 'CBSA/src/copy/constapi.cpy' :
 2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/dpayapi.cbl' in  Application  'CBSA'
@@ -1303,23 +1301,23 @@ Output log:
 2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/consttst.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/consent.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.081 	==> 'constapi' is owned by the 'CBSA' application
-2025-04-09 14:03:59.081 	==> Updating usage of Include File 'constapi' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.081 	==> Updating usage of Include File 'constapi' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.108 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delacc.cpy'.
 2025-04-09 14:03:59.147 	Files depending on 'CBSA/src/copy/delacc.cpy' :
 2025-04-09 14:03:59.147 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.147 	==> 'delacc' is owned by the 'CBSA' application
-2025-04-09 14:03:59.148 	==> Updating usage of Include File 'delacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.148 	==> Updating usage of Include File 'delacc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.173 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delcus.cpy'.
 2025-04-09 14:03:59.222 	Files depending on 'CBSA/src/copy/delcus.cpy' :
 2025-04-09 14:03:59.223 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.223 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.223 	==> 'delcus' is owned by the 'CBSA' application
-2025-04-09 14:03:59.223 	==> Updating usage of Include File 'delcus' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.223 	==> Updating usage of Include File 'delcus' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.247 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getcompy.cpy'.
 2025-04-09 14:03:59.288 	Files depending on 'CBSA/src/copy/getcompy.cpy' :
 2025-04-09 14:03:59.288 	'CBSA/CBSA/src/cobol/getcompy.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.288 	==> 'getcompy' is owned by the 'CBSA' application
-2025-04-09 14:03:59.289 	==> Updating usage of Include File 'getcompy' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.289 	==> Updating usage of Include File 'getcompy' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.314 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/accdb2.cpy'.
 2025-04-09 14:03:59.351 	The Include File 'accdb2' is not referenced at all.
 2025-04-09 14:03:59.374 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/contdb2.cpy'.
@@ -1332,29 +1330,29 @@ Output log:
 2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.487 	==> 'inqcust' is owned by the 'CBSA' application
-2025-04-09 14:03:59.488 	==> Updating usage of Include File 'inqcust' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.488 	==> Updating usage of Include File 'inqcust' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.513 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updacc.cpy'.
 2025-04-09 14:03:59.551 	Files depending on 'CBSA/src/copy/updacc.cpy' :
 2025-04-09 14:03:59.551 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.551 	==> 'updacc' is owned by the 'CBSA' application
-2025-04-09 14:03:59.552 	==> Updating usage of Include File 'updacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.552 	==> Updating usage of Include File 'updacc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.575 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacc.cpy'.
 2025-04-09 14:03:59.622 	Files depending on 'CBSA/src/copy/inqacc.cpy' :
 2025-04-09 14:03:59.623 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.623 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.623 	==> 'inqacc' is owned by the 'CBSA' application
-2025-04-09 14:03:59.624 	==> Updating usage of Include File 'inqacc' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.624 	==> Updating usage of Include File 'inqacc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.647 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updcust.cpy'.
 2025-04-09 14:03:59.691 	Files depending on 'CBSA/src/copy/updcust.cpy' :
 2025-04-09 14:03:59.691 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.691 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.691 	==> 'updcust' is owned by the 'CBSA' application
-2025-04-09 14:03:59.693 	==> Updating usage of Include File 'updcust' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.693 	==> Updating usage of Include File 'updcust' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.718 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1uam.cpy'.
 2025-04-09 14:03:59.767 	Files depending on 'CBSA/src/copy/bnk1uam.cpy' :
 2025-04-09 14:03:59.767 	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.767 	==> 'bnk1uam' is owned by the 'CBSA' application
-2025-04-09 14:03:59.767 	==> Updating usage of Include File 'bnk1uam' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.767 	==> Updating usage of Include File 'bnk1uam' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.791 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/account.cpy'.
 2025-04-09 14:03:59.844 	Files depending on 'CBSA/src/copy/account.cpy' :
 2025-04-09 14:03:59.844 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
@@ -1368,7 +1366,7 @@ Output log:
 2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.845 	==> 'account' is owned by the 'CBSA' application
-2025-04-09 14:03:59.846 	==> Updating usage of Include File 'account' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.846 	==> Updating usage of Include File 'account' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.870 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/customer.cpy'.
 2025-04-09 14:03:59.922 	Files depending on 'CBSA/src/copy/customer.cpy' :
 2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
@@ -1379,7 +1377,7 @@ Output log:
 2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
 2025-04-09 14:03:59.923 	==> 'customer' is owned by the 'CBSA' application
-2025-04-09 14:03:59.924 	==> Updating usage of Include File 'customer' to 'private' in '/u/mdalbin/Migration-Modeler-MDLB-work/applications/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.924 	==> Updating usage of Include File 'customer' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
 2025-04-09 14:03:59.951 ** Getting the list of files of 'Program' type.
 2025-04-09 14:03:59.976 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cac.cbl'.
 2025-04-09 14:04:00.019 	The Program 'bnk1cac' is not called by any other program.
@@ -1459,17 +1457,17 @@ Output log:
 2025-04-09 14:04:02.206 	The Program 'inqacc' is not called by any other program.
 2025-04-09 14:04:02.230 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updcust.cbl'.
 2025-04-09 14:04:02.245 	The Program 'updcust' is not called by any other program.
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-rescan.log
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/scanApplication.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-rescan.log
 2025-04-09 14:04:40.138 ** Script configuration:
 2025-04-09 14:04:40.175 	PIPELINE_USER -> ADO
 2025-04-09 14:04:40.178 	application -> CBSA
-2025-04-09 14:04:40.182 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-09 14:04:40.185 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/applications
-2025-04-09 14:04:40.187 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-CBSA-rescan.log
+2025-04-09 14:04:40.182 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 14:04:40.185 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-09 14:04:40.187 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-rescan.log
 2025-04-09 14:04:40.190 	DBB_MODELER_METADATASTORE_TYPE -> db2
-2025-04-09 14:04:40.193 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/mdalbin/Migration-Modeler-MDLB/db2Connection.conf
+2025-04-09 14:04:40.193 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
 2025-04-09 14:04:40.196 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
-2025-04-09 14:04:40.198 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/mdalbin/Migration-Modeler-MDLB/MDALBIN-password.txt
+2025-04-09 14:04:40.198 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
 2025-04-09 14:04:40.201 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
 2025-04-09 14:04:40.204 	APPLICATION_DEFAULT_BRANCH -> main
 2025-04-09 14:04:40.660 ** Scanning the files.
