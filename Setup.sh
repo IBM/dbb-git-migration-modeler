@@ -88,13 +88,13 @@ DBB_MODELER_METADATASTORE_TYPE="file"
 # Default path for the File Metadatastore location
 DBB_MODELER_FILE_METADATA_STORE_DIR="$DBB_MODELER_WORK/work/dbb-filemetadatastore"
 # Default path for the DB2 Metadatastore Connection configuration file
-DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE="$DBB_MODELER_HOME/db2Connection.conf"
+DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE="$DBB_MODELER_HOME/config/db2Connection.conf"
 # DB2 User ID to connect through the JDBC driver
 DBB_MODELER_DB2_METADATASTORE_JDBC_ID="user"
 # Default path for the DB2 Password file to connect through the JDBC driver
 # The password file has to be created as described in:
 #    https://www.ibm.com/docs/en/dbb/2.0?topic=customization-encrypting-metadata-store-passwords#dbb-db2-password-file
-DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="$DBB_MODELER_HOME/db2Password.txt"
+DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="$DBB_MODELER_HOME/config/db2Password.txt"
 
 # Reference to the folder containing the Applications mapping files
 DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/config/application-mappings"
