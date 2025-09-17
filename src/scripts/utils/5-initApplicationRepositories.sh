@@ -81,7 +81,7 @@ if [ $rc -eq 0 ]; then
 
             buildGroupName="$applicationDir-${APPLICATION_DEFAULT_BRANCH}"
             echo "** Reset DBB Metadatastore buildGroup '${buildGroupName}' for repository '$applicationDir' "
-		    CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --deleteBuildGroup --buildGroup $buildGroupName"
+		    CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --deleteBuildGroup --buildGroup $buildGroupName"
 		    echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 		    $CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
             rc=$?
@@ -349,10 +349,10 @@ if [ $rc -eq 0 ]; then
 			fi
 		fi
 
-        // only for the Db2 metadatatore
-        if [ $rc -eq ] &&  [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
+        # Update owners only for the Db2 metadatatore
+        if [ $rc -eq 0 ] && [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
             echo "** Update owner of collections for DBB Metadatastore buildGroup '${buildGroupName}' for repository '$applicationDir' "
-            CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --setBuildGroupOwner --buildGroup $buildGroupName --buildGroupOwner $PIPELINE_USER"
+            CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --setBuildGroupOwner $PIPELINE_USER --buildGroup $buildGroupName"
             echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
             $CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
             rc=$?

@@ -24,7 +24,7 @@ import static java.nio.file.StandardCopyOption.*
 @Field Properties props = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
-@Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
+@Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtility.groovy"))
 @Field File originalApplicationDescriptorFile //Original Application Descriptor file in CONFIGS
 @Field File updatedApplicationDescriptorFile  //Updated Application Descriptor file in APPLICATIONS
 @Field def applicationDescriptor
