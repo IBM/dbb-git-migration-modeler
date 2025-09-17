@@ -158,19 +158,17 @@ echo
 # Ask until a valid option was provided
 while [ -z $BUILD_FRAMEWORK ]; do
 	echo "[SETUP] Specifying the Build Framework configuration"
-	read -p "Specify the Build Framework to use with DBB ("zBuilder" or "zAppBuild") [default: ${BUILD_FRAMEWORK}]: " variable
+	read -p "Specify the Build Framework to use with DBB ("zBuilder" or "zAppBuild") [default: zBuilder]: " variable
 	if [ "$variable" ]; then
 		BUILD_FRAMEWORK="${variable}"
 	else 
 		BUILD_FRAMEWORK="zBuilder"
 	fi
-	if [ "${BUILD_FRAMEWORK}" != "zBuilder" ] || [ "${BUILD_FRAMEWORK}" != "zAppBuild" ]; then
+	if [ "${BUILD_FRAMEWORK}" != "zBuilder" ] && [ "${BUILD_FRAMEWORK}" != "zAppBuild" ]; then
 		echo "[WARNING] The Build Framework can only be 'zBuilder' or 'zAppBuild'. Please provide a valid option."
 		BUILD_FRAMEWORK=""
 	fi
 done
-
-TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/typesConfigurations-$BUILD_FRAMEWORK.yaml
 
 if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
 	read -p "Specify the location of the DBB zBuilder installation [default: ${DBB_ZBUILDER}]: " variable

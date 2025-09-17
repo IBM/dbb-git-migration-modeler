@@ -169,13 +169,13 @@ validateConfigurationFile() {
 			echo $ERRMSG
 		fi
 
-		if [ "${BUILD_FRAMEWORK}" != "zBuilder" ] || [ "${BUILD_FRAMEWORK}" != "zAppBuild" ]; then
+		if [ "${BUILD_FRAMEWORK}" != "zBuilder" ] && [ "${BUILD_FRAMEWORK}" != "zAppBuild" ]; then
 			rc=8
 			ERRMSG="[ERROR] The specified Build Framework '${BUILD_FRAMEWORK}' is not a valid option ('zBuilder' or 'zAppBuild')."
 			echo $ERRMSG
 		fi
 		
-		if [ "${BUILD_FRAMEWORK}" == "zBuilder" ] && [ ! -d "${DBB_ZBUILDER}"; then
+		if [ "${BUILD_FRAMEWORK}" == "zBuilder" ] && [ ! -d "${DBB_ZBUILDER}" ]; then
 			rc=8
 			ERRMSG="[ERROR] The zBuilder instance '${DBB_ZBUILDER}' doesn't exist."
 			echo $ERRMSG
