@@ -60,7 +60,7 @@ if [ $rc -eq 0 ]; then
 		exit $rc
 	fi
 	
-	$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/checkMetadataStore.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --verify
 	rc=$?
 fi
 

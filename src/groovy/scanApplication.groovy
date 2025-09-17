@@ -20,7 +20,7 @@ import com.ibm.dbb.build.*
 
 @Field Properties props = new Properties()
 @Field def logger = loadScript(new File("utils/logger.groovy"))
-@Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtils.groovy"))
+@Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtility.groovy"))
 @Field def fileUtils = loadScript(new File("utils/fileUtils.groovy"))
 @Field repositoryPathsMapping
 
