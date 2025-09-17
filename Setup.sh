@@ -77,16 +77,16 @@ if [ -d "${DBB_MODELER_WORK}" ]; then
 fi
 
 # Default environment variables
-DBB_MODELER_APPCONFIG_DIR="$DBB_MODELER_WORK/modeler-configs"
-DBB_MODELER_APPLICATION_DIR="$DBB_MODELER_WORK/applications"
+DBB_MODELER_APPCONFIG_DIR="$DBB_MODELER_WORK/work/migration-configuration"
+DBB_MODELER_APPLICATION_DIR="$DBB_MODELER_WORK/repositories"
 DBB_MODELER_LOGS="$DBB_MODELER_WORK/logs"
-DBB_MODELER_DEFAULT_GIT_CONFIG="$DBB_MODELER_WORK/git-config"
+DBB_MODELER_DEFAULT_GIT_CONFIG="$DBB_MODELER_WORK/config/git-config"
 
 # Migration Modeler MetaDataStore configuration
 # Default value for the Metadatastore type - Valid values are "file" or "db2"
 DBB_MODELER_METADATASTORE_TYPE="file"
 # Default path for the File Metadatastore location
-DBB_MODELER_FILE_METADATA_STORE_DIR="$DBB_MODELER_WORK/dbb-metadatastore"
+DBB_MODELER_FILE_METADATA_STORE_DIR="$DBB_MODELER_WORK/work/dbb-filemetadatastore"
 # Default path for the DB2 Metadatastore Connection configuration file
 DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE="$DBB_MODELER_HOME/db2Connection.conf"
 # DB2 User ID to connect through the JDBC driver
@@ -97,13 +97,13 @@ DBB_MODELER_DB2_METADATASTORE_JDBC_ID="user"
 DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="$DBB_MODELER_HOME/db2Password.txt"
 
 # Reference to the folder containing the Applications mapping files
-DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/applications-mappings"
+DBB_MODELER_APPMAPPINGS_DIR="$DBB_MODELER_WORK/config/application-mappings"
 # Reference to the repository paths mapping file
-REPOSITORY_PATH_MAPPING_FILE=$DBB_MODELER_WORK/repositoryPathsMapping.yaml
+REPOSITORY_PATH_MAPPING_FILE=$DBB_MODELER_WORK/config/repositoryPathsMapping.yaml
 # Reference to the type mapping file
-APPLICATION_MEMBER_TYPE_MAPPING=$DBB_MODELER_WORK/types.txt
+APPLICATION_MEMBER_TYPE_MAPPING=$DBB_MODELER_WORK/config/types/types.txt
 # Reference to the type configuration file to generate build configuration
-TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/typesConfigurations.yaml
+TYPE_CONFIGURATIONS_FILE=$DBB_MODELER_WORK/config/types/typesConfigurations.yaml
 # Input files and configuration
 # APPLICATION_DATASETS=DBEHM.MIG.COBOL,DBEHM.MIG.COPY,DBEHM.MIG.BMS
 APPLICATION_ARTIFACTS_HLQ=DBEHM.MIG
