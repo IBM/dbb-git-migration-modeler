@@ -67,7 +67,9 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 		System.exit(1)
 	} else {		
 		def yamlSlurper = new groovy.yaml.YamlSlurper()
-		repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
+		repositoryPathsMappingFile.withReader("UTF-8") { reader ->
+			repositoryPathsMapping = yamlSlurper.parse(reader)
+		}
 	}
 }
 
@@ -89,7 +91,9 @@ File applicationsMappingsDir = new File(props.DBB_MODELER_APPMAPPINGS_DIR)
 applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 	logger.logMessage("*** Importing '${applicationsMappingFile.getName()}'")
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
-	applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
+	applicationsMappingFile.withReader("UTF-8") { reader ->
+		applicationsMapping = yamlSlurper.parse(reader)
+	}
 	applicationsMapping.datasets.each() { dataset ->
 		ArrayList<Object> applicationsList = datasetsMap.get(dataset)
 		if (!applicationsList) {

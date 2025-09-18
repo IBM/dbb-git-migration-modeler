@@ -6,6 +6,7 @@ import groovy.lang.GroovyShell
 import groovy.util.*
 import java.nio.file.*
 import groovy.cli.commons.*
+import com.ibm.dbb.utils.FileUtils
 
 
 /**
@@ -138,12 +139,13 @@ def writeZAppFile(File yamlFile) {
     }
 
     // write file
-    yamlFile.withWriter("IBM-1047") { writer ->
+    yamlFile.withWriter("UTF-8") { writer ->
         writer.write(yamlBuilder.toString())
     }
 
-	Process process = "chtag -tc IBM-1047 ${yamlFile.getAbsolutePath()}".execute()
-	process.waitFor()   
+	FileUtils.setFileTag(yamlFile.getAbsolutePath(), "UTF-8")
+	//Process process = "chtag -tc IBM-1047 ${yamlFile.getAbsolutePath()}".execute()
+	//process.waitFor()   
 }
 
 /**

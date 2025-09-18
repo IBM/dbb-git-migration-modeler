@@ -44,7 +44,9 @@ if (!typesConfigurationsFile.exists()) {
 	System.exit(1);	
 } else {
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
-	typesConfigurations = yamlSlurper.parse(typesConfigurationsFile)
+	typesConfigurationsFile.withReader("UTF-8") { reader ->
+		typesConfigurations = yamlSlurper.parse(reader)
+	}	
 }
 
 // Parses the Application Descriptor File of the application, to retrieve the list of programs
