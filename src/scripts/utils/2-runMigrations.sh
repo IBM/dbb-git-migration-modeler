@@ -71,9 +71,6 @@ if [ $rc -eq 0 ]; then
 		mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
 		cd $DBB_MODELER_APPLICATION_DIR/$application
 		
-##		touch $DBB_MODELER_LOGS/2-$application.migration.log
-##		chtag -tc UTF-8 $DBB_MODELER_LOGS/2-$application.migration.log
-		
 		CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
 		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$application.migration.log
 		$CMD
