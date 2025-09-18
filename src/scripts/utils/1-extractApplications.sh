@@ -72,9 +72,6 @@ if [ $rc -eq 0 ]; then
 	echo "*******************************************************************"
 	applicationMapping=`echo $applicationsMappingFile | awk -F '.' '{printf $1}'`
 	
-	touch $DBB_MODELER_LOGS/1-extractApplications.log
-	chtag -tc IBM-1047 $DBB_MODELER_LOGS/1-extractApplications.log
-
 	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
 		--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 		--logFile $DBB_MODELER_LOGS/1-extractApplications.log"

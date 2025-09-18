@@ -15,6 +15,8 @@ import com.ibm.dbb.utils.FileUtils
 
 @Field Properties props = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("applicationDescriptorUtils.groovy"))
+@Field def logger = loadScript(new File("logger.groovy"))
+
 @Field def applicationDescriptor
 @Field def zapp
 @Field ArrayList<ZAppPropertyGroup> propertyGroups = new ArrayList<ZAppPropertyGroup>()
@@ -25,12 +27,12 @@ parseArgs(args)
  
 File ZAPPFile = new File(props.ZAPPFilePath)
 if (!ZAPPFile.exists()) {
-	println("*! [ERROR] The ZAPP file '${props.ZAPPFilePath}' was not found. Exiting.")
+	logger.logMessage("*! [ERROR] The ZAPP file '${props.ZAPPFilePath}' was not found. Exiting.")
 	System.exit(1) 
 }
 File applicationDescriptorFile = new File(props.applicationDescriptorFilePath)
 if (!applicationDescriptorFile.exists()) {
-	println("*! [ERROR] The Application Descriptor file '${props.ApplicationDescriptorFilePath}' was not found. Exiting.")
+	logger.logMessage("*! [ERROR] The Application Descriptor file '${props.ApplicationDescriptorFilePath}' was not found. Exiting.")
 	System.exit(1) 
 }
 
@@ -60,6 +62,7 @@ if (includeFilesSourceGroups) {
 
 writeZAppFile(ZAPPFile)
 
+logger.close()
 
 /**
  * Parse CLI config
@@ -73,10 +76,16 @@ def parseArgs(String[] args) {
 	cli.z(longOpt:'zapp', args:1, 'Absolute path to the ZAPP file')
 	cli.a(longOpt:'applicationDescriptor', args:1, 'Absolute path to the application\'s Application Descriptor file')
 	cli.b(longOpt:'buildScriptPath', args:1, 'Absolute path to the Build Script framework (dbb-zappbuild)')
+	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 
 	def opts = cli.parse(args)
 	if (!opts) {
 		System.exit(1)
+	}
+
+	if (opts.l) {
+		props.logFile = opts.l
+		logger.create(props.logFile)		
 	}
 
 	if (opts.z) {
@@ -121,6 +130,9 @@ def readZAppFile(File yamlFile) {
     // Internal objects
     def yamlSlurper = new groovy.yaml.YamlSlurper()
     zapp = yamlSlurper.parse(yamlFile)
+	yamlFile.withReader("UTF-8") { reader ->
+		zapp = yamlSlurper.parse(reader)
+	}
 }
 
 /**
@@ -144,8 +156,6 @@ def writeZAppFile(File yamlFile) {
     }
 
 	FileUtils.setFileTag(yamlFile.getAbsolutePath(), "UTF-8")
-	//Process process = "chtag -tc IBM-1047 ${yamlFile.getAbsolutePath()}".execute()
-	//process.waitFor()   
 }
 
 /**

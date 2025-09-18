@@ -23,6 +23,8 @@ import groovy.cli.commons.*
 // Initialization if called from the command line
 parseArgs(args)
 
+logger.close()
+
 /***
  * Internal methods interacting with the DBB Metadatatore
  */
@@ -175,14 +177,14 @@ def initializeDb2MetadataStoreWithPasswordFile(String db2User, File db2PasswordF
 
 def verifyDBBMetadatastoreConnectivity() {
 
-	println("** Verifying DBB Metadatastore connection and permissions");
+	logger.logMessage("** Verifying DBB Metadatastore connection and permissions");
 	Collection collection = createCollection("DummyCollection-main", "DummyCollection-main")
 	if (collection) {
-		println("** Successfully created the Dummy Collection and Build Group.");
+		logger.logMessage("** Successfully created the Dummy Collection and Build Group.");
 	}
 	deleteBuildGroup("DummyCollection-main")
-	println("** Successfully deleted the Dummy Collection and Build Group.")
-	println("** DBB MetadataStore operations successfully executed. The DBB Git Migration Modeler can be used with the provided configuration!")
+	logger.logMessage("** Successfully deleted the Dummy Collection and Build Group.")
+	logger.logMessage("** DBB MetadataStore operations successfully executed. The DBB Git Migration Modeler can be used with the provided configuration!")
 }
 
 
@@ -190,17 +192,17 @@ def verifyDBBMetadatastoreConnectivity() {
 def deleteExistingBuildGroup(String buildGroup) {
 
 	// for zBuilder
-	println("** Deleting DBB BuildGroup ${buildGroup}");
+	logger.logMessage("** Deleting DBB BuildGroup ${buildGroup}");
 	deleteBuildGroup("${buildGroup}")
 
 	// for zAppBuild
-	println("** Deleting legacy collections in DBB BuildGroup ${defaultBuildGroup}");
+	logger.logMessage("** Deleting legacy collections in DBB BuildGroup ${defaultBuildGroup}");
 
 	defaultBG = getBuildGroup(defaultBuildGroup)
 	if (defaultBG) {
 		defaultBG.getCollections().each { collection ->
 			if (collection.getName().contains("${buildGroup}")) {
-				println("**  Delete collection ${collection.getName()} from build-group ${defaultBuildGroup}");
+				logger.logMessage("**  Delete collection ${collection.getName()} from build-group ${defaultBuildGroup}");
 				defaultBG.deleteCollection(collection)
 			}
 		}
@@ -211,23 +213,23 @@ def deleteExistingBuildGroup(String buildGroup) {
 def updateBuildGroupOwner(String buildGroup, String buildGroupOwner) {
 
 	// the buildGroups are used for zBuilder
-	println("** Update owner of DBB collections in DBB BuildGroup ${buildGroup} to ${buildGroupOwner}");
+	logger.logMessage("** Update owner of DBB collections in DBB BuildGroup ${buildGroup} to ${buildGroupOwner}");
 	BuildGroup bG = getBuildGroup("${buildGroup}")
 	if (bG) {
 		bG.getCollections().each { collection ->
-			println("**  Set owner of collection ${collection.getName()} in build-group ${buildGroup} to ${buildGroupOwner}");
+			logger.logMessage("**  Set owner of collection ${collection.getName()} in build-group ${buildGroup} to ${buildGroupOwner}");
 			collection.setOwner(buildGroupOwner)
 		}
 	}
 
-	println("** Update owner of DBB legacy collections in DBB BuildGroup ${defaultBuildGroup} to ${buildGroupOwner}");
+	logger.logMessage("** Update owner of DBB legacy collections in DBB BuildGroup ${defaultBuildGroup} to ${buildGroupOwner}");
 
 	// adjust zAppBuild based
 	defaultBG = getBuildGroup(defaultBuildGroup)
 	if (defaultBG) {
 		defaultBG.getCollections().each { collection ->
 			if (collection.getName().contains("${buildGroup}")) {
-				println("**  Set owner of collection ${collection.getName()} in build-group ${defaultBuildGroup} to ${buildGroupOwner}");
+				logger.logMessage("**  Set owner of collection ${collection.getName()} in build-group ${defaultBuildGroup} to ${buildGroupOwner}");
 				collection.setOwner(buildGroupOwner)
 			}
 		}
@@ -249,10 +251,16 @@ def parseArgs(String[] args) {
 	cli.d(longOpt:'deleteBuildGroup', 'Flag to delete the DBB Build Group.')
 	cli.s(longOpt:'setBuildGroupOwner', args:1, 'Build Group Owner to be set.')
 	cli.b(longOpt:'buildGroup', args:1, 'Build Group Reference.')
+	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 
 	def opts = cli.parse(args)
 	if (!opts) {
 		System.exit(1)
+	}
+
+	if (opts.l) {
+		props.logFile = opts.l
+		logger.create(props.logFile)		
 	}
 
 	if (opts.b) props.buildGroup = opts.b
