@@ -278,11 +278,15 @@ def constructDatasetForZFileOperation(String PDS, String member) {
 	return "//'${PDS}($member)'"
 }
 
+/**
+ * Method to match filePatterns to the memberName from the library
+ */
 def matches(String memberName, String filePattern) {
 	if (!filePattern.startsWith('glob:') || !filePattern.startsWith('regex:'))
 		filePattern = "glob:$filePattern"
-	PathMatcher matcher = FileSystems.getDefault().getPathMatcher(filePattern)
-	Path path = FileSystems.getDefault().getPath(memberName)
+	// Pattern and memberName are treated in upper case 
+	PathMatcher matcher = FileSystems.getDefault().getPathMatcher(filePattern.toUpperCase())
+	Path path = FileSystems.getDefault().getPath(memberName.toUpperCase())
 	return matcher.matches(path)
 }
 
