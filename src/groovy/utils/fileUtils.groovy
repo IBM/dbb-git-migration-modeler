@@ -18,18 +18,22 @@ import groovy.cli.commons.*
 def loadTypes(String APPLICATION_MEMBER_TYPE_MAPPING) {
 	HashMap<String, String> types = new HashMap<>();
 	String line;
-	try (BufferedReader reader = new BufferedReader(new FileReader(APPLICATION_MEMBER_TYPE_MAPPING))) {
-		while ((line = reader.readLine()) != null) {
-			String[] keyValuePair = line.split(",", 2);
-			if (keyValuePair.length > 1) {
-				String key = keyValuePair[0].trim().toUpperCase();
-				String value = keyValuePair[1].trim().replaceAll(" ", "");
-				types.put(key, value);
+	File applicationMemberTypeMappingFile = new File(APPLICATION_MEMBER_TYPE_MAPPING)
+	if (!applicationMemberTypeMappingFile.exists()) {
+		logger.logMessage("*! [WARNING] The Application Member Type Mapping file $APPLICATION_MEMBER_TYPE_MAPPING was not found. Exiting.")
+		System.exit(1)
+	} else {		
+		def yamlSlurper = new groovy.yaml.YamlSlurper()
+		applicationMemberTypeMappingFile.withReader("UTF-8") { reader ->
+			while ((line = reader.readLine()) != null) {
+				String[] keyValuePair = line.split(",", 2);
+				if (keyValuePair.length > 1) {
+					String key = keyValuePair[0].trim().toUpperCase();
+					String value = keyValuePair[1].trim().replaceAll(" ", "");
+					types.put(key, value);
+				}
 			}
 		}
-		reader.close()
-	} catch (IOException e) {
-		e.printStackTrace();
 	}
 	return types
 }

@@ -45,7 +45,9 @@ logger.logMessage("** Reading the Repository Layout Mapping definition.")
 if (props.REPOSITORY_PATH_MAPPING_FILE) {
 	File repositoryPathsMappingFile = new File(props.REPOSITORY_PATH_MAPPING_FILE)
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
-	repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
+	repositoryPathsMappingFile.withReader("UTF-8") { reader ->
+		repositoryPathsMapping = yamlSlurper.parse(reader)
+	}
 }
 
 // Read the Types from file
@@ -67,7 +69,10 @@ File applicationsMappingsDir = new File(props.DBB_MODELER_APPMAPPINGS_DIR)
 applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 	logger.logMessage("*** Importing '${applicationsMappingFile.getName()}'")
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
-	applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
+	applicationsMappingFile.withReader("UTF-8") { reader ->
+		applicationsMapping = yamlSlurper.parse(reader)
+	}
+	
 	applicationsMapping.applications.each() { application ->
 		applicationsList.add(application)
 	}

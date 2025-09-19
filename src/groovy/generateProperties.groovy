@@ -16,6 +16,7 @@ import groovy.yaml.YamlSlurper
 import java.util.Properties;
 import java.nio.file.*
 import static java.nio.file.StandardCopyOption.*
+import com.ibm.dbb.utils.FileUtils
 
 @Field Properties props = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
@@ -44,7 +45,9 @@ if (!typesConfigurationsFile.exists()) {
 	System.exit(1);	
 } else {
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
-	typesConfigurations = yamlSlurper.parse(typesConfigurationsFile)
+	typesConfigurationsFile.withReader("UTF-8") { reader ->
+		typesConfigurations = yamlSlurper.parse(reader)
+	}	
 }
 
 // Parses the Application Descriptor File of the application, to retrieve the list of programs
@@ -164,11 +167,13 @@ if (filesToLanguageConfigurationMap.size() > 0) {
 	logger.logMessage("*** Generate the language configuration mapping file $languageConfigurationMappingFilePath.")
 
 	// append build files to languageConfiguration.properties file
-	BufferedWriter writer = new BufferedWriter(new FileWriter(languageConfigurationMappingFilePath, false))
-	filesToLanguageConfigurationMap.each { file, languageConfiguration ->
-		writer.write(file + "=" + languageConfiguration  + "\n")
+	File languageConfigurationMappingFile = new File(languageConfigurationMappingFilePath)
+	languageConfigurationMappingFile.withWriter("IBM-1047") { writer ->
+		filesToLanguageConfigurationMap.each { file, languageConfiguration ->
+			writer.write(file + "=" + languageConfiguration  + "\n")
+		}
 	}
-	writer.close()
+	FileUtils.setFileTag(languageConfigurationMappingFilePath, "IBM-1047")
 
 	// Update build property loadLanguageConfigurationProperties configuration in file.properties
 	logger.logMessage("*** Generate loadLanguageConfigurationProperties configuration in $filePropertiesFilePath.")

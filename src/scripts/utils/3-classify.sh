@@ -74,8 +74,6 @@ if [ $rc -eq 0 ]; then
 		echo "*******************************************************************"
 		echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
 		echo "*******************************************************************"
-		touch $DBB_MODELER_LOGS/3-$applicationDir-scan.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-scan.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
 			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 			--application $applicationDir \
@@ -91,8 +89,6 @@ if [ $rc -eq 0 ]; then
 		echo "*******************************************************************"
 		echo "Assess Include files & Programs usage for '$applicationDir'"
 		echo "*******************************************************************"
-		touch $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
 			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 			--application $applicationDir \
