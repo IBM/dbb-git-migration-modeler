@@ -31,6 +31,9 @@ import com.ibm.teamz.classify.ClassifyFileContent;
 import com.ibm.dmh.scan.classify.IncludedFileMetaData;
 import com.ibm.dmh.scan.classify.SingleFilesMetadata;
 import java.text.DecimalFormat
+import java.nio.file.FileSystems
+import java.nio.file.Path
+import java.nio.file.PathMatcher
 
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
@@ -275,30 +278,16 @@ def constructDatasetForZFileOperation(String PDS, String member) {
 	return "//'${PDS}($member)'"
 }
 
-def isFilterOnMemberMatching(String memberName, String filter) {
-	StringBuilder expandedMemberNameStringBuilder = new StringBuilder(memberName);
-	while (expandedMemberNameStringBuilder.length() < 8) {
-		expandedMemberNameStringBuilder.append('.');
-	}
-	String expandedMemberName = expandedMemberNameStringBuilder.toString();
-
-	StringBuilder expandedFilterStringBuilder = new StringBuilder(filter);
-	while (expandedFilterStringBuilder.length() < 8) {
-		expandedFilterStringBuilder.append('.');
-	}
-	String expandedFilter = expandedFilterStringBuilder.toString();
-	
-	StringBuilder result = new StringBuilder();
-	int i = 0;
-	while (i < expandedMemberName.length() && i < 8) {
-		if (expandedFilter[i] != '.') {
-			result.append(expandedMemberName[i])
-		} else {
-			result.append('.')
-		}
-		i++;
-	}
-	return result.toString().equalsIgnoreCase(expandedFilter);
+/**
+ * Method to match filePatterns to the memberName from the library
+ */
+def matches(String memberName, String filePattern) {
+	if (!filePattern.startsWith('glob:') || !filePattern.startsWith('regex:'))
+		filePattern = "glob:$filePattern"
+	// Pattern and memberName are treated in upper case 
+	PathMatcher matcher = FileSystems.getDefault().getPathMatcher(filePattern.toUpperCase())
+	Path path = FileSystems.getDefault().getPath(memberName.toUpperCase())
+	return matcher.matches(path)
 }
 
 def generateApplicationFiles(String application) {
@@ -460,7 +449,7 @@ def findMappedApplicationFromMemberName(ArrayList<Object> applicationsList, Stri
 	// Finding the owning application in the list of applications using the same dataset
 	def foundApplications = applicationsList.findAll { application ->
 		application.namingConventions.find { namingConvention ->
-			isFilterOnMemberMatching(memberName, namingConvention)
+			matches(memberName, namingConvention)
 		}
 	}
 
