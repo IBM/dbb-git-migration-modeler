@@ -69,9 +69,6 @@ if [ $rc -eq 0 ]; then
 		echo "*******************************************************************"
 		cd $DBB_MODELER_APPLICATION_DIR/$applicationDir
 
-		touch $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-
 		if [ $(git rev-parse --is-inside-work-tree 2>/dev/null | wc -l) -eq 1 ]; then
 			rc=4
 			echo "*! [WARNING] '$DBB_MODELER_APPLICATION_DIR/$applicationDir' is already a Git repository. Skip initialization for $applicationDir."
@@ -81,9 +78,9 @@ if [ $rc -eq 0 ]; then
 
             buildGroupName="$applicationDir-${APPLICATION_DEFAULT_BRANCH}"
             echo "** Reset DBB Metadatastore buildGroup '${buildGroupName}' for repository '$applicationDir' "
-		    CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --deleteBuildGroup --buildGroup $buildGroupName"
+		    CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --deleteBuildGroup --buildGroup $buildGroupName -l $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log"
 		    echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-		    $CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+		    $CMD
             rc=$?
 		
 			echo "** Initialize Git repository for application '$applicationDir' with initial branch '${APPLICATION_DEFAULT_BRANCH}'"
@@ -131,9 +128,11 @@ if [ $rc -eq 0 ]; then
 				echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/zappUtils.groovy \
-					-z $DBB_MODELER_APPLICATION_DIR/$applicationDir/zapp.yaml -a $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml -b $DBB_ZAPPBUILD"
+					-z $DBB_MODELER_APPLICATION_DIR/$applicationDir/zapp.yaml \
+					-a $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml \
+					-b $DBB_ZAPPBUILD -l $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log"
 				echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-				$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
+				$CMD
 				rc=$?
 			fi
 

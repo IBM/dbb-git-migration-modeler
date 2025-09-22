@@ -225,7 +225,7 @@ echo
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="DBB_GIT_MIGRATION_MODELER-$(date +%Y-%m-%d.%H%M%S).config"
 FOLDER_FOUND="false"
 while [ "${FOLDER_FOUND}" = "false" ]; do
-	DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER="$(pwd)"
+	DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER="$(pwd)/config"
 	read -p "[SETUP] Specify the folder where to store the DBB Git Migration Modeler Configuration file '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE' (The specified folder must exist) [default: $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER]: " variable
 	if [ "$variable" ]; then
 		DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER="${variable}"

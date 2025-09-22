@@ -31,7 +31,7 @@ server.xml zos-working-tree-encoding=iso8859-1
 *.json zos-working-tree-encoding=utf-8
 *.bzucfg zos-working-tree-encoding=ibm-1047
 *.plbck binary
-*.md zos-working-tree-encoding=IBM-1047
+*.md zos-working-tree-encoding=utf-8
 *.yml zos-working-tree-encoding=IBM-1047 
 *.yaml zos-working-tree-encoding=IBM-1047 
 

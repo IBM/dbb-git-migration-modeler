@@ -38,7 +38,9 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 		System.exit(1)
 	} else {		
 		def yamlSlurper = new groovy.yaml.YamlSlurper()
-		repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
+		repositoryPathsMappingFile.withReader("UTF-8") { reader ->
+			repositoryPathsMapping = yamlSlurper.parse(reader)
+		}		
 	}
 }
 
