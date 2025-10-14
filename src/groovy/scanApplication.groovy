@@ -56,10 +56,6 @@ metadataStoreUtils.deleteBuildGroup("${props.application}-${props.APPLICATION_DE
 Collection collection = metadataStoreUtils.createCollection("${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}")
 // store results
 collection.addLogicalFiles(logicalFiles)
-if (props.PIPELINE_USER) {
-	logger.logMessage("** Setting collection owner to ${props.PIPELINE_USER}")
-	metadataStoreUtils.setCollectionOwner("${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", props.PIPELINE_USER)
-}
 
 logger.close()
 
@@ -215,13 +211,6 @@ def parseArgs(String[] args) {
 		System.exit(1)
 	}
 	
-	if (configuration.PIPELINE_USER) {
-		props.PIPELINE_USER = configuration.PIPELINE_USER
-	} else {
-		logger.logMessage("*! [ERROR] The Pipeline User (owner of DBB collections) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
-		System.exit(1)
-	}
-
 	if (configuration.APPLICATION_DEFAULT_BRANCH) {
 		props.APPLICATION_DEFAULT_BRANCH = configuration.APPLICATION_DEFAULT_BRANCH
 	} else {
