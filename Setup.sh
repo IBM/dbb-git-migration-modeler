@@ -184,7 +184,7 @@ fi
 # Specify input files
 echo
 echo "[SETUP] DBB Git Migration Modeler input configuration"
-for config in ${publishing_options[@]}; do
+for config in ${input_array[@]}; do
 	read -p "Specify input parameter $config [default: ${!config}]: " variable
 	if [ "$variable" ]; then
 		declare ${config}="${variable}"
@@ -231,7 +231,7 @@ done
 if [ "$PUBLISH_ARTIFACTS" == "true" ]; then
 	echo
 	echo "[SETUP] Artifact Repository configuration parameters for publishing baseline package"
-	for config in ${input_array[@]}; do
+	for config in ${publishing_options[@]}; do
 		read -p "Specify input parameter $config [default: ${!config}]: " variable
 		if [ "$variable" ]; then
 			declare ${config}="${variable}"
