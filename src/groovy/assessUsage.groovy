@@ -268,7 +268,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 
 		// Assess usage when only 1 application reference the file
 		if (referencingCollections.size() == 1) {
-			logger.logMessage("\t==> '$file' is called from the '${referencingCollections[0]}' application")
+			logger.logMessage("\t==> '$file' is statically called from the '${referencingCollections[0]}' application")
 		
 			// If Program belongs to the scanned application
 			if (props.application.equals(referencingCollections[0])) {
@@ -286,7 +286,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 			applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
 
 		} else if (referencingCollections.size() > 1) {
-			logger.logMessage("\t==> '$file' is called by multiple applications - $referencingCollections")
+			logger.logMessage("\t==> '$file' is statically called by multiple applications - $referencingCollections")
 			
 			// just modify the scope to SERVICE 
 			logger.logMessage("\t==> Updating usage of Program '$file' to 'service submodule' in '${updatedApplicationDescriptorFile.getPath()}'.")
@@ -299,7 +299,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 			applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
 			
 		} else {
-			logger.logMessage("\tThe Program '$file' is not called by any other program.")
+			logger.logMessage("\tThe Program '$file' is not statically called by any other program.")
 			// Just update the usage to 'main'
 			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "main")
 			applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
