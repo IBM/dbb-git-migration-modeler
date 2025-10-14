@@ -363,8 +363,8 @@ if [ $rc -eq 0 ]; then
             rc=$?
         fi
         
-		if [ $rc -eq 0 ]; then
-			echo "** Packaging of application '$applicationDir' started"
+		if [ $rc -eq 0 ] && [ "$PUBLISH_ARTIFACTS" == "true" ]; then
+			echo "** Creating baseline package of application '$applicationDir' started"
 
 			# mkdir application log directory
 			mkdir -p $DBB_MODELER_LOGS/$applicationDir
@@ -380,21 +380,19 @@ if [ $rc -eq 0 ]; then
 				--version $version \
 				--tarFileName $applicationDir-$version-baseline.tar \
 				--applicationFolderPath $DBB_MODELER_APPLICATION_DIR/$applicationDir \
-				--owner $PIPELINE_USER:$PIPELINE_USER_GROUP"
-			if [ "$PUBLISH_ARTIFACTS" == "true" ]; then
-				CMD="${CMD} -p --artifactRepositoryUrl $ARTIFACT_REPOSITORY_SERVER_URL \
-				     --artifactRepositoryUser $ARTIFACT_REPOSITORY_USER \
-				     --artifactRepositoryPassword $ARTIFACT_REPOSITORY_PASSWORD \
-					 --artifactRepositoryDirectory release \
-				     --artifactRepositoryName $applicationDir-$ARTIFACT_REPOSITORY_SUFFIX"
-			fi
+				--owner $PIPELINE_USER:$PIPELINE_USER_GROUP \
+				--artifactRepositoryUrl $ARTIFACT_REPOSITORY_SERVER_URL \
+				--artifactRepositoryUser $ARTIFACT_REPOSITORY_USER \
+				--artifactRepositoryPassword $ARTIFACT_REPOSITORY_PASSWORD \
+				--artifactRepositoryDirectory release \
+				--artifactRepositoryName $applicationDir-$ARTIFACT_REPOSITORY_SUFFIX"
 			echo "** $CMD" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 			$CMD >$DBB_MODELER_LOGS/$applicationDir/packaging-preview-$applicationDir.log
 			rc=$?
 			if [ $rc -eq 0 ]; then
-				echo "** Packaging of application '$applicationDir' completed successfully. rc="$rc
+				echo "** Creation of Baseline Package of application '$applicationDir' completed successfully. rc="$rc
 			else
-				echo "*! [ERROR] Packaging of application '$applicationDir' failed. rc="$rc
+				echo "*! [ERROR] Creation of Baseline Package of application '$applicationDir' failed. rc="$rc
 				echo "** Packaging log available at '$DBB_MODELER_LOGS/$applicationDir/packaging-preview-$applicationDir.log'"
 			fi
 		fi
