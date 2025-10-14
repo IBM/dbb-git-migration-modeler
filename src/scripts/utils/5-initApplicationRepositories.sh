@@ -181,7 +181,9 @@ if [ $rc -eq 0 ]; then
 
 			if [ $rc -eq 0 ]; then
 				echo "** Prepare pipeline configuration for '$PIPELINE_CI'"
-				if [ "$PIPELINE_CI" == "AzureDevOpsPipeline" ]; then
+
+				case ${PIPELINE_CI} in
+				"AzureDevOpsPipeline")
 					CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/azure-pipelines.yml"
 					if [ ! -f "${CIFILE}" ]; then
 						rc=8
@@ -203,8 +205,8 @@ if [ $rc -eq 0 ]; then
 						$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 						rc=$?
 					fi
-				fi
-				if [ "${PIPELINE_CI}" == "GitlabCIPipeline-for-zos-native-runner" ]; then
+					;;
+				"GitlabCIPipeline-for-zos-native-runner")
 					CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/.gitlab-ci.yml"
 					if [ ! -f "${CIFILE}" ]; then
 						rc=8
@@ -216,8 +218,8 @@ if [ $rc -eq 0 ]; then
 						$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 						rc=$?
 					fi
-				fi
-				if [ "${PIPELINE_CI}" == "GitlabCIPipeline-for-distributed-runner" ]; then
+					;;
+				"GitlabCIPipeline-for-distributed-runner")
 					CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/.gitlab-ci.yml"
 					if [ ! -f "${CIFILE}" ]; then
 						rc=8
@@ -229,8 +231,8 @@ if [ $rc -eq 0 ]; then
 						$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 						rc=$?
 					fi
-				fi
-				if [ "${PIPELINE_CI}" == "JenkinsPipeline" ]; then
+					;;
+				"JenkinsPipeline")
 					CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/Jenkinsfile"
 					if [ ! -f "${CIFILE}" ]; then
 						rc=8
@@ -242,8 +244,8 @@ if [ $rc -eq 0 ]; then
 						$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 						rc=$?
 					fi
-				fi
-				if [ "${PIPELINE_CI}" == "GitHubActionsPipeline" ]; then
+					;;
+				"GitHubActionsPipeline")
 					CIFILE="$DBB_COMMUNITY_REPO/Templates/${PIPELINE_CI}/.github"
 					if [ ! -f "${CIFILE}" ]; then
 						rc=8
@@ -255,7 +257,11 @@ if [ $rc -eq 0 ]; then
 						$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 						rc=$?
 					fi
-				fi
+					;;
+				*)
+					echo "[WARNING] The pipeline orchestration technology provided (${PIPELINE_CI}) does not match any of the supported options. Skipped."
+					;;
+				esac
 			fi
 
 			# Git list all changes

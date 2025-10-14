@@ -69,8 +69,12 @@ logger.close()
 def scanFiles(files) {
 	List<LogicalFile> logicalFiles = new ArrayList<LogicalFile>()
 	DependencyScanner scanner = new DependencyScanner()
-	// Enabling Control Transfer flag in DBB Scanner	
-	scanner.setCollectControlTransfers("true")
+
+	// Enabling Control Transfer flag in DBB Scanner
+	if (props.SCAN_CONTROL_TRANSFERS && props.SCAN_CONTROL_TRANSFERS.toBoolean()){
+		scanner.setCollectControlTransfers("true")
+	}
+
 	files.each { file, repositoryPath ->
 		logger.logMessage("\tScanning file $file ")
 		try {
