@@ -32,8 +32,8 @@ server.xml zos-working-tree-encoding=iso8859-1
 *.bzucfg zos-working-tree-encoding=ibm-1047
 *.plbck binary
 *.md zos-working-tree-encoding=utf-8
-*.yml zos-working-tree-encoding=IBM-1047 
-*.yaml zos-working-tree-encoding=IBM-1047 
+*.yml zos-working-tree-encoding=utf-8
+*.yaml zos-working-tree-encoding=utf-8 
 
 .gitattributes zos-working-tree-encoding=ISO8859-1
 .gitlab-ci.yml zos-working-tree-encoding=IBM-1047

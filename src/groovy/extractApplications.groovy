@@ -69,8 +69,6 @@ if (props.applications) {
 	}
 }
 
-println(filteredApplications)
-
 // Read the repository layout mapping file
 logger.logMessage("** Reading the Repository Layout Mapping definition.")
 if (props.REPOSITORY_PATH_MAPPING_FILE) {
@@ -117,7 +115,6 @@ applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 			if ((!filteredApplications) || (filteredApplications.contains(application.application))) {
 				applicationsList.add(application)
 			}
-			println("$application - $applicationsList")
 		}
 	}
 }
