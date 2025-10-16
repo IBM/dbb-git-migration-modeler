@@ -10,11 +10,12 @@
  
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
+APPLICATIONS=
 rc=0
 
 # Get Options
 if [ $rc -eq 0 ]; then
-	while getopts "c:" opt; do
+	while getopts "c:a:" opt; do
 		case $opt in
 		c)
 			argument="$OPTARG"
@@ -26,6 +27,17 @@ if [ $rc -eq 0 ]; then
 				break
 			fi
 			DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="$argument"
+			;;
+		a)
+			argument="$OPTARG"
+			nextchar="$(expr substr $argument 1 1)"
+			if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
+				rc=4
+				ERRMSG="[ERROR] Comma-separated Applications list required. rc="$rc
+				echo $ERRMSG
+				break
+			fi
+			APPLICATIONS="$argument"
 			;;
 		esac
 	done
@@ -61,18 +73,22 @@ if [ $rc -eq 0 ]; then
 		rm -rf $DBB_MODELER_APPLICATION_DIR
     fi
 
+    APPLICATIONS=",${APPLICATIONS},"
+
 	cd $DBB_MODELER_APPCONFIG_DIR
 	for mappingFile in `ls *.mapping`
 	do
 		application=`echo $mappingFile | awk -F. '{ print $1 }'`
-		echo "*******************************************************************"
-		echo "Running the DBB Migration Utility for '$application' using file '$mappingFile'"
-		echo "*******************************************************************"
-		mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
-		cd $DBB_MODELER_APPLICATION_DIR/$application
-		
-		CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$application.migration.log
-		$CMD
+		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${application},"* ]]; then
+			echo "*******************************************************************"
+			echo "Running the DBB Migration Utility for '$application' using file '$mappingFile'"
+			echo "*******************************************************************"
+			mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
+			cd $DBB_MODELER_APPLICATION_DIR/$application
+			
+			CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
+			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$application.migration.log
+			$CMD	
+		fi
 	done
 fi
