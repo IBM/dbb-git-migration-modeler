@@ -79,7 +79,7 @@ if [ $rc -eq 0 ]; then
 		fi
 	fi
 
-	APPLICATIONS=",${APPLICATIONS},"	
+	APPLICATIONS=",${APPLICATIONS},"
 
 	# Scan files
 	cd $DBB_MODELER_APPLICATION_DIR
