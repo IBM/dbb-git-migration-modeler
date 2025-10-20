@@ -80,7 +80,7 @@ if [ $rc -eq 0 ]; then
 	for mappingFile in `ls *.mapping`
 	do
 		application=`echo $mappingFile | awk -F. '{ print $1 }'`
-		// If no parm specified or if the specified list of applications contains the current application (applicationDir)
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
 		if [ "$FILTERED_APPLICATIONS_PARM" == ",," ] || [[ ${FILTERED_APPLICATIONS_PARM} == *",${application},"* ]]; then
 			echo "*******************************************************************"
 			echo "Running the DBB Migration Utility for '$application' using file '$mappingFile'"

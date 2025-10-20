@@ -78,8 +78,7 @@ if [ $rc -eq 0 ]; then
 	for applicationDir in $(ls | grep -v dbb-zappbuild); do
 		# reset return code
 		rc=0
-
-		// If no parm specified or if the specified list of applications contains the current application (applicationDir)
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
 		if [ "$FILTERED_APPLICATIONS_PARM" == ",," ] || [[ ${FILTERED_APPLICATIONS_PARM} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Initialize application's directory for application '$applicationDir'"
