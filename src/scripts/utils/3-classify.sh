@@ -10,7 +10,7 @@
  
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
-APPLICATION_FILTER=
+APPLICATIONS=
 rc=0
 
 # Get Options
@@ -37,7 +37,7 @@ if [ $rc -eq 0 ]; then
 				echo $ERRMSG
 				break
 			fi
-			APPLICATION_FILTER="$argument"
+			APPLICATIONS="$argument"
 			;;
 		esac
 	done
@@ -79,15 +79,13 @@ if [ $rc -eq 0 ]; then
 		fi
 	fi
 
-	# Adding commas before and after the passed parm, to search for pattern including commas
-	APPLICATION_FILTER=",${APPLICATION_FILTER},"
+	APPLICATIONS=",${APPLICATIONS},"	
 
 	# Scan files
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
-		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
+		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
 			echo "*******************************************************************"
@@ -104,8 +102,7 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
-		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
+		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Assess Include files & Programs usage for '$applicationDir'"
 			echo "*******************************************************************"

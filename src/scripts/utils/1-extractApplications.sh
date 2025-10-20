@@ -10,7 +10,7 @@
 
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
-APPLICATION_FILTER=
+APPLICATIONS=
 rc=0
 
 # Get Options
@@ -37,7 +37,7 @@ if [ $rc -eq 0 ]; then
 				echo $ERRMSG
 				break
 			fi
-			APPLICATION_FILTER="$argument"
+			APPLICATIONS="$argument"
 			;;
 		esac
 	done
@@ -87,8 +87,8 @@ if [ $rc -eq 0 ]; then
 	CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/extractApplications.groovy \
 		--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 		--logFile $DBB_MODELER_LOGS/1-extractApplications.log"
-	if [ -n "${APPLICATION_FILTER}" ]; then
-		CMD="${CMD} -a ${APPLICATION_FILTER}"
+	if [ -n "${APPLICATIONS}" ]; then
+		CMD="${CMD} -a ${APPLICATIONS}"
 	fi
 
 	echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/1-extractApplications.log
