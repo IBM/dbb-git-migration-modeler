@@ -10,11 +10,12 @@
  
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
+APPLICATIONS=
 rc=0
 
 # Get Options
 if [ $rc -eq 0 ]; then
-	while getopts "c:" opt; do
+	while getopts "c:a:" opt; do
 		case $opt in
 		c)
 			argument="$OPTARG"
@@ -26,6 +27,17 @@ if [ $rc -eq 0 ]; then
 				break
 			fi
 			DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="$argument"
+			;;
+		a)
+			argument="$OPTARG"
+			nextchar="$(expr substr $argument 1 1)"
+			if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
+				rc=4
+				ERRMSG="[ERROR] Comma-separated Applications list required. rc="$rc
+				echo $ERRMSG
+				break
+			fi
+			APPLICATIONS="$argument"
 			;;
 		esac
 	done
@@ -67,35 +79,41 @@ if [ $rc -eq 0 ]; then
 		fi
 	fi
 
+	APPLICATIONS=",${APPLICATIONS},"	
+
 	# Scan files
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		echo "*******************************************************************"
-		echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
-		echo "*******************************************************************"
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--application $applicationDir \
-			--logFile $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-scan.log
-		$CMD
+		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+			echo "*******************************************************************"
+			echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
+			echo "*******************************************************************"
+			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
+				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+				--application $applicationDir \
+				--logFile $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
+			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-scan.log
+			$CMD
+		fi
 	done
 
 	# Assess file usage across applications
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		echo "*******************************************************************"
-		echo "Assess Include files & Programs usage for '$applicationDir'"
-		echo "*******************************************************************"
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--application $applicationDir \
-			--moveFiles \
-			--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
-		$CMD
+		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+			echo "*******************************************************************"
+			echo "Assess Include files & Programs usage for '$applicationDir'"
+			echo "*******************************************************************"
+			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
+				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+				--application $applicationDir \
+				--moveFiles \
+				--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
+			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
+			$CMD
+		fi
 	done
 	
 fi
