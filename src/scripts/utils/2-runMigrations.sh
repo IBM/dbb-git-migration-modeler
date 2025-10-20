@@ -10,7 +10,7 @@
  
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
-APPLICATIONS=
+FILTERED_APPLICATIONS_PARM=
 rc=0
 
 # Get Options
@@ -37,7 +37,7 @@ if [ $rc -eq 0 ]; then
 				echo $ERRMSG
 				break
 			fi
-			APPLICATIONS="$argument"
+			FILTERED_APPLICATIONS_PARM="$argument"
 			;;
 		esac
 	done
@@ -73,13 +73,13 @@ if [ $rc -eq 0 ]; then
 		rm -rf $DBB_MODELER_APPLICATION_DIR
     fi
 
-    APPLICATIONS=",${APPLICATIONS},"
+    FILTERED_APPLICATIONS_PARM=",${FILTERED_APPLICATIONS_PARM},"
 
 	cd $DBB_MODELER_APPCONFIG_DIR
 	for mappingFile in `ls *.mapping`
 	do
 		application=`echo $mappingFile | awk -F. '{ print $1 }'`
-		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${application},"* ]]; then
+		if [ "$FILTERED_APPLICATIONS_PARM" == ",," ] || [[ ${FILTERED_APPLICATIONS_PARM} == *",${application},"* ]]; then
 			echo "*******************************************************************"
 			echo "Running the DBB Migration Utility for '$application' using file '$mappingFile'"
 			echo "*******************************************************************"

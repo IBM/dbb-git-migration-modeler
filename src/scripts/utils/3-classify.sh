@@ -10,7 +10,7 @@
  
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
-APPLICATIONS=
+FILTERED_APPLICATIONS_PARM=
 rc=0
 
 # Get Options
@@ -37,7 +37,7 @@ if [ $rc -eq 0 ]; then
 				echo $ERRMSG
 				break
 			fi
-			APPLICATIONS="$argument"
+			FILTERED_APPLICATIONS_PARM="$argument"
 			;;
 		esac
 	done
@@ -79,7 +79,7 @@ if [ $rc -eq 0 ]; then
 		fi
 	fi
 
-	APPLICATIONS=",${APPLICATIONS},"
+	FILTERED_APPLICATIONS_PARM=",${FILTERED_APPLICATIONS_PARM},"
 
 	# Scan files
 	cd $DBB_MODELER_APPLICATION_DIR
@@ -102,7 +102,7 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+		if [ "$FILTERED_APPLICATIONS_PARM" == ",," ] || [[ ${FILTERED_APPLICATIONS_PARM} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Assess Include files & Programs usage for '$applicationDir'"
 			echo "*******************************************************************"

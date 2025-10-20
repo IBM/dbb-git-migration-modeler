@@ -10,7 +10,7 @@
 
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
-APPLICATIONS=
+FILTERED_APPLICATIONS_PARM=
 rc=0
 
 # Get Options
@@ -37,7 +37,7 @@ if [ $rc -eq 0 ]; then
 				echo $ERRMSG
 				break
 			fi
-			APPLICATIONS="$argument"
+			FILTERED_APPLICATIONS_PARM="$argument"
 			;;
 		esac
 	done
@@ -71,14 +71,14 @@ fi
 # Initialize Repositories
 if [ $rc -eq 0 ]; then
 
-	APPLICATIONS=",${APPLICATIONS},"
+	FILTERED_APPLICATIONS_PARM=",${FILTERED_APPLICATIONS_PARM},"
 
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in $(ls | grep -v dbb-zappbuild); do
 		# reset return code
 		rc=0
 
-		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+		if [ "$FILTERED_APPLICATIONS_PARM" == ",," ] || [[ ${FILTERED_APPLICATIONS_PARM} == *",${applicationDir},"* ]]; then
 
 			echo "*******************************************************************"
 			echo "Initialize application's directory for application '$applicationDir'"
