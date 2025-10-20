@@ -91,7 +91,6 @@ if [ $rc -eq 0 ]; then
 			fi
 	
 			if [ $rc -eq 0 ]; then
-	
 	            buildGroupName="$applicationDir-${APPLICATION_DEFAULT_BRANCH}"
 	            echo "** Reset DBB Metadatastore buildGroup '${buildGroupName}' for repository '$applicationDir' "
 			    CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --deleteBuildGroup --buildGroup $buildGroupName -l $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log"
