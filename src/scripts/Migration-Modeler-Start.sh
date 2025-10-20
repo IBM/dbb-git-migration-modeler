@@ -97,7 +97,7 @@ if [ $rc -eq 0 ]; then
 	if [[ $INTERACTIVE_RUN == "true" ]]; then
 		read -p "Do you want to clean the working directory '$DBB_MODELER_WORK' (Y/n): " variable
 	else
-		variable="Y"
+		variable="N"
 	fi
 
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
