@@ -86,7 +86,8 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
+		if [ "$FILTERED_APPLICATIONS_PARM" == ",," ] || [[ ${FILTERED_APPLICATIONS_PARM} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
 			echo "*******************************************************************"
