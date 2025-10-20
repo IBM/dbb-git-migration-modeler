@@ -73,12 +73,14 @@ if [ $rc -eq 0 ]; then
 		rm -rf $DBB_MODELER_APPLICATION_DIR
     fi
 
+	# Adding commas before and after the passed parm, to search for pattern including commas
     FILTERED_APPLICATIONS_PARM=",${FILTERED_APPLICATIONS_PARM},"
 
 	cd $DBB_MODELER_APPCONFIG_DIR
 	for mappingFile in `ls *.mapping`
 	do
 		application=`echo $mappingFile | awk -F. '{ print $1 }'`
+		// If no parm specified or if the specified list of applications contains the current application (applicationDir)
 		if [ "$FILTERED_APPLICATIONS_PARM" == ",," ] || [[ ${FILTERED_APPLICATIONS_PARM} == *",${application},"* ]]; then
 			echo "*******************************************************************"
 			echo "Running the DBB Migration Utility for '$application' using file '$mappingFile'"

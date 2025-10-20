@@ -79,6 +79,7 @@ if [ $rc -eq 0 ]; then
 		fi
 	fi
 
+	# Adding commas before and after the passed parm, to search for pattern including commas
 	FILTERED_APPLICATIONS_PARM=",${FILTERED_APPLICATIONS_PARM},"
 
 	# Scan files
@@ -102,6 +103,7 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
+		// If no parm specified or if the specified list of applications contains the current application (applicationDir)
 		if [ "$FILTERED_APPLICATIONS_PARM" == ",," ] || [[ ${FILTERED_APPLICATIONS_PARM} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Assess Include files & Programs usage for '$applicationDir'"

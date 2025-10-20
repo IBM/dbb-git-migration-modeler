@@ -71,6 +71,7 @@ fi
 # Initialize Repositories
 if [ $rc -eq 0 ]; then
 
+	# Adding commas before and after the passed parm, to search for pattern including commas
 	FILTERED_APPLICATIONS_PARM=",${FILTERED_APPLICATIONS_PARM},"
 
 	cd $DBB_MODELER_APPLICATION_DIR
@@ -78,8 +79,8 @@ if [ $rc -eq 0 ]; then
 		# reset return code
 		rc=0
 
+		// If no parm specified or if the specified list of applications contains the current application (applicationDir)
 		if [ "$FILTERED_APPLICATIONS_PARM" == ",," ] || [[ ${FILTERED_APPLICATIONS_PARM} == *",${applicationDir},"* ]]; then
-
 			echo "*******************************************************************"
 			echo "Initialize application's directory for application '$applicationDir'"
 			echo "*******************************************************************"
