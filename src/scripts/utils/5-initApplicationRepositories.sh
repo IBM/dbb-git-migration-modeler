@@ -258,6 +258,9 @@ if [ $rc -eq 0 ]; then
 						rc=$?
 					fi
 					;;
+				"None")
+					echo "[INFO] Adding the pipeline orchestration technology template is skipped per configuration."
+					;;
 				*)
 					echo "[WARNING] The pipeline orchestration technology provided (${PIPELINE_CI}) does not match any of the supported options. Skipped."
 					;;
