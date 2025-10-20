@@ -221,7 +221,7 @@ while [ -z $PIPELINE_CI ]; do
 		PIPELINE_CI="None"
 		;;
 	*)
-		echo "[WARNING] The pipeline orchestration technology entered, does not match any of the provided options. Please provide a valid option."
+		echo "[WARNING] The chosen pipeline orchestration template does not match with any of the possible options. Please provide a valid option."
 		PIPELINE_CI=""
 		;;
 	esac
