@@ -109,7 +109,7 @@ if [ $rc -eq 0 ]; then
 					$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					rc=$?
 				fi
-				CMD="cp $DBB_MODELER_DEFAULT_GIT_CONFIG/.gitattributes .gitattributes"
+				CMD="cp $DBB_MODELER_DEFAULT_APP_REPO_CONFIG/.gitattributes .gitattributes"
 				echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?
@@ -124,7 +124,7 @@ if [ $rc -eq 0 ]; then
 					$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					rc=$?
 				fi
-				CMD="cp $DBB_MODELER_DEFAULT_GIT_CONFIG/zapp.yaml zapp.yaml"
+				CMD="cp $DBB_MODELER_DEFAULT_APP_REPO_CONFIG/zapp_template.yaml zapp.yaml"
 				echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/zappUtils.groovy \
