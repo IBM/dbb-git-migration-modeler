@@ -23,7 +23,7 @@ Prolog() {
 
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
-FILTERED_APPLICATIONS_PARM=
+APPLICATION_FILTER=
 rc=0
 
 # Get Options
@@ -50,7 +50,7 @@ if [ $rc -eq 0 ]; then
 				echo $ERRMSG
 				break
 			fi
-			FILTERED_APPLICATIONS_PARM="-a $argument"
+			APPLICATION_FILTER="-a $argument"
 			;;
 		esac
 	done
@@ -139,7 +139,7 @@ if [ $rc -eq 0 ]; then
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
   	
 		#### Application Extraction step
-		$DBB_MODELER_HOME/src/scripts/utils/1-extractApplications.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $FILTERED_APPLICATIONS_PARM
+		$DBB_MODELER_HOME/src/scripts/utils/1-extractApplications.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $APPLICATION_FILTER
     	rc=$?
 		# Note - create multiple Migration Modeler Configuration files, if you want to run the extraction step with different datasets configurations.
 		
@@ -162,7 +162,7 @@ if [ $rc -eq 0 ]; then
 	fi
 	
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
-		$DBB_MODELER_HOME/src/scripts/utils/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $FILTERED_APPLICATIONS_PARM
+		$DBB_MODELER_HOME/src/scripts/utils/2-runMigrations.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $APPLICATION_FILTER
     	rc=$?
 	fi
 fi
@@ -177,7 +177,7 @@ if [ $rc -eq 0 ]; then
 		variable="Y"
 	fi
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
-		$DBB_MODELER_HOME/src/scripts/utils/3-classify.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $FILTERED_APPLICATIONS_PARM
+		$DBB_MODELER_HOME/src/scripts/utils/3-classify.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $APPLICATION_FILTER
     	rc=$?
 	fi
 fi
@@ -192,7 +192,7 @@ if [ $rc -eq 0 ]; then
 		variable="Y"
 	fi
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
-		$DBB_MODELER_HOME/src/scripts/utils/4-generateProperties.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $FILTERED_APPLICATIONS_PARM
+		$DBB_MODELER_HOME/src/scripts/utils/4-generateProperties.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $APPLICATION_FILTER
     	rc=$?
 	fi
 fi
@@ -209,7 +209,7 @@ if [ $rc -eq 0 ]; then
 		variable="Y"
 	fi
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
-		$DBB_MODELER_HOME/src/scripts/utils/5-initApplicationRepositories.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $FILTERED_APPLICATIONS_PARM
+		$DBB_MODELER_HOME/src/scripts/utils/5-initApplicationRepositories.sh -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE $APPLICATION_FILTER
 		rc=$?
 		if [ $rc -eq 0 ]; then
 			repositoriesInitialized=true
