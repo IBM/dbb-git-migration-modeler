@@ -29,11 +29,12 @@ Prolog() {
 
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
+APPLICATION_FILTER=
 rc=0
 
 # Get Options
 if [ $rc -eq 0 ]; then
-	while getopts "c:" opt; do
+	while getopts "c:a:" opt; do
 		case $opt in
 		c)
 			argument="$OPTARG"
@@ -45,6 +46,17 @@ if [ $rc -eq 0 ]; then
 				break
 			fi
 			DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="$argument"
+			;;
+		a)
+			argument="$OPTARG"
+			nextchar="$(expr substr $argument 1 1)"
+			if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
+				rc=4
+				ERRMSG="[ERROR] Comma-separated Applications list required. rc="$rc
+				echo $ERRMSG
+				break
+			fi
+			APPLICATION_FILTER="$argument"
 			;;
 		esac
 	done
@@ -97,57 +109,63 @@ if [ $rc -eq 0 ]; then
 		fi
 	fi
 
+	# Adding commas before and after the passed parm, to search for pattern including commas
+    APPLICATION_FILTER=",${APPLICATION_FILTER},"
+    
 	# Scan files
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		echo "*******************************************************************"
-		echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
-		echo "*******************************************************************"
-		touch $DBB_MODELER_LOGS/3-$applicationDir-scan.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-scan.log
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--application $applicationDir \
-			--logFile $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-scan.log
-		$CMD
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
+			echo "*******************************************************************"
+			echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
+			echo "*******************************************************************"
+			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
+				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+				--application $applicationDir \
+				--logFile $DBB_MODELER_LOGS/3-$applicationDir-scan.log"    
+			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-scan.log
+			$CMD
+		fi
 	done
-
 
 	# Reset Application Descriptor
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		echo "*******************************************************************"
-		echo "Reset Application Descriptor for $applicationDir"
-		echo "*******************************************************************"
-		touch $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/recreateApplicationDescriptor.groovy \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--application $applicationDir \
-			--logFile $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log"
-		echo "[CMD] $CMD" > $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
-		$CMD
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
+			echo "*******************************************************************"
+			echo "Reset Application Descriptor for $applicationDir"
+			echo "*******************************************************************"
+##			touch $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
+##			chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
+			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/recreateApplicationDescriptor.groovy \
+				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+				--application $applicationDir \
+				--logFile $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log"
+			echo "[CMD] $CMD" > $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
+			$CMD
+		fi
 	done
 
 	# Assess file usage across applications
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		echo "*******************************************************************"
-		echo "Assess Include files & Programs usage for '$applicationDir'"
-		echo "*******************************************************************"
-		touch $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--application $applicationDir \
-			--moveFiles \
-			--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
-		$CMD
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
+			echo "*******************************************************************"
+			echo "Assess Include files & Programs usage for '$applicationDir'"
+			echo "*******************************************************************"
+			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
+				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+				--application $applicationDir \
+				--moveFiles \
+				--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
+			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
+			$CMD
+		fi
 	done
 	
 	# Drop and recreate the Build Metadatastore folder
@@ -165,17 +183,18 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		echo "*******************************************************************"
-		echo "Rescan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
-		echo "*******************************************************************"
-		touch $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--application $applicationDir \
-			--logFile $DBB_MODELER_LOGS/3-$applicationDir-rescan.log"    
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
-		$CMD
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
+			echo "*******************************************************************"
+			echo "Rescan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
+			echo "*******************************************************************"
+			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/scanApplication.groovy \
+				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+				--application $applicationDir \
+				--logFile $DBB_MODELER_LOGS/3-$applicationDir-rescan.log"    
+			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-rescan.log
+			$CMD
+		fi
 	done
 fi
 

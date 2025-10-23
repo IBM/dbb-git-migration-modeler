@@ -10,11 +10,12 @@
  
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
+APPLICATION_FILTER=
 rc=0
 
 # Get Options
 if [ $rc -eq 0 ]; then
-	while getopts "c:" opt; do
+	while getopts "c:a:" opt; do
 		case $opt in
 		c)
 			argument="$OPTARG"
@@ -26,6 +27,17 @@ if [ $rc -eq 0 ]; then
 				break
 			fi
 			DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="$argument"
+			;;
+		a)
+			argument="$OPTARG"
+			nextchar="$(expr substr $argument 1 1)"
+			if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
+				rc=4
+				ERRMSG="[ERROR] Comma-separated Applications list required. rc="$rc
+				echo $ERRMSG
+				break
+			fi
+			APPLICATION_FILTER="$argument"
 			;;
 		esac
 	done
@@ -57,17 +69,23 @@ if [ $rc -eq 0 ]; then
 	dir=$(dirname "$0")
 	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
+ 	# Adding commas before and after the passed parm, to search for pattern including commas
+    APPLICATION_FILTER=",${APPLICATION_FILTER},"
+
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		echo "*******************************************************************"
-		echo "Generate properties for application '$applicationDir'"
-		echo "*******************************************************************"
-		CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/generateProperties.groovy \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--application $applicationDir \
-			--logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
-		$CMD
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
+			echo "*******************************************************************"
+			echo "Generate properties for application '$applicationDir'"
+			echo "*******************************************************************"
+			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/generateProperties.groovy \
+				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+				--application $applicationDir \
+				--logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"
+			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
+			$CMD
+		fi
 	done
 fi
