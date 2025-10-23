@@ -123,7 +123,7 @@ APPLICATION_DEFAULT_BRANCH=main
 INTERACTIVE_RUN=true
 
 # Publish to Artifact Repository Server
-PUBLISH_ARTIFACTS=true
+PUBLISH_ARTIFACTS=false
 # URL of the Artifact Repository Server
 # e.q.: artifactRepositoryUrl=http://artifactoryserver:8081/artifactory
 ARTIFACT_REPOSITORY_SERVER_URL=http://10.3.20.231:8081/artifactory
