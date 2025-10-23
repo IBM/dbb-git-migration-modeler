@@ -148,7 +148,7 @@ PIPELINE_CI=
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_APP_REPO_CONFIG)
-input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_CONTROL_TRANSFERS SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS)
+input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_CONTROL_TRANSFERS SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH PUBLISH_ARTIFACTS INTERACTIVE_RUN)
 # Publishing options that are conditionally prompted, if PUBLISH_ARTIFACTS=true
 publishing_options=(ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD ARTIFACT_REPOSITORY_SUFFIX PIPELINE_USER PIPELINE_USER_GROUP)
 
@@ -191,6 +191,18 @@ for config in ${input_array[@]}; do
 	fi
 done
 
+# Specify publishing options
+if [ "$PUBLISH_ARTIFACTS" == "true" ]; then
+    echo
+    echo "[SETUP] Artifact Repository configuration parameters for publishing application baseline packages."
+    for config in ${publishing_options[@]}; do
+        read -p "Specify input parameter $config [default: ${!config}]: " variable
+        if [ "$variable" ]; then
+            declare ${config}="${variable}"
+        fi
+    done
+fi
+
 # Ask until a valid option was provided
 while [ -z $PIPELINE_CI ]; do
 	echo
@@ -226,18 +238,6 @@ while [ -z $PIPELINE_CI ]; do
 		;;
 	esac
 done
-
-# Specify publishing options
-if [ "$PUBLISH_ARTIFACTS" == "true" ]; then
-	echo
-	echo "[SETUP] Artifact Repository configuration parameters for publishing application baseline packages."
-	for config in ${publishing_options[@]}; do
-		read -p "Specify input parameter $config [default: ${!config}]: " variable
-		if [ "$variable" ]; then
-			declare ${config}="${variable}"
-		fi
-	done
-fi
 
 echo
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="DBB_GIT_MIGRATION_MODELER-$(date +%Y-%m-%d.%H%M%S).config"
@@ -286,6 +286,11 @@ if [ $rc -eq 0 ]; then
 	for config in ${input_array[@]}; do
 		echo "${config}=${!config}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	done
+	
+    for config in ${publishing_options[@]}; do
+        echo "${config}=${!config}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+    done
+	
 	echo "PIPELINE_CI=${PIPELINE_CI}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
 	echo
