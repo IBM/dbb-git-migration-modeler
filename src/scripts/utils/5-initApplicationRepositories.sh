@@ -103,7 +103,6 @@ if [ $rc -eq 0 ]; then
 				echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?
-<<<<<<< HEAD
 			fi
 
 			# copy and customize ZAPP file
@@ -296,10 +295,8 @@ if [ $rc -eq 0 ]; then
 				$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?
 
-=======
 	
 				# copy .gitattributes file
->>>>>>> upstream/main
 				if [ $rc -eq 0 ]; then
 					echo "** Update Git configuration file '.gitattributes'"
 					if [ -f ".gitattributes" ]; then
