@@ -1,11 +1,11 @@
 /********************************************************************************
-* Licensed Materials - Property of IBM                                          *
-* (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.                *
-*                                                                               *
-* Note to U.S. Government Users Restricted Rights:                              *
-* Use, duplication or disclosure restricted by GSA ADP Schedule                 *
-* Contract with IBM Corp.                                                       *
-********************************************************************************/
+ * Licensed Materials - Property of IBM                                          *
+ * (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.                *
+ *                                                                               *
+ * Note to U.S. Government Users Restricted Rights:                              *
+ * Use, duplication or disclosure restricted by GSA ADP Schedule                 *
+ * Contract with IBM Corp.                                                       *
+ ********************************************************************************/
 
 @groovy.transform.BaseScript com.ibm.dbb.groovy.ScriptLoader baseScript
 import groovy.transform.*
@@ -39,10 +39,24 @@ import java.nio.file.PathMatcher
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field def fileUtils = loadScript(new File("utils/fileUtils.groovy"))
 
+class ApplicationMappingConfiguration {
+	String application
+	String component
+	String description
+	String owner
+	String baseline
+	ArrayList<String> namingConventions
+	// Outputs of computation
+	ArrayList<String> datasetMembers = new ArrayList<String>()
+}
+
+@Field ApplicationMappingConfiguration unassignedApplicationMappingConfiguration = new ApplicationMappingConfiguration()
+unassignedApplicationMappingConfiguration.application = "UNASSIGNED"
+
 //Map between applications name and owned datasetMembers
-@Field HashMap<String, HashSet<String>> applicationsToDatasetMembersMap = new HashMap<String, HashSet<String>>()
+@Field HashMap<ApplicationMappingConfiguration, HashSet<String>> applicationsToDatasetMembersMap = new HashMap<ApplicationMappingConfiguration, HashSet<String>>()
 //Map between datasets and the applications defined in the Applications Mapping files
-@Field HashMap<String, ArrayList<Object>> datasetsMap = new HashMap<String, ArrayList<Object>>()
+@Field HashMap<String, ArrayList<ApplicationMappingConfiguration>> datasetsMap = new HashMap<String, ArrayList<ApplicationMappingConfiguration>>()
 
 // Types Configurations
 @Field HashMap<String, String> types
@@ -50,7 +64,7 @@ import java.nio.file.PathMatcher
 @Field Properties props = new Properties()
 @Field repositoryPathsMapping
 @Field Dmh5210 scanner
-HashMap<String, Long> storageRequirements = new HashMap<String, Long>() 
+HashMap<String, Long> storageRequirements = new HashMap<String, Long>()
 
 /**
  * Processing logic
@@ -68,7 +82,7 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 	if (!repositoryPathsMappingFile.exists()) {
 		logger.logMessage("*! [WARNING] The Repository Path Mapping file ${props.REPOSITORY_PATH_MAPPING_FILE} was not found. Exiting.")
 		System.exit(1)
-	} else {		
+	} else {
 		def yamlSlurper = new groovy.yaml.YamlSlurper()
 		repositoryPathsMappingFile.withReader("UTF-8") { reader ->
 			repositoryPathsMapping = yamlSlurper.parse(reader)
@@ -98,33 +112,38 @@ applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 		applicationsMapping = yamlSlurper.parse(reader)
 	}
 	applicationsMapping.datasets.each() { dataset ->
-		ArrayList<Object> applicationsList = datasetsMap.get(dataset)
+		ArrayList<ApplicationMappingConfiguration> applicationsList = datasetsMap.get(dataset)
 		if (!applicationsList) {
-			applicationsList = new ArrayList<Object>()
+			applicationsList = new ArrayList<ApplicationMappingConfiguration>()
 			datasetsMap.put(dataset, applicationsList)
 		}
-		applicationsMapping.applications.each() { application ->
-			applicationsList.add(application)
+		applicationsMapping.applications.each() { applicationConfig ->
+			applicationsList.add(applicationConfig as ApplicationMappingConfiguration)
 		}
 	}
 }
 
 
 logger.logMessage("** Iterating through the provided datasets and mapped applications.")
-datasetsMap.each() { dataset, applicationsList ->
+datasetsMap.each() { dataset, applicationConfigurations ->
 	String qdsn = constructPDSForZFileOperation(dataset)
 	if (ZFile.dsExists(qdsn)) {
-		def applications = applicationsList.collect { "'${it.application}'" }
-		logger.logMessage("**** Found '$dataset' referenced by applications ${applications.toString().replaceAll("\\[|\\]", "")}");
+		def applications = applicationConfigurations.collect {
+			(it.component) ? "'${it.application}:${it.component}'" : "'${it.application}'"
+		}
+		logger.logMessage("**** Found '$dataset' referenced by applications ${applications.toString().replaceAll("\\[|\\]", "")} ");
 		try {
 			PdsDirectory directoryList = new PdsDirectory(qdsn)
 			Iterator directoryListIterator = directoryList.iterator();
 			while (directoryListIterator.hasNext()) {
 				PdsDirectory.MemberInfo memberInfo = (PdsDirectory.MemberInfo) directoryListIterator.next();
 				String member = (memberInfo.getName());
-				def mappedApplication = findMappedApplicationFromMemberName(applicationsList, member)
-				logger.logMessage("***** '$dataset($member)' - Mapped Application: $mappedApplication");
-				addDatasetMemberToApplication(mappedApplication, "$dataset($member)")
+				def mappedApplicationConfiguration = findMappedApplicationFromMemberName(applicationConfigurations, member)
+				def msg = "***** '$dataset($member)' - Mapped Application: ${mappedApplicationConfiguration.application}"
+				mappedApplicationConfiguration.component ? msg+=" - Component: ${mappedApplicationConfiguration.component}" : ''
+				logger.logMessage(msg);
+
+				addDatasetMemberToApplication(mappedApplicationConfiguration, "$dataset($member)")
 			}
 			directoryList.close();
 		}
@@ -140,12 +159,16 @@ datasetsMap.each() { dataset, applicationsList ->
 DecimalFormat df = new DecimalFormat("###,###,###,###")
 
 logger.logMessage("** Generating Applications Configurations files.")
-applicationsToDatasetMembersMap.each() { application, members ->
-	logger.logMessage("** Generating Configuration files for application $application.")
-	generateApplicationFiles(application)
-	storageRequirements.put(application, calculateStorageSizeForMembers(members))  
-	
-	logger.logMessage("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(application))} bytes")
+
+applicationsToDatasetMembersMap.each() { applicationConfiguration, members ->
+	def msg = (applicationConfiguration.component) ? "${applicationConfiguration.application} Component: ${applicationConfiguration.component}" : "${applicationConfiguration.application}"
+
+	logger.logMessage("** Generating Configuration files for Application: " + msg)
+	generateApplicationFiles(applicationConfiguration)
+
+	def applicationConfName = (applicationConfiguration.component) ? "${applicationConfiguration.application}:${applicationConfiguration.component}" : "${applicationConfiguration.application}"
+	storageRequirements.put(applicationConfName, calculateStorageSizeForMembers(members))
+	logger.logMessage("\tEstimated storage size of migrated members: ${df.format(storageRequirements.get(applicationConfName))} bytes")
 }
 def globalStorageRequirements = 0
 storageRequirements.each() { application, storageRequirement ->
@@ -166,7 +189,7 @@ def parseArgs(String[] args) {
 	def cli = new CliBuilder(usage:usage,header:header)
 	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
-	
+
 	def opts = cli.parse(args)
 	if (!args || !opts) {
 		cli.usage()
@@ -175,7 +198,7 @@ def parseArgs(String[] args) {
 
 	if (opts.l) {
 		props.logFile = opts.l
-		logger.create(props.logFile)		
+		logger.create(props.logFile)
 	}
 
 	if (opts.c) {
@@ -187,7 +210,7 @@ def parseArgs(String[] args) {
 			}
 		} else {
 			logger.logMessage("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
-			System.exit(1)		 			
+			System.exit(1)
 		}
 	} else {
 		logger.logMessage("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
@@ -205,7 +228,7 @@ def parseArgs(String[] args) {
 	} else {
 		logger.logMessage("*! [ERROR] The Configurations directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
-	}	
+	}
 
 	if (configuration.DBB_MODELER_APPMAPPINGS_DIR) {
 		File directory = new File(configuration.DBB_MODELER_APPMAPPINGS_DIR)
@@ -218,7 +241,7 @@ def parseArgs(String[] args) {
 	} else {
 		logger.logMessage("*! [ERROR] The Applications Mappings directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
-	}	
+	}
 
 
 	if (configuration.DBB_MODELER_APPLICATION_DIR) {
@@ -232,7 +255,7 @@ def parseArgs(String[] args) {
 	} else {
 		logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
-	}	
+	}
 
 	if (configuration.REPOSITORY_PATH_MAPPING_FILE) {
 		File file = new File(configuration.REPOSITORY_PATH_MAPPING_FILE)
@@ -255,7 +278,7 @@ def parseArgs(String[] args) {
 			logger.logMessage("*! [ERROR] The Types file '${configuration.APPLICATION_MEMBER_TYPE_MAPPING}' does not exist. Exiting.")
 			System.exit(1)
 		}
-	}	
+	}
 
 	if (configuration.SCAN_DATASET_MEMBERS) {
 		props.SCAN_DATASET_MEMBERS = configuration.SCAN_DATASET_MEMBERS
@@ -267,7 +290,7 @@ def parseArgs(String[] args) {
 	} else {
 		props.SCAN_DATASET_MEMBERS = "false"
 	}
-	
+
 	logger.logMessage("** Script configuration:")
 	props.each() { k, v ->
 		logger.logMessage("\t$k -> $v")
@@ -288,16 +311,20 @@ def constructDatasetForZFileOperation(String PDS, String member) {
 def matches(String memberName, String filePattern) {
 	if (!filePattern.startsWith('glob:') || !filePattern.startsWith('regex:'))
 		filePattern = "glob:$filePattern"
-	// Pattern and memberName are treated in upper case 
+	// Pattern and memberName are treated in upper case
 	PathMatcher matcher = FileSystems.getDefault().getPathMatcher(filePattern.toUpperCase())
 	Path path = FileSystems.getDefault().getPath(memberName.toUpperCase())
 	return matcher.matches(path)
 }
 
-def generateApplicationFiles(String application) {
+def generateApplicationFiles(ApplicationMappingConfiguration applicationConfiguration) {
 	// If an existing DBB Migration Mapping file already exists in the CONFIG directory,
-	// we read it and store it into a HashMap where the key in the input dataset member 
+	// we read it and store it into a HashMap where the key in the input dataset member
+	def application = applicationConfiguration.application
+	def component = (applicationConfiguration.component) ? applicationConfiguration.component : ""
+
 	File mappingFile = new File(props.DBB_MODELER_APPCONFIG_DIR + '/' + application + ".mapping");
+	component ? mappingFile = new File(props.DBB_MODELER_APPCONFIG_DIR + '/' + application + '_' + component + ".mapping") : ''
 	HashMap<String, String> mappings = new HashMap<String, String>()
 	if (mappingFile.exists()) {
 		BufferedReader mappingReader = new BufferedReader(new FileReader(mappingFile))
@@ -310,34 +337,33 @@ def generateApplicationFiles(String application) {
 	}
 
 	// If an existing Application Descriptor file already exists in the CONFIG directory,
-	// we read it into an Application Descriptor object 
+	// we read it into an Application Descriptor object
 	File applicationDescriptorFile = new File(props.DBB_MODELER_APPCONFIG_DIR + '/' + application + ".yml")
-	def applicationDescriptor	
+	def applicationDescriptor
 	if (applicationDescriptorFile.exists()) {
 		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
 	} else {
 		applicationDescriptor = applicationDescriptorUtils.createEmptyApplicationDescriptor()
-	}	
-	
+	}
+
 	// Trying to find information about the application we are dealing with
-	foundApplication = findApplication(application)
-	if (foundApplication != null) {
-		applicationDescriptor.application = foundApplication.application
-		applicationDescriptor.description = foundApplication.description
-		applicationDescriptor.owner = foundApplication.owner
+	if (applicationConfiguration.application != "UNASSIGNED") {
+		applicationDescriptor.application = applicationConfiguration.application
+		applicationDescriptor.description = applicationConfiguration.description
+		applicationDescriptor.owner = applicationConfiguration.owner
 		// Adding baseline to ApplicationDescriptor
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", foundApplication.baseline)
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${foundApplication.baseline}", "release", foundApplication.baseline)	
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", applicationConfiguration.baseline)
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${applicationConfiguration.baseline}", "release", applicationConfiguration.baseline)
 	} else {
 		applicationDescriptor.application = "UNASSIGNED"
 		applicationDescriptor.description = "Unassigned components"
 		applicationDescriptor.owner = "None"
 		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", "rel-1.0.0")
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/rel-1.0.0", "release", "rel-1.0.0")	
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/rel-1.0.0", "release", "rel-1.0.0")
 	}
 
 	// Main loop, iterating through the dataset members assigned to the current application
-	def datasetMembersCollection = applicationsToDatasetMembersMap.get(application)
+	def datasetMembersCollection = applicationsToDatasetMembersMap.get(applicationConfiguration)
 	// For each dataset member...
 	datasetMembersCollection.each () { datasetMember ->
 		// Get the dataset and the member separated
@@ -355,10 +381,10 @@ def generateApplicationFiles(String application) {
 		// 3) the last level qualifier of the containing dataset
 		def matchingRepositoryPath = repositoryPathsMapping.repositoryPaths.find {repositoryPath ->
 			(props.SCAN_DATASET_MEMBERS && props.SCAN_DATASET_MEMBERS.toBoolean() && repositoryPath.mvsMapping.scan ? repositoryPath.mvsMapping.scan.language.equals(scannedLanguage) && repositoryPath.mvsMapping.scan.fileType.equals(scannedFileType) : false) ||
-			(repositoryPath.mvsMapping.types ? repositoryPath.mvsMapping.types.contains(memberType) : false) ||
-			(repositoryPath.mvsMapping.datasetLastLevelQualifiers ? repositoryPath.mvsMapping.datasetLastLevelQualifiers.contains(lastQualifier) : false) 
+					(repositoryPath.mvsMapping.types ? repositoryPath.mvsMapping.types.contains(memberType) : false) ||
+					(repositoryPath.mvsMapping.datasetLastLevelQualifiers ? repositoryPath.mvsMapping.datasetLastLevelQualifiers.contains(lastQualifier) : false)
 		}
-	
+
 		def targetRepositoryPath
 		def pdsEncoding
 		def fileExtension
@@ -376,15 +402,14 @@ def generateApplicationFiles(String application) {
 			sourceGroup = (matchingRepositoryPath.sourceGroup) ? (matchingRepositoryPath.sourceGroup) : lastQualifier
 			language = (matchingRepositoryPath.language) ? (matchingRepositoryPath.language) : lastQualifier
 			languageProcessor = (matchingRepositoryPath.languageProcessor) ? (matchingRepositoryPath.languageProcessor) : lastQualifier + ".groovy"
-			targetRepositoryPath = (matchingRepositoryPath.repositoryPath) ? matchingRepositoryPath.repositoryPath.replaceAll('\\$application',application) : "$application/$lastQualifier"
+			targetRepositoryPath = (matchingRepositoryPath.repositoryPath) ? matchingRepositoryPath.repositoryPath.replaceAll('\\$application',application).replaceAll('\\$component',component) : "$application/$lastQualifier"
 			pdsEncoding = (matchingRepositoryPath.encoding) ? (matchingRepositoryPath.encoding) : "IBM-1047"
 			artifactsType = (matchingRepositoryPath.artifactsType) ? (matchingRepositoryPath.artifactsType) : lastQualifier
-
 		} else {
 			// if Matching Repository Path not found, we set default values based on the last qualifier of the dataset name
 			member = member.toLowerCase()
 			lastQualifier = lastQualifier.toLowerCase()
-			fileExtension = lastQualifier				
+			fileExtension = lastQualifier
 			sourceGroup = lastQualifier
 			language = lastQualifier
 			languageProcessor = lastQualifier + ".groovy"
@@ -398,7 +423,7 @@ def generateApplicationFiles(String application) {
 		targetRepositoryPath = props.DBB_MODELER_APPLICATION_DIR + "/" + application + "/" + targetRepositoryPath
 		mappings.put(datasetMember, "$targetRepositoryPath/$member.$fileExtension pdsEncoding=$pdsEncoding")
 	}
-	
+
 	// Writing the DBB Migration Mapping file
 	try {
 		mappingFile.withWriter("IBM-1047") { writer ->
@@ -407,8 +432,7 @@ def generateApplicationFiles(String application) {
 			}
 		}
 		Process process = "chtag -tc IBM-1047 ${mappingFile.getAbsolutePath()}".execute()
-		process.waitFor()   
-		
+		process.waitFor()
 	}
 	catch (IOException e) {
 		e.printStackTrace();
@@ -416,75 +440,52 @@ def generateApplicationFiles(String application) {
 	logger.logMessage("\tCreated DBB Migration Utility mapping file " + mappingFile.getAbsolutePath());
 	// Writing the Application Descriptor file
 	applicationDescriptorUtils.writeApplicationDescriptor(applicationDescriptorFile, applicationDescriptor)
-	logger.logMessage("\tCreated Application Description file " + applicationDescriptorFile.getAbsolutePath());
+	logger.logMessage("\tCreated/Updated Application Description file " + applicationDescriptorFile.getAbsolutePath());
 }
 
-def addDatasetMemberToApplication(String application, String datasetMember) {
-	HashSet<String> applicationHashSet = applicationsToDatasetMembersMap.get(application)
-	if (!application.equals("UNASSIGNED")) {
-		HashSet<String> unassignedHashSet = applicationsToDatasetMembersMap.get("UNASSIGNED")
-		if (unassignedHashSet && unassignedHashSet.contains(datasetMember)) {
-			unassignedHashSet.remove(datasetMember)
-		}
-		if (!applicationHashSet) {
-			applicationHashSet = new HashSet<String>();
-			applicationsToDatasetMembersMap.put(application, applicationHashSet);
-		}
-		applicationHashSet.add(datasetMember);
-	} else {
-		HashSet<String> foundDatasetMembers = new HashSet<String>()
-		applicationsToDatasetMembersMap.forEach { searchedApplication, searchedApplicationHashSet ->
-			HashSet<String> foundDatasetMembersInSearchedApplication = searchedApplicationHashSet.findAll { searchedDatasetMember ->
-				searchedDatasetMember.equals(datasetMember) && !searchedApplication.equals("UNASSIGNED")
-			}
-			foundDatasetMembers.addAll(foundDatasetMembersInSearchedApplication)
-		}
-		if (!foundDatasetMembers) {
-			if (!applicationHashSet) {
-				applicationHashSet = new HashSet<String>();
-				applicationsToDatasetMembersMap.put(application, applicationHashSet);
-			}
-			applicationHashSet.add(datasetMember);
-		}		
+def addDatasetMemberToApplication(ApplicationMappingConfiguration tmpApplicationMappingConfiguration, String datasetMember) {
+
+	// Fetch existing applicationMappingConfiguration - required to avoid multiple objects with same config
+	applicationMappingConfiguration = applicationsToDatasetMembersMap.keySet().find {
+		(it.application == tmpApplicationMappingConfiguration.application && it.component == tmpApplicationMappingConfiguration.component)
 	}
+	// if the application configuration does not exist in the HashMap, reuse tmpApplicationMappingConfiguration
+	if (!applicationMappingConfiguration) applicationMappingConfiguration = tmpApplicationMappingConfiguration
+
+	// fetch existing applicationDatasetMembersMap
+	HashSet<ApplicationMappingConfiguration> applicationDatasetMembersMap = applicationsToDatasetMembersMap.get(applicationMappingConfiguration)
+
+	if (!applicationDatasetMembersMap) {
+		// create new application dataset member map, if not present
+		applicationDatasetMembersMap = new HashSet<String>();
+		applicationsToDatasetMembersMap.put(applicationMappingConfiguration, applicationDatasetMembersMap);
+	}
+	// add member to application dataset member map
+	applicationDatasetMembersMap.add(datasetMember);
 }
 
-def findMappedApplicationFromMemberName(ArrayList<Object> applicationsList, String memberName) {
+def findMappedApplicationFromMemberName(ArrayList<ApplicationMappingConfiguration> applicationConfigurationList, String memberName) {
 	// Finding the owning application in the list of applications using the same dataset
-	def foundApplications = applicationsList.findAll { application ->
-		application.namingConventions.find { namingConvention ->
+	ArrayList<ApplicationMappingConfiguration> foundApplicationConfigurations = applicationConfigurationList.grep {
+		it.namingConventions.find { namingConvention ->
 			matches(memberName, namingConvention)
 		}
 	}
 
-	if (foundApplications.size() == 1) { // one application claimed ownership
-		return foundApplications[0].application
-	} else if (foundApplications.size() > 1) { // multiple applications claimed ownership
+	if (foundApplicationConfigurations.size() == 1) {
+		// one application claimed ownership
+		return foundApplicationConfigurations.get(0)
+	} else if (foundApplicationConfigurations.size() > 1) {
+		// multiple applications claimed ownership
 		logger.logMessage("*! [WARNING] Multiple applications claim ownership of member '$memberName':")
-		foundApplications.each { application -> 
-			logger.logMessage("\t\tClaiming ownership: '${application.application}'")
+		foundApplicationConfigurations.each { applicationConfiguration ->
+			logger.logMessage("\t\tClaiming ownership: '${applicationConfiguration.application}:${applicationConfiguration.component}'")
 		}
 		logger.logMessage("*! [WARNING] The owner cannot be defined. Map '$memberName' to UNASSIGNED")
-		return "UNASSIGNED"
-	} else { // no match found
-		return "UNASSIGNED"
-	}
-}
-
-def findApplication(String applicationName) {
-	def applications = new ArrayList<Object>()
-	datasetsMap.each() { dataset, applicationsList ->
-		def foundApplications = applicationsList.findAll {
-			application -> application.application.equals(applicationName)
-		}
-		applications.addAll(foundApplications)
-		
-	}
-	applications.unique()
-	if (applications && applications.size() == 1) {
-		return applications[0]
+		return unassignedApplicationMappingConfiguration
 	} else {
-		return null
+		// no match found
+		return unassignedApplicationMappingConfiguration
 	}
 }
 
@@ -514,10 +515,13 @@ def scanDatasetMember(String datasetMemberToScan) {
 	// Scan file
 	Object scanMetadata = scanner.processSingleFile(zFileInputStream);
 	SingleFilesMetadata dmhfile = (SingleFilesMetadata) scanMetadata;
-	// Close file allocation	
+	// Close file allocation
 	zFile.close()
 
-	return [dmhfile.getLanguageCd(), dmhfile.getFileTypeCd()]
+	return [
+		dmhfile.getLanguageCd(),
+		dmhfile.getFileTypeCd()
+	]
 }
 
 def initializeScanner() {
