@@ -405,7 +405,6 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 			language = (matchingRepositoryPath.language) ? (matchingRepositoryPath.language) : lastQualifier
 			languageProcessor = (matchingRepositoryPath.languageProcessor) ? (matchingRepositoryPath.languageProcessor) : lastQualifier + ".groovy"
 			targetRepositoryPath = (matchingRepositoryPath.repositoryPath) ? matchingRepositoryPath.repositoryPath.replaceAll('\\$application',application).replaceAll('\\$component',component).replaceAll("//", "/") : "$application/$lastQualifier"
-			// remove double slashes
 			pdsEncoding = (matchingRepositoryPath.encoding) ? (matchingRepositoryPath.encoding) : "IBM-1047"
 			artifactsType = (matchingRepositoryPath.artifactsType) ? (matchingRepositoryPath.artifactsType) : lastQualifier
 		} else {
