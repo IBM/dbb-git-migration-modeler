@@ -29,7 +29,7 @@ Prolog() {
 
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
-APPLICATIONS=
+APPLICATION_FILTER=
 rc=0
 
 # Get Options
@@ -56,7 +56,7 @@ if [ $rc -eq 0 ]; then
 				echo $ERRMSG
 				break
 			fi
-			APPLICATIONS="$argument"
+			APPLICATION_FILTER="$argument"
 			;;
 		esac
 	done
@@ -109,13 +109,13 @@ if [ $rc -eq 0 ]; then
 		fi
 	fi
 
-    APPLICATIONS=",${APPLICATIONS},"
+    APPLICATION_FILTER=",${APPLICATION_FILTER},"
     
 	# Scan files
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
 			echo "*******************************************************************"
@@ -132,7 +132,7 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Reset Application Descriptor for $applicationDir"
 			echo "*******************************************************************"
@@ -151,7 +151,7 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Assess Include files & Programs usage for '$applicationDir'"
 			echo "*******************************************************************"
@@ -180,7 +180,7 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Rescan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
 			echo "*******************************************************************"
