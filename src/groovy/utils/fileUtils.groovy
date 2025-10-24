@@ -64,6 +64,34 @@ def relativizePath(String path, String root) {
 	return relPath
 }
 
+
+/**
+ * Get list of files relative to DBB_MODELER_APPLICATION_DIR
+ */
+def getMappedFilesFromApplicationDescriptor(String DBB_MODELER_APPLICATION_DIR, String application, applicationDescriptor, logger) {
+	HashSet<String> filesList = new HashSet<String>()
+
+	Files.walk(Paths.get("${DBB_MODELER_APPLICATION_DIR}/${application}")).forEach { filePath ->
+		if (Files.isRegularFile(filePath)) {
+			relativeFilePathFromAppDir = relativizePath(filePath.toString(), DBB_MODELER_APPLICATION_DIR)
+			relativeFilePathFromApplication = relativizePath(filePath.toString(), "${DBB_MODELER_APPLICATION_DIR}/${application}")
+			
+			genericRepositoryFolder = Paths.get(relativeFilePathFromApplication.toString()).getParent().toString()
+			def matchingApplicationDescriptorEntry = applicationDescriptor.sources.find() { sourceDefinition ->
+				sourceDefinition.repositoryPath.equals(genericRepositoryFolder)
+			}
+			if (matchingApplicationDescriptorEntry) {
+				filesList.add(relativeFilePathFromAppDir)
+			} else {
+				if (logger) {
+					logger.logSilentMessage("[INFO] No matching Repository Path was found for file '${filePath}'. Skipping.")
+				}
+			}
+		}
+	}
+	return filesList
+}
+
 /**
  * Get list of files relative to DBB_MODELER_APPLICATION_DIR
  */
