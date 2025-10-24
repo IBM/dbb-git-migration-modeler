@@ -69,11 +69,13 @@ if [ $rc -eq 0 ]; then
 	dir=$(dirname "$0")
 	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
+	# Adding commas before and after the passed parm, to search for pattern including commas
     APPLICATION_FILTER=",${APPLICATION_FILTER},"
 
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
 		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Generate properties for application '$applicationDir'"

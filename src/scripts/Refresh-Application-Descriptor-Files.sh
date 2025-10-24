@@ -108,13 +108,15 @@ if [ $rc -eq 0 ]; then
 			mkdir -p $DBB_MODELER_FILE_METADATA_STORE_DIR
 		fi
 	fi
-
+	
+	# Adding commas before and after the passed parm, to search for pattern including commas
     APPLICATION_FILTER=",${APPLICATION_FILTER},"
     
 	# Scan files
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
 		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Scan application directory '$DBB_MODELER_APPLICATION_DIR/$applicationDir'"
@@ -132,12 +134,11 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
 		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Reset Application Descriptor for $applicationDir"
 			echo "*******************************************************************"
-##			touch $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
-##			chtag -tc IBM-1047 $DBB_MODELER_LOGS/3-$applicationDir-createApplicationDescriptor.log
 			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/recreateApplicationDescriptor.groovy \
 				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 				--application $applicationDir \
@@ -151,6 +152,7 @@ if [ $rc -eq 0 ]; then
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
+		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
 		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${applicationDir},"* ]]; then
 			echo "*******************************************************************"
 			echo "Assess Include files & Programs usage for '$applicationDir'"
