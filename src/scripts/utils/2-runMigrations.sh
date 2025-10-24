@@ -73,7 +73,7 @@ if [ $rc -eq 0 ]; then
         cd $DBB_MODELER_APPCONFIG_DIR
         for mappingFile in `ls $application*.mapping`
         do 
-            echo "* Processing '$mappingFile'"
+            echo "** Processing '$mappingFile'"
             
             mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
             cd $DBB_MODELER_APPLICATION_DIR/$application
@@ -81,6 +81,15 @@ if [ $rc -eq 0 ]; then
             CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
             echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$mappingFile.migration.log
             $CMD
-        done    
+        done
+        
+        echo "${DBB_MODELER_APPCONFIG_DIR}/${application}.yml"
+        if [ -f "${DBB_MODELER_APPCONFIG_DIR}/${application}.yml" ]; then
+            echo "** Copy base Application Descriptor for application '$application' to $DBB_MODELER_APPLICATION_DIR/applicationDescriptor.yml"
+            CMD="cp $DBB_MODELER_APPCONFIG_DIR/$application.yml $DBB_MODELER_APPLICATION_DIR/$application/applicationDescriptor.yml"
+            echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$mappingFile.migration.log
+            $CMD
+        fi  
+            
     done
 fi
