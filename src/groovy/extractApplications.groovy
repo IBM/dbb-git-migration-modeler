@@ -140,7 +140,7 @@ datasetsMap.each() { dataset, applicationConfigurations ->
 				String member = (memberInfo.getName());
 				def mappedApplicationConfiguration = findMappedApplicationFromMemberName(applicationConfigurations, member)
 				def msg = "***** '$dataset($member)' - Mapped Application: ${mappedApplicationConfiguration.application}"
-				mappedApplicationConfiguration.component ? msg+=" - Component: ${mappedApplicationConfiguration.component}" : ''
+				(mappedApplicationConfiguration.component) ? msg+=":${mappedApplicationConfiguration.component}" : '' // Append component if defined
 				logger.logMessage(msg);
 
 				addDatasetMemberToApplication(mappedApplicationConfiguration, "$dataset($member)")
@@ -400,9 +400,12 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 			}
 			fileExtension = (matchingRepositoryPath.fileExtension) ? (matchingRepositoryPath.fileExtension) : lastQualifier
 			sourceGroup = (matchingRepositoryPath.sourceGroup) ? (matchingRepositoryPath.sourceGroup) : lastQualifier
+			// prefix sourceGroup if component is defined to maintain unique sourceGroup definitions in AD
+			if (component) {sourceGroup = "${component}:${sourceGroup}"}
 			language = (matchingRepositoryPath.language) ? (matchingRepositoryPath.language) : lastQualifier
 			languageProcessor = (matchingRepositoryPath.languageProcessor) ? (matchingRepositoryPath.languageProcessor) : lastQualifier + ".groovy"
-			targetRepositoryPath = (matchingRepositoryPath.repositoryPath) ? matchingRepositoryPath.repositoryPath.replaceAll('\\$application',application).replaceAll('\\$component',component) : "$application/$lastQualifier"
+			targetRepositoryPath = (matchingRepositoryPath.repositoryPath) ? matchingRepositoryPath.repositoryPath.replaceAll('\\$application',application).replaceAll('\\$component',component).replaceAll("//", "/") : "$application/$lastQualifier"
+			// remove double slashes
 			pdsEncoding = (matchingRepositoryPath.encoding) ? (matchingRepositoryPath.encoding) : "IBM-1047"
 			artifactsType = (matchingRepositoryPath.artifactsType) ? (matchingRepositoryPath.artifactsType) : lastQualifier
 		} else {
@@ -411,6 +414,7 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 			lastQualifier = lastQualifier.toLowerCase()
 			fileExtension = lastQualifier
 			sourceGroup = lastQualifier
+			
 			language = lastQualifier
 			languageProcessor = lastQualifier + ".groovy"
 			targetRepositoryPath = "$application/$lastQualifier"
