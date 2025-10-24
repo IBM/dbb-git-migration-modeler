@@ -110,6 +110,8 @@ APPLICATION_ARTIFACTS_HLQ=DBEHM.MIG
 # Scanning options
 SCAN_DATASET_MEMBERS=false
 SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
+# Enable scanning of control transfers (e.g. CALL)
+SCAN_CONTROL_TRANSFERS=true
 # Reference to zAppBuild
 DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild
 # Reference to DBB Community Repo
@@ -121,7 +123,7 @@ APPLICATION_DEFAULT_BRANCH=main
 INTERACTIVE_RUN=true
 
 # Publish to Artifact Repository Server
-PUBLISH_ARTIFACTS=true
+PUBLISH_ARTIFACTS=false
 # URL of the Artifact Repository Server
 # e.q.: artifactRepositoryUrl=http://artifactoryserver:8081/artifactory
 ARTIFACT_REPOSITORY_SERVER_URL=http://10.3.20.231:8081/artifactory
@@ -146,10 +148,12 @@ PIPELINE_CI=
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
 path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_APP_REPO_CONFIG)
-input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH INTERACTIVE_RUN PUBLISH_ARTIFACTS ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD ARTIFACT_REPOSITORY_SUFFIX PIPELINE_USER PIPELINE_USER_GROUP)
+input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_MEMBER_TYPE_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_CONTROL_TRANSFERS SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH PUBLISH_ARTIFACTS INTERACTIVE_RUN)
+# Publishing options that are conditionally prompted, if PUBLISH_ARTIFACTS=true
+publishing_options=(ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD ARTIFACT_REPOSITORY_SUFFIX PIPELINE_USER PIPELINE_USER_GROUP)
 
 echo
-echo "[SETUP] Specifying DBB Metadatastore type and configuration"
+echo "[SETUP] DBB Metadatastore type and configuration"
 read -p "Specify the type of the DBB Metadatastore ("file" or "db2") [default: ${DBB_MODELER_METADATASTORE_TYPE}]: " variable
 if [ "$variable" ]; then
 	declare DBB_MODELER_METADATASTORE_TYPE="${variable}"
@@ -179,7 +183,7 @@ fi
 
 # Specify input files
 echo
-echo "[SETUP] Specifying DBB Git Migration Modeler input configuration"
+echo "[SETUP] DBB Git Migration Modeler input configuration"
 for config in ${input_array[@]}; do
 	read -p "Specify input parameter $config [default: ${!config}]: " variable
 	if [ "$variable" ]; then
@@ -187,11 +191,23 @@ for config in ${input_array[@]}; do
 	fi
 done
 
+# Specify publishing options
+if [ "$PUBLISH_ARTIFACTS" == "true" ]; then
+    echo
+    echo "[SETUP] Artifact Repository configuration parameters for publishing application baseline packages."
+    for config in ${publishing_options[@]}; do
+        read -p "Specify input parameter $config [default: ${!config}]: " variable
+        if [ "$variable" ]; then
+            declare ${config}="${variable}"
+        fi
+    done
+fi
+
 # Ask until a valid option was provided
 while [ -z $PIPELINE_CI ]; do
-
-	echo "Specify the pipeline orchestration technology to use. See available templates at https://github.com/IBM/dbb/tree/main/Templates"
-	read -p "1 for 'Azure DevOps', 2 for 'GitLab CI with distributed runner', 3 for 'GitLab CI with z/OS-native runner', 4 for 'Jenkins', 5 for 'GitHub Actions' [default: 1]: " variable
+	echo
+	echo "Specify the pipeline orchestration template to use for initializing the repositories. See available templates at https://github.com/IBM/dbb/tree/main/Templates"
+	read -p "1 for 'Azure DevOps', 2 for 'GitLab CI with distributed runner', 3 for 'GitLab CI with z/OS-native runner', 4 for 'Jenkins', 5 for 'GitHub Actions', 6 for 'None' [default: 1]: " variable
 	if [ "$variable" ]; then
 		PIPELINE_CI="${variable}"
 	else
@@ -211,11 +227,13 @@ while [ -z $PIPELINE_CI ]; do
 		PIPELINE_CI="JenkinsPipeline"
 		;;
 	"5")
-
 		PIPELINE_CI="GitHubActionsPipeline"
 		;;
+	"6")
+		PIPELINE_CI="None"
+		;;
 	*)
-		echo "[WARNING] The pipeline orchestration technology entered, does not match any of the provided options. Please provide a valid option."
+		echo "[WARNING] The chosen pipeline orchestration template does not match with any of the possible options. Please provide a valid option."
 		PIPELINE_CI=""
 		;;
 	esac
@@ -224,7 +242,7 @@ done
 echo
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="DBB_GIT_MIGRATION_MODELER-$(date +%Y-%m-%d.%H%M%S).config"
 FOLDER_FOUND="false"
-while [ "${FOLDER_FOUND}" = "false" ]; do
+while [ "${FOLDER_FOUND}" == "false" ]; do
 	DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER="$(pwd)/config"
 	read -p "[SETUP] Specify the folder where to store the DBB Git Migration Modeler Configuration file '$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE' (The specified folder must exist) [default: $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER]: " variable
 	if [ "$variable" ]; then
@@ -264,10 +282,15 @@ if [ $rc -eq 0 ]; then
 	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
 	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
-	echo "# DBB Git Migration Modeler input files" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler configuration parms" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	for config in ${input_array[@]}; do
 		echo "${config}=${!config}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	done
+	
+    for config in ${publishing_options[@]}; do
+        echo "${config}=${!config}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+    done
+	
 	echo "PIPELINE_CI=${PIPELINE_CI}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
 	echo
