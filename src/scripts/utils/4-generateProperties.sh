@@ -10,11 +10,12 @@
  
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
+APPLICATIONS=
 rc=0
 
 # Get Options
 if [ $rc -eq 0 ]; then
-	while getopts "c:" opt; do
+	while getopts "c:a:" opt; do
 		case $opt in
 		c)
 			argument="$OPTARG"
@@ -26,6 +27,17 @@ if [ $rc -eq 0 ]; then
 				break
 			fi
 			DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="$argument"
+			;;
+		a)
+			argument="$OPTARG"
+			nextchar="$(expr substr $argument 1 1)"
+			if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
+				rc=4
+				ERRMSG="[ERROR] Comma-separated Applications list required. rc="$rc
+				echo $ERRMSG
+				break
+			fi
+			APPLICATIONS="$argument"
 			;;
 		esac
 	done
@@ -57,26 +69,27 @@ if [ $rc -eq 0 ]; then
 	dir=$(dirname "$0")
 	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
+    APPLICATIONS=",${APPLICATIONS},"
+
 	cd $DBB_MODELER_APPLICATION_DIR
 	for applicationDir in `ls | grep -v dbb-zappbuild`
 	do
-		echo "*******************************************************************"
-		echo "Generate properties for application '$applicationDir'"
-		echo "*******************************************************************"
-		touch $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
-		chtag -tc IBM-1047 $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
-		
-		if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
-			GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZBuilderProperties.groovy
-		elif [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
-			GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZAppBuildProperties.groovy
+		if [ "$APPLICATIONS" == ",," ] || [[ ${APPLICATIONS} == *",${applicationDir},"* ]]; then
+			echo "*******************************************************************"
+			echo "Generate properties for application '$applicationDir'"
+			echo "*******************************************************************"
+			if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
+				GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZBuilderProperties.groovy
+			elif [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
+				GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZAppBuildProperties.groovy
+			fi
+					
+			CMD="$DBB_HOME/bin/groovyz $GENERATE_PROPERTIES_SCRIPT \
+				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+				--application $applicationDir \
+				--logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"
+			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
+			$CMD
 		fi
-				
-		CMD="$DBB_HOME/bin/groovyz $GENERATE_PROPERTIES_SCRIPT \
-			--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
-			--application $applicationDir \
-			--logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"
-		echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log
-		$CMD
 	done
 fi

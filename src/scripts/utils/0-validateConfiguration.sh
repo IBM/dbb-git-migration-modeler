@@ -300,30 +300,30 @@ initializeWorkDirectory() {
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
-			if [ ! -d "${DBB_MODELER_DEFAULT_GIT_CONFIG}" ]; then
-				echo "  [INFO] Creating the sample Git Configuration folder '$DBB_MODELER_DEFAULT_GIT_CONFIG'"		
-				mkdir -p $DBB_MODELER_DEFAULT_GIT_CONFIG
+			if [ ! -d "${DBB_MODELER_DEFAULT_APP_REPO_CONFIG}" ]; then
+				echo "  [INFO] Creating the sample Application Repository Configuration folder '$DBB_MODELER_DEFAULT_APP_REPO_CONFIG'"		
+				mkdir -p $DBB_MODELER_DEFAULT_APP_REPO_CONFIG
 				command_rc=$?
 				if [ $command_rc -ne 0 ]; then
 					rc=8
-					ERRMSG="[ERROR] Unable to create sample Git Configuration folder '$DBB_MODELER_DEFAULT_GIT_CONFIG'."
+					ERRMSG="[ERROR] Unable to create sample Application Repository Configuration folder '$DBB_MODELER_DEFAULT_APP_REPO_CONFIG'."
 					echo $ERRMSG
 				fi	
 			fi
 
-			echo "  [INFO] Copying sample Git Configuration files to '$DBB_MODELER_DEFAULT_GIT_CONFIG'"
-			cp $DBB_MODELER_HOME/samples/git-config/* $DBB_MODELER_DEFAULT_GIT_CONFIG/
+			echo "  [INFO] Copying sample Git Configuration files to '$DBB_MODELER_DEFAULT_APP_REPO_CONFIG'"
+			cp $DBB_MODELER_HOME/samples/application-repository-configuration/* $DBB_MODELER_DEFAULT_APP_REPO_CONFIG/
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8
-				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '$DBB_MODELER_DEFAULT_GIT_CONFIG'."
+				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '$DBB_MODELER_DEFAULT_APP_REPO_CONFIG'."
 				echo $ERRMSG
 			fi	
-			cp $DBB_MODELER_HOME/samples/git-config/.* $DBB_MODELER_DEFAULT_GIT_CONFIG/
+			cp $DBB_MODELER_HOME/samples/application-repository-configuration/.* $DBB_MODELER_DEFAULT_APP_REPO_CONFIG/
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8
-				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '$DBB_MODELER_DEFAULT_GIT_CONFIG'."
+				ERRMSG="[ERROR] Unable to copy sample Git Configuration files to '$DBB_MODELER_DEFAULT_APP_REPO_CONFIG'."
 				echo $ERRMSG
 			fi	
 		fi

@@ -20,6 +20,7 @@ import groovy.util.*
 import java.nio.file.*
 import groovy.cli.commons.*
 import static java.nio.file.StandardCopyOption.*
+import com.ibm.dbb.utils.FileUtils
 
 @Field Properties props = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
@@ -170,6 +171,7 @@ def getProgramsFromApplicationDescriptor() {
 						} else { // Start from the original Application Descriptor created by the extraction phase
 							if (originalTargetApplicationDescriptorFile.exists()) {
 								Files.copy(originalTargetApplicationDescriptorFile.toPath(), updatedTargetApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
+								FileUtils.setFileTag(updatedTargetApplicationDescriptorFile.toString(), "UTF-8")
 								targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
 							} else {
 								logger.logMessage("*! [WARNING] Application Descriptor file '${originalTargetApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Include File '${file}'.")
@@ -268,7 +270,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 
 		// Assess usage when only 1 application reference the file
 		if (referencingCollections.size() == 1) {
-			logger.logMessage("\t==> '$file' is called from the '${referencingCollections[0]}' application")
+			logger.logMessage("\t==> '$file' is statically called from the '${referencingCollections[0]}' application")
 		
 			// If Program belongs to the scanned application
 			if (props.application.equals(referencingCollections[0])) {
@@ -286,7 +288,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 			applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
 
 		} else if (referencingCollections.size() > 1) {
-			logger.logMessage("\t==> '$file' is called by multiple applications - $referencingCollections")
+			logger.logMessage("\t==> '$file' is statically called by multiple applications - $referencingCollections")
 			
 			// just modify the scope to SERVICE 
 			logger.logMessage("\t==> Updating usage of Program '$file' to 'service submodule' in '${updatedApplicationDescriptorFile.getPath()}'.")
@@ -299,7 +301,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 			applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
 			
 		} else {
-			logger.logMessage("\tThe Program '$file' is not called by any other program.")
+			logger.logMessage("\tThe Program '$file' is not statically called by any other program.")
 			// Just update the usage to 'main'
 			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "main")
 			applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
@@ -467,6 +469,7 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 		originalConsumerApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${consumer}.yml")
 		if (originalConsumerApplicationDescriptorFile.exists()) {
 			Files.copy(originalConsumerApplicationDescriptorFile.toPath(), consumerApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
+			FileUtils.setFileTag(consumerApplicationDescriptorFile.toString(), "UTF-8")
 			consumerApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(consumerApplicationDescriptorFile)
 		} else {
 			logger.logMessage("*! [WARNING] Application Descriptor file '${originalConsumerApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Application '${consumer}'.")
@@ -552,6 +555,7 @@ def initScriptParameters() {
 	} else { // Start from the original Application Descriptor created by the extraction phase
 		if (originalApplicationDescriptorFile.exists()) {
 			Files.copy(originalApplicationDescriptorFile.toPath(), updatedApplicationDescriptorFile.toPath(), REPLACE_EXISTING)
+			FileUtils.setFileTag(updatedApplicationDescriptorFile.toString(), "UTF-8")
 			applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedApplicationDescriptorFile)
 		} else {
 			logger.logMessage("*! [ERROR] Application Descriptor file '${originalApplicationDescriptorFile.getPath()}' was not found. Exiting.")

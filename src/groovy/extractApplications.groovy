@@ -31,6 +31,9 @@ import com.ibm.teamz.classify.ClassifyFileContent;
 import com.ibm.dmh.scan.classify.IncludedFileMetaData;
 import com.ibm.dmh.scan.classify.SingleFilesMetadata;
 import java.text.DecimalFormat
+import java.nio.file.FileSystems
+import java.nio.file.Path
+import java.nio.file.PathMatcher
 
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
@@ -40,6 +43,8 @@ import java.text.DecimalFormat
 @Field HashMap<String, HashSet<String>> applicationsToDatasetMembersMap = new HashMap<String, HashSet<String>>()
 //Map between datasets and the applications defined in the Applications Mapping files
 @Field HashMap<String, ArrayList<Object>> datasetsMap = new HashMap<String, ArrayList<Object>>()
+//Set of applications that should be filtered - if empty, no filtering is applied
+@Field HashSet<String> filteredApplications = new HashSet<String>()
 
 // Types Configurations
 @Field HashMap<String, String> types
@@ -58,6 +63,12 @@ logger.logMessage("** Extraction process started.")
 // Parse arguments from command-line
 parseArgs(args)
 
+if (props.applications) {
+	props.applications.split(",").each() { application ->
+		filteredApplications.add(application)
+	}
+}
+
 // Read the repository layout mapping file
 logger.logMessage("** Reading the Repository Layout Mapping definition.")
 if (props.REPOSITORY_PATH_MAPPING_FILE) {
@@ -67,7 +78,9 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 		System.exit(1)
 	} else {		
 		def yamlSlurper = new groovy.yaml.YamlSlurper()
-		repositoryPathsMapping = yamlSlurper.parse(repositoryPathsMappingFile)
+		repositoryPathsMappingFile.withReader("UTF-8") { reader ->
+			repositoryPathsMapping = yamlSlurper.parse(reader)
+		}
 	}
 }
 
@@ -89,7 +102,9 @@ File applicationsMappingsDir = new File(props.DBB_MODELER_APPMAPPINGS_DIR)
 applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 	logger.logMessage("*** Importing '${applicationsMappingFile.getName()}'")
 	def yamlSlurper = new groovy.yaml.YamlSlurper()
-	applicationsMapping = yamlSlurper.parse(applicationsMappingFile)
+	applicationsMappingFile.withReader("UTF-8") { reader ->
+		applicationsMapping = yamlSlurper.parse(reader)
+	}
 	applicationsMapping.datasets.each() { dataset ->
 		ArrayList<Object> applicationsList = datasetsMap.get(dataset)
 		if (!applicationsList) {
@@ -97,7 +112,9 @@ applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 			datasetsMap.put(dataset, applicationsList)
 		}
 		applicationsMapping.applications.each() { application ->
-			applicationsList.add(application)
+			if ((!filteredApplications) || (filteredApplications.contains(application.application))) {
+				applicationsList.add(application)
+			}
 		}
 	}
 }
@@ -158,6 +175,7 @@ def parseArgs(String[] args) {
 	String header = 'options:'
 	def cli = new CliBuilder(usage:usage,header:header)
 	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
+	cli.a(longOpt:'applications', args:1, required:false, 'Comma-separated list of applications to extract. If not specified, all applications will be extracted')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 	
 	def opts = cli.parse(args)
@@ -170,6 +188,11 @@ def parseArgs(String[] args) {
 		props.logFile = opts.l
 		logger.create(props.logFile)		
 	}
+
+	if (opts.a) {
+		props.applications = opts.a		
+	}
+
 
 	if (opts.c) {
 		props.configurationFilePath = opts.c
@@ -275,30 +298,16 @@ def constructDatasetForZFileOperation(String PDS, String member) {
 	return "//'${PDS}($member)'"
 }
 
-def isFilterOnMemberMatching(String memberName, String filter) {
-	StringBuilder expandedMemberNameStringBuilder = new StringBuilder(memberName);
-	while (expandedMemberNameStringBuilder.length() < 8) {
-		expandedMemberNameStringBuilder.append('.');
-	}
-	String expandedMemberName = expandedMemberNameStringBuilder.toString();
-
-	StringBuilder expandedFilterStringBuilder = new StringBuilder(filter);
-	while (expandedFilterStringBuilder.length() < 8) {
-		expandedFilterStringBuilder.append('.');
-	}
-	String expandedFilter = expandedFilterStringBuilder.toString();
-	
-	StringBuilder result = new StringBuilder();
-	int i = 0;
-	while (i < expandedMemberName.length() && i < 8) {
-		if (expandedFilter[i] != '.') {
-			result.append(expandedMemberName[i])
-		} else {
-			result.append('.')
-		}
-		i++;
-	}
-	return result.toString().equalsIgnoreCase(expandedFilter);
+/**
+ * Method to match filePatterns to the memberName from the library
+ */
+def matches(String memberName, String filePattern) {
+	if (!filePattern.startsWith('glob:') || !filePattern.startsWith('regex:'))
+		filePattern = "glob:$filePattern"
+	// Pattern and memberName are treated in upper case 
+	PathMatcher matcher = FileSystems.getDefault().getPathMatcher(filePattern.toUpperCase())
+	Path path = FileSystems.getDefault().getPath(memberName.toUpperCase())
+	return matcher.matches(path)
 }
 
 def generateApplicationFiles(String application) {
@@ -460,7 +469,7 @@ def findMappedApplicationFromMemberName(ArrayList<Object> applicationsList, Stri
 	// Finding the owning application in the list of applications using the same dataset
 	def foundApplications = applicationsList.findAll { application ->
 		application.namingConventions.find { namingConvention ->
-			isFilterOnMemberMatching(memberName, namingConvention)
+			matches(memberName, namingConvention)
 		}
 	}
 
