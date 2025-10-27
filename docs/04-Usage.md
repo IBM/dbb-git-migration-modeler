@@ -58,6 +58,10 @@ The script uses the type of each artifact to generate (or reuse if already exist
    2. Execution of a full build with dbb-zAppBuild, using the preview option (no file is actually built) as a preview of the expected outcomes,
    3. Creation of a baseline package using the `PackageBuildOutputs.groovy` script based on the preview build report. The purpose of this step is to package the existing build artifacts (load modules, DBRMs, jobs, etc.) that correspond to the version of the migrated source code files.
 
+An additional parameter can be passed to these five scripts and to the [Migration-Modeler-Start script](../src/scripts/Migration-Modeler-Start.sh) to specify a list of applications.
+This list can be used to filter down the applications to process during the migration. Through the `-a` parameter, the user can specify a comma-separated list of applications, for which the migration will be performed. When provided to the [Migration-Modeler-Start script](../src/scripts/Migration-Modeler-Start.sh), this list is conveyed to the subsequent scripts and used throughout the process.
+This parameter can be used to limit the scope of the migration to applications that are ready to be migrated, even if many others applications are defined in the Applications Mappings files. This filtering capability can help in a phased migration approach, to successively target individual applications.
+
 ### Extracting members from datasets into applications
 
 The [Extract Applications script (1-extractApplication.sh)](../src/scripts/utils/1-extractApplications.sh) requires the path to the DBB Git Migration Modeler configuration file.
@@ -691,6 +695,10 @@ Additionally, if applications are already migrated to Git and use pipelines, but
 A second command is shipped for this workflow. The [Refresh Application Descriptor script](../src/scripts/Refresh-Application-Descriptor-Files.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications. The refresh of the Application Descriptor files must occur on the entire code base like on the initial assessment process.
 
 Like the other scripts, it requires the path to the DBB Git Migration Modeler configuration file as parameter. This configuration file can be created with the [Setup](./02-Setup.md#setting-up-the-dbb-git-migration-modeler-configuration) instructions.
+
+An additional parameter can be passed to the [Refresh Application Descriptor script](../src/scripts/Refresh-Application-Descriptor-Files.sh) to specify a list of applications.
+This list can be used to filter down the applications to process during the migration. Through the `-a` parameter, the user can specify a comma-separated list of applications, for which the migration will be performed.
+This parameter can be used to limit the scope of the refresh process to applications that require an new Application Descriptor file, even if other applications are available in the workspace. This filtering capability can help in a phased migration approach, to successively target individual applications.
 
 The main script calls three groovy scripts ([scanApplication.groovy](../src/groovy/scanApplication.groovy), [recreateApplicationDescriptor.groovy](../src/groovy/recreateApplicationDescriptor.groovy) and [assessUsage.groovy](../src/groovy/assessUsage.groovy)) to scan the files of the applications using the DBB Scanner, initialize Application Descriptor files based on the files present in the working directories, and assess how Include Files and Programs are used across the applications landscape:
 

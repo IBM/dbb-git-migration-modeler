@@ -10,11 +10,12 @@
  
 # Internal variables
 DBB_GIT_MIGRATION_MODELER_CONFIG_FILE=
+APPLICATION_FILTER=
 rc=0
 
 # Get Options
 if [ $rc -eq 0 ]; then
-	while getopts "c:" opt; do
+	while getopts "c:a:" opt; do
 		case $opt in
 		c)
 			argument="$OPTARG"
@@ -26,6 +27,17 @@ if [ $rc -eq 0 ]; then
 				break
 			fi
 			DBB_GIT_MIGRATION_MODELER_CONFIG_FILE="$argument"
+			;;
+		a)
+			argument="$OPTARG"
+			nextchar="$(expr substr $argument 1 1)"
+			if [ -z "$argument" ] || [ "$nextchar" = "-" ]; then
+				rc=4
+				ERRMSG="[ERROR] Comma-separated Applications list required. rc="$rc
+				echo $ERRMSG
+				break
+			fi
+			APPLICATION_FILTER="$argument"
 			;;
 		esac
 	done
@@ -61,35 +73,39 @@ if [ $rc -eq 0 ]; then
 		rm -rf $DBB_MODELER_APPLICATION_DIR
     fi
 
+	# Adding commas before and after the passed parm, to search for pattern including commas
+    APPLICATION_FILTER=",${APPLICATION_FILTER},"
+
 	cd $DBB_MODELER_APPCONFIG_DIR
 	for applicationConfig in `ls *.yml`
     do
         application=`echo $applicationConfig | awk -F. '{ print $1 }'`
-        
-        echo "*******************************************************************"
-        echo "Running the DBB Migration Utility for '$application'"
-        echo "*******************************************************************"
-        
-        cd $DBB_MODELER_APPCONFIG_DIR
-        for mappingFile in `ls $application*.mapping`
-        do 
-            echo "** Processing '$mappingFile'"
-            
-            mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
-            cd $DBB_MODELER_APPLICATION_DIR/$application
-            
-            CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
-            echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$mappingFile.migration.log
-            $CMD
-        done
-        
-        echo "${DBB_MODELER_APPCONFIG_DIR}/${application}.yml"
-        if [ -f "${DBB_MODELER_APPCONFIG_DIR}/${application}.yml" ]; then
-            echo "** Copy base Application Descriptor for application '$application' to $DBB_MODELER_APPLICATION_DIR/$application/applicationDescriptor.yml"
-            CMD="cp $DBB_MODELER_APPCONFIG_DIR/$application.yml $DBB_MODELER_APPLICATION_DIR/$application/applicationDescriptor.yml"
-            echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$mappingFile.migration.log
-            $CMD
-        fi  
-            
+        # If no parm specified or if the specified list of applications contains the current application (applicationDir)
+		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${application},"* ]]; then
+			echo "*******************************************************************"
+			echo "Running the DBB Migration Utility for '$application'"
+			echo "*******************************************************************"
+			
+			cd $DBB_MODELER_APPCONFIG_DIR
+			for mappingFile in `ls $application*.mapping`
+			do 
+				echo "** Processing '$mappingFile'"
+				
+				mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
+				cd $DBB_MODELER_APPLICATION_DIR/$application
+				
+				CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
+				echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$mappingFile.migration.log
+				$CMD
+			done
+			
+			echo "${DBB_MODELER_APPCONFIG_DIR}/${application}.yml"
+			if [ -f "${DBB_MODELER_APPCONFIG_DIR}/${application}.yml" ]; then
+				echo "** Copy base Application Descriptor for application '$application' to $DBB_MODELER_APPLICATION_DIR/$application/applicationDescriptor.yml"
+				CMD="cp $DBB_MODELER_APPCONFIG_DIR/$application.yml $DBB_MODELER_APPLICATION_DIR/$application/applicationDescriptor.yml"
+				echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$mappingFile.migration.log
+				$CMD
+			fi  
+        fi
     done
 fi

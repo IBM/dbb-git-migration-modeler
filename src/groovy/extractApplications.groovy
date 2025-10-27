@@ -57,6 +57,8 @@ unassignedApplicationMappingConfiguration.application = "UNASSIGNED"
 @Field HashMap<ApplicationMappingConfiguration, HashSet<String>> applicationsToDatasetMembersMap = new HashMap<ApplicationMappingConfiguration, HashSet<String>>()
 //Map between datasets and the applications defined in the Applications Mapping files
 @Field HashMap<String, ArrayList<ApplicationMappingConfiguration>> datasetsMap = new HashMap<String, ArrayList<ApplicationMappingConfiguration>>()
+//Set of applications that should be filtered - if empty, no filtering is applied
+@Field HashSet<String> filteredApplications = new HashSet<String>()
 
 // Types Configurations
 @Field HashMap<String, String> types
@@ -74,6 +76,12 @@ logger.logMessage("** Extraction process started.")
 
 // Parse arguments from command-line
 parseArgs(args)
+
+if (props.applications) {
+	props.applications.split(",").each() { application ->
+		filteredApplications.add(application)
+	}
+}
 
 // Read the repository layout mapping file
 logger.logMessage("** Reading the Repository Layout Mapping definition.")
@@ -118,7 +126,9 @@ applicationsMappingsDir.eachFile(FILES) { applicationsMappingFile ->
 			datasetsMap.put(dataset, applicationsList)
 		}
 		applicationsMapping.applications.each() { applicationConfig ->
+		if ((!filteredApplications) || (filteredApplications.contains(applicationConfig.application))) {
 			applicationsList.add(applicationConfig as ApplicationMappingConfiguration)
+		}
 		}
 	}
 }
@@ -188,6 +198,7 @@ def parseArgs(String[] args) {
 	String header = 'options:'
 	def cli = new CliBuilder(usage:usage,header:header)
 	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
+	cli.a(longOpt:'applications', args:1, required:false, 'Comma-separated list of applications to extract. If not specified, all applications will be extracted')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 
 	def opts = cli.parse(args)
@@ -200,6 +211,11 @@ def parseArgs(String[] args) {
 		props.logFile = opts.l
 		logger.create(props.logFile)
 	}
+
+	if (opts.a) {
+		props.applications = opts.a		
+	}
+
 
 	if (opts.c) {
 		props.configurationFilePath = opts.c
