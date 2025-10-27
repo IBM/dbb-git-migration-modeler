@@ -28,6 +28,7 @@ import static java.nio.file.StandardCopyOption.*
 @Field File originalApplicationDescriptorFile //Original Application Descriptor file in CONFIGS
 @Field File updatedApplicationDescriptorFile  //Updated Application Descriptor file in APPLICATIONS
 @Field def applicationDescriptor
+@Field def repositoryPathsMapping
 
 
 // Initialization
@@ -177,10 +178,58 @@ def getProgramsFromApplicationDescriptor() {
 						}
 						// Target Application Descriptor file has been found and can be updated
 						if (targetApplicationDescriptor) {
-							// Move the file
-							copyFileToApplicationFolder(props.application + '/' + qualifiedFile, props.application, owningApplication, file)
-							targetRepositoryPath = computeTargetFilePath(repositoryPath, props.application, owningApplication)
-							applicationDescriptorUtils.appendFileDefinition(targetApplicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, file, type, "private")
+
+							// detect current sourceGroupName
+							def currentSourceGroup
+							if (sourceGroupName.split(":").size() == 2) {
+								currentSourceGroup = sourceGroupName.split(":")[1]
+							} else {
+								currentSourceGroup = sourceGroupName
+							}
+														
+							// detect target component name if present from referencing programs/elements
+							def targetApplicationComponent
+							
+							HashSet referencingSourceGroups = new HashSet()
+							impactedFiles.each() { impactedFile -> 
+								sourceGroup = targetApplicationDescriptor.sources.find { source -> 
+									impactedFile.getFile().contains(source.repositoryPath)
+								}
+								referencingSourceGroups.add(sourceGroup)
+							}
+									
+							if (referencingSourceGroups.size() == 1) {
+								// single source group referencing it
+								tmpSourceGroupName = referencingSourceGroups.first().name
+								
+								def sourceGroupIdentifier = tmpSourceGroupName.split(":")
+								if (sourceGroupIdentifier.size() == 1) { // no component identified in target structure
+									targetApplicationComponent = null 
+								} else if (sourceGroupIdentifier.size() == 2) { // a component has been identified in target structure
+									targetApplicationComponent = sourceGroupIdentifier[0]
+								}
+								
+							} else { // multiple components are identified in target layout
+								targetApplicationComponent = "COMMON"
+							}
+							
+							// define targetSourceGroup Name based on previous findings
+							targetSourceGroupName = (targetApplicationComponent)  ? "${targetApplicationComponent}:${currentSourceGroup}" : "${currentSourceGroup}"
+							
+							
+							// Compute path target application based on existing application mapping configuration file
+							def targetRepositoryPath
+							// retrieve repository configuration for file
+							repositoryPathConfig = repositoryPathsMapping.repositoryPaths.find() { repoMapping ->
+								repoMapping.sourceGroup == sourceGroupName
+							}
+							// expand application component variables
+							targetRepositoryPath = repositoryPathConfig.repositoryPath.replaceAll('\\$application',owningApplication).replaceAll('\\$component',targetApplicationComponent).replaceAll("//", "/")
+							
+							logger.logMessage("\t==> Moving Include File '$file' to '${targetRepositoryPath.toString()}' in Application '${owningApplication}'.")
+							copyFileToApplicationFolder(props.application + '/' + qualifiedFile, owningApplication + '/' + targetRepositoryPath)
+
+							applicationDescriptorUtils.appendFileDefinition(targetApplicationDescriptor, targetSourceGroupName, language, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, file, type, "private")
 							logger.logMessage("\t==> Adding Include File '$file' with usage 'private' to Application '${owningApplication}' described in '${updatedTargetApplicationDescriptorFile.getPath()}'.")
 							applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
 							// Remove the file for the application
@@ -405,6 +454,13 @@ def parseArgs(String[] args) {
 		System.exit(1)
 	}
 	
+	if (configuration.REPOSITORY_PATH_MAPPING_FILE) {
+		props.REPOSITORY_PATH_MAPPING_FILE = configuration.REPOSITORY_PATH_MAPPING_FILE
+	} else {
+		logger.logMessage("*! [ERROR] The reference to the REPOSITORY_PATH_MAPPING_FILE must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+	
 	if (props.DBB_MODELER_METADATASTORE_TYPE.equals("file")) {
 		if (configuration.DBB_MODELER_FILE_METADATA_STORE_DIR) {
 			File directory = new File(configuration.DBB_MODELER_FILE_METADATA_STORE_DIR)
@@ -510,16 +566,14 @@ def findImpactedFiles(String impactSearch, String file) {
 }
 
 /**** Copies a relative source member to the relative target directory. ****/
-def copyFileToApplicationFolder(String file, String sourceApplication, String targetApplication, String shortFile) {
-	targetFilePath = computeTargetFilePath(file, sourceApplication, targetApplication)
+def copyFileToApplicationFolder(String file, String targetRepositoryPath) {
 	Path source = Paths.get("${props.DBB_MODELER_APPLICATION_DIR}", file)
-	def target = Paths.get("${props.DBB_MODELER_APPLICATION_DIR}", targetFilePath)
+	def target = Paths.get("${props.DBB_MODELER_APPLICATION_DIR}", "${targetRepositoryPath}/${source.getFileName()}")
 	def targetDir = target.getParent()
 	File targetDirFile = new File(targetDir.toString())
 	if (!targetDirFile.exists()) targetDirFile.mkdirs()
 	if (source.toFile().exists() && source.toString() != target.toString()) {
 		Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
-		logger.logMessage("\t==> Moving Include File '$shortFile' to '${target.toString()}' in Application '${targetApplication}'.")
 	}
 }
 
@@ -558,6 +612,22 @@ def initScriptParameters() {
 			System.exit(1)
 		}
 	}
+	
+	// Read the repository layout mapping file
+	logger.logMessage("** Reading the Repository Layout Mapping definition.")
+	if (props.REPOSITORY_PATH_MAPPING_FILE) {
+		File repositoryPathsMappingFile = new File(props.REPOSITORY_PATH_MAPPING_FILE)
+		if (!repositoryPathsMappingFile.exists()) {
+			logger.logMessage("*! [WARNING] The Repository Path Mapping file ${props.REPOSITORY_PATH_MAPPING_FILE} was not found. Exiting.")
+			System.exit(1)
+		} else {
+			def yamlSlurper = new groovy.yaml.YamlSlurper()
+			repositoryPathsMappingFile.withReader("UTF-8") { reader ->
+				repositoryPathsMapping = yamlSlurper.parse(reader)
+			}
+		}
+	}
+	
 }
 
 def computeTargetFilePath(String file, String sourceApplication, String targetApplication) {
