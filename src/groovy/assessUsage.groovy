@@ -235,14 +235,17 @@ def getProgramsFromApplicationDescriptor() {
 							logger.logMessage("\t==> Adding Include File '$file' with usage 'private' to Application '${owningApplication}' described in '${updatedTargetApplicationDescriptorFile.getPath()}'.")
 							applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
 							// Remove the file for the application
-							applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
 							logger.logMessage("\t==> Removing Include File '$file' from Application '${props.application}' described in '${updatedApplicationDescriptorFile.getPath()}'.")
-							// Update application mappings
-							updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, owningApplication, props.DBB_MODELER_APPLICATION_DIR + '/' + props.application + '/' + qualifiedFile, file);
+							applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
 
 							// Move logical file to new DBB Metadatstore BuildGroup
 							def sourceFilePath = "${props.application}/${qualifiedFile}"
 							def targetFilePath = "${owningApplication}/${targetRepositoryPath}/${file}.${fileExtension}"
+							
+							// Update application mappings
+							
+							updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, sourceFilePath, owningApplication, targetFilePath);
+
 							logger.logMessage("\t==> Moving DBB Metadata for '$file' from buildGroup ${props.application}-${props.APPLICATION_DEFAULT_BRANCH} to new buildgroup ${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}.")
 							metadataStoreUtils.moveLogicalFile(props.DBB_MODELER_APPLICATION_DIR, sourceFilePath, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", targetFilePath, "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}", "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}")
 
@@ -570,6 +573,7 @@ def findImpactedFiles(String impactSearch, String file) {
 
 /**** Copies a relative source member to the relative target directory. ****/
 def copyFileToApplicationFolder(String file, String targetRepositoryPath) {
+	
 	Path source = Paths.get("${props.DBB_MODELER_APPLICATION_DIR}", file)
 	def target = Paths.get("${props.DBB_MODELER_APPLICATION_DIR}", "${targetRepositoryPath}/${source.getFileName()}")
 	def targetDir = target.getParent()
@@ -634,20 +638,8 @@ def initScriptParameters() {
 	
 }
 
-def computeTargetFilePath(String file, String sourceApplication, String targetApplication) {
-	def filenameSegments = file.split('/')
-	ArrayList<String> targetFilename = new ArrayList<String>()
-	filenameSegments.each() { filenameSegment ->
-		if (filenameSegment.equals(sourceApplication)) {
-			targetFilename.add(targetApplication)
-		} else {
-			targetFilename.add(filenameSegment)
-		}
-	}
-	return targetFilename.join('/')
-}
 
-def updateMappingFiles(String configurationsDirectory, String sourceApplication, String targetApplication, String file, String shortFile) {
+def updateMappingFiles(String configurationsDirectory, String sourceApplication, String oldFileLocation, String targetApplication, String targetRepositoryPath) {
     File sourceApplicationMappingFile = new File("${configurationsDirectory}/${sourceApplication}.mapping")
     File targetApplicationMappingFile = new File("${configurationsDirectory}/${targetApplication}.mapping")
     if (!sourceApplicationMappingFile.exists()) {
@@ -666,11 +658,15 @@ def updateMappingFiles(String configurationsDirectory, String sourceApplication,
                 String line;
                 while((line = sourceApplicationMappingReader.readLine()) != null) {
 					def lineSegments = line.split(' ')
-                    if (lineSegments[1].equals(file)) {
-						lineSegments[1] = computeTargetFilePath(lineSegments[1], sourceApplication, targetApplication)
+					println "${props.DBB_MODELER_APPLICATION_DIR}/${oldFileLocation}"
+					println "${props.DBB_MODELER_APPLICATION_DIR}/${targetRepositoryPath}"
+                    if (lineSegments[1].equals("${props.DBB_MODELER_APPLICATION_DIR}/${oldFileLocation}")) {
+						println "replace - $line"
+						lineSegments[1] = "${props.DBB_MODELER_APPLICATION_DIR}/${targetRepositoryPath}"
 						line = String.join(' ', lineSegments)
                         targetApplicationMappingWriter.write(line + "\n")
                     } else {
+						println "stays - $line"
                         newSourceApplicationMappingWriter.write(line + "\n")
                     }
                 }
@@ -679,7 +675,7 @@ def updateMappingFiles(String configurationsDirectory, String sourceApplication,
                 sourceApplicationMappingReader.close()
                 sourceApplicationMappingFile.delete()
                 Files.move(newSourceApplicationMappingFile.toPath(), sourceApplicationMappingFile.toPath())
-                logger.logMessage("\t==> Updating Migration Mapping files for Applications '${sourceApplication}' and '${targetApplication}' for file '${shortFile}'.")                
+                logger.logMessage("\t==> Updating Migration Mapping files for Applications '${sourceApplication}' and '${targetApplication}' for file '${oldFileLocation}'.")                
             }
             catch (IOException e) {
                 e.printStackTrace()
