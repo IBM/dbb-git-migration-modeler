@@ -85,7 +85,7 @@ if [ $rc -eq 0 ]; then
         
         echo "${DBB_MODELER_APPCONFIG_DIR}/${application}.yml"
         if [ -f "${DBB_MODELER_APPCONFIG_DIR}/${application}.yml" ]; then
-            echo "** Copy base Application Descriptor for application '$application' to $DBB_MODELER_APPLICATION_DIR/applicationDescriptor.yml"
+            echo "** Copy base Application Descriptor for application '$application' to $DBB_MODELER_APPLICATION_DIR/$application/applicationDescriptor.yml"
             CMD="cp $DBB_MODELER_APPCONFIG_DIR/$application.yml $DBB_MODELER_APPLICATION_DIR/$application/applicationDescriptor.yml"
             echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$mappingFile.migration.log
             $CMD
