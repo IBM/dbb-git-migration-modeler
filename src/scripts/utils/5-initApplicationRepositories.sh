@@ -80,7 +80,7 @@ if [ $rc -eq 0 ]; then
             echo "** Reset DBB Metadatastore buildGroup '${buildGroupName}' for repository '$applicationDir' "
 		    CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --deleteBuildGroup --buildGroup $buildGroupName -l $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log"
 		    echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-		    $CMD
+		    $CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
             rc=$?
 		
 			echo "** Initialize Git repository for application '$applicationDir' with initial branch '${APPLICATION_DEFAULT_BRANCH}'"
@@ -132,7 +132,7 @@ if [ $rc -eq 0 ]; then
 					-a $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml \
 					-b $DBB_ZAPPBUILD -l $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log"
 				echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-				$CMD
+				$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?
 			fi
 
