@@ -340,7 +340,6 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 	def component = (applicationConfiguration.component) ? applicationConfiguration.component : ""
 
 	File mappingFile = new File(props.DBB_MODELER_APPCONFIG_DIR + '/' + application + ".mapping");
-	component ? mappingFile = new File(props.DBB_MODELER_APPCONFIG_DIR + '/' + application + '_' + component + ".mapping") : ''
 	HashMap<String, String> mappings = new HashMap<String, String>()
 	if (mappingFile.exists()) {
 		BufferedReader mappingReader = new BufferedReader(new FileReader(mappingFile))
