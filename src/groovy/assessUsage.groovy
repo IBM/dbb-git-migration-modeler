@@ -658,15 +658,11 @@ def updateMappingFiles(String configurationsDirectory, String sourceApplication,
                 String line;
                 while((line = sourceApplicationMappingReader.readLine()) != null) {
 					def lineSegments = line.split(' ')
-					println "${props.DBB_MODELER_APPLICATION_DIR}/${oldFileLocation}"
-					println "${props.DBB_MODELER_APPLICATION_DIR}/${targetRepositoryPath}"
-                    if (lineSegments[1].equals("${props.DBB_MODELER_APPLICATION_DIR}/${oldFileLocation}")) {
-						println "replace - $line"
+                    if ("${lineSegments[1]}".equals("${props.DBB_MODELER_APPLICATION_DIR}/${oldFileLocation}")) {
 						lineSegments[1] = "${props.DBB_MODELER_APPLICATION_DIR}/${targetRepositoryPath}"
 						line = String.join(' ', lineSegments)
                         targetApplicationMappingWriter.write(line + "\n")
                     } else {
-						println "stays - $line"
                         newSourceApplicationMappingWriter.write(line + "\n")
                     }
                 }
