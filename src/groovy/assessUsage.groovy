@@ -206,7 +206,7 @@ def getProgramsFromApplicationDescriptor() {
 								
 								def sourceGroupIdentifier = tmpSourceGroupName.split(":")
 								if (sourceGroupIdentifier.size() == 1) { // no component identified in target structure
-									targetApplicationComponent = null 
+									targetApplicationComponent = "" 
 								} else if (sourceGroupIdentifier.size() == 2) { // a component has been identified in target structure
 									targetApplicationComponent = sourceGroupIdentifier[0]
 								}
