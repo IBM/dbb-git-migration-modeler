@@ -154,8 +154,7 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 		Set<String> referencingCollections = new HashSet<String>()
 
 		// check for nested programs
-		//nestedDependencies = includesFilesNestedDependencies.get("${qualifiedFile}")
-		//println "Nested Dependencies: $nestedDependencies"
+		nestedDependencies = includesFilesNestedDependencies.get("${qualifiedFile}")
 		
 		// Check if the file physically exists
 		File sourceFile = new File ("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${qualifiedFile}")
@@ -282,7 +281,7 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 
 							logger.logMessage("\t==> Moving DBB Metadata for '$file' from buildGroup ${props.application}-${props.APPLICATION_DEFAULT_BRANCH} to new buildgroup ${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}.")
 							metadataStoreUtils.moveLogicalFile(props.DBB_MODELER_APPLICATION_DIR, sourceFilePath, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", targetFilePath, "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}", "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}")
-						}
+						}						
 					} else {
 						// just modify the scope as PUBLIC or SHARED
 						def usageLabel = props.application.equals("UNASSIGNED") ? 'shared' : 'public'
@@ -298,9 +297,42 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 
 				// just modify the scope as PUBLIC or SHARED
 				def usageLabel = props.application.equals("UNASSIGNED") ? 'shared' : 'public'
+				
 				logger.logMessage("\t==> Updating usage of Include File '$file' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'.")
 				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
+		
+				
+				if (nestedDependencies) {
+					
+					logger.logMessage("\t==> The $file contains has nested dependencies.")
+					
 
+					
+					nestedDependencies.each { dependency ->
+						dependentFile = includeFiles.keySet().find {
+							CopyToPDS.createMemberName(repoFile).toLowerCase() == (it.toLowerCase())
+						}
+						
+						properties = includeFiles.get(dependentFile)
+						def dep_impactSearchRule = properties.get("impactSearchRule")
+						def dep_repositoryPath = properties.get("repositoryPath")
+						def dep_fileExtension = properties.get("fileExtension")
+						def dep_artifactsType = properties.get("artifactsType")
+						def dep_sourceGroupName = properties.get("sourceGroupName")
+						def dep_language = properties.get("language")
+						def dep_languageProcessor = properties.get("languageProcessor")
+						def dep_type = properties.get("type")
+						def dep_qualifiedFile = repositoryPath + '/' + dependentFile + '.' + fileExtension
+						
+						logger.logMessage("\t\t==> set usage for $dependency to $usageLabel")
+						
+						logger.logMessage("\t==> Updating usage of Include File '$dependentFile' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'.")
+						applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, dep_sourceGroupName, dep_language, dep_languageProcessor, dep_artifactsType, dep_fileExtension, dep_repositoryPath, dependentFile, dep_type, usageLabel)
+						
+						// TODO: now skip those from being checked another time
+					}
+				}
+				
 				// update consumers
 				referencingCollections.each {
 					consumerCollection ->
