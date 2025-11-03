@@ -91,7 +91,6 @@ if [ $rc -eq 0 ]; then
 			fi
 
 			if [ $rc -eq 0 ]; then
-
 				buildGroupName="$applicationDir-${APPLICATION_DEFAULT_BRANCH}"
 				echo "** Reset DBB Metadatastore buildGroup '${buildGroupName}' for repository '$applicationDir' "
 				CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/metadataStoreUtility.groovy -c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE --deleteBuildGroup --buildGroup $buildGroupName -l $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log"
@@ -104,17 +103,6 @@ if [ $rc -eq 0 ]; then
 				echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 				rc=$?
-
-				# tag application descriptor file
-				if [ $rc -eq 0 ]; then
-					if [ -f "applicationDescriptor.yml" ]; then
-						echo "** Set file tag for 'applicationDescriptor.yml'"
-						CMD="chtag -c IBM-1047 -t applicationDescriptor.yml"
-						echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-						$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-						rc=$?
-					fi
-				fi
 
 				if [ $rc -eq 0 ]; then
 					buildGroupName="$applicationDir-${APPLICATION_DEFAULT_BRANCH}"
