@@ -353,7 +353,11 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 
 	// If an existing Application Descriptor file already exists in the CONFIG directory,
 	// we read it into an Application Descriptor object
-	File applicationDescriptorFile = new File(props.DBB_MODELER_APPCONFIG_DIR + '/' + application + ".yml")
+	File applicationDescriptorFile = new File(props.DBB_MODELER_APPLICATION_DIR + "/" + application + "/applicationDescriptor.yml")
+	File applicationDir = new File(props.DBB_MODELER_APPLICATION_DIR + "/" + application)
+	if (!applicationDir.exists()) {
+		applicationDir.mkdirs()
+	}
 	def applicationDescriptor
 	if (applicationDescriptorFile.exists()) {
 		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
