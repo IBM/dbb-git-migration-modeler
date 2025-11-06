@@ -11,7 +11,7 @@ Multiple Applications Mapping files can be specified, that define one or multipl
 
 2. The [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) (YAML format) is required and describes the folder structure on z/OS UNIX System Services (USS) that will contain the files to are moved from the datasets. It is recommended to use the definitions provided in the template, and keep consistent definitions for all applications being migrated.
 The file controls how dataset members should be assigned to target subfolders on USS during the migration process. 
-Each *Repository Path* entry described in this file documents the type of artifacts in this folder, their file extension, their encoding, the source group they belong to, the language processor (for instance, the language script in dbb-zAppBuild) and criteria to meet for classification. Thse criterai can either be the low-level qualifiers of the dataset which hold them, or their associated types (if any, as described in the [Types file](../samples/types.txt)) or, if enabled, the scan result provided by the DBB Scanner.  
+Each *Repository Path* entry described in this file documents the type of artifacts in this folder, their file extension, their encoding, the source group they belong to, the language processor (for instance, the language script in dbb-zAppBuild) and criteria to meet for classification. These criteria can either be the low-level qualifiers of the dataset which hold them, or their associated types (if any, as described in the [Types file](../samples/types.txt)) or, if enabled, the scan result provided by the DBB Scanner.  
 For each repository path, the `artifactsType` property is used during [the Assessment phase](01-Storyboard.md#the-assessment-phase), to filter out for each type of artifacts to perform the assessment.
 Only artifacts of types `Program` or `Include File` will be included in the analysis.
 It is recommended to keep the current settings defined in the provided [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) for the `artifactsType` property.
@@ -189,6 +189,65 @@ applications: []
 ~~~~
 
 When running the Migration Modeler with these Applications Mapping files, all the artifacts found in the input datasets (CATMAN.COBOL, CATMAN.COPY and CATMAN.BMS) will be assigned to the Catalog Manager application, and artifacts found in APPS.COPYLIB and APPS.INCLIB will be initially assigned to the special application called *UNASSIGNED*.
+
+
+### Define application components
+
+The application configuration contains an optional field `component` to support defining sub-components/functional areas for the application mapping to git repositories.
+
+Assuming that application teams want to introduce subfolders in their git repository directory structure that represents the functional area of an application, they can define this via the `component` field:
+
+The below sample demonstrates the GenApp application team to define components `UI` and `Core` with their corresponding naming convention patterns.
+
+During the mapping to the git repository structure, the component field can turn into a subfolder.
+
+~~~~YAML
+datasets:
+- DBEHM.MIG.COPY
+- DBEHM.MIG.COBOL
+- DBEHM.MIG.BMS
+applications:
+  - application: "GenApp"
+    component: "UI"
+    description: "GenApp"
+    owner: "DBEHM"
+    baseline: "rel-2.1.0"
+    namingConventions:
+      - "SOA*"
+      - "POL*"
+      - "SSMAP"
+  - application: "GenApp"
+    component: "Core"
+    description: "GenApp"
+    owner: "DBEHM"
+    baseline: "rel-2.1.0"
+    namingConventions:
+      - "LG*"
+~~~~
+
+This approach also allows to consolidate several applications into a single repository: Assuming applications `Credit Cards` and `Debit Cards` were treated as separate applications in the origin SCM organization. To maintain these two applications in the future together, the `component` field can be used as well. The sample outlines how these can be consolidated into a single repository `Cards`: 
+
+~~~~YAML
+datasets:
+- DBEHM.MIG.COPY
+- DBEHM.MIG.COBOL
+- DBEHM.MIG.BMS
+applications:
+  - application: "Cards"
+    component: "Credit_Cards"
+    description: "GenApp"
+    owner: "TEAM-A"
+    baseline: "rel-1.0.0"
+    namingConventions:
+      - "CRE*"
+  - application: "Cards"
+    component: "Debit_Cards"
+    description: "GenApp"
+    owner: "TEAM-B"
+    baseline: "rel-1.0.0"
+    namingConventions:
+      - "DEB*"
+~~~~
 
 ### Working with source code that is known to be shared
 

@@ -27,6 +27,11 @@
             "description": "Unique name of the application (without blanks or special characters). Used to name the application directory.",
             "default": "Application name"
           },
+          "component": {
+            "type": "string",
+            "title": "(Optional) The component name of this application configuration.",
+            "description": "Name of the application component defining a group of elements that belong together. Can be used to name the application directory in the repository path mapping configuration."
+          },
           "description": {
             "type": "string",
             "title": "A description of the application.",

@@ -21,31 +21,28 @@ import com.ibm.dbb.build.*
 @Field Properties props = new Properties()
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field def metadataStoreUtils = loadScript(new File("utils/metadataStoreUtility.groovy"))
+@Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def fileUtils = loadScript(new File("utils/fileUtils.groovy"))
-@Field repositoryPathsMapping
+def applicationDescriptor
 
 // Initialization
 parseArgs(args)
 
 initScriptParameters()
 
-// Read the repository layout mapping file
-logger.logMessage("** Reading the Repository Layout Mapping definition.")
-if (props.REPOSITORY_PATH_MAPPING_FILE) {
-	File repositoryPathsMappingFile = new File(props.REPOSITORY_PATH_MAPPING_FILE)
-	if (!repositoryPathsMappingFile.exists()) {
-		logger.logMessage("*! [WARNING] The Repository Path Mapping file ${props.REPOSITORY_PATH_MAPPING_FILE} was not found. Exiting.")
-		System.exit(1)
-	} else {		
-		def yamlSlurper = new groovy.yaml.YamlSlurper()
-		repositoryPathsMappingFile.withReader("UTF-8") { reader ->
-			repositoryPathsMapping = yamlSlurper.parse(reader)
-		}		
-	}
+applicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
+
+logger.logMessage("** Reading the existing Application Descriptor file.")
+
+if (applicationDescriptorFile.exists()) { 
+	applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
+} else {
+	logger.logMessage("*! [WARNING] The Application Descriptor file ${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml was not found. Exiting.")
+	System.exit(1)
 }
 
 logger.logMessage("** Retrieving the list of files mapped to Source Groups.")
-HashMap<String, String> files = fileUtils.getMappedFilesFromApplicationDir(props.DBB_MODELER_APPLICATION_DIR, props.application, repositoryPathsMapping, logger)
+HashSet<String> files = fileUtils.getMappedFilesFromApplicationDescriptor(props.DBB_MODELER_APPLICATION_DIR, props.application, applicationDescriptor, logger)
 logger.logMessage("** Scanning the files.")
 List<LogicalFile> logicalFiles = scanFiles(files)
 
@@ -71,7 +68,7 @@ def scanFiles(files) {
 		scanner.setCollectControlTransfers("true")
 	}
 
-	files.each { file, repositoryPath ->
+	files.each { file ->
 		logger.logMessage("\tScanning file $file ")
 		try {
 			logicalFile = scanner.scan(file, props.DBB_MODELER_APPLICATION_DIR)
