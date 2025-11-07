@@ -38,7 +38,6 @@ parseArgs(args)
 initScriptParameters()
 
 logger.logMessage("** Getting the list of files of 'Include File' type.")
-//HashMap<String, ArrayList<String>> includesFiles = getIncludeFilesFromApplicationDescriptor()
 HashMap<String, HashMap<String, String>> includesFiles = getIncludeFilesFromApplicationDescriptor()
 
 if (includesFiles && includesFiles.size() > 0) {
@@ -47,14 +46,17 @@ if (includesFiles && includesFiles.size() > 0) {
 	logger.logMessage("*** No source found with 'Include File' type.")
 }
 
-logger.logMessage("** Getting the list of files of 'Program' type.")
-HashMap<String, HashMap<String, String>> programs = getProgramsFromApplicationDescriptor()
-
-if (programs && programs.size() > 0) {
-	assessImpactedFilesForPrograms(programs)
-} else {
-	logger.logMessage("*** No source found with 'Program' type.")
+if (props.SCAN_CONTROL_TRANSFERS && props.SCAN_CONTROL_TRANSFERS.toBoolean()){
+    logger.logMessage("** Getting the list of files of 'Program' type.")
+    HashMap<String, HashMap<String, String>> programs = getProgramsFromApplicationDescriptor()
+    
+    if (programs && programs.size() > 0) {
+        assessImpactedFilesForPrograms(programs)
+    } else {
+        logger.logMessage("*** No source found with 'Program' type.")
+    }
 }
+
 
 logger.close()
 
@@ -509,6 +511,13 @@ def parseArgs(String[] args) {
 		logger.logMessage("*! [ERROR] The type of MetadataStore (file or db2) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
 	}
+	
+    if (configuration.SCAN_CONTROL_TRANSFERS) {
+        props.SCAN_CONTROL_TRANSFERS = configuration.SCAN_CONTROL_TRANSFERS
+    } else {
+        logger.logMessage("*! [ERROR] The Scan Control Transfers parameter must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+        System.exit(1)
+    }
 
 	logger.logMessage("** Script configuration:")
 	props.each() { k, v ->

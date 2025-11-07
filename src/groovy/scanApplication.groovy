@@ -66,6 +66,8 @@ def scanFiles(files) {
 	// Enabling Control Transfer flag in DBB Scanner
 	if (props.SCAN_CONTROL_TRANSFERS && props.SCAN_CONTROL_TRANSFERS.toBoolean()){
 		scanner.setCollectControlTransfers("true")
+	} else {
+        scanner.setCollectControlTransfers("false")
 	}
 
 	files.each { file ->
@@ -214,6 +216,13 @@ def parseArgs(String[] args) {
 		logger.logMessage("*! [ERROR] The Application Default Branch must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
 	}
+
+    if (configuration.SCAN_CONTROL_TRANSFERS) {
+        props.SCAN_CONTROL_TRANSFERS = configuration.SCAN_CONTROL_TRANSFERS
+    } else {
+        logger.logMessage("*! [ERROR] The Scan Control Transfers parameter must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+        System.exit(1)
+    }
 
 	logger.logMessage("** Script configuration:")
 	props.each() { k, v ->
