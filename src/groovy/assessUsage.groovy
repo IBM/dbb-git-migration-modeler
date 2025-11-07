@@ -57,7 +57,6 @@ if (props.SCAN_CONTROL_TRANSFERS && props.SCAN_CONTROL_TRANSFERS.toBoolean()){
     }
 }
 
-
 logger.close()
 
 /** Methods **/
