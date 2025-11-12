@@ -106,9 +106,9 @@ if [ $rc -eq 0 ]; then
 
 				# copy .gitattributes file
 				if [ $rc -eq 0 ]; then
-					if [ -f "applicationDescriptor.yml" ]; then
-						echo "** Set file tag for 'applicationDescriptor.yml'"
-						CMD="chtag -c IBM-1047 -t applicationDescriptor.yml"
+					echo "** Update Git configuration file '.gitattributes'"
+					if [ -f ".gitattributes" ]; then
+						CMD="rm .gitattributes"
 						echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 						$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 						rc=$?
@@ -309,14 +309,8 @@ if [ $rc -eq 0 ]; then
 					$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					rc=$?
 					if [ $rc -eq 0 ]; then
-						echo "** Update Git configuration file '.gitattributes'"
-						if [ -f ".gitattributes" ]; then
-							CMD="rm .gitattributes"
-							echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-							$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
-							rc=$?
-						fi
-						CMD="cp $DBB_MODELER_DEFAULT_GIT_CONFIG/.gitattributes .gitattributes"
+						echo "** Create release maintenance branch 'release/$version'"
+						CMD="git branch release/$version refs/tags/$version"
 						echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 						$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 						rc=$?
