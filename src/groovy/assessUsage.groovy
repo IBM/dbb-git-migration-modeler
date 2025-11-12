@@ -514,7 +514,7 @@ def parseArgs(String[] args) {
     if (configuration.SCAN_CONTROL_TRANSFERS) {
         props.SCAN_CONTROL_TRANSFERS = configuration.SCAN_CONTROL_TRANSFERS
     } else {
-        logger.logMessage("*! [ERROR] The Scan Control Transfers parameter must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+        logger.logMessage("*! [ERROR] The Scan Control Transfers parameter (SCAN_CONTROL_TRANSFERS) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
         System.exit(1)
     }
 
