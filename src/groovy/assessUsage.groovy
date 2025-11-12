@@ -351,8 +351,7 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 /**** Assess Usage of programs ****/
 def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) {
 
-	programs.each {
-		file, properties ->
+	programs.each { file, properties ->
 		def impactSearchRule = properties.get("impactSearchRule")
 		def repositoryPath = properties.get("repositoryPath")
 		def fileExtension = properties.get("fileExtension")
@@ -373,8 +372,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 		if (impactedFiles.size() > 0)
 		logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
 
-		impactedFiles.each {
-			impactedFile ->
+		impactedFiles.each { impactedFile ->
 			def referencingCollection = impactedFile.getCollection().getName().replace("-main", "")
 			logger.logMessage("\t'${impactedFile.getFile()}' in  Application  '$referencingCollection'")
 			referencingCollections.add(referencingCollection)
@@ -405,8 +403,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 			// just modify the scope to SERVICE
 			logger.logMessage("\t==> Updating usage of Program '$file' to 'service submodule' in '${updatedApplicationDescriptorFile.getPath()}'.")
 			applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "service submodule")
-			referencingCollections.each {
-				consumerCollection ->
+			referencingCollections.each { consumerCollection ->
 				if (!consumerCollection.equals(props.application)) {
 					updateConsumerApplicationDescriptor(consumerCollection, "artifactrepository", applicationDescriptor)
 				}
@@ -463,8 +460,7 @@ def parseArgs(String[] args) {
 		props.configurationFilePath = opts.c
 		File configurationFile = new File(props.configurationFilePath)
 		if (configurationFile.exists()) {
-			configurationFile.withReader() {
-				reader ->
+			configurationFile.withReader() { reader ->
 				configuration.load(reader)
 			}
 		} else {
@@ -579,8 +575,7 @@ def parseArgs(String[] args) {
     }
 
 	logger.logMessage("** Script configuration:")
-	props.each() {
-		k, v ->
+	props.each() { k, v ->
 		logger.logMessage("\t$k -> $v")
 	}
 }
@@ -608,8 +603,7 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 	// Consumer's Application Descriptor file has been found and can be updated
 	if (consumerApplicationDescriptor) {
 		// fetch the internal baseline that is added
-		providerInternalBaseline=providerApplicationDescriptor.baselines.find() {
-			baselineDefinition ->
+		providerInternalBaseline=providerApplicationDescriptor.baselines.find() { baselineDefinition ->
 			baselineDefinition.branch.equals(props.APPLICATION_DEFAULT_BRANCH)
 		}
 		applicationDescriptorUtils.addApplicationDependency(consumerApplicationDescriptor, providerApplicationDescriptor.application, providerInternalBaseline.reference , providerInternalBaseline.buildid )
@@ -623,12 +617,10 @@ def updateConsumerApplicationDescriptor(consumer, dependencyType, providerApplic
 /**** findImpactedFiles -  method to configure and invoke SearchPathImpactFinder ****/
 def findImpactedFiles(String impactSearch, String file) {
 	HashSet<ImpactFile> allImpacts = new HashSet<ImpactFile>()
-	metadataStoreUtils.getBuildGroups().each {
-		buildGroup ->
+	metadataStoreUtils.getBuildGroups().each { buildGroup ->
 		if (!buildGroup.getName().equals("dbb_default")) {
 			List<String> collections = new ArrayList<String>()
-			buildGroup.getCollections().each {
-				collection ->
+			buildGroup.getCollections().each { collection ->
 				collections.add(collection.getName())
 			}
 			if (collections) {
@@ -658,8 +650,7 @@ def sortListByDependencyTree(List<String> files){
 		dependencyList[i] = new LinkedList();
 
 	// Create topSort
-	files.each {
-		file ->
+	files.each { file ->
 		DependencyScanner scanner = new DependencyScanner()
 		LogicalFile lFile = scanner.scan(file, "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
 		logicalDependencies = lFile.getLogicalDependencies()
