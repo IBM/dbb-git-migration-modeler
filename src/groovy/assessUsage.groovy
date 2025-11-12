@@ -120,27 +120,28 @@ def getProgramsFromApplicationDescriptor() {
 /**** Assess Usage of Include Files ****/
 def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includeFiles) {
 
-	List<String> repositoryFiles = new ArrayList<String>() 
-	includeFiles.each {
-		file, properties ->
+	// list of processed files to manage nested dependencies
+	List<String> processedFiles = new ArrayList<String>()
+
+	// repositoryFiles are needed to sort files
+	List<String> repositoryFiles = new ArrayList<String>()
+	includeFiles.each { file, properties ->
 		def repositoryPath = properties.get("repositoryPath")
 		def fileExtension = properties.get("fileExtension")
 		def qualifiedFile = repositoryPath + '/' + file + '.' + fileExtension
 		repositoryFiles << "${qualifiedFile}"
 	}
-	
+
 	// sortedListByDependency contains the relative path of files ordered by dependency
 	// includesFilesNestedDependencies contains a map of the relative file to it's dependencies
 	(sortedListByDependency, includesFilesNestedDependencies) = sortListByDependencyTree(repositoryFiles)
-	println sortedListByDependency
-	println includesFilesNestedDependencies
-	
+
 	sortedListByDependency.each { repoFile ->
-	//includeFiles.each {
-	//	file, properties ->
-		file = includeFiles.keySet().find { 
+
+		// retrieve file reference from map
+		file = includeFiles.keySet().find {
 			CopyToPDS.createMemberName(repoFile).toLowerCase() == (it.toLowerCase())
-		} 
+		}
 		properties = includeFiles.get(file)
 		def impactSearchRule = properties.get("impactSearchRule")
 		def repositoryPath = properties.get("repositoryPath")
@@ -156,193 +157,191 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 
 		// check for nested programs
 		nestedDependencies = includesFilesNestedDependencies.get("${qualifiedFile}")
-		
+
 		// Check if the file physically exists
 		File sourceFile = new File ("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/${qualifiedFile}")
-		if (sourceFile.exists()) {
-			// Obtain impacts
-			logger.logMessage("** Analyzing impacted applications for file '${props.application}/${qualifiedFile}'.")
-			def impactedFiles = findImpactedFiles(impactSearchRule, props.application + '/' + qualifiedFile)
-			// Assess impacted files
-			if (impactedFiles.size() > 0)
-			logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
+		if (sourceFile.exists() ) {
+			if (!processedFiles.contains(file)) {
+				// Obtain impacts
+				logger.logMessage("** Analyzing impacted applications for file '${props.application}/${qualifiedFile}'.")
+				def impactedFiles = findImpactedFiles(impactSearchRule, props.application + '/' + qualifiedFile)
+				// Assess impacted files
+				if (impactedFiles.size() > 0)
+					logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
 
-			impactedFiles.each {
-				impactedFile ->
-				def referencingCollection = impactedFile.getCollection().getName().replace("-main", "")
-				logger.logMessage("\t'${impactedFile.getFile()}' in  Application  '$referencingCollection'")
-				referencingCollections.add(referencingCollection)
-			}
+				impactedFiles.each { impactedFile ->
+					def referencingCollection = impactedFile.getCollection().getName().replace("-main", "")
+					logger.logMessage("\t'${impactedFile.getFile()}' in  Application  '$referencingCollection'")
+					referencingCollections.add(referencingCollection)
+				}
 
-			// Assess usage when only 1 application reference the file
-			if (referencingCollections.size() == 1) {
-				logger.logMessage("\t==> '$file' is owned by the '${referencingCollections[0]}' application")
+				// Assess usage when only 1 application reference the file
+				if (referencingCollections.size() == 1) {
+					logger.logMessage("\t==> '$file' is owned by the '${referencingCollections[0]}' application")
 
-				// If Include File belongs to the scanned application
-				if (props.application.equals(referencingCollections[0])) {
-					// Just update the usage to PRIVATE
-					applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "private")
-					logger.logMessage("\t==> Updating usage of Include File '$file' to 'private' in '${updatedApplicationDescriptorFile.getPath()}'.")
-				} else {
-					// Only an other application references this Include File, so update the definitions and maybe move it
-					if (props.moveFiles.toBoolean()) {
+					// If Include File belongs to the scanned application
+					if (props.application.equals(referencingCollections[0])) {
+						// Just update the usage to PRIVATE
+						applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "private")
+						logger.logMessage("\t==> Updating usage of Include File '$file' to 'private' in '${updatedApplicationDescriptorFile.getPath()}'.")
+					} else {
+						// Only an other application references this Include File, so update the definitions and maybe move it
+						if (props.moveFiles.toBoolean()) {
 
-						def owningApplication = referencingCollections[0]
+							def owningApplication = referencingCollections[0]
 
-						// Update the target Application Descriptor
-						originalTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${owningApplication}.yml")
-						updatedTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${owningApplication}/applicationDescriptor.yml")
-						def targetApplicationDescriptor
-						// determine which YAML file to use
-						if (updatedTargetApplicationDescriptorFile.exists()) {
-							// update the Application Descriptor that already exists in the Application repository
-							targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
-						} else {
-							// Start from the original Application Descriptor created by the extraction phase
-							if (originalTargetApplicationDescriptorFile.exists()) {
-								Files.copy(originalTargetApplicationDescriptorFile.toPath(), updatedTargetApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
-								FileUtils.setFileTag(updatedTargetApplicationDescriptorFile.toString(), "UTF-8")
+							// Update the target Application Descriptor
+							originalTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${owningApplication}.yml")
+							updatedTargetApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${owningApplication}/applicationDescriptor.yml")
+							def targetApplicationDescriptor
+							// determine which YAML file to use
+							if (updatedTargetApplicationDescriptorFile.exists()) {
+								// update the Application Descriptor that already exists in the Application repository
 								targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
 							} else {
-								logger.logMessage("*! [WARNING] Application Descriptor file '${originalTargetApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Include File '${file}'.")
-							}
-						}
-						// Target Application Descriptor file has been found and can be updated
-						if (targetApplicationDescriptor) {
-
-							// detect current sourceGroupName
-							def currentSourceGroup
-							if (sourceGroupName.split(":").size() == 2) {
-								currentSourceGroup = sourceGroupName.split(":")[1]
-							} else {
-								currentSourceGroup = sourceGroupName
-							}
-														
-							// detect target component name if present from referencing programs/elements
-							def targetApplicationComponent
-							
-							HashSet referencingSourceGroups = new HashSet()
-							impactedFiles.each() { impactedFile -> 
-								sourceGroup = targetApplicationDescriptor.sources.find { source -> 
-									impactedFile.getFile().contains(source.repositoryPath)
+								// Start from the original Application Descriptor created by the extraction phase
+								if (originalTargetApplicationDescriptorFile.exists()) {
+									Files.copy(originalTargetApplicationDescriptorFile.toPath(), updatedTargetApplicationDescriptorFile.toPath(), REPLACE_EXISTING, COPY_ATTRIBUTES)
+									FileUtils.setFileTag(updatedTargetApplicationDescriptorFile.toString(), "UTF-8")
+									targetApplicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedTargetApplicationDescriptorFile)
+								} else {
+									logger.logMessage("*! [WARNING] Application Descriptor file '${originalTargetApplicationDescriptorFile.getPath()}' was not found. Skipping the configuration update for Include File '${file}'.")
 								}
-								referencingSourceGroups.add(sourceGroup)
 							}
-									
-							if (referencingSourceGroups.size() == 1) {
-								// single source group referencing it
-								tmpSourceGroupName = referencingSourceGroups.first().name
-								
-								def sourceGroupIdentifier = tmpSourceGroupName.split(":")
-								if (sourceGroupIdentifier.size() == 1) { // no component identified in target structure
-									targetApplicationComponent = "" 
-								} else if (sourceGroupIdentifier.size() == 2) { // a component has been identified in target structure
-									targetApplicationComponent = sourceGroupIdentifier[0]
+							// Target Application Descriptor file has been found and can be updated
+							if (targetApplicationDescriptor) {
+
+								// detect current sourceGroupName
+								def currentSourceGroup
+								if (sourceGroupName.split(":").size() == 2) {
+									currentSourceGroup = sourceGroupName.split(":")[1]
+								} else {
+									currentSourceGroup = sourceGroupName
 								}
-								
-							} else { // multiple components are identified in target layout
-								targetApplicationComponent = "COMMON"
+
+								// detect target component name if present from referencing programs/elements
+								def targetApplicationComponent
+
+								HashSet referencingSourceGroups = new HashSet()
+								impactedFiles.each() { impactedFile ->
+									sourceGroup = targetApplicationDescriptor.sources.find { source ->
+										impactedFile.getFile().contains(source.repositoryPath)
+									}
+									referencingSourceGroups.add(sourceGroup)
+								}
+
+								if (referencingSourceGroups.size() == 1) {
+									// single source group referencing it
+									tmpSourceGroupName = referencingSourceGroups.first().name
+
+									def sourceGroupIdentifier = tmpSourceGroupName.split(":")
+									if (sourceGroupIdentifier.size() == 1) {
+										// no component identified in target structure
+										targetApplicationComponent = ""
+									} else if (sourceGroupIdentifier.size() == 2) {
+										// a component has been identified in target structure
+										targetApplicationComponent = sourceGroupIdentifier[0]
+									}
+								} else {
+									// multiple components are identified in target layout
+									targetApplicationComponent = "COMMON"
+								}
+
+								// define targetSourceGroup Name based on previous findings
+								targetSourceGroupName = (targetApplicationComponent)  ? "${targetApplicationComponent}:${currentSourceGroup}" : "${currentSourceGroup}"
+
+
+								// Compute path target application based on existing application mapping configuration file
+								def targetRepositoryPath
+								// retrieve repository configuration for file
+								repositoryPathConfig = repositoryPathsMapping.repositoryPaths.find() { repoMapping ->
+									repoMapping.sourceGroup == sourceGroupName
+								}
+								// expand application component variables
+								targetRepositoryPath = repositoryPathConfig.repositoryPath.replaceAll('\\$application',owningApplication).replaceAll('\\$component',targetApplicationComponent).replaceAll("//", "/")
+								logger.logMessage("\t==> Moving Include File '$file' to '${targetRepositoryPath.toString()}' in Application '${owningApplication}'.")
+								copyFileToApplicationFolder(props.application + '/' + qualifiedFile, owningApplication + '/' + targetRepositoryPath)
+
+								applicationDescriptorUtils.appendFileDefinition(targetApplicationDescriptor, targetSourceGroupName, language, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, file, type, "private")
+								logger.logMessage("\t==> Adding Include File '$file' with usage 'private' to Application '${owningApplication}' described in '${updatedTargetApplicationDescriptorFile.getPath()}'.")
+								applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
+								// Remove the file for the application
+								logger.logMessage("\t==> Removing Include File '$file' from Application '${props.application}' described in '${updatedApplicationDescriptorFile.getPath()}'.")
+								applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
+
+								// Move logical file to new DBB Metadatstore BuildGroup
+								def sourceFilePath = "${props.application}/${qualifiedFile}"
+								def targetFilePath = "${owningApplication}/${targetRepositoryPath}/${file}.${fileExtension}"
+
+								// Update application mappings
+
+								updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, sourceFilePath, owningApplication, targetFilePath);
+
+								logger.logMessage("\t==> Moving DBB Metadata for '$file' from buildGroup ${props.application}-${props.APPLICATION_DEFAULT_BRANCH} to new buildgroup ${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}.")
+								metadataStoreUtils.moveLogicalFile(props.DBB_MODELER_APPLICATION_DIR, sourceFilePath, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", targetFilePath, "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}", "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}")
 							}
-							
-							// define targetSourceGroup Name based on previous findings
-							targetSourceGroupName = (targetApplicationComponent)  ? "${targetApplicationComponent}:${currentSourceGroup}" : "${currentSourceGroup}"
-							
-							
-							// Compute path target application based on existing application mapping configuration file
-							def targetRepositoryPath
-							// retrieve repository configuration for file
-							repositoryPathConfig = repositoryPathsMapping.repositoryPaths.find() { repoMapping ->
-								repoMapping.sourceGroup == sourceGroupName
-							}
-							// expand application component variables
-							targetRepositoryPath = repositoryPathConfig.repositoryPath.replaceAll('\\$application',owningApplication).replaceAll('\\$component',targetApplicationComponent).replaceAll("//", "/")
-							logger.logMessage("\t==> Moving Include File '$file' to '${targetRepositoryPath.toString()}' in Application '${owningApplication}'.")
-							copyFileToApplicationFolder(props.application + '/' + qualifiedFile, owningApplication + '/' + targetRepositoryPath)
+						} else {
+							// just modify the scope as PUBLIC or SHARED
+							def usageLabel = props.application.equals("UNASSIGNED") ? 'shared' : 'public'
+							logger.logMessage("\t==> Updating usage of Include File '$file' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'.")
+							applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
 
-							applicationDescriptorUtils.appendFileDefinition(targetApplicationDescriptor, targetSourceGroupName, language, languageProcessor, artifactsType, fileExtension, targetRepositoryPath, file, type, "private")
-							logger.logMessage("\t==> Adding Include File '$file' with usage 'private' to Application '${owningApplication}' described in '${updatedTargetApplicationDescriptorFile.getPath()}'.")
-							applicationDescriptorUtils.writeApplicationDescriptor(updatedTargetApplicationDescriptorFile, targetApplicationDescriptor)
-							// Remove the file for the application
-							logger.logMessage("\t==> Removing Include File '$file' from Application '${props.application}' described in '${updatedApplicationDescriptorFile.getPath()}'.")
-							applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
-
-							// Move logical file to new DBB Metadatstore BuildGroup
-							def sourceFilePath = "${props.application}/${qualifiedFile}"
-							def targetFilePath = "${owningApplication}/${targetRepositoryPath}/${file}.${fileExtension}"
-							
-							// Update application mappings
-							
-							updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, sourceFilePath, owningApplication, targetFilePath);
-
-							logger.logMessage("\t==> Moving DBB Metadata for '$file' from buildGroup ${props.application}-${props.APPLICATION_DEFAULT_BRANCH} to new buildgroup ${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}.")
-							metadataStoreUtils.moveLogicalFile(props.DBB_MODELER_APPLICATION_DIR, sourceFilePath, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", targetFilePath, "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}", "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}")
-						}						
-					} else {
-						// just modify the scope as PUBLIC or SHARED
-						def usageLabel = props.application.equals("UNASSIGNED") ? 'shared' : 'public'
-						logger.logMessage("\t==> Updating usage of Include File '$file' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'.")
-						applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
-
-						updateConsumerApplicationDescriptor(referencingCollections[0], "artifactrepository", applicationDescriptor)
-					}
-				}
-				applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
-			} else if (referencingCollections.size() > 1) {
-				logger.logMessage("\t==> '$file' referenced by multiple applications - $referencingCollections")
-
-				// just modify the scope as PUBLIC or SHARED
-				def usageLabel = props.application.equals("UNASSIGNED") ? 'shared' : 'public'
-				
-				logger.logMessage("\t==> Updating usage of Include File '$file' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'.")
-				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
-		
-				
-				if (nestedDependencies) {
-					
-					logger.logMessage("\t==> The $file contains has nested dependencies.")
-					
-
-					
-					nestedDependencies.each { dependency ->
-						dependentFile = includeFiles.keySet().find {
-							CopyToPDS.createMemberName(repoFile).toLowerCase() == (it.toLowerCase())
+							updateConsumerApplicationDescriptor(referencingCollections[0], "artifactrepository", applicationDescriptor)
 						}
-						
-						properties = includeFiles.get(dependentFile)
-						def dep_impactSearchRule = properties.get("impactSearchRule")
-						def dep_repositoryPath = properties.get("repositoryPath")
-						def dep_fileExtension = properties.get("fileExtension")
-						def dep_artifactsType = properties.get("artifactsType")
-						def dep_sourceGroupName = properties.get("sourceGroupName")
-						def dep_language = properties.get("language")
-						def dep_languageProcessor = properties.get("languageProcessor")
-						def dep_type = properties.get("type")
-						def dep_qualifiedFile = repositoryPath + '/' + dependentFile + '.' + fileExtension
-						
-						logger.logMessage("\t\t==> set usage for $dependency to $usageLabel")
-						
-						logger.logMessage("\t==> Updating usage of Include File '$dependentFile' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'.")
-						applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, dep_sourceGroupName, dep_language, dep_languageProcessor, dep_artifactsType, dep_fileExtension, dep_repositoryPath, dependentFile, dep_type, usageLabel)
-						
-						// TODO: now skip those from being checked another time
 					}
-				}
-				
-				// update consumers
-				referencingCollections.each {
-					consumerCollection ->
-					if (!consumerCollection.equals(props.application)) {
-						updateConsumerApplicationDescriptor(consumerCollection, "artifactrepository", applicationDescriptor)
+					applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
+				} else if (referencingCollections.size() > 1) {
+					logger.logMessage("\t==> '$file' referenced by multiple applications - $referencingCollections")
+
+					// just modify the scope as PUBLIC or SHARED
+					def usageLabel = props.application.equals("UNASSIGNED") ? 'shared' : 'public'
+
+					logger.logMessage("\t==> Updating usage of Include File '$file' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'.")
+					applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, usageLabel)
+
+					// check and process nested dependencies
+					if (nestedDependencies) {
+						logger.logMessage("\t==> The $file has nested dependencies. Updating usage.")
+						nestedDependencies.each { dependency ->
+							dependentFile = includeFiles.keySet().find {
+								CopyToPDS.createMemberName(dependency.getLname()).toLowerCase() == (it.toLowerCase())
+							}
+
+							properties = includeFiles.get(dependentFile)
+							def dep_impactSearchRule = properties.get("impactSearchRule")
+							def dep_repositoryPath = properties.get("repositoryPath")
+							def dep_fileExtension = properties.get("fileExtension")
+							def dep_artifactsType = properties.get("artifactsType")
+							def dep_sourceGroupName = properties.get("sourceGroupName")
+							def dep_language = properties.get("language")
+							def dep_languageProcessor = properties.get("languageProcessor")
+							def dep_type = properties.get("type")
+							def dep_qualifiedFile = repositoryPath + '/' + dependentFile + '.' + fileExtension
+
+							logger.logMessage("\t==> Updating usage of Include File '$dependentFile' to '$usageLabel' in '${updatedApplicationDescriptorFile.getPath()}'.")
+							applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, dep_sourceGroupName, dep_language, dep_languageProcessor, dep_artifactsType, dep_fileExtension, dep_repositoryPath, dependentFile, dep_type, usageLabel)
+
+							// collect if the file was already processed
+							processedFiles.add(dependentFile)
+						}
 					}
+
+					// update consumers
+					referencingCollections.each { consumerCollection ->
+						if (!consumerCollection.equals(props.application)) {
+							updateConsumerApplicationDescriptor(consumerCollection, "artifactrepository", applicationDescriptor)
+						}
+					}
+					applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
+				} else {
+					logger.logMessage("\tThe Include File '$file' is not referenced at all.")
+					// Just update the usage to 'unused'
+					applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "unused")
+					applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
 				}
-				applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
-			} else {
-				logger.logMessage("\tThe Include File '$file' is not referenced at all.")
-				// Just update the usage to 'unused'
-				applicationDescriptorUtils.appendFileDefinition(applicationDescriptor, sourceGroupName, language, languageProcessor, artifactsType, fileExtension, repositoryPath, file, type, "unused")
-				applicationDescriptorUtils.writeApplicationDescriptor(updatedApplicationDescriptorFile, applicationDescriptor)
-			}
-		} else {
+			} // the include file was already processed
+		}
+		else {
 			logger.logMessage("*! [WARNING] The Include File '$file' was not found on the filesystem. Skipping analysis.")
 		}
 	}
@@ -649,8 +648,6 @@ def findImpactedFiles(String impactSearch, String file) {
 
 def sortListByDependencyTree(List<String> files){
 
-	println "*** unsorted fileList : $files"
-
 	// sorted Build List
 	List sortedFileList = []
 	HashMap<String, List<LogicalDependency>> includesFilesNestedDependencies = new HashMap<String, List<LogicalDependency>>()
@@ -663,31 +660,24 @@ def sortListByDependencyTree(List<String> files){
 	// Create topSort
 	files.each {
 		file ->
-		//println "*** Retrieve dependencies for file $file"
 		DependencyScanner scanner = new DependencyScanner()
 		LogicalFile lFile = scanner.scan(file, "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
-		//println lFile
-		// get LogicalFiles
 		logicalDependencies = lFile.getLogicalDependencies()
 
 		includesFilesNestedDependencies.put(file, logicalDependencies)
 		
 		logicalDependencies.each { logicalDependency ->
-			//println logicalDependency
 			dependentRecord = files.find { 
 				it.toLowerCase().contains(logicalDependency.getLname().toLowerCase())
 			}
-			//println "*** DependentRecord $dependentRecord"
 			if (files.contains("${dependentRecord}")){
-				//println "*** Adding dependentFile $dependentRecord"
 				dependencyList[files.indexOf(file)].add(files.indexOf(dependentRecord));
 			}
 		}
 	}
-	println dependencyList
-	// Resolve Dependencies and build
+	// Sort
 	def sortedDependencies = sortBuildListByTopSort(files.size() , dependencyList)
-	println sortedDependencies
+
 	// Map dependency to buildfileName
 	sortedDependencies.each {
 		sortedFileList << files.getAt(it)
@@ -735,11 +725,6 @@ def sortBuildListByTopSort(Integer entities, List dependencyList){
  */
 	def topologicalSortUtil(int v, boolean[] visited,ArrayList stack, ArrayList dependencyList) {
 
-//		println ' '
-//		println stack;
-//		println dependencyList;
-//		println ' '
-		
 		// Mark the current node as visited.
 		visited[v] = true;
 		Integer i;
