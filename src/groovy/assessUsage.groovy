@@ -771,11 +771,9 @@ def initScriptParameters() {
 	originalApplicationDescriptorFile = new File("${props.DBB_MODELER_APPCONFIG_DIR}/${props.application}.yml")
 	updatedApplicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
 	// determine which YAML file to use
-	if (updatedApplicationDescriptorFile.exists()) {
-		// update the Application Descriptor that already exists in the Application repository
+	if (updatedApplicationDescriptorFile.exists()) { // update the Application Descriptor that already exists in the Application repository
 		applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(updatedApplicationDescriptorFile)
-	} else {
-		// Start from the original Application Descriptor created by the extraction phase
+	} else { // Start from the original Application Descriptor created by the extraction phase
 		if (originalApplicationDescriptorFile.exists()) {
 			Files.copy(originalApplicationDescriptorFile.toPath(), updatedApplicationDescriptorFile.toPath(), REPLACE_EXISTING)
 			FileUtils.setFileTag(updatedApplicationDescriptorFile.toString(), "UTF-8")
