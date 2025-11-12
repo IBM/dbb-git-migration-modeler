@@ -271,14 +271,14 @@ def parseArgs(String[] args) {
 	if (opts.d) {
 		props.deleteBuildGroup = true
 		if (!props.buildGroup) {
-			println("*! [ERROR] The Build Group to delete was not specified with the '--buildGroup' option. Exiting.")
+			logger.logMessage("*! [ERROR] The Build Group to delete was not specified with the '--buildGroup' option. Exiting.")
 			System.exit(1)
 		}
 	}
 	if (opts.s) {
 		props.setBuildGroupOwner = opts.s
 		if (!props.buildGroup) {
-			println("*! [ERROR] The Build Group for which to set the owner was not specified with the '--buildGroup' option. Exiting.")
+			logger.logMessage("*! [ERROR] The Build Group for which to set the owner was not specified with the '--buildGroup' option. Exiting.")
 			System.exit(1)
 		}
 	}
@@ -287,7 +287,7 @@ def parseArgs(String[] args) {
 		props.configurationFilePath = opts.c
 		File configurationFile = new File(props.configurationFilePath)
 		if (!configurationFile.exists()) {
-			println("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
+			logger.logMessage("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
 			System.exit(1)
 		} else {
 			configurationFile.withReader() { reader ->
@@ -295,29 +295,29 @@ def parseArgs(String[] args) {
 			}
 		}
 	} else {
-		println("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
+		logger.logMessage("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
 		System.exit(1)
 	}
 
 	if (configuration.DBB_MODELER_METADATASTORE_TYPE) {
 		if (configuration.DBB_MODELER_METADATASTORE_TYPE.equals("file")) {
 			if (!configuration.DBB_MODELER_FILE_METADATA_STORE_DIR) {
-				println("*! [ERROR] Missing Location for the File-based MetadataStore. Exiting.")
+				logger.logMessage("*! [ERROR] Missing Location for the File-based MetadataStore. Exiting.")
 				System.exit(1)
 			}
 		} else if (configuration.DBB_MODELER_METADATASTORE_TYPE.equals("db2")) {
 			if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID) {
-				println("*! [ERROR] Missing User ID for Db2 MetadataStore connection. Exiting.")
+				logger.logMessage("*! [ERROR] Missing User ID for Db2 MetadataStore connection. Exiting.")
 				System.exit(1)
 			}
 
 			if (!configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE) {
-				println("*! [ERROR] Missing Path to the Db2 Connection configuration file for Db2 MetadataStore connection. Exiting.")
+				logger.logMessage("*! [ERROR] Missing Path to the Db2 Connection configuration file for Db2 MetadataStore connection. Exiting.")
 				System.exit(1)
 			} else {
 				File db2ConfigFile = new File(configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE)
 				if (!db2ConfigFile.exists()) {
-					println("*! [ERROR] The Db2 Connection configuration file for Db2 MetadataStore connection '${props.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting.")
+					logger.logMessage("*! [ERROR] The Db2 Connection configuration file for Db2 MetadataStore connection '${props.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}' does not exist. Exiting.")
 					System.exit(1)
 				}
 			}
@@ -325,20 +325,20 @@ def parseArgs(String[] args) {
 			// Checks for correct configuration about MetadataStore
 			if (configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_ID && configuration.DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE) {
 				if (!configuration.DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE) {
-					println("*! [ERROR] Missing Password File for Db2 MetadataStore connection. Exiting.")
+					logger.logMessage("*! [ERROR] Missing Password File for Db2 MetadataStore connection. Exiting.")
 					System.exit(1)
 				}
 			}
 		}
 	} else {
-		println("*! [ERROR] The type of MetadataStore (file or db2) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.");
+		logger.logMessage("*! [ERROR] The type of MetadataStore (file or db2) must be specified in the DBB Git Migration Modeler Configuration file. Exiting.");
 		System.exit(1)
 	}
 
 	// Print parms
-	println("** Script configuration:")
+	logger.logMessage("** Script configuration:")
 	props.each { k,v->
-		println "   $k -> $v"
+		logger.logMessage "   $k -> $v"
 	}
 
 	// initialize metadatatstore to establish connection to either file or db2 metadatastore
