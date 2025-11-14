@@ -651,19 +651,21 @@ def sortListByDependencyTree(List<String> files){
 
 	// Create topSort
 	files.each { file ->
-		DependencyScanner scanner = new DependencyScanner()
-		LogicalFile lFile = scanner.scan(file, "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
-		logicalDependencies = lFile.getLogicalDependencies()
-
-		includesFilesNestedDependencies.put(file, logicalDependencies)
-		
-		logicalDependencies.each { logicalDependency ->
-			dependentRecord = files.find { 
-				it.toLowerCase().contains(logicalDependency.getLname().toLowerCase())
+		lFile = metadataStoreUtils.getLogicalFile(file, "${props.application}")
+		if (lFile) {
+			logicalDependencies = lFile.getLogicalDependencies()
+			includesFilesNestedDependencies.put(file, logicalDependencies)
+			
+			logicalDependencies.each { logicalDependency ->
+				dependentRecord = files.find { 
+					it.toLowerCase().contains(logicalDependency.getLname().toLowerCase())
+				}
+				if (files.contains("${dependentRecord}")){
+					dependencyList[files.indexOf(file)].add(files.indexOf(dependentRecord));
+				}
 			}
-			if (files.contains("${dependentRecord}")){
-				dependencyList[files.indexOf(file)].add(files.indexOf(dependentRecord));
-			}
+		} else {
+			logger.logMessage("*! [WARNING] File '${file}' was not found in DBB Metadatastore.")
 		}
 	}
 	// Sort

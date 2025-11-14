@@ -137,6 +137,27 @@ def addLogicalFile(LogicalFile file, String targetBuildGroupName,  String target
 	}
 }
 
+/**
+ * Returns the logical file for an application
+ */
+def getLogicalFile(String file, String application) {
+	def referenceName="${application}-main"
+	def buildGroup = metadataStore.getBuildGroup(referenceName)
+	if (buildGroup) {
+		def collection = buildGroup.getCollection(referenceName)
+		if (collection) {
+			lFile = collection.getLogicalFile("${application}/${file}")
+			return lFile
+		} else {
+			logger.logMessage("\t*! [ERROR] The collection 'referenceName' in buildgroup 'referenceName' could not be found .")
+		}
+	} else {
+		logger.logMessage("\t*! [ERROR] The buildgroup 'referenceName' could not be found .")
+		
+	}
+	return null
+}
+
 def scanFile(String workspace, String file) {
 	LogicalFile logicalFile = null
 	DependencyScanner scanner = new DependencyScanner()
