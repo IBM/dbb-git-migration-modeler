@@ -149,10 +149,10 @@ def getLogicalFile(String file, String application) {
 			lFile = collection.getLogicalFile("${application}/${file}")
 			return lFile
 		} else {
-			logger.logMessage("\t*! [ERROR] The collection 'referenceName' in buildgroup 'referenceName' could not be found .")
+			logger.logMessage("\t*! [ERROR] The collection '$referenceName' in buildgroup '$referenceName' could not be found.")
 		}
 	} else {
-		logger.logMessage("\t*! [ERROR] The buildgroup 'referenceName' could not be found .")
+		logger.logMessage("\t*! [ERROR] The buildgroup '$referenceName' could not be found.")
 		
 	}
 	return null
