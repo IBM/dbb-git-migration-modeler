@@ -1,10 +1,16 @@
 # Setting up the DBB Git Migration Modeler utility
 
-It is assumed that IBM Dependency Based Build (DBB) and a Git client are already installed on the z/OS LPAR and configured to be used by the user that runs the migration process.
+## Technical pre-requisites
+
+The DBB Git Migration Modeler is using IBM Dependency Based Build (DBB) APIs to perform some tasks during the migration process. DBB should be installed and configured prior to running the DBB Git Migration Modeler.
+
+Also, the DBB Git Migration Modeler is using `git` commands to perform some tasks during the Initialization step.
+
+Both DBB and a Git client (preferably through the [Open Enterprise Foundation package](https://www.ibm.com/products/open-enterprise-foundation-zos)) must be installed on the z/OS LPAR and configured to be used by the user that runs the migration process.
 
 Install the DBB Git Migration Modeler by cloning [this repository](https://github.com/IBM/dbb-git-migration-modeler) to z/OS Unix System Services.
 
-## Pre-requisites when using a Db2-based MetadataStore with DBB
+## Technical pre-requisites when using a Db2-based MetadataStore with DBB
 
 The DBB Git Migration Modeler can use either a file-based MetadataStore or a Db2-based MetadataStore with DBB.
 When using a file-based MetadataStore, the location of the MetadataStore is specified during the setup phase of the DBB Git Migration Modeler, as described in the next section, through the `DBB_MODELER_FILE_METADATA_STORE_DIR` property. No additional setup is required.
