@@ -69,28 +69,26 @@ if [ $rc -eq 0 ]; then
 	dir=$(dirname "$0")
 	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
-	if [ -d $DBB_MODELER_APPLICATION_DIR ]; then
-		rm -rf $DBB_MODELER_APPLICATION_DIR
-    fi
-
 	# Adding commas before and after the passed parm, to search for pattern including commas
     APPLICATION_FILTER=",${APPLICATION_FILTER},"
 
 	cd $DBB_MODELER_APPCONFIG_DIR
-	for mappingFile in `ls *.mapping`
-	do
-		application=`echo $mappingFile | awk -F. '{ print $1 }'`
-		# If no parm specified or if the specified list of applications contains the current application (applicationDir)
-		if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${application},"* ]]; then
-			echo "*******************************************************************"
-			echo "Running the DBB Migration Utility for '$application' using file '$mappingFile'"
-			echo "*******************************************************************"
-			mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
-			cd $DBB_MODELER_APPLICATION_DIR/$application
-			
-			CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
-			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$application.migration.log
-			$CMD	
-		fi
-	done
+    for mappingFile in `ls *.mapping`
+    do
+        application=`echo $mappingFile | awk -F. '{ print $1 }'`
+        # If no parm specified or if the specified list of applications contains the current application (applicationDir)
+        if [ "$APPLICATION_FILTER" == ",," ] || [[ ${APPLICATION_FILTER} == *",${application},"* ]]; then
+            echo "*******************************************************************"
+            echo "Running the DBB Migration Utility for '$application' using file '$mappingFile'"
+            echo "*******************************************************************"
+            if [ ! -d $DBB_MODELER_APPLICATION_DIR/$application ]; then
+            	mkdir -p $DBB_MODELER_APPLICATION_DIR/$application
+            fi
+            cd $DBB_MODELER_APPLICATION_DIR/$application
+
+            CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
+            echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$application.migration.log
+            $CMD
+        fi
+    done
 fi

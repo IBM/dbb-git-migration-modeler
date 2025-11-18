@@ -75,9 +75,10 @@ if [ $rc -eq 0 ]; then
 		mkdir -p $DBB_MODELER_APPCONFIG_DIR
 	fi
 	
-	if [ ! -d $DBB_MODELER_APPLICATION_DIR ]; then
-		mkdir -p $DBB_MODELER_APPLICATION_DIR
-	fi	
+	if [ -d $DBB_MODELER_APPLICATION_DIR ]; then
+		rm -rf $DBB_MODELER_APPLICATION_DIR
+    fi
+	mkdir -p $DBB_MODELER_APPLICATION_DIR
 
 	echo "*******************************************************************"
 	echo "Extract applications using Applications Mapping files in '$DBB_MODELER_APPMAPPINGS_DIR'"
