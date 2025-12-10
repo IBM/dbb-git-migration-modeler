@@ -15,36 +15,26 @@ import groovy.cli.commons.*
 
 
 // Reads a HashMap from the MEMBER_TYPE_MAPPING file with comma separator (',') and returns it
-def loadTypes(String APPLICATION_MEMBER_TYPE_MAPPING) {
-	HashMap<String, String> types = new HashMap<>();
-	String line;
-	File applicationMemberTypeMappingFile = new File(APPLICATION_MEMBER_TYPE_MAPPING)
-	if (!applicationMemberTypeMappingFile.exists()) {
-		logger.logMessage("*! [WARNING] The Application Member Type Mapping file $APPLICATION_MEMBER_TYPE_MAPPING was not found. Exiting.")
-		System.exit(1)
+def loadFilesToTypesMapping(String APPLICATION_FILES_TYPES_MAPPING) {
+	File filesToTypeMappingFile = new File(APPLICATION_FILES_TYPES_MAPPING)
+	if (!filesToTypeMappingFile.exists()) {
+		logger.logMessage("*! [WARNING] The Files to Types Mapping file '$APPLICATION_FILES_TYPES_MAPPING' was not found. Exiting.")
+		return null
 	} else {		
 		def yamlSlurper = new groovy.yaml.YamlSlurper()
-		applicationMemberTypeMappingFile.withReader("UTF-8") { reader ->
-			while ((line = reader.readLine()) != null) {
-				String[] keyValuePair = line.split(",", 2);
-				if (keyValuePair.length > 1) {
-					String key = keyValuePair[0].trim().toUpperCase();
-					String value = keyValuePair[1].trim().replaceAll(" ", "");
-					types.put(key, value);
-				}
-			}
-		}
+        return yamlSlurper.parse(filesToTypeMappingFile).files
 	}
-	return types
 }
 
-def getType(HashMap<String, String> types, String member) {
-	if (!types) {
+def getType(ArrayList filesToTypes, String file) {
+	if (!filesToTypes) {
 		return "UNKNOWN"
 	} else {
-		def type = types.get(member)
-		if (type) {
-			return type
+		def foundFile = filesToTypes.find { fileToTypes ->
+		  fileToTypes.file.equalsIgnoreCase(file)
+		} 
+		if (foundFile) {
+			return foundFile.types.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
 		} else {
 			return "UNKNOWN"
 		}

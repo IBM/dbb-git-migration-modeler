@@ -61,7 +61,7 @@ unassignedApplicationMappingConfiguration.application = "UNASSIGNED"
 @Field HashSet<String> filteredApplications = new HashSet<String>()
 
 // Types Configurations
-@Field HashMap<String, String> types
+@Field ArrayList filesToTypesMapping
 // script properties
 @Field Properties props = new Properties()
 @Field repositoryPathsMapping
@@ -100,13 +100,9 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 
 // Read the Types from file
 logger.logMessage("** Reading the Type Mapping definition.")
-if (props.APPLICATION_MEMBER_TYPE_MAPPING) {
-	def typesFile = new File(props.APPLICATION_MEMBER_TYPE_MAPPING)
-	if (!typesFile.exists()) {
-		logger.logMessage("*! [WARNING] File ${props.APPLICATION_MEMBER_TYPE_MAPPING} not found in the current working directory. All artifacts will use the 'UNKNOWN' type.")
-	} else {
-		types = fileUtils.loadTypes(props.APPLICATION_MEMBER_TYPE_MAPPING)
-	}
+if (props.APPLICATION_FILES_TYPES_MAPPING) {
+	filesToTypesMapping = fileUtils.loadFilesToTypesMapping(props.APPLICATION_FILES_TYPES_MAPPING)
+	println(filesToTypesMapping)
 } else {
 	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
@@ -286,12 +282,12 @@ def parseArgs(String[] args) {
 		System.exit(1)
 	}
 
-	if (configuration.APPLICATION_MEMBER_TYPE_MAPPING) {
-		File file = new File(configuration.APPLICATION_MEMBER_TYPE_MAPPING)
+	if (configuration.APPLICATION_FILES_TYPES_MAPPING) {
+		File file = new File(configuration.APPLICATION_FILES_TYPES_MAPPING)
 		if (file.exists()) {
-			props.APPLICATION_MEMBER_TYPE_MAPPING = configuration.APPLICATION_MEMBER_TYPE_MAPPING
+			props.APPLICATION_FILES_TYPES_MAPPING = configuration.APPLICATION_FILES_TYPES_MAPPING
 		} else {
-			logger.logMessage("*! [ERROR] The Types file '${configuration.APPLICATION_MEMBER_TYPE_MAPPING}' does not exist. Exiting.")
+			logger.logMessage("*! [ERROR] The Types file '${configuration.APPLICATION_FILES_TYPES_MAPPING}' does not exist. Exiting.")
 			System.exit(1)
 		}
 	}
@@ -393,7 +389,7 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 			(scannedLanguage, scannedFileType) = scanDatasetMember(constructDatasetForZFileOperation(dataset, member))
 		}
 		def lastQualifier = getLastQualifier(dataset)
-		def memberType = fileUtils.getType(types, member.toUpperCase())
+		def memberType = fileUtils.getType(filesToTypesMapping, datasetMember)
 		// Identifying the matching Repository Path
 		// based on 1) the scan result if enabled
 		// 2) the type if set
