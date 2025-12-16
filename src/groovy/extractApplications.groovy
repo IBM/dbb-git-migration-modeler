@@ -61,7 +61,7 @@ unassignedApplicationMappingConfiguration.application = "UNASSIGNED"
 @Field HashSet<String> filteredApplications = new HashSet<String>()
 
 // Types Configurations
-@Field ArrayList filesToTypesMapping
+@Field ArrayList typesMapping
 // script properties
 @Field Properties props = new Properties()
 @Field repositoryPathsMapping
@@ -100,9 +100,8 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 
 // Read the Types from file
 logger.logMessage("** Reading the Type Mapping definition.")
-if (props.APPLICATION_FILES_TYPES_MAPPING) {
-	filesToTypesMapping = fileUtils.loadFilesToTypesMapping(props.APPLICATION_FILES_TYPES_MAPPING)
-	println(filesToTypesMapping)
+if (props.APPLICATION_TYPES_MAPPING) {
+	typesMapping = loadTypesMapping(props.APPLICATION_TYPES_MAPPING)
 } else {
 	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
@@ -282,12 +281,12 @@ def parseArgs(String[] args) {
 		System.exit(1)
 	}
 
-	if (configuration.APPLICATION_FILES_TYPES_MAPPING) {
-		File file = new File(configuration.APPLICATION_FILES_TYPES_MAPPING)
+	if (configuration.APPLICATION_TYPES_MAPPING) {
+		File file = new File(configuration.APPLICATION_TYPES_MAPPING)
 		if (file.exists()) {
-			props.APPLICATION_FILES_TYPES_MAPPING = configuration.APPLICATION_FILES_TYPES_MAPPING
+			props.APPLICATION_TYPES_MAPPING = configuration.APPLICATION_TYPES_MAPPING
 		} else {
-			logger.logMessage("*! [ERROR] The Types file '${configuration.APPLICATION_FILES_TYPES_MAPPING}' does not exist. Exiting.")
+			logger.logMessage("*! [ERROR] The Types file '${configuration.APPLICATION_TYPES_MAPPING}' does not exist. Exiting.")
 			System.exit(1)
 		}
 	}
@@ -389,7 +388,7 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 			(scannedLanguage, scannedFileType) = scanDatasetMember(constructDatasetForZFileOperation(dataset, member))
 		}
 		def lastQualifier = getLastQualifier(dataset)
-		def memberType = fileUtils.getType(filesToTypesMapping, datasetMember)
+		def memberType = getTypeForDatasetMember(typesMapping, datasetMember)
 		// Identifying the matching Repository Path
 		// based on 1) the scan result if enabled
 		// 2) the type if set
@@ -574,4 +573,31 @@ def estimateDatasetMemberSize(String datasetMember) {
 		logger.logMessage("*! [WARNING] Unable to retrieve the estimated storage size for '$dataset($member)'")
 		return 0
 	}
+}
+
+// Reads a HashMap from the MEMBER_TYPE_MAPPING file with comma separator (',') and returns it
+def loadTypesMapping(String APPLICATION_TYPES_MAPPING) {
+    File typeMappingFile = new File(APPLICATION_TYPES_MAPPING)
+    if (!typeMappingFile.exists()) {
+        logger.logMessage("*! [WARNING] The Types Mapping file '$APPLICATION_TYPES_MAPPING' was not found.")
+        return null
+    } else {        
+        def yamlSlurper = new groovy.yaml.YamlSlurper()
+        return yamlSlurper.parse(typeMappingFile).files
+    }
+}
+
+def getTypeForDatasetMember(ArrayList types, String datasetMember) {
+    if (!types) {
+        return "UNKNOWN"
+    } else {
+        def foundType = types.find { type ->
+          type.datasetMember.equalsIgnoreCase(datasetMember)
+        } 
+        if (foundType) {
+            return foundType.types.sort().join("-")
+        } else {
+            return "UNKNOWN"
+        }
+    }
 }

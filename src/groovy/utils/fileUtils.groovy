@@ -14,33 +14,6 @@ import java.nio.file.*
 import groovy.cli.commons.*
 
 
-// Reads a HashMap from the MEMBER_TYPE_MAPPING file with comma separator (',') and returns it
-def loadFilesToTypesMapping(String APPLICATION_FILES_TYPES_MAPPING) {
-	File filesToTypeMappingFile = new File(APPLICATION_FILES_TYPES_MAPPING)
-	if (!filesToTypeMappingFile.exists()) {
-		logger.logMessage("*! [WARNING] The Files to Types Mapping file '$APPLICATION_FILES_TYPES_MAPPING' was not found. Exiting.")
-		return null
-	} else {		
-		def yamlSlurper = new groovy.yaml.YamlSlurper()
-        return yamlSlurper.parse(filesToTypeMappingFile).files
-	}
-}
-
-def getType(ArrayList filesToTypes, String file) {
-	if (!filesToTypes) {
-		return "UNKNOWN"
-	} else {
-		def foundFile = filesToTypes.find { fileToTypes ->
-		  fileToTypes.file.equalsIgnoreCase(file)
-		} 
-		if (foundFile) {
-			return foundFile.types.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
-		} else {
-			return "UNKNOWN"
-		}
-	}
-}
-
 /*
  * relativizePath - converts an absolute path to a relative path from the workspace directory
  */

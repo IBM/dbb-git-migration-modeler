@@ -1,17 +1,19 @@
 files:
-- file: "DBEHM.MIG.COBOL(LGACDB01)"
+- datasetMember: "DBEHM.MIG.COBOL(LGACDB01)"
   types:
-  - "CBLCICSDB2"
+  - "CBL"
+  - "CICS"
+  - "DB2"
   properties:
   - name: "COBPARM"
     value: "AMODE(31)"
-- file: "DBEHM.MIG.COBOL(LGACDB02)"
+- datasetMember: "DBEHM.MIG.COBOL(LGACDB02)"
   types:
   - "CBLDB2"
   properties:
   - name: "COBPARM"
     value: "AMODE(31)"
-- file: "DBEHM.MIG.COBOL(LGACUS01)"
+- datasetMember: "DBEHM.MIG.COBOL(LGACUS01)"
   types:
   - "CBLCICS"
   properties:
