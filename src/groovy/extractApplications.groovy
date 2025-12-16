@@ -583,7 +583,7 @@ def loadTypesMapping(String APPLICATION_TYPES_MAPPING) {
         return null
     } else {        
         def yamlSlurper = new groovy.yaml.YamlSlurper()
-        return yamlSlurper.parse(typeMappingFile).files
+        return yamlSlurper.parse(typeMappingFile).datasetMembers
     }
 }
 

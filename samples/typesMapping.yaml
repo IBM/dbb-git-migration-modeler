@@ -1,21 +1,24 @@
-files:
-- datasetMember: "DBEHM.MIG.COBOL(LGACDB01)"
-  types:
-  - "CBL"
-  - "CICS"
-  - "DB2"
-  properties:
-  - name: "COBPARM"
-    value: "AMODE(31)"
-- datasetMember: "DBEHM.MIG.COBOL(LGACDB02)"
-  types:
-  - "CBLDB2"
-  properties:
-  - name: "COBPARM"
-    value: "AMODE(31)"
-- datasetMember: "DBEHM.MIG.COBOL(LGACUS01)"
-  types:
-  - "CBLCICS"
-  properties:
-  - name: "COBPARM"
-    value: "AMODE(31)"
+## List of datasets members to which types are assigned
+datasetMembers:
+    - datasetMember: "DBEHM.MIG.COBOL(LGACDB01)"
+      ## For each dataset member, types is a list of types assigned
+      ## The types are then concatenated to form a Language configuration definition
+      types:
+          - "CBLCICSDB2"
+      ## Properties can also be specified to describe file-level overrides
+      ## These overrides are not yet used in the processing
+      properties:
+          - name: "COBPARM"
+            value: "AMODE(31)"
+    - datasetMember: "DBEHM.MIG.COBOL(LGACDB02)"
+      types:
+          - "CBLDB2"
+      properties:
+          - name: "COBPARM"
+            value: "AMODE(31)"
+    - datasetMember: "DBEHM.MIG.COBOL(LGACUS01)"
+      types:
+          - "CBLCICS"
+      properties:
+          - name: "COBPARM"
+            value: "AMODE(31)"
