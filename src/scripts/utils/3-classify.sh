@@ -113,9 +113,6 @@ if [ $rc -eq 0 ]; then
 				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 				--application $applicationDir \
 				--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
-			if [ "$MOVE_FILES_FLAG" == "true" ]; then
-                CMD="$CMD --moveFiles"
-            fi
 			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 			$CMD
 		fi
