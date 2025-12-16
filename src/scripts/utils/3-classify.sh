@@ -112,7 +112,6 @@ if [ $rc -eq 0 ]; then
 			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/assessUsage.groovy \
 				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 				--application $applicationDir \
-				--moveFiles \
 				--logFile $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log"
 			echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/3-$applicationDir-assessUsage.log
 			$CMD

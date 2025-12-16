@@ -186,7 +186,7 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 						logger.logMessage("\t==> Updating usage of Include File '$file' to 'private' in '${updatedApplicationDescriptorFile.getPath()}'.")
 					} else {
 						// Only an other application references this Include File, so update the definitions and maybe move it
-						if (props.moveFiles.toBoolean()) {
+						if (props.MOVE_FILES_FLAG.toBoolean()) {
 
 							def owningApplication = referencingCollections[0]
 
@@ -428,7 +428,6 @@ def parseArgs(String[] args) {
 	String header = 'options:'
 	def cli = new CliBuilder(usage:usage,header:header)
 	cli.a(longOpt:'application', args:1, required:true, 'Application  name.')
-	cli.m(longOpt:'moveFiles', args:0, 'Flag to move files when usage is assessed.')
 	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
 	cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
 
@@ -448,12 +447,6 @@ def parseArgs(String[] args) {
 	} else {
 		logger.logMessage("*! [ERROR] The Application name (option -a/--application) must be provided. Exiting.")
 		System.exit(1)
-	}
-
-	if (opts.m) {
-		props.moveFiles = "true"
-	} else {
-		props.moveFiles = "false"
 	}
 
 	if (opts.c) {
@@ -515,7 +508,14 @@ def parseArgs(String[] args) {
 		logger.logMessage("*! [ERROR] The default branch name setting APPLICATION_DEFAULT_BRANCH must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
 		System.exit(1)
 	}
-	
+
+    if (configuration.MOVE_FILES_FLAG) {
+        props.MOVE_FILES_FLAG = configuration.MOVE_FILES_FLAG
+    } else {
+        props.MOVE_FILES_FLAG = "true"
+        logger.logMessage("** [WARNNING] The MOVE_FILES_FLAG setting is not specified and will be set to 'true' by default.")
+    }
+    
 	if (configuration.REPOSITORY_PATH_MAPPING_FILE) {
 		props.REPOSITORY_PATH_MAPPING_FILE = configuration.REPOSITORY_PATH_MAPPING_FILE
 	} else {

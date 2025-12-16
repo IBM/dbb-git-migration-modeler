@@ -55,6 +55,7 @@ This script prompts for the below environment variables and saves them in a conf
 | DBB_ZAPPBUILD | The path to a customized [dbb-zAppBuild repository](https://github.com/IBM/dbb-zappbuild) on z/OS Unix System Services for baseline builds during [The Initialization phase](01-Storyboard.md#the-initialization-phase). | `/var/dbb/dbb-zappbuild` |
 | DBB_COMMUNITY_REPO | The path to a customized [DBB community repository](https://github.com/IBM/dbb) on z/OS Unix System Services for baseline packaging during [The Initialization phase](01-Storyboard.md#the-initialization-phase). | `/var/dbb/dbb` |
 | APPLICATION_DEFAULT_BRANCH | The default branch name when initializing Git repositories and scanning files into DBB collections. |  `main` |
+| MOVE_FILES_FLAG | This flag specifies if files should be moved to the owning application during the _Usage Assessment_ phase. |  `true` |
 | INTERACTIVE_RUN | The flag to indicate if the Migration-Modeler-Start script should run interactively (set to `true`) or in batch (set to `false`). | `false` |
 | PUBLISH_ARTIFACTS | The flag to indicate if baseline packages should be uploaded to an Artifact Repository server (set to `true`) or not (set to `false`). | `true` |
 | ARTIFACT_REPOSITORY_SERVER_URL | If the `PUBLISH_ARTIFACTS` parameter is set to `true`, the URL of the Artifact Repository Server when baseline archives are meant to be uploaded. | No default value |
