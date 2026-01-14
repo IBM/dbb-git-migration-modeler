@@ -145,6 +145,9 @@ if [ $rc -eq 0 ]; then
 				if [ $rc -eq 0 ]; then
 					echo "** Create file 'baselineReference.config'"
 					baselineReferenceFile="$DBB_MODELER_APPLICATION_DIR/$applicationDir/application-conf/baselineReference.config"
+					if [ ! -d $DBB_MODELER_APPLICATION_DIR/$applicationDir/application-conf ]; then
+					   mkdir $DBB_MODELER_APPLICATION_DIR/$applicationDir/application-conf
+					fi 
 					touch $baselineReferenceFile
 					chtag -c ibm-1047 -t $baselineReferenceFile
 					# Retrieve baseline versions
@@ -324,16 +327,6 @@ if [ $rc -eq 0 ]; then
     	
     				# mkdir application log directory
     				mkdir -p $DBB_MODELER_LOGS/$applicationDir
-    	
-    				if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-    					declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreFileLocation=$DBB_MODELER_FILE_METADATA_STORE_DIR"
-    				elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-    					if [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD" ]; then
-    						declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --pw $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD"
-    					elif [ -n "$DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE" ]; then
-    						declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreDb2ConnectionConf=$DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE --id $DBB_MODELER_DB2_METADATASTORE_JDBC_ID --pwFile $DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE"
-    					fi
-    				fi
     	
     				if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
     					if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then

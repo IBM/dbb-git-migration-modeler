@@ -160,55 +160,52 @@ if (fileToTypesMap && fileToTypesMap.size() > 0 && createdTypesConfigurations &&
 def matchingSourcesGroup = applicationDescriptor.sources.findAll { source ->
     source.artifactsType.equalsIgnoreCase("Program") 
 }
-matchingSourcesGroup.each() { matchingMourceGroup ->
+matchingSourcesGroup.each() { matchingSourceGroup ->
     
     def impactAnalysisTask = applicationDBBAppYaml.tasks.find() { task ->
         task.task.equals("ImpactAnalysis")
     }
-    if (impactAnalysisTask) {
-        def impactQueryPatterns = impactAnalysisTask.variables.find() { variable ->
-            variable.name.equals("impactQueryPatterns")
+    if (!impactAnalysisTask) {
+        impactAnalysisTask = [ "task": "ImpactAnalysis", "variables": [] ]
+        applicationDBBAppYaml.tasks << impactAnalysisTask
+    }
+    def impactQueryPatterns = impactAnalysisTask.variables.find() { variable ->
+        variable.name.equals("impactQueryPatterns")
+    }
+    if (!impactQueryPatterns) {
+        impactQueryPatterns = [ "name": "impactQueryPatterns", "value": [] ]
+        impactAnalysisTask.variables << impactQueryPatterns
+    }
+    if (matchingSourceGroup.name.equals("cobol")) {
+        def dependencyPattern = [ "languageExt": matchingSourceGroup.fileExtension, "dependencyPatterns": [] ]
+        // BMS
+        def BMSGroup = applicationDescriptor.sources.find() { sourceGroup ->
+            sourceGroup.name.equals("bms")
         }
-        if (impactQueryPatterns) {
-            if (!impactQueryPatterns.value) {
-                impactQueryPatterns.value = new ArrayList<DependencyPattern>()
-            }
-            if (matchingMourceGroup.name.equals("cobol")) {
-                DependencyPattern dependencyPattern = new DependencyPattern()
-                dependencyPattern.languageExt = matchingMourceGroup.fileExtension
-                dependencyPattern.dependencyPatterns = new ArrayList<String>()
-                // BMS
-                def BMSGroup = applicationDescriptor.sources.find() { sourceGroup ->
-                    sourceGroup.name.equals("bms")
-                }
-                if (BMSGroup) {
-                    dependencyPattern.dependencyPatterns.add("\${APP_DIR_NAME}/${BMSGroup.repositoryPath}/*.${BMSGroup.fileExtension}")
-                }
-                // Cobol Copybook
-                def CopyGroup = applicationDescriptor.sources.find() { sourceGroup ->
-                    sourceGroup.name.equals("copy")
-                }
-                if (CopyGroup) {
-                    dependencyPattern.dependencyPatterns.add("\${APP_DIR_NAME}/${CopyGroup.repositoryPath}/*.${CopyGroup.fileExtension}")
-                }
-                // Cobol program
-                dependencyPattern.dependencyPatterns.add("\${APP_DIR_NAME}/${matchingMourceGroup.repositoryPath}/*.${matchingMourceGroup.fileExtension}")
-                impactQueryPatterns.value.add(dependencyPattern)
-            }
-            if (matchingMourceGroup.name.equals("link")) {
-                DependencyPattern dependencyPattern = new DependencyPattern()
-                dependencyPattern.languageExt = sourceGroup.fileExtension
-                dependencyPattern.dependencyPatterns = new ArrayList<String>()
-                // Cobol program
-                def CobolGroup = applicationDescriptor.sources.find() { sourceGroup ->
-                    sourceGroup.name.equals("cobol")
-                }
-                if (CobolGroup) {
-                    dependencyPattern.dependencyPatterns.add("\${APP_DIR_NAME}/${CobolGroup.repositoryPath}/*.${CobolGroup.fileExtension}")
-                }        
-                impactQueryPatterns.value.add(dependencyPattern)
-            }
+        if (BMSGroup) {
+            dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${BMSGroup.repositoryPath}/*.${BMSGroup.fileExtension}"
         }
+        // Cobol Copybook
+        def CopyGroup = applicationDescriptor.sources.find() { sourceGroup ->
+            sourceGroup.name.equals("copy")
+        }
+        if (CopyGroup) {
+            dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${CopyGroup.repositoryPath}/*.${CopyGroup.fileExtension}"
+        }
+        // Cobol program
+        dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${matchingSourceGroup.repositoryPath}/*.${matchingSourceGroup.fileExtension}"
+        impactQueryPatterns.value << dependencyPattern
+    }
+    if (matchingSourceGroup.name.equals("link")) {
+        def dependencyPattern = [ "languageExt": matchingSourceGroup.fileExtension, "dependencyPatterns": [] ]
+        // Cobol program
+        def CobolGroup = applicationDescriptor.sources.find() { sourceGroup ->
+            sourceGroup.name.equals("cobol")
+        }
+        if (CobolGroup) {
+            dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${CobolGroup.repositoryPath}/*.${CobolGroup.fileExtension}"
+        }
+        impactQueryPatterns.value << dependencyPattern
     }
 }
 
@@ -228,6 +225,7 @@ applicationDBBAppYamlFile.withWriter("UTF-8") { writer ->
     writer.write(yamlBuilder.toString())
 }
 FileUtils.setFileTag(applicationDBBAppYamlFile.getAbsolutePath(), "UTF-8")
+logger.logMessage("** Application Configuration file '${applicationDBBAppYamlFile.getAbsolutePath()}' successfully created")
 
 // close logger file
 logger.close()
@@ -284,7 +282,7 @@ def parseArgs(String[] args) {
         if (directory.exists()) {
             props.DBB_MODELER_APPLICATION_DIR = configuration.DBB_MODELER_APPLICATION_DIR
         } else {
-            logger.logMessage("*! [ERROR] The Applications directory '${configuration.DBB_MODELER_APPLICATION_DIR}' does not exist. Exiting.")
+            logger.logMessage("*! [ERROR] The Application's directory '${configuration.DBB_MODELER_APPLICATION_DIR}' does not exist. Exiting.")
             System.exit(1)
         }
     } else {
