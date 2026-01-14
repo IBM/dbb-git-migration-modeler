@@ -18,40 +18,14 @@ import java.util.Properties;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.Files
 import java.nio.file.Path
+import com.ibm.dbb.utils.FileUtils
 
 @Field Properties props = new Properties()
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
 @Field File applicationDescriptorFile
 @Field def applicationDescriptor
-@Field File applicationDBBAppYamlFile
-@Field def applicationDBBAppYaml
 
-class ZBuilderApplication {
-    String name
-    ArrayList<Task> tasks
-}
-
-class Task {
-    String task
-    ArrayList<Variable> variables
-}
-
-class Variable {
-    String name
-    String value
-    ArrayList<String> forFiles
-}
-
-class IncludeFile {
-    String file
-}
-
-class DependencyPattern {
-    String languageExt
-    ArrayList<String> dependencyPatterns
-}
- 
 /**
  * Processing logic
  */
@@ -80,115 +54,101 @@ if (applicationDescriptorFile.exists()) {
     System.exit(1)
 }
 
-originalDBBAppYamlFile = new File("${props.DBB_MODELER_DEFAULT_GIT_CONFIG}/dbb-app.yaml")
-if (originalDBBAppYamlFile.exists()) {
-    applicationDBBAppYamlFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/dbb-app.yaml")
-    Files.copy(originalDBBAppYamlFile.toPath(), applicationDBBAppYamlFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING)
-    runShellCmd("chtag -t -c UTF-8 ${applicationDBBAppYamlFile.getAbsolutePath()}")    
-    def yamlSlurper = new groovy.yaml.YamlSlurper()
-    applicationDBBAppYaml = yamlSlurper.parse(applicationDBBAppYamlFile)
-    applicationDBBAppYaml.application.name = props.application
-} else {
-    logger.logMessage("!* [ERROR] The dbb-app.yaml sample file '${props.DBB_MODELER_DEFAULT_GIT_CONFIG}/dbb-app.yaml' does not exist. Exiting.")
-    System.exit(1)
-}
-
 logger.logMessage("** Gathering the defined types for files.")
 
 // Internal map to collect all information : type <-> list of files mapped to that type
 //HashMap<String, ArrayList<String>> typesToFilesMap = new HashMap<String, ArrayList<String>>()
 // Internal map to collect all information : files <-> list of types for this file
-HashMap<String, ArrayList<String>> fileToTypesMap = new HashMap<String, ArrayList<String>>()
+HashMap<String, HashMap<String, String>> fileToTypesMap = new HashMap<String, ArrayList<String>>()
+HashSet<String> typesConfigurationsToCreate = []
+HashSet<String> createdTypesConfigurations = []
 
 applicationDescriptor.sources.each { sourceGroup ->
-    repositoryPath = sourceGroup.repositoryPath
-    fileExtension = sourceGroup.fileExtension
     sourceGroup.files.each { file ->
         if (file.type) {
             def types = file.type.split(",")
-            if (types != null && types.size() > 0 && !types[0].equals("UNKNOWN")) {
-                fileToTypesMap.put("${sourceGroup.repositoryPath}/${file.name}.${fileExtension}", types)
+            if (types != null && types.size() > 0 && !types[0].equals("UNKNOWN") && !sourceGroup.languageProcessor.isEmpty()) {
+                fileToTypesMap.put("${sourceGroup.repositoryPath}/${file.name}.${sourceGroup.fileExtension}", ["task":sourceGroup.languageProcessor, "types":types])
+                types.each() { typeToCreate ->    
+                    typesConfigurationsToCreate << typeToCreate
+                }
             }
         }
     }
 }
 
-if (fileToTypesMap && fileToTypesMap.size() > 0) {
-    logger.logMessage("** Generating zBuilder configuration files.")
+def applicationDBBAppYaml = [:]
+applicationDBBAppYaml.name = props.application
+applicationDBBAppYaml.tasks = []    
+def applicationDBBAppYamlFolderPath = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}"
 
-    // Path to the zBuilder Configuration folder in the application's folder
-    def zBuilderConfigurationFolderPath = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/zBuilder-config"
-    File zBuilderConfigurationFolder = new File(zBuilderConfigurationFolderPath)
-    if (!zBuilderConfigurationFolder.exists()) {
-        zBuilderConfigurationFolder.mkdirs()
+// Path to the zBuilder Configuration folder in the application's folder
+def zBuilderConfigurationFolderPath = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/config"
+File zBuilderConfigurationFolder = new File(zBuilderConfigurationFolderPath)
+if (!zBuilderConfigurationFolder.exists()) {
+    zBuilderConfigurationFolder.mkdirs()
+}
+
+// If there are Types Configurations files to create
+if (typesConfigurationsToCreate && typesConfigurationsToCreate.size() > 0) {
+    logger.logMessage("** Generating zBuilder language configuration files.")
+    typesConfigurationsToCreate.each() { typeToCreate ->
+        typeConfiguration = typesConfigurations.typesConfigurations.find() { typeConfiguration ->
+            typeConfiguration.typeConfiguration.equals(typeToCreate)
+        }
+    
+        if (typeConfiguration) {
+            logger.logMessage("\tType Configuration for type '${typeToCreate}' found in '${props.TYPE_CONFIGURATIONS_FILE}'.")
+            def typeConfigurationVariables = []
+            typeConfiguration.variables.each() { variable ->
+                typeConfigurationVariables << [ "name": variable.name, "value": variable.value ]
+            }
+            File typeConfigurationYamlFile = new File("${zBuilderConfigurationFolderPath}/${typeToCreate}.yaml")
+            def yamlBuilder = new YamlBuilder()
+                yamlBuilder {
+                config typeConfigurationVariables
+            }
+            File yamlFileParentFolder = typeConfigurationYamlFile.getParentFile()
+            if (!yamlFileParentFolder.exists()) {
+                yamlFileParentFolder.mkdirs()
+            }                
+            
+            typeConfigurationYamlFile.withWriter("UTF-8") { writer ->
+                writer.write(yamlBuilder.toString())
+            }
+            FileUtils.setFileTag(typeConfigurationYamlFile.getAbsolutePath(), "UTF-8")
+            // We build a set of types that were actually found and created
+            // This set will be used when we later process all the files to check if it's necessary
+            //   to create the languageConfigurationSource entry
+            createdTypesConfigurations << typeToCreate
+        } else {
+            logger.logMessage("\t[WARNING] No Type Configuration for type '${typeToCreate}' found in '${props.TYPE_CONFIGURATIONS_FILE}'.")
+        }
     }
+}
 
-    fileToTypesMap.each() { file, types ->
-	    ZBuilderApplication zBuilderApplication = new ZBuilderApplication()
-	    zBuilderApplication.name = props.application
-	    zBuilderApplication.tasks = new ArrayList<Task>()
-        types.each() { type ->
-            typeConfiguration = typesConfigurations.typesConfigurations.find() { configuration ->
-                configuration.typeConfiguration.equals(type)
-            }
-
-			if (typeConfiguration) {
-				typeConfiguration.tasks.each() { typeConfigurationTask ->
-					Task task = zBuilderApplication.tasks.find() { applicationTask ->
-						applicationTask.task.equals(typeConfigurationTask)
-                    }
-                    if (!task) {
-	                    task = new Task()
-    	                task.task = typeConfigurationTask
-    	                zBuilderApplication.tasks.add(task)
-	                    task.variables = new ArrayList<Variable>()
-    	            }
-
-                    typeConfiguration.variables.each() { typeConfigurationVariable ->
-                        Variable newVariable = new Variable()
-                        newVariable.name = typeConfigurationVariable.name
-                        newVariable.value = typeConfigurationVariable.value
-                        newVariable.forFiles = new ArrayList<String>()
-                        newVariable.forFiles.add(file)
-                        task.variables.add(newVariable)
-                    }
+if (fileToTypesMap && fileToTypesMap.size() > 0 && createdTypesConfigurations && createdTypesConfigurations.size() > 0) {
+    logger.logMessage("** Generating zBuilder Application configuration file.")
+    fileToTypesMap.each() { file, info ->
+        info.types.each() { type ->
+            if (createdTypesConfigurations.contains(type)) {
+    			def task = applicationDBBAppYaml.tasks.find() { applicationTask ->
+        			applicationTask.task.equals(info.task)
                 }
-                // generating and writing the configuration file
-                File yamlFile = new File("${zBuilderConfigurationFolderPath}/${file}.yaml")
-                def yamlBuilder = new YamlBuilder()
-                    yamlBuilder {
-                    version "1.0.0"
-                    application zBuilderApplication
+                if (!task) {
+                    task = [ "task": info.task, "variables": [] ]
+                    applicationDBBAppYaml.tasks << task
                 }
-                File yamlFileParentFolder = yamlFile.getParentFile()
-			    if (!yamlFileParentFolder.exists()) {
-			        yamlFileParentFolder.mkdirs()
-			    }                
-                
-                yamlFile.withWriter("UTF-8") { writer ->
-                    writer.write(yamlBuilder.toString())
+                languageConfigurationVariable = task.variables.find() { variable ->
+                    variable.name.equals("languageConfigurationSource") &&
+                    variable.value.equals("\${APP_DIR}/config/${type}.yaml")
                 }
-                runShellCmd("chtag -t -c UTF-8 ${yamlFile.getAbsolutePath()}")
-
-                if (!applicationDBBAppYaml.application.name) {
-                     applicationDBBAppYaml.application.name = props.application
+                if (!languageConfigurationVariable) {
+                    languageConfigurationVariable = [ "name": "languageConfigurationSource", "value": "\${APP_DIR}/config/${type}.yaml", "forFiles": [] ]        
                 }
-                // Adding the file to the include files in the dbb-app.yaml file
-                if (!applicationDBBAppYaml.application.include) {
-                    applicationDBBAppYaml.application.include = new ArrayList<IncludeFile>()
-                }
-                foundIncludeFiles = applicationDBBAppYaml.application.include.findAll() { foundIncludeFile ->
-                	foundIncludeFile.file.equals("zBuilder-config/${file}.yaml" as String)
-                	
-                }
-                if (!foundIncludeFiles) {
-	                IncludeFile newIncludeFile = new IncludeFile()
-	                newIncludeFile.file = "zBuilder-config/${file}.yaml"
-	                applicationDBBAppYaml.application.include.add(newIncludeFile)
-	            }
-            } else {
-                logger.logMessage("** [WARNING] No Type Configuration for type '${type}' found in '${props.TYPE_CONFIGURATIONS_FILE}'.")
-            }
+                languageConfigurationVariable.forFiles << file
+                task.variables << languageConfigurationVariable
+            }                
         }
     }
 } else {
@@ -202,7 +162,7 @@ def matchingSourcesGroup = applicationDescriptor.sources.findAll { source ->
 }
 matchingSourcesGroup.each() { matchingMourceGroup ->
     
-    def impactAnalysisTask = applicationDBBAppYaml.application.tasks.find() { task ->
+    def impactAnalysisTask = applicationDBBAppYaml.tasks.find() { task ->
         task.task.equals("ImpactAnalysis")
     }
     if (impactAnalysisTask) {
@@ -252,16 +212,22 @@ matchingSourcesGroup.each() { matchingMourceGroup ->
     }
 }
 
-
-// generating and writing the configuration file    
+// generating and writing the configuration file
+File applicationDBBAppYamlFile = new File("${applicationDBBAppYamlFolderPath}/dbb-app.yaml")
 def yamlBuilder = new YamlBuilder()
     yamlBuilder {
     version "1.0.0"
-    application applicationDBBAppYaml.application
+    application applicationDBBAppYaml
 }
+File yamlFileParentFolder = applicationDBBAppYamlFile.getParentFile()
+if (!yamlFileParentFolder.exists()) {
+    yamlFileParentFolder.mkdirs()
+}                
+    
 applicationDBBAppYamlFile.withWriter("UTF-8") { writer ->
     writer.write(yamlBuilder.toString())
-}    
+}
+FileUtils.setFileTag(applicationDBBAppYamlFile.getAbsolutePath(), "UTF-8")
 
 // close logger file
 logger.close()
@@ -339,19 +305,6 @@ def parseArgs(String[] args) {
         System.exit(1)
     }
 
-    if (configuration.DBB_MODELER_DEFAULT_GIT_CONFIG) {
-        File file = new File(configuration.DBB_MODELER_DEFAULT_GIT_CONFIG)
-        if (file.exists()) {
-            props.DBB_MODELER_DEFAULT_GIT_CONFIG = configuration.DBB_MODELER_DEFAULT_GIT_CONFIG
-        } else {
-            logger.logMessage("*! [ERROR] The DBB Git Configuration samples folder '${configuration.DBB_MODELER_DEFAULT_GIT_CONFIG}' does not exist. Exiting.")
-            System.exit(1)
-        }
-    } else {
-        logger.logMessage("*! [ERROR] The path to the DBB Git Configuration samples folder must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
-        System.exit(1)
-    }
-    
     logger.logMessage("** Script configuration:")
     props.each() { k, v ->
         logger.logMessage("\t$k -> $v")

@@ -278,7 +278,7 @@ initializeWorkDirectory() {
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
-			echo "  [INFO] Copying sample Files to Types Mapping file to '$APPLICATION_TYPES_MAPPING'"
+			echo "  [INFO] Copying sample Types Mapping file to '$APPLICATION_TYPES_MAPPING'"
 			mkdir -p "$(dirname $APPLICATION_TYPES_MAPPING)"
 			cp $DBB_MODELER_HOME/samples/typesMapping.yaml $APPLICATION_TYPES_MAPPING
 			command_rc=$?
