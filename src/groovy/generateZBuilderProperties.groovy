@@ -259,7 +259,7 @@ matchingSourcesGroup.each() { matchingSourceGroup ->
         if (ASMMacroGroup) {
             def dependencySearchPath = [ "name": "dependencySearchPath", "value": "search:\${WORKSPACE}/?path=\${APP_DIR_NAME}/${ASMMacroGroup.repositoryPath}/*.${ASMMacroGroup.fileExtension}" ]
             languageTask.variables << dependencySearchPath
-        }
+        } 
     }
 }
 
@@ -279,7 +279,9 @@ applicationDBBAppYamlFile.withWriter("UTF-8") { writer ->
     writer.write(yamlBuilder.toString())
 }
 FileUtils.setFileTag(applicationDBBAppYamlFile.getAbsolutePath(), "UTF-8")
-logger.logMessage("** Application Configuration file '${applicationDBBAppYamlFile.getAbsolutePath()}' successfully created")
+logger.logMessage("** Application Configuration file '${applicationDBBAppYamlFile.getAbsolutePath()}' successfully created.")
+logger.logMessage("** [INFO] Make sure the zBuilder Configuration files (Language Task definitions) are accurate before running a build with zBuilder.")
+logger.logMessage("** [INFO] For each Language Task definition, the Dependency Search Path variable potentially need to be updated to match the layout of the Git repositories.")
 
 // close logger file
 logger.close()
