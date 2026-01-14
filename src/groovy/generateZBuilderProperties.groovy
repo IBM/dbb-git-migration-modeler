@@ -68,7 +68,9 @@ applicationDescriptor.sources.each { sourceGroup ->
         if (file.type) {
             def types = file.type.split(",")
             if (types != null && types.size() > 0 && !types[0].equals("UNKNOWN") && !sourceGroup.languageProcessor.isEmpty()) {
+                // Build a map of files that have a type assigned
                 fileToTypesMap.put("${sourceGroup.repositoryPath}/${file.name}.${sourceGroup.fileExtension}", ["task":sourceGroup.languageProcessor, "types":types])
+                // Build a Set of types to process for the creation of a Language Configuration file
                 types.each() { typeToCreate ->    
                     typesConfigurationsToCreate << typeToCreate
                 }
@@ -132,22 +134,29 @@ if (fileToTypesMap && fileToTypesMap.size() > 0 && createdTypesConfigurations &&
     fileToTypesMap.each() { file, info ->
         info.types.each() { type ->
             if (createdTypesConfigurations.contains(type)) {
+                // Search for task if it already exists
     			def task = applicationDBBAppYaml.tasks.find() { applicationTask ->
         			applicationTask.task.equals(info.task)
                 }
+                // if it doesn't exist, create it
                 if (!task) {
                     task = [ "task": info.task, "variables": [] ]
                     applicationDBBAppYaml.tasks << task
                 }
+                // Search for existing languageConfiguration matching the path of the config file
                 languageConfigurationVariable = task.variables.find() { variable ->
                     variable.name.equals("languageConfigurationSource") &&
                     variable.value.equals("\${APP_DIR}/config/${type}.yaml")
                 }
+                // if not found, create it
                 if (!languageConfigurationVariable) {
                     languageConfigurationVariable = [ "name": "languageConfigurationSource", "value": "\${APP_DIR}/config/${type}.yaml", "forFiles": [] ]        
                 }
+                // add the file to the forFiles for this override
                 languageConfigurationVariable.forFiles << file
                 task.variables << languageConfigurationVariable
+                
+                
             }                
         }
     }
@@ -156,6 +165,7 @@ if (fileToTypesMap && fileToTypesMap.size() > 0 && createdTypesConfigurations &&
 }
 
 // generating dependencies path in configuration file
+logger.logMessage("** Generating Dependencies Search Paths and Impact Analysis Query Patterns.")
 
 def matchingSourcesGroup = applicationDescriptor.sources.findAll { source ->
     source.artifactsType.equalsIgnoreCase("Program") 
@@ -177,6 +187,7 @@ matchingSourcesGroup.each() { matchingSourceGroup ->
         impactAnalysisTask.variables << impactQueryPatterns
     }
     if (matchingSourceGroup.name.equals("cobol")) {
+        // Creating default entries for Impact Query Patterns
         def dependencyPattern = [ "languageExt": matchingSourceGroup.fileExtension, "dependencyPatterns": [] ]
         // BMS
         def BMSGroup = applicationDescriptor.sources.find() { sourceGroup ->
@@ -195,8 +206,22 @@ matchingSourcesGroup.each() { matchingSourceGroup ->
         // Cobol program
         dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${matchingSourceGroup.repositoryPath}/*.${matchingSourceGroup.fileExtension}"
         impactQueryPatterns.value << dependencyPattern
+
+        // Creating default entries for Dependencies Search Path
+        def languageTask = applicationDBBAppYaml.tasks.find() { task ->
+            task.task.equals(matchingSourceGroup.languageProcessor)
+        }
+        if (!languageTask) {
+            languageTask = [ "task": matchingSourceGroup.languageProcessor, "variables": [] ]
+            applicationDBBAppYaml.tasks << languageTask
+        }
+        if (CopyGroup) {
+            def dependencySearchPath = [ "name": "dependencySearchPath", "value": "search:\${WORKSPACE}/?path=\${APP_DIR_NAME}/${CopyGroup.repositoryPath}/*.${CopyGroup.fileExtension}" ]
+            languageTask.variables << dependencySearchPath
+        }
     }
     if (matchingSourceGroup.name.equals("link")) {
+        // Creating default entries for Impact Query Patterns
         def dependencyPattern = [ "languageExt": matchingSourceGroup.fileExtension, "dependencyPatterns": [] ]
         // Cobol program
         def CobolGroup = applicationDescriptor.sources.find() { sourceGroup ->
@@ -206,6 +231,35 @@ matchingSourcesGroup.each() { matchingSourceGroup ->
             dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${CobolGroup.repositoryPath}/*.${CobolGroup.fileExtension}"
         }
         impactQueryPatterns.value << dependencyPattern
+    }
+    
+    
+    if (matchingSourceGroup.name.equals("asm")) {
+        // Creating default entries for Impact Query Patterns
+        def dependencyPattern = [ "languageExt": matchingSourceGroup.fileExtension, "dependencyPatterns": [] ]
+        // ASM macros
+        def ASMMacroGroup = applicationDescriptor.sources.find() { sourceGroup ->
+            sourceGroup.name.equals("macro")
+        }
+        if (ASMMacroGroup) {
+            dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${ASMMacroGroup.repositoryPath}/*.${ASMMacroGroup.fileExtension}"
+        }
+        // ASM program
+        dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${matchingSourceGroup.repositoryPath}/*.${matchingSourceGroup.fileExtension}"
+        impactQueryPatterns.value << dependencyPattern
+
+        // Creating default entries for Dependencies Search Path
+        def languageTask = applicationDBBAppYaml.tasks.find() { task ->
+            task.task.equals(matchingSourceGroup.languageProcessor)
+        }
+        if (!languageTask) {
+            languageTask = [ "task": matchingSourceGroup.languageProcessor, "variables": [] ]
+            applicationDBBAppYaml.tasks << languageTask
+        }
+        if (ASMMacroGroup) {
+            def dependencySearchPath = [ "name": "dependencySearchPath", "value": "search:\${WORKSPACE}/?path=\${APP_DIR_NAME}/${ASMMacroGroup.repositoryPath}/*.${ASMMacroGroup.fileExtension}" ]
+            languageTask.variables << dependencySearchPath
+        }
     }
 }
 
