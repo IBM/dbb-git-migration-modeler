@@ -56,25 +56,16 @@ if (applicationDescriptorFile.exists()) {
 
 logger.logMessage("** Gathering the defined types for files.")
 
-// Internal map to collect all information : type <-> list of files mapped to that type
-//HashMap<String, ArrayList<String>> typesToFilesMap = new HashMap<String, ArrayList<String>>()
-// Internal map to collect all information : files <-> list of types for this file
-HashMap<String, HashMap<String, String>> fileToTypesMap = new HashMap<String, ArrayList<String>>()
+filesToLanguageConfigurations = []
 HashSet<String> typesConfigurationsToCreate = []
 HashSet<String> createdTypesConfigurations = []
 
 applicationDescriptor.sources.each { sourceGroup ->
     sourceGroup.files.each { file ->
-        if (file.type) {
-            def types = file.type.split(",")
-            if (types != null && types.size() > 0 && !types[0].equals("UNKNOWN") && !sourceGroup.languageProcessor.isEmpty()) {
-                // Build a map of files that have a type assigned
-                fileToTypesMap.put("${sourceGroup.repositoryPath}/${file.name}.${sourceGroup.fileExtension}", ["task":sourceGroup.languageProcessor, "types":types])
-                // Build a Set of types to process for the creation of a Language Configuration file
-                types.each() { typeToCreate ->    
-                    typesConfigurationsToCreate << typeToCreate
-                }
-            }
+        if (file.type != null && !file.type.equals("UNKNOWN")) {
+            // Build a Set of types to process for the creation of a Language Configuration file
+            typesConfigurationsToCreate << file.type
+            filesToLanguageConfigurations << [ "file": "${sourceGroup.repositoryPath}/${file.name}.${sourceGroup.fileExtension}", "task": sourceGroup.languageProcessor, "types":types ]
         }
     }
 }
@@ -129,14 +120,14 @@ if (typesConfigurationsToCreate && typesConfigurationsToCreate.size() > 0) {
     }
 }
 
-if (fileToTypesMap && fileToTypesMap.size() > 0 && createdTypesConfigurations && createdTypesConfigurations.size() > 0) {
+if (filesToLanguageConfigurations && filesToLanguageConfigurations.size() > 0 && createdTypesConfigurations && createdTypesConfigurations.size() > 0) {
     logger.logMessage("** Generating zBuilder Application configuration file.")
-    fileToTypesMap.each() { file, info ->
-        info.types.each() { type ->
+    filesToLanguageConfigurations.each() { fileToLanguageConfiguration ->
+        fileToLanguageConfiguration.types.each() { type ->
             if (createdTypesConfigurations.contains(type)) {
                 // Search for task if it already exists
     			def task = applicationDBBAppYaml.tasks.find() { applicationTask ->
-        			applicationTask.task.equals(info.task)
+        			applicationTask.task.equals(fileToLanguageConfiguration.task)
                 }
                 // if it doesn't exist, create it
                 if (!task) {
@@ -153,7 +144,7 @@ if (fileToTypesMap && fileToTypesMap.size() > 0 && createdTypesConfigurations &&
                     languageConfigurationVariable = [ "name": "languageConfigurationSource", "value": "\${APP_DIR}/config/${type}.yaml", "forFiles": [] ]        
                 }
                 // add the file to the forFiles for this override
-                languageConfigurationVariable.forFiles << file
+                languageConfigurationVariable.forFiles << fileToLanguageConfiguration.file
                 task.variables << languageConfigurationVariable
                 
                 
@@ -281,7 +272,7 @@ applicationDBBAppYamlFile.withWriter("UTF-8") { writer ->
 FileUtils.setFileTag(applicationDBBAppYamlFile.getAbsolutePath(), "UTF-8")
 logger.logMessage("** Application Configuration file '${applicationDBBAppYamlFile.getAbsolutePath()}' successfully created.")
 logger.logMessage("** [INFO] Make sure the zBuilder Configuration files (Language Task definitions) are accurate before running a build with zBuilder.")
-logger.logMessage("** [INFO] For each Language Task definition, the Dependency Search Path variable potentially need to be updated to match the layout of the Git repositories.")
+logger.logMessage("** [INFO] For each Language Task definition, the Dependency Search Path variable potentially needs to be updated to match the layout of the Git repositories.")
 
 // close logger file
 logger.close()

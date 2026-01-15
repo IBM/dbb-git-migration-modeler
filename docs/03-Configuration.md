@@ -16,11 +16,11 @@ For each repository path, the `artifactsType` property is used during [the Asses
 Only artifacts of types `Program` or `Include File` will be included in the analysis.
 It is recommended to keep the current settings defined in the provided [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) for the `artifactsType` property.
 
-3. The [Types file](../samples/types.txt) (CSV format) lists the dataset members and their associated type (like a language definition), as described in the legacy SCM tool. This CSV file is optional, and should be built with an SCM-provided utility or from an SCM-provided report. Types mapping are meant to be used only for programs, not for Includes Files.  
-Lines of this file are composed of the artifact's names, followed by a list of comma-separated types. A combination of types can be specified, which will then turn into a composite type definition in dbb-zAppBuild.  
+3. The [Types file](../samples/types.yaml) (YAML format) lists the dataset members and their associated types (like a language definition), as typically described in the legacy SCM tool. This YAML file is optional, and should be built with an SCM-provided utility or from an SCM-provided report. Types mapping are meant to be used only for programs or artifacts that require a build process, not for Includes Files.  
+Entries of this file are composed of the artifact's name which is the fully-qualified dataset member, and a list of comma-separated types. A combination of types can be specified, which will then turn into a composite type definition in the build framework.  
 During the [Framing phase](01-Storyboard.md#the-framing-phase), the *type* information can be used as a criteria to dispatch files.
 If no type is assigned to a given artifact, this information will not be used to dispatch the file and this element will be of type *UNKNOWN* in the Application Descriptor file.  
-The type assigned to each artifact is used in the [Property Generation phase](01-Storyboard.md#the-property-generation-phase) to create Language Configuration in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/)'s configuration.
+The type assigned to each artifact is used in the [Property Generation phase](01-Storyboard.md#the-property-generation-phase) to create Language Configuration in [zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=building-zos-applications-zbuilder)'s or [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/)'s configuration.
 
 4. The [Types Configurations file](../samples/typesConfigurations.yaml) (YAML format) defines the build configurations with their *dbb-zAppBuild* build properties and values.
 This information is typically extracted from the legacy SCM tool and mapped to the equivalent build property in *dbb-zAppBuild*. It is recommended to use ad-hoc automation, when applicable, to facilitate the creation of this file.

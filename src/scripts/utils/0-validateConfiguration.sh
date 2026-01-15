@@ -291,7 +291,7 @@ initializeWorkDirectory() {
 		if [ $rc -eq 0 ]; then
 			echo "  [INFO] Copying sample Types Configurations file to '$TYPE_CONFIGURATIONS_FILE'"
 			mkdir -p "$(dirname $TYPE_CONFIGURATIONS_FILE)"
-			cp $DBB_MODELER_HOME/samples/typesConfigurations-$BUILD_FRAMEWORK.yaml $TYPE_CONFIGURATIONS_FILE
+			cp $DBB_MODELER_HOME/samples/typesConfigurations.yaml $TYPE_CONFIGURATIONS_FILE
 			command_rc=$?
 			if [ $command_rc -ne 0 ]; then
 				rc=8

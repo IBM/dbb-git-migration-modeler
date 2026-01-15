@@ -1,9 +1,0 @@
-- typeConfiguration: "CBLCICSDB2"
-  cobol_compileParms: "LIB,SOURCE,CICS,SQL"
-  isCICS: true
-  isSQL: true
-  cobol_linkedit: true
-- typeConfiguration: "PLICICS"
-  pli_compileParms: "PP(INCLUDE('ID(++INCLUDE)'))"
-  pli_linkedit: true
-  isCICS: true

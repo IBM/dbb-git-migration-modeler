@@ -41,11 +41,13 @@ This stage is optional and allows to statically migrate build configuration from
 We encourage customers to use the dynamic scanners in Dependency Based Build to determine the runtime flags for each build file.
 The outputs of this stage becomes relevant when the final migration is taking place.
 
-The purpose of this stage is to generate properties and property files that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework, based on the information gathered in a specific input file, the [Types file](../samples/types.txt), defined later in this documentation.
+The purpose of this stage is to generate properties and property files that are used by the chosen build framework, which can either be [DBB zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=zbuilder-getting-started) or [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/). The properties and properties files are created based on the information gathered in specific input files:
+- the [Types Mapping file](../samples/typesMapping.yaml), defined later in this documentation.
+- the [Types Configurations file for zBuilder](../samples/typesConfigurations-zBuilder.yaml) or the [Types Configurations file for zAppBuild](../samples/typesConfigurations-zAppBuild.yaml)
 
-This phase will generate the necessary properties and files required to leverage the [Language configuration  mapping](https://github.com/IBM/dbb-zappbuild/blob/main/docs/FilePropertyManagement.md#language-configuration-mapping) feature available in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/).
+This phase will generate the necessary properties and files required to leverage the [Language Configuration Source definition](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=index-task-language#languageconfigurationsource) available in zBuilder, or the [Language configuration mapping](https://github.com/IBM/dbb-zappbuild/blob/main/docs/FilePropertyManagement.md#language-configuration-mapping) feature available in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/), depending on the chosen build framework.
 Each composite type will be created (if not already existing) and will combine properties to represent a unique Language Configuration.
-At the application level, file-level overrides are also generated and inserted in the application's [application-conf](https://github.com/IBM/dbb-zappbuild/tree/main/samples/application-conf) folder.
+At the application level, language configuration overrides are also generated and inserted in the repository's `config` folder when zBuilder is used, or the [application-conf](https://github.com/IBM/dbb-zappbuild/tree/main/samples/application-conf) folder when zAppBuild is used.
 
 ## The Initialization phase
 
@@ -54,7 +56,7 @@ The purpose of this stage is to prepare the applications' Git repositories. It p
 * Staging of the source files and the customized configuration files (the ZAPP.yaml file and the pipeline definition files)
 * Execution of a first commit
 * Creation of a tag to identify a baseline version
-* Execution of a preview build 
+* Execution of a preview build with zBuilder or zAppBuild
 * Creation of a package containing the applications' artifacts into a baseline archive, that can be optionally uploaded to an Artifact Repository server
 
 ## Refreshing the Application Descriptor files
@@ -79,8 +81,14 @@ When running this utility, two main types of files will be created for each appl
 * A DBB Migration Mapping file (Text format): this file contains instructions on how the DBB Migration utility should operate when running a migration.
 This structure of mapping file and how to invoke the DBB Migration utility with a mapping file is described in [the official DBB documentation](https://www.ibm.com/docs/en/dbb/2.0?topic=migrating-source-files-from-zos-git#running-migration-using-a-mapping-file).
 
-For [the Property Generation phase](#the-property-generation-phase), the following output files are created:
-* Language Configuration files, containing properties defined for types configurations (as defined in the [Types Configurations file](../samples/typesConfigurations.yaml)).
+For [the Property Generation phase](#the-property-generation-phase), the following output files are created depending on the chosen build framework.
+
+When using zBuilder, for each repository:
+* Language Configuration files, containing properties defined for types configurations (as defined in the [Types Configurations file](../samples/typesConfigurations-zBuilder.yaml)). These Language Configuration files are stored in a `config` folder of each repository
+* An [application configuration file (dbb-app.yaml)](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=concepts-application-configuration) is created in the root folder of the repository on z/OS Unix System Services.
+
+When using For zAppBuild:
+* Language Configuration files, containing properties defined for types configurations (as defined in the [Types Configurations file](../samples/typesConfigurations-zAppBuild.yaml)).
 These Language Configuration files are stored in a custom *dbb-zAppBuild* instance which is copied from an original *dbb-zAppbuild* folder.
 The location of these files is the [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf) folder in the custom *dbb-zAppBuild* instance.
 * For each analyzed application, an [application-conf](https://github.com/IBM/dbb-zappbuild/tree/main/samples/application-conf) folder is copied from the original *dbb-zAppBuild* instance, in which two files are customized:
