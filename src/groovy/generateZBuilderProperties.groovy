@@ -65,7 +65,7 @@ applicationDescriptor.sources.each { sourceGroup ->
         if (file.type != null && !file.type.equals("UNKNOWN")) {
             // Build a Set of types to process for the creation of a Language Configuration file
             typesConfigurationsToCreate << file.type
-            filesToLanguageConfigurations << [ "file": "${sourceGroup.repositoryPath}/${file.name}.${sourceGroup.fileExtension}", "task": sourceGroup.languageProcessor, "types":types ]
+            filesToLanguageConfigurations << [ "file": "${sourceGroup.repositoryPath}/${file.name}.${sourceGroup.fileExtension}", "task": sourceGroup.languageProcessor, "type": file.type ]
         }
     }
 }
@@ -123,32 +123,30 @@ if (typesConfigurationsToCreate && typesConfigurationsToCreate.size() > 0) {
 if (filesToLanguageConfigurations && filesToLanguageConfigurations.size() > 0 && createdTypesConfigurations && createdTypesConfigurations.size() > 0) {
     logger.logMessage("** Generating zBuilder Application configuration file.")
     filesToLanguageConfigurations.each() { fileToLanguageConfiguration ->
-        fileToLanguageConfiguration.types.each() { type ->
-            if (createdTypesConfigurations.contains(type)) {
-                // Search for task if it already exists
-    			def task = applicationDBBAppYaml.tasks.find() { applicationTask ->
-        			applicationTask.task.equals(fileToLanguageConfiguration.task)
-                }
-                // if it doesn't exist, create it
-                if (!task) {
-                    task = [ "task": info.task, "variables": [] ]
-                    applicationDBBAppYaml.tasks << task
-                }
-                // Search for existing languageConfiguration matching the path of the config file
-                languageConfigurationVariable = task.variables.find() { variable ->
-                    variable.name.equals("languageConfigurationSource") &&
-                    variable.value.equals("\${APP_DIR}/config/${type}.yaml")
-                }
-                // if not found, create it
-                if (!languageConfigurationVariable) {
-                    languageConfigurationVariable = [ "name": "languageConfigurationSource", "value": "\${APP_DIR}/config/${type}.yaml", "forFiles": [] ]        
-                }
-                // add the file to the forFiles for this override
-                languageConfigurationVariable.forFiles << fileToLanguageConfiguration.file
-                task.variables << languageConfigurationVariable
+        if (createdTypesConfigurations.contains(fileToLanguageConfiguration.type)) {
+            // Search for task if it already exists
+            def task = applicationDBBAppYaml.tasks.find() { applicationTask ->
+                applicationTask.task.equals(fileToLanguageConfiguration.task)
+            }
+            // if it doesn't exist, create it
+            if (!task) {
+                task = [ "task": fileToLanguageConfiguration.task, "variables": [] ]
+                applicationDBBAppYaml.tasks << task
+            }
+            // Search for existing languageConfiguration matching the path of the config file
+            languageConfigurationVariable = task.variables.find() { variable ->
+                variable.name.equals("languageConfigurationSource") &&
+                variable.value.equals("\${APP_DIR}/config/${fileToLanguageConfiguration.type}.yaml")
+            }
+            // if not found, create it
+            if (!languageConfigurationVariable) {
+                languageConfigurationVariable = [ "name": "languageConfigurationSource", "value": "\${APP_DIR}/config/${fileToLanguageConfiguration.type}.yaml", "forFiles": [] ]        
+            }
+            // add the file to the forFiles for this override
+            languageConfigurationVariable.forFiles << fileToLanguageConfiguration.file
+            task.variables << languageConfigurationVariable
                 
                 
-            }                
         }
     }
 } else {
