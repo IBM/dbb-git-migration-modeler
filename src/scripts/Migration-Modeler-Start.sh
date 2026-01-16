@@ -97,7 +97,7 @@ if [ $rc -eq 0 ]; then
 	if [[ $INTERACTIVE_RUN == "true" ]]; then
 		read -p "Do you want to clean the working directory '$DBB_MODELER_WORK' (Y/n): " variable
 	else
-		variable="N"
+		variable="Y"
 	fi
 
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
@@ -187,7 +187,7 @@ if [ $rc -eq 0 ]; then
 	echo
 	echo "[PHASE] Generate build configuration"
 	if [[ $INTERACTIVE_RUN == "true" ]]; then
-		read -p "Do you want to generate the dbb-zAppBuild configurations (Y/n): " variable
+		read -p "Do you want to generate the $BUILD_FRAMEWORK configurations (Y/n): " variable
 	else
 		variable="Y"
 	fi

@@ -154,7 +154,6 @@ def writeZAppFile(File yamlFile) {
     yamlFile.withWriter("UTF-8") { writer ->
         writer.write(yamlBuilder.toString())
     }
-
 	FileUtils.setFileTag(yamlFile.getAbsolutePath(), "UTF-8")
 }
 

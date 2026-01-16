@@ -5,7 +5,7 @@ repositoryPaths:
     artifactsType: "Program"
     sourceGroup: "cobol"
     language: "COBOL"
-    languageProcessor: "Cobol.groovy"
+    languageProcessor: "Cobol"
     fileExtension: cbl
     toLowerCase: true
     encoding: IBM-1047
@@ -16,7 +16,7 @@ repositoryPaths:
     artifactsType: "Include File"
     sourceGroup: "copy"
     language: "COBOL"
-    languageProcessor: "none"
+    languageProcessor: ""
     fileExtension: cpy
     toLowerCase: true
     encoding: IBM-1047
@@ -30,7 +30,7 @@ repositoryPaths:
     artifactsType: "Program"
     sourceGroup: "pli"
     language: "PL/I"
-    languageProcessor: "PLI.groovy"
+    languageProcessor: "PLI"
     fileExtension: cbl
     toLowerCase: true
     encoding: IBM-1047
@@ -44,7 +44,7 @@ repositoryPaths:
     artifactsType: "Program"
     sourceGroup: "asm"
     language: "ASM"
-    languageProcessor: "Assembler.groovy"
+    languageProcessor: "Assembler"
     fileExtension: asm
     toLowerCase: true
     encoding: IBM-1047
@@ -55,7 +55,7 @@ repositoryPaths:
     artifactsType: "BMS"
     sourceGroup: "bms"
     language: "ASM"
-    languageProcessor: "BMS.groovy"
+    languageProcessor: "BMS"
     fileExtension: bms
     toLowerCase: true
     encoding: IBM-1047
@@ -66,7 +66,7 @@ repositoryPaths:
     artifactsType: "Other"
     sourceGroup: "link"
     language: "LINK"
-    languageProcessor: "LinkEdit.groovy"
+    languageProcessor: "LinkEdit"
     fileExtension: lnk
     toLowerCase: true
     encoding: IBM-1047
@@ -77,7 +77,7 @@ repositoryPaths:
     artifactsType: "Other"
     sourceGroup: "jcl"
     language: "JCL"
-    languageProcessor: "Transfer.groovy"
+    languageProcessor: "Transfer"
     fileExtension: jcl
     toLowerCase: true
     encoding: IBM-1047
