@@ -16,17 +16,17 @@ For each repository path, the `artifactsType` property is used during [the Asses
 Only artifacts of types `Program` or `Include File` will be included in the analysis.
 It is recommended to keep the current settings defined in the provided [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) for the `artifactsType` property.
 
-3. The [Types file](../samples/types.yaml) (YAML format) lists the dataset members and their associated types (like a language definition), as typically described in the legacy SCM tool. This YAML file is optional, and should be built with an SCM-provided utility or from an SCM-provided report. Types mapping are meant to be used only for programs or artifacts that require a build process, not for Includes Files.  
-Entries of this file are composed of the artifact's name which is the fully-qualified dataset member, and a list of comma-separated types. A combination of types can be specified, which will then turn into a composite type definition in the build framework.  
+3. The [Types file](../samples/types.yaml) (YAML format) lists the dataset members and their associated type (like a language definition), as typically described in the legacy SCM tool. This YAML file is optional, and should be built with an SCM-provided utility or from an SCM-provided report. Types mapping are meant to be used only for programs or artifacts that require a build process, not for Includes Files.  
+Entries of this file are composed of the artifact's name which is the fully-qualified dataset member and a type.
+
 During the [Framing phase](01-Storyboard.md#the-framing-phase), the *type* information can be used as a criteria to dispatch files.
 If no type is assigned to a given artifact, this information will not be used to dispatch the file and this element will be of type *UNKNOWN* in the Application Descriptor file.  
-The type assigned to each artifact is used in the [Property Generation phase](01-Storyboard.md#the-property-generation-phase) to create Language Configuration in [zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=building-zos-applications-zbuilder)'s or [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/)'s configuration.
+The type assigned to each artifact is used in the [Property Generation phase](01-Storyboard.md#the-property-generation-phase) to create Language Configuration in [DBB zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=building-zos-applications-zbuilder)'s or [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/)'s configuration.
 
-4. The [Types Configurations file](../samples/typesConfigurations.yaml) (YAML format) defines the build configurations with their *dbb-zAppBuild* build properties and values.
-This information is typically extracted from the legacy SCM tool and mapped to the equivalent build property in *dbb-zAppBuild*. It is recommended to use ad-hoc automation, when applicable, to facilitate the creation of this file.
+4. The [Types Configurations file](../samples/typesConfigurations.yaml) (YAML format) defines the build configurations with their *DBB zBuilder* or *dbb-zAppBuild* build properties and values, depending on the chosen build framework.  
+This information is typically extracted from the legacy SCM tool and mapped to the equivalent build property in *DBB zBuilder* or *dbb-zAppBuild*. It is recommended to use ad-hoc automation, when applicable, to facilitate the creation of this file.
 This file is only used during the [Property Generation phase](01-Storyboard.md#the-property-generation-phase).
-Each Type Configuration defines properties that are used by the [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/) framework.
-Types can be combined depending on definitions found in the [Types file](../samples/types.txt), to generate composite types combining different properties.
+Each Type Configuration defines properties that are used by [DBB zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=building-zos-applications-zbuilder) or by [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/).
 
 ## Required input datasets
 
@@ -280,80 +280,69 @@ The [Migration-Modeler-Start script](../src/scripts/Migration-Modeler-Start.sh) 
 
 ## Generating properties
 
-We encourage, as much as possible, to use simple scenarios, to avoid unnecessary complexity in the combination of types configurations.
-However, some configuration may require to use combination of types, depending on how properties are set in the originating SCM solution.
+Each artifact is assigned with one single type, that designates a known configuration in the legacy SCM tool.
 
-### Common scenario
-
-In a simple scenario, each artifact is assigned with one single type, that designates a known configuration in the legacy SCM tool.
-
-For instance, the [Types file](../samples/types.txt) could contain the following lines:
+For instance, the [Types Mapping file](../samples/types.yaml) could contain the following lines:
+~~~~YAML
+## List of datasets members to which types are assigned
+datasetMembers:
+    - datasetMember: "DBEHM.MIG.COBOL(LGACDB01)"
+      ## For each dataset member, a single type is assigned
+      type: "CBLCICSDB2"
+      ## Properties can also be specified to describe file-level overrides
+      ## These overrides are not yet used in the processing
+      properties:
+          - name: "COBPARM"
+            value: "AMODE(31)"
+    - datasetMember: "DBEHM.MIG.COBOL(LGACDB02)"
+      type: "CBLDB2"
+      properties:
+          - name: "COBPARM"
+            value: "AMODE(31)"
+    - datasetMember: "DBEHM.MIG.COBOL(LGACUS01)"
+      type: "CBLCICS"
+      properties:
+          - name: "COBPARM"
+            value: "AMODE(31)"
 ~~~~
-PGM001, COBBATCH
-PGM002, COBCICSD
-PMG003, PLIIMSDB
-~~~~
 
-Where *COBBATCH*, *COBCICSD* and *PLIIMSDB* represent configurations with specific properties. These types should be defined in the [Types Configurations file](../samples/typesConfigurations.yaml) accordingly, for instance:
+Where *CBLCICSDB2*, *CBLDB2* and *CBLCICS* represent configurations with specific properties. These types should be defined in the [Types Configurations file](../samples/typesConfigurations.yaml) accordingly, for instance:
 
 ~~~~YAML
-- typeConfiguration: "COBBATCH"
-  cobol_compileParms: "LIB,SOURCE"
-  cobol_linkedit: true
-  isCICS: false
-  isSQL: false
-- typeConfiguration: "COBCICSD"
-  cobol_compileParms: "LIB,SOURCE,CICS,SQL"
-  cobol_linkedit: true
-  isCICS: true
-  isSQL: true
-- typeConfiguration: "PLIIMSDB"
-  pli_compileParms: "PP(INCLUDE('ID(++INCLUDE)')),SYSTEM(IMS)"
-  pli_linkedit: true
-  isCICS: false
-  isSQL: false
-  isDLI: true
+typesConfigurations:
+  - typeConfiguration: "CBLCICSDB2"
+    variables:
+      - name: "compileParms"
+        value: "LIB,SOURCE,CICS,SQL"
+      - name: "IS_CICS"
+        value: "true"
+      - name: "IS_SQL"
+        value: "true"
+      - name: "doLinkEdit"
+        value: "true"
+  - typeConfiguration: "CBLDB2"
+    variables:
+      - name: "compileParms"
+        value: "LIB,SOURCE,SQL"
+      - name: "IS_CICS"
+        value: "false"
+      - name: "IS_SQL"
+        value: "true"
+      - name: "doLinkEdit"
+        value: "false"
+  - typeConfiguration: "CBLCICS"
+    variables:
+      - name: "compileParms"
+        value: "LIB,SOURCE,CICS"
+      - name: "IS_CICS"
+        value: "true"
+      - name: "IS_SQL"
+        value: "false"
+      - name: "doLinkEdit"
+        value: "true"
 ~~~~
 
 With this configuration, the [Property Generation script](../src/scripts/utils/4-generateProperties.sh) will generate Language Configurations for each of these types.
-
-### Advanced scenario
-In more sophisticated scenarios, which depend on how properties are set in the legacy SCM tool, multiple types can be assigned to an artifact:
-~~~~
-PGM001, COBOL, BATCH
-PGM002, COBOL, CICSDB2
-PMG003, PLI, IMSDB
-~~~~
-
-Each type configuration would be defined separately in the [Types Configurations file](../samples/typesConfigurations.yaml), for instance:
-
-~~~~YAML
-- typeConfiguration: "COBOL"
-  cobol_compileParms: "LIB,SOURCE"
-  cobol_linkedit: true
-- typeConfiguration: "PLI"
-  pli_compileParms: "PP(INCLUDE('ID(++INCLUDE)'))"
-  pli_linkedit: true
-- typeConfiguration: "BATCH"
-  isCICS: false
-- typeConfiguration: "CICSDB2"
-  isCICS: true
-  isSQL: true
-- typeConfiguration: "IMSDB"
-  pli_compileIMSParms: SYSTEM(IMS)  
-  isCICS: false
-  isSQL: false
-  isDLI: true
-~~~~
-
-In this configuration, the [Property Generation script](../src/scripts/utils/4-generateProperties.sh) will generate composite Language Configurations files in *dbb-zAppbuild*'s [build-conf/language-conf](https://github.com/IBM/dbb-zappbuild/tree/main/build-conf/language-conf) folder.
-In this example, 3 files would be created:
-* *BATCH-COBOL.properties* which combines properties from the *BATCH* and the *COBOL* types
-* *CICSDB2-COBOL.properties*, which combines properties from the *CICSDB2* and the *COBOL* types
-* *IMSDB-PLI.properties*, which combines properties from the *IMSDB* and *PLI* types
-
-The name of composite types are based on the names of the originating types sorted alphabetically, to avoid duplication.
-The Language Configuration mapping file in each application's *application-conf* folder contains mappings between artifacts and their associated composite types, also sorted alphabetically.
 
 # Working with the DBB Git Migration Modeler utility
 

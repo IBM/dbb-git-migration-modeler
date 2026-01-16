@@ -1,3 +1,9 @@
+## Sample Types Configurations for zBuilder
+##
+## Important notice: dbb-zappbuild is using different property names than zBuilder
+## e.g., Compiler options for Cobol in dbb-zappbuild is called cobol_compileParms
+##
+ 
 typesConfigurations:
   - typeConfiguration: "CBLCICSDB2"
     variables:
