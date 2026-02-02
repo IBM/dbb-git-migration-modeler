@@ -76,7 +76,7 @@ applicationDBBAppYaml.tasks = []
 def applicationDBBAppYamlFolderPath = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}"
 
 // Path to the zBuilder Configuration folder in the application's folder
-def zBuilderConfigurationFolderPath = "${props.DBB_MODELER_WORK}/build-configuration"
+def zBuilderConfigurationFolderPath = props.DBB_MODELER_BUILD_CONFIGURATION
 File zBuilderConfigurationFolder = new File(zBuilderConfigurationFolderPath)
 if (!zBuilderConfigurationFolder.exists()) {
     zBuilderConfigurationFolder.mkdirs()
@@ -333,16 +333,10 @@ def parseArgs(String[] args) {
         System.exit(1)
     }
 
-    if (configuration.DBB_MODELER_WORK) {
-        File directory = new File(configuration.DBB_MODELER_WORK)
-        if (directory.exists()) {
-            props.DBB_MODELER_WORK = configuration.DBB_MODELER_WORK
-        } else {
-            logger.logMessage("*! [ERROR] The DBB Git Migration Modeler work folder '${configuration.DBB_MODELER_WORK}' does not exist. Exiting.")
-            System.exit(1)
-        }
+    if (configuration.DBB_MODELER_BUILD_CONFIGURATION) {
+        props.DBB_MODELER_BUILD_CONFIGURATION = configuration.DBB_MODELER_BUILD_CONFIGURATION
     } else {
-        logger.logMessage("*! [ERROR] The DBB Git Migration Modeler work folder must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+        logger.logMessage("*! [ERROR] The Build Configuration folder must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
         System.exit(1)
     }
 

@@ -111,10 +111,14 @@ if [ $rc -eq 0 ]; then
 			rm -rf $DBB_MODELER_APPLICATION_DIR
 			echo "[INFO] Removed '${DBB_MODELER_APPLICATION_DIR}' folder"
 		fi
-		if [ -d $DBB_MODELER_LOGS ]; then
-			rm -rf $DBB_MODELER_LOGS
-			echo "[INFO] Removed '${DBB_MODELER_LOGS}' folder"
-		fi
+        if [ -d $DBB_MODELER_LOGS ]; then
+            rm -rf $DBB_MODELER_LOGS
+            echo "[INFO] Removed '${DBB_MODELER_LOGS}' folder"
+        fi
+        if [ -d $DBB_MODELER_BUILD_CONFIGURATION ]; then
+            rm -rf $DBB_MODELER_BUILD_CONFIGURATION
+            echo "[INFO] Removed '${DBB_MODELER_BUILD_CONFIGURATION}' folder"
+        fi
 	fi
 fi
 
