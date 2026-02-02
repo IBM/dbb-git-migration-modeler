@@ -76,7 +76,7 @@ applicationDBBAppYaml.tasks = []
 def applicationDBBAppYamlFolderPath = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}"
 
 // Path to the zBuilder Configuration folder in the application's folder
-def zBuilderConfigurationFolderPath = "${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/config"
+def zBuilderConfigurationFolderPath = "${props.DBB_MODELER_WORK}/build-configuration"
 File zBuilderConfigurationFolder = new File(zBuilderConfigurationFolderPath)
 if (!zBuilderConfigurationFolder.exists()) {
     zBuilderConfigurationFolder.mkdirs()
