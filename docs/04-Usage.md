@@ -82,162 +82,162 @@ Execution of the command:
 
 Output log:
 ~~~~  
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/extractApplications.groovy        --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config        --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
-2026-01-15 17:12:55.988 ** Script configuration:
-2026-01-15 17:12:55.989     DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration
-2026-01-15 17:12:55.989     REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
-2026-01-15 17:12:55.989     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-15 17:12:55.990     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-15 17:12:55.990     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
-2026-01-15 17:12:55.991     DBB_MODELER_APPMAPPINGS_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/config/applications-mappings
-2026-01-15 17:12:55.991     SCAN_DATASET_MEMBERS_ENCODING -> IBM-1047
-2026-01-15 17:12:55.992     APPLICATION_TYPES_MAPPING -> /u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesMapping.yaml
-2026-01-15 17:12:55.992     SCAN_DATASET_MEMBERS -> false
-2026-01-15 17:12:55.993 ** Reading the Repository Layout Mapping definition.
-2026-01-15 17:12:55.997 ** Reading the Type Mapping definition.
-2026-01-15 17:12:55.999 ** Loading the provided Applications Mapping files.
-2026-01-15 17:12:56.003 *** Importing 'applicationsMapping.yaml'
-2026-01-15 17:12:56.023 ** Iterating through the provided datasets and mapped applications.
-2026-01-15 17:12:56.036 **** Found 'DBEHM.MIG.BMS' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA' 
-2026-01-15 17:12:56.110 ***** 'DBEHM.MIG.BMS(EPSMLIS)' - Mapped Application: UNASSIGNED
-2026-01-15 17:12:56.162 ***** 'DBEHM.MIG.BMS(EPSMORT)' - Mapped Application: UNASSIGNED
-2026-01-15 17:12:56.201 ***** 'DBEHM.MIG.BMS(SSMAP)' - Mapped Application: GenApp
-2026-01-15 17:12:56.209 **** Found 'DBEHM.MIG.COPY' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA' 
-2026-01-15 17:12:56.225 ***** 'DBEHM.MIG.COPY(ABNDINFO)' - Mapped Application: CBSA
-2026-01-15 17:12:56.239 ***** 'DBEHM.MIG.COPY(ACCDB2)' - Mapped Application: CBSA
-2026-01-15 17:12:56.251 ***** 'DBEHM.MIG.COPY(ACCOUNT)' - Mapped Application: CBSA
-2026-01-15 17:12:56.263 ***** 'DBEHM.MIG.COPY(ACCTCTRL)' - Mapped Application: CBSA
-2026-01-15 17:12:56.276 ***** 'DBEHM.MIG.COPY(BNK1ACC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.284 ***** 'DBEHM.MIG.COPY(BNK1CAM)' - Mapped Application: CBSA
-2026-01-15 17:12:56.291 ***** 'DBEHM.MIG.COPY(BNK1CCM)' - Mapped Application: CBSA
-2026-01-15 17:12:56.296 ***** 'DBEHM.MIG.COPY(BNK1CDM)' - Mapped Application: CBSA
-2026-01-15 17:12:56.303 ***** 'DBEHM.MIG.COPY(BNK1DAM)' - Mapped Application: CBSA
-2026-01-15 17:12:56.308 ***** 'DBEHM.MIG.COPY(BNK1DCM)' - Mapped Application: CBSA
-2026-01-15 17:12:56.311 ***** 'DBEHM.MIG.COPY(BNK1MAI)' - Mapped Application: CBSA
-2026-01-15 17:12:56.315 ***** 'DBEHM.MIG.COPY(BNK1TFM)' - Mapped Application: CBSA
-2026-01-15 17:12:56.318 ***** 'DBEHM.MIG.COPY(BNK1UAM)' - Mapped Application: CBSA
-2026-01-15 17:12:56.321 ***** 'DBEHM.MIG.COPY(CONSENT)' - Mapped Application: CBSA
-2026-01-15 17:12:56.325 ***** 'DBEHM.MIG.COPY(CONSTAPI)' - Mapped Application: CBSA
-2026-01-15 17:12:56.328 ***** 'DBEHM.MIG.COPY(CONSTDB2)' - Mapped Application: CBSA
-2026-01-15 17:12:56.332 ***** 'DBEHM.MIG.COPY(CONTDB2)' - Mapped Application: CBSA
-2026-01-15 17:12:56.335 ***** 'DBEHM.MIG.COPY(CREACC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.338 ***** 'DBEHM.MIG.COPY(CRECUST)' - Mapped Application: CBSA
-2026-01-15 17:12:56.341 ***** 'DBEHM.MIG.COPY(CUSTCTRL)' - Mapped Application: CBSA
-2026-01-15 17:12:56.344 ***** 'DBEHM.MIG.COPY(CUSTOMER)' - Mapped Application: CBSA
-2026-01-15 17:12:56.348 ***** 'DBEHM.MIG.COPY(DATASTR)' - Mapped Application: UNASSIGNED
-2026-01-15 17:12:56.351 ***** 'DBEHM.MIG.COPY(DELACC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.354 ***** 'DBEHM.MIG.COPY(DELCUS)' - Mapped Application: CBSA
-2026-01-15 17:12:56.357 ***** 'DBEHM.MIG.COPY(GETCOMPY)' - Mapped Application: CBSA
-2026-01-15 17:12:56.359 ***** 'DBEHM.MIG.COPY(GETSCODE)' - Mapped Application: CBSA
-2026-01-15 17:12:56.362 ***** 'DBEHM.MIG.COPY(INQACC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.364 ***** 'DBEHM.MIG.COPY(INQACCCU)' - Mapped Application: CBSA
-2026-01-15 17:12:56.367 ***** 'DBEHM.MIG.COPY(INQCUST)' - Mapped Application: CBSA
-2026-01-15 17:12:56.370 ***** 'DBEHM.MIG.COPY(LGCMAREA)' - Mapped Application: GenApp
-2026-01-15 17:12:56.373 ***** 'DBEHM.MIG.COPY(LGCMARED)' - Mapped Application: GenApp
-2026-01-15 17:12:56.375 ***** 'DBEHM.MIG.COPY(LGPOLICY)' - Mapped Application: GenApp
-2026-01-15 17:12:56.377 ***** 'DBEHM.MIG.COPY(LINPUT)' - Mapped Application: RetirementCalculator
-2026-01-15 17:12:56.379 ***** 'DBEHM.MIG.COPY(PAYDBCR)' - Mapped Application: UNASSIGNED
-2026-01-15 17:12:56.381 ***** 'DBEHM.MIG.COPY(PROCDB2)' - Mapped Application: CBSA
-2026-01-15 17:12:56.382 ***** 'DBEHM.MIG.COPY(PROCTRAN)' - Mapped Application: CBSA
-2026-01-15 17:12:56.385 ***** 'DBEHM.MIG.COPY(SORTCODE)' - Mapped Application: UNASSIGNED
-2026-01-15 17:12:56.387 ***** 'DBEHM.MIG.COPY(UPDACC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.389 ***** 'DBEHM.MIG.COPY(UPDCUST)' - Mapped Application: CBSA
-2026-01-15 17:12:56.391 ***** 'DBEHM.MIG.COPY(XFRFUN)' - Mapped Application: CBSA
-2026-01-15 17:12:56.393 **** Found 'DBEHM.MIG.COBOL' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA' 
-2026-01-15 17:12:56.398 ***** 'DBEHM.MIG.COBOL(ABNDPROC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.399 ***** 'DBEHM.MIG.COBOL(ACCLOAD)' - Mapped Application: CBSA
-2026-01-15 17:12:56.400 ***** 'DBEHM.MIG.COBOL(ACCOFFL)' - Mapped Application: CBSA
-2026-01-15 17:12:56.401 ***** 'DBEHM.MIG.COBOL(ACCTCTRL)' - Mapped Application: CBSA
-2026-01-15 17:12:56.402 ***** 'DBEHM.MIG.COBOL(BANKDATA)' - Mapped Application: CBSA
-2026-01-15 17:12:56.403 ***** 'DBEHM.MIG.COBOL(BNKMENU)' - Mapped Application: CBSA
-2026-01-15 17:12:56.404 ***** 'DBEHM.MIG.COBOL(BNK1CAC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.405 ***** 'DBEHM.MIG.COBOL(BNK1CCA)' - Mapped Application: CBSA
-2026-01-15 17:12:56.406 ***** 'DBEHM.MIG.COBOL(BNK1CCS)' - Mapped Application: CBSA
-2026-01-15 17:12:56.407 ***** 'DBEHM.MIG.COBOL(BNK1CRA)' - Mapped Application: CBSA
-2026-01-15 17:12:56.408 ***** 'DBEHM.MIG.COBOL(BNK1DAC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.409 ***** 'DBEHM.MIG.COBOL(BNK1DCS)' - Mapped Application: CBSA
-2026-01-15 17:12:56.410 ***** 'DBEHM.MIG.COBOL(BNK1TFN)' - Mapped Application: CBSA
-2026-01-15 17:12:56.411 ***** 'DBEHM.MIG.COBOL(BNK1UAC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.412 ***** 'DBEHM.MIG.COBOL(CONSENT)' - Mapped Application: CBSA
-2026-01-15 17:12:56.413 ***** 'DBEHM.MIG.COBOL(CONSTTST)' - Mapped Application: CBSA
-2026-01-15 17:12:56.414 ***** 'DBEHM.MIG.COBOL(CRDTAGY1)' - Mapped Application: CBSA
-2026-01-15 17:12:56.415 ***** 'DBEHM.MIG.COBOL(CRDTAGY2)' - Mapped Application: CBSA
-2026-01-15 17:12:56.416 ***** 'DBEHM.MIG.COBOL(CRDTAGY3)' - Mapped Application: CBSA
-2026-01-15 17:12:56.417 ***** 'DBEHM.MIG.COBOL(CRDTAGY4)' - Mapped Application: CBSA
-2026-01-15 17:12:56.418 ***** 'DBEHM.MIG.COBOL(CRDTAGY5)' - Mapped Application: CBSA
-2026-01-15 17:12:56.419 ***** 'DBEHM.MIG.COBOL(CREACC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.420 ***** 'DBEHM.MIG.COBOL(CRECUST)' - Mapped Application: CBSA
-2026-01-15 17:12:56.421 ***** 'DBEHM.MIG.COBOL(CUSTCTRL)' - Mapped Application: CBSA
-2026-01-15 17:12:56.422 ***** 'DBEHM.MIG.COBOL(DBCRFUN)' - Mapped Application: CBSA
-2026-01-15 17:12:56.423 ***** 'DBEHM.MIG.COBOL(DELACC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.424 ***** 'DBEHM.MIG.COBOL(DELCUS)' - Mapped Application: CBSA
-2026-01-15 17:12:56.425 ***** 'DBEHM.MIG.COBOL(DPAYAPI)' - Mapped Application: CBSA
-2026-01-15 17:12:56.426 ***** 'DBEHM.MIG.COBOL(DPAYTST)' - Mapped Application: CBSA
-2026-01-15 17:12:56.427 ***** 'DBEHM.MIG.COBOL(EBUD0RUN)' - Mapped Application: RetirementCalculator
-2026-01-15 17:12:56.429 ***** 'DBEHM.MIG.COBOL(EBUD01)' - Mapped Application: RetirementCalculator
-2026-01-15 17:12:56.430 ***** 'DBEHM.MIG.COBOL(EBUD02)' - Mapped Application: RetirementCalculator
-2026-01-15 17:12:56.431 ***** 'DBEHM.MIG.COBOL(EBUD03)' - Mapped Application: RetirementCalculator
-2026-01-15 17:12:56.433 ***** 'DBEHM.MIG.COBOL(GETCOMPY)' - Mapped Application: CBSA
-2026-01-15 17:12:56.434 ***** 'DBEHM.MIG.COBOL(GETSCODE)' - Mapped Application: CBSA
-2026-01-15 17:12:56.435 ***** 'DBEHM.MIG.COBOL(INQACC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.436 ***** 'DBEHM.MIG.COBOL(INQACCCU)' - Mapped Application: CBSA
-2026-01-15 17:12:56.437 ***** 'DBEHM.MIG.COBOL(INQCUST)' - Mapped Application: CBSA
-2026-01-15 17:12:56.438 ***** 'DBEHM.MIG.COBOL(LGACDB01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.439 ***** 'DBEHM.MIG.COBOL(LGACDB02)' - Mapped Application: GenApp
-2026-01-15 17:12:56.440 ***** 'DBEHM.MIG.COBOL(LGACUS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.441 ***** 'DBEHM.MIG.COBOL(LGACVS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.442 ***** 'DBEHM.MIG.COBOL(LGAPDB01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.443 ***** 'DBEHM.MIG.COBOL(LGAPOL01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.444 ***** 'DBEHM.MIG.COBOL(LGAPVS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.445 ***** 'DBEHM.MIG.COBOL(LGASTAT1)' - Mapped Application: GenApp
-2026-01-15 17:12:56.446 ***** 'DBEHM.MIG.COBOL(LGDPDB01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.447 ***** 'DBEHM.MIG.COBOL(LGDPOL01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.448 ***** 'DBEHM.MIG.COBOL(LGDPVS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.449 ***** 'DBEHM.MIG.COBOL(LGICDB01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.450 ***** 'DBEHM.MIG.COBOL(LGICUS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.451 ***** 'DBEHM.MIG.COBOL(LGICVS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.452 ***** 'DBEHM.MIG.COBOL(LGIPDB01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.453 ***** 'DBEHM.MIG.COBOL(LGIPOL01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.454 ***** 'DBEHM.MIG.COBOL(LGIPVS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.455 ***** 'DBEHM.MIG.COBOL(LGSETUP)' - Mapped Application: GenApp
-2026-01-15 17:12:56.456 ***** 'DBEHM.MIG.COBOL(LGSTSQ)' - Mapped Application: GenApp
-2026-01-15 17:12:56.457 ***** 'DBEHM.MIG.COBOL(LGTESTC1)' - Mapped Application: GenApp
-2026-01-15 17:12:56.458 ***** 'DBEHM.MIG.COBOL(LGTESTP1)' - Mapped Application: GenApp
-2026-01-15 17:12:56.459 ***** 'DBEHM.MIG.COBOL(LGTESTP2)' - Mapped Application: GenApp
-2026-01-15 17:12:56.460 ***** 'DBEHM.MIG.COBOL(LGTESTP3)' - Mapped Application: GenApp
-2026-01-15 17:12:56.461 ***** 'DBEHM.MIG.COBOL(LGTESTP4)' - Mapped Application: GenApp
-2026-01-15 17:12:56.462 ***** 'DBEHM.MIG.COBOL(LGUCDB01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.463 ***** 'DBEHM.MIG.COBOL(LGUCUS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.464 ***** 'DBEHM.MIG.COBOL(LGUCVS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.465 ***** 'DBEHM.MIG.COBOL(LGUPDB01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.466 ***** 'DBEHM.MIG.COBOL(LGUPOL01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.467 ***** 'DBEHM.MIG.COBOL(LGUPVS01)' - Mapped Application: GenApp
-2026-01-15 17:12:56.468 ***** 'DBEHM.MIG.COBOL(LGWEBST5)' - Mapped Application: GenApp
-2026-01-15 17:12:56.469 ***** 'DBEHM.MIG.COBOL(OLDACDB1)' - Mapped Application: UNASSIGNED
-2026-01-15 17:12:56.470 ***** 'DBEHM.MIG.COBOL(OLDACDB2)' - Mapped Application: UNASSIGNED
-2026-01-15 17:12:56.471 ***** 'DBEHM.MIG.COBOL(PROLOAD)' - Mapped Application: CBSA
-2026-01-15 17:12:56.472 ***** 'DBEHM.MIG.COBOL(PROOFFL)' - Mapped Application: CBSA
-2026-01-15 17:12:56.473 ***** 'DBEHM.MIG.COBOL(UPDACC)' - Mapped Application: CBSA
-2026-01-15 17:12:56.474 ***** 'DBEHM.MIG.COBOL(UPDCUST)' - Mapped Application: CBSA
-2026-01-15 17:12:56.475 ***** 'DBEHM.MIG.COBOL(XFRFUN)' - Mapped Application: CBSA
-2026-01-15 17:12:56.481 ** Generating Applications Configurations files.
-2026-01-15 17:12:56.483 ** Generating Configuration files for Application: RetirementCalculator
-2026-01-15 17:12:56.559     Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/RetirementCalculator.mapping
-2026-01-15 17:12:56.575     Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/RetirementCalculator/applicationDescriptor.yml
-2026-01-15 17:12:56.649     Estimated storage size of migrated members: 12,838 bytes
-2026-01-15 17:12:56.650 ** Generating Configuration files for Application: GenApp
-2026-01-15 17:12:56.691     Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/GenApp.mapping
-2026-01-15 17:12:56.708     Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml
-2026-01-15 17:12:56.908     Estimated storage size of migrated members: 463,749 bytes
-2026-01-15 17:12:56.908 ** Generating Configuration files for Application: UNASSIGNED
-2026-01-15 17:12:56.916     Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/UNASSIGNED.mapping
-2026-01-15 17:12:56.921     Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/UNASSIGNED/applicationDescriptor.yml
-2026-01-15 17:12:56.956     Estimated storage size of migrated members: 36,244 bytes
-2026-01-15 17:12:56.956 ** Generating Configuration files for Application: CBSA
-2026-01-15 17:12:56.991     Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/CBSA.mapping
-2026-01-15 17:12:57.008     Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/CBSA/applicationDescriptor.yml
-2026-01-15 17:12:57.380     Estimated storage size of migrated members: 1,147,571 bytes
-2026-01-15 17:12:57.381 ** Estimated storage size of all migrated members: 1,660,402 bytes
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/extractApplications.groovy 		--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 		--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
+2026-02-02 10:16:15.357 ** Script configuration:
+2026-02-02 10:16:15.403 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration
+2026-02-02 10:16:15.405 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
+2026-02-02 10:16:15.407 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:16:15.410 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
+2026-02-02 10:16:15.411 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
+2026-02-02 10:16:15.412 	DBB_MODELER_APPMAPPINGS_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/config/applications-mappings
+2026-02-02 10:16:15.414 	SCAN_DATASET_MEMBERS_ENCODING -> IBM-1047
+2026-02-02 10:16:15.416 	APPLICATION_TYPES_MAPPING -> /u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesMapping.yaml
+2026-02-02 10:16:15.418 	SCAN_DATASET_MEMBERS -> false
+2026-02-02 10:16:15.420 ** Reading the Repository Layout Mapping definition.
+2026-02-02 10:16:15.669 ** Reading the Type Mapping definition.
+2026-02-02 10:16:15.680 ** Loading the provided Applications Mapping files.
+2026-02-02 10:16:15.686 *** Importing 'applicationsMapping.yaml'
+2026-02-02 10:16:15.709 ** Iterating through the provided datasets and mapped applications.
+2026-02-02 10:16:15.727 **** Found 'DBEHM.MIG.BMS' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA' 
+2026-02-02 10:16:15.785 ***** 'DBEHM.MIG.BMS(EPSMLIS)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:15.817 ***** 'DBEHM.MIG.BMS(EPSMORT)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:15.845 ***** 'DBEHM.MIG.BMS(SSMAP)' - Mapped Application: GenApp
+2026-02-02 10:16:15.849 **** Found 'DBEHM.MIG.COPY' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA' 
+2026-02-02 10:16:15.860 ***** 'DBEHM.MIG.COPY(ABNDINFO)' - Mapped Application: CBSA
+2026-02-02 10:16:15.872 ***** 'DBEHM.MIG.COPY(ACCDB2)' - Mapped Application: CBSA
+2026-02-02 10:16:15.881 ***** 'DBEHM.MIG.COPY(ACCOUNT)' - Mapped Application: CBSA
+2026-02-02 10:16:15.891 ***** 'DBEHM.MIG.COPY(ACCTCTRL)' - Mapped Application: CBSA
+2026-02-02 10:16:15.901 ***** 'DBEHM.MIG.COPY(BNK1ACC)' - Mapped Application: CBSA
+2026-02-02 10:16:15.907 ***** 'DBEHM.MIG.COPY(BNK1CAM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.915 ***** 'DBEHM.MIG.COPY(BNK1CCM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.922 ***** 'DBEHM.MIG.COPY(BNK1CDM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.927 ***** 'DBEHM.MIG.COPY(BNK1DAM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.932 ***** 'DBEHM.MIG.COPY(BNK1DCM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.937 ***** 'DBEHM.MIG.COPY(BNK1MAI)' - Mapped Application: CBSA
+2026-02-02 10:16:15.942 ***** 'DBEHM.MIG.COPY(BNK1TFM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.946 ***** 'DBEHM.MIG.COPY(BNK1UAM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.951 ***** 'DBEHM.MIG.COPY(CONSENT)' - Mapped Application: CBSA
+2026-02-02 10:16:15.955 ***** 'DBEHM.MIG.COPY(CONSTAPI)' - Mapped Application: CBSA
+2026-02-02 10:16:15.958 ***** 'DBEHM.MIG.COPY(CONSTDB2)' - Mapped Application: CBSA
+2026-02-02 10:16:15.962 ***** 'DBEHM.MIG.COPY(CONTDB2)' - Mapped Application: CBSA
+2026-02-02 10:16:15.966 ***** 'DBEHM.MIG.COPY(CREACC)' - Mapped Application: CBSA
+2026-02-02 10:16:15.970 ***** 'DBEHM.MIG.COPY(CRECUST)' - Mapped Application: CBSA
+2026-02-02 10:16:15.974 ***** 'DBEHM.MIG.COPY(CUSTCTRL)' - Mapped Application: CBSA
+2026-02-02 10:16:15.978 ***** 'DBEHM.MIG.COPY(CUSTOMER)' - Mapped Application: CBSA
+2026-02-02 10:16:15.983 ***** 'DBEHM.MIG.COPY(DATASTR)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:15.986 ***** 'DBEHM.MIG.COPY(DELACC)' - Mapped Application: CBSA
+2026-02-02 10:16:15.990 ***** 'DBEHM.MIG.COPY(DELCUS)' - Mapped Application: CBSA
+2026-02-02 10:16:15.994 ***** 'DBEHM.MIG.COPY(GETCOMPY)' - Mapped Application: CBSA
+2026-02-02 10:16:15.998 ***** 'DBEHM.MIG.COPY(GETSCODE)' - Mapped Application: CBSA
+2026-02-02 10:16:16.001 ***** 'DBEHM.MIG.COPY(INQACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.005 ***** 'DBEHM.MIG.COPY(INQACCCU)' - Mapped Application: CBSA
+2026-02-02 10:16:16.009 ***** 'DBEHM.MIG.COPY(INQCUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.012 ***** 'DBEHM.MIG.COPY(LGCMAREA)' - Mapped Application: GenApp
+2026-02-02 10:16:16.016 ***** 'DBEHM.MIG.COPY(LGCMARED)' - Mapped Application: GenApp
+2026-02-02 10:16:16.019 ***** 'DBEHM.MIG.COPY(LGPOLICY)' - Mapped Application: GenApp
+2026-02-02 10:16:16.024 ***** 'DBEHM.MIG.COPY(LINPUT)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.028 ***** 'DBEHM.MIG.COPY(PAYDBCR)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:16.031 ***** 'DBEHM.MIG.COPY(PROCDB2)' - Mapped Application: CBSA
+2026-02-02 10:16:16.035 ***** 'DBEHM.MIG.COPY(PROCTRAN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.039 ***** 'DBEHM.MIG.COPY(SORTCODE)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:16.043 ***** 'DBEHM.MIG.COPY(UPDACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.046 ***** 'DBEHM.MIG.COPY(UPDCUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.050 ***** 'DBEHM.MIG.COPY(XFRFUN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.052 **** Found 'DBEHM.MIG.COBOL' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA' 
+2026-02-02 10:16:16.060 ***** 'DBEHM.MIG.COBOL(ABNDPROC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.062 ***** 'DBEHM.MIG.COBOL(ACCLOAD)' - Mapped Application: CBSA
+2026-02-02 10:16:16.064 ***** 'DBEHM.MIG.COBOL(ACCOFFL)' - Mapped Application: CBSA
+2026-02-02 10:16:16.066 ***** 'DBEHM.MIG.COBOL(ACCTCTRL)' - Mapped Application: CBSA
+2026-02-02 10:16:16.068 ***** 'DBEHM.MIG.COBOL(BANKDATA)' - Mapped Application: CBSA
+2026-02-02 10:16:16.070 ***** 'DBEHM.MIG.COBOL(BNKMENU)' - Mapped Application: CBSA
+2026-02-02 10:16:16.072 ***** 'DBEHM.MIG.COBOL(BNK1CAC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.074 ***** 'DBEHM.MIG.COBOL(BNK1CCA)' - Mapped Application: CBSA
+2026-02-02 10:16:16.076 ***** 'DBEHM.MIG.COBOL(BNK1CCS)' - Mapped Application: CBSA
+2026-02-02 10:16:16.078 ***** 'DBEHM.MIG.COBOL(BNK1CRA)' - Mapped Application: CBSA
+2026-02-02 10:16:16.079 ***** 'DBEHM.MIG.COBOL(BNK1DAC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.081 ***** 'DBEHM.MIG.COBOL(BNK1DCS)' - Mapped Application: CBSA
+2026-02-02 10:16:16.083 ***** 'DBEHM.MIG.COBOL(BNK1TFN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.085 ***** 'DBEHM.MIG.COBOL(BNK1UAC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.087 ***** 'DBEHM.MIG.COBOL(CONSENT)' - Mapped Application: CBSA
+2026-02-02 10:16:16.089 ***** 'DBEHM.MIG.COBOL(CONSTTST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.091 ***** 'DBEHM.MIG.COBOL(CRDTAGY1)' - Mapped Application: CBSA
+2026-02-02 10:16:16.093 ***** 'DBEHM.MIG.COBOL(CRDTAGY2)' - Mapped Application: CBSA
+2026-02-02 10:16:16.095 ***** 'DBEHM.MIG.COBOL(CRDTAGY3)' - Mapped Application: CBSA
+2026-02-02 10:16:16.097 ***** 'DBEHM.MIG.COBOL(CRDTAGY4)' - Mapped Application: CBSA
+2026-02-02 10:16:16.100 ***** 'DBEHM.MIG.COBOL(CRDTAGY5)' - Mapped Application: CBSA
+2026-02-02 10:16:16.102 ***** 'DBEHM.MIG.COBOL(CREACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.104 ***** 'DBEHM.MIG.COBOL(CRECUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.106 ***** 'DBEHM.MIG.COBOL(CUSTCTRL)' - Mapped Application: CBSA
+2026-02-02 10:16:16.108 ***** 'DBEHM.MIG.COBOL(DBCRFUN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.111 ***** 'DBEHM.MIG.COBOL(DELACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.113 ***** 'DBEHM.MIG.COBOL(DELCUS)' - Mapped Application: CBSA
+2026-02-02 10:16:16.116 ***** 'DBEHM.MIG.COBOL(DPAYAPI)' - Mapped Application: CBSA
+2026-02-02 10:16:16.118 ***** 'DBEHM.MIG.COBOL(DPAYTST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.121 ***** 'DBEHM.MIG.COBOL(EBUD0RUN)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.124 ***** 'DBEHM.MIG.COBOL(EBUD01)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.127 ***** 'DBEHM.MIG.COBOL(EBUD02)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.130 ***** 'DBEHM.MIG.COBOL(EBUD03)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.133 ***** 'DBEHM.MIG.COBOL(GETCOMPY)' - Mapped Application: CBSA
+2026-02-02 10:16:16.135 ***** 'DBEHM.MIG.COBOL(GETSCODE)' - Mapped Application: CBSA
+2026-02-02 10:16:16.138 ***** 'DBEHM.MIG.COBOL(INQACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.141 ***** 'DBEHM.MIG.COBOL(INQACCCU)' - Mapped Application: CBSA
+2026-02-02 10:16:16.143 ***** 'DBEHM.MIG.COBOL(INQCUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.146 ***** 'DBEHM.MIG.COBOL(LGACDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.149 ***** 'DBEHM.MIG.COBOL(LGACDB02)' - Mapped Application: GenApp
+2026-02-02 10:16:16.151 ***** 'DBEHM.MIG.COBOL(LGACUS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.154 ***** 'DBEHM.MIG.COBOL(LGACVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.157 ***** 'DBEHM.MIG.COBOL(LGAPDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.160 ***** 'DBEHM.MIG.COBOL(LGAPOL01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.163 ***** 'DBEHM.MIG.COBOL(LGAPVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.165 ***** 'DBEHM.MIG.COBOL(LGASTAT1)' - Mapped Application: GenApp
+2026-02-02 10:16:16.168 ***** 'DBEHM.MIG.COBOL(LGDPDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.171 ***** 'DBEHM.MIG.COBOL(LGDPOL01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.174 ***** 'DBEHM.MIG.COBOL(LGDPVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.177 ***** 'DBEHM.MIG.COBOL(LGICDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.179 ***** 'DBEHM.MIG.COBOL(LGICUS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.182 ***** 'DBEHM.MIG.COBOL(LGICVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.185 ***** 'DBEHM.MIG.COBOL(LGIPDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.187 ***** 'DBEHM.MIG.COBOL(LGIPOL01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.190 ***** 'DBEHM.MIG.COBOL(LGIPVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.193 ***** 'DBEHM.MIG.COBOL(LGSETUP)' - Mapped Application: GenApp
+2026-02-02 10:16:16.195 ***** 'DBEHM.MIG.COBOL(LGSTSQ)' - Mapped Application: GenApp
+2026-02-02 10:16:16.198 ***** 'DBEHM.MIG.COBOL(LGTESTC1)' - Mapped Application: GenApp
+2026-02-02 10:16:16.201 ***** 'DBEHM.MIG.COBOL(LGTESTP1)' - Mapped Application: GenApp
+2026-02-02 10:16:16.203 ***** 'DBEHM.MIG.COBOL(LGTESTP2)' - Mapped Application: GenApp
+2026-02-02 10:16:16.206 ***** 'DBEHM.MIG.COBOL(LGTESTP3)' - Mapped Application: GenApp
+2026-02-02 10:16:16.209 ***** 'DBEHM.MIG.COBOL(LGTESTP4)' - Mapped Application: GenApp
+2026-02-02 10:16:16.211 ***** 'DBEHM.MIG.COBOL(LGUCDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.214 ***** 'DBEHM.MIG.COBOL(LGUCUS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.216 ***** 'DBEHM.MIG.COBOL(LGUCVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.219 ***** 'DBEHM.MIG.COBOL(LGUPDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.222 ***** 'DBEHM.MIG.COBOL(LGUPOL01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.224 ***** 'DBEHM.MIG.COBOL(LGUPVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.227 ***** 'DBEHM.MIG.COBOL(LGWEBST5)' - Mapped Application: GenApp
+2026-02-02 10:16:16.230 ***** 'DBEHM.MIG.COBOL(OLDACDB1)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:16.233 ***** 'DBEHM.MIG.COBOL(OLDACDB2)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:16.236 ***** 'DBEHM.MIG.COBOL(PROLOAD)' - Mapped Application: CBSA
+2026-02-02 10:16:16.238 ***** 'DBEHM.MIG.COBOL(PROOFFL)' - Mapped Application: CBSA
+2026-02-02 10:16:16.241 ***** 'DBEHM.MIG.COBOL(UPDACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.243 ***** 'DBEHM.MIG.COBOL(UPDCUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.246 ***** 'DBEHM.MIG.COBOL(XFRFUN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.253 ** Generating Applications Configurations files.
+2026-02-02 10:16:16.255 ** Generating Configuration files for Application: RetirementCalculator
+2026-02-02 10:16:16.353 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/RetirementCalculator.mapping
+2026-02-02 10:16:16.403 	Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/RetirementCalculator/applicationDescriptor.yml
+2026-02-02 10:16:16.502 	Estimated storage size of migrated members: 12,838 bytes
+2026-02-02 10:16:16.503 ** Generating Configuration files for Application: UNASSIGNED
+2026-02-02 10:16:16.516 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/UNASSIGNED.mapping
+2026-02-02 10:16:16.528 	Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/UNASSIGNED/applicationDescriptor.yml
+2026-02-02 10:16:16.566 	Estimated storage size of migrated members: 36,244 bytes
+2026-02-02 10:16:16.566 ** Generating Configuration files for Application: CBSA
+2026-02-02 10:16:16.652 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/CBSA.mapping
+2026-02-02 10:16:16.695 	Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/CBSA/applicationDescriptor.yml
+2026-02-02 10:16:17.098 	Estimated storage size of migrated members: 1,147,571 bytes
+2026-02-02 10:16:17.099 ** Generating Configuration files for Application: GenApp
+2026-02-02 10:16:17.136 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/GenApp.mapping
+2026-02-02 10:16:17.157 	Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml
+2026-02-02 10:16:17.394 	Estimated storage size of migrated members: 463,749 bytes
+2026-02-02 10:16:17.396 ** Estimated storage size of all migrated members: 1,660,402 bytes
 ~~~~
 </details>
 
@@ -314,185 +314,185 @@ Execution of the command:
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy                --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
-2026-01-15 17:13:38.935 ** Script configuration:
-2026-01-15 17:13:38.935     REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
-2026-01-15 17:13:38.935     SCAN_CONTROL_TRANSFERS -> true
-2026-01-15 17:13:38.935     application -> GenApp
-2026-01-15 17:13:38.935     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-15 17:13:38.935     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-15 17:13:38.936     DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
-2026-01-15 17:13:38.936     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
-2026-01-15 17:13:38.936     DBB_MODELER_METADATASTORE_TYPE -> file
-2026-01-15 17:13:38.936     APPLICATION_DEFAULT_BRANCH -> main
-2026-01-15 17:13:38.937 ** Reading the existing Application Descriptor file.
-2026-01-15 17:13:38.940 ** Retrieving the list of files mapped to Source Groups.
-2026-01-15 17:13:38.940 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'. Skipping.
-2026-01-15 17:13:38.941 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.gitattributes'. Skipping.
-2026-01-15 17:13:38.951 ** Scanning the files.
-2026-01-15 17:13:38.951     Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
-2026-01-15 17:13:38.959     Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
-2026-01-15 17:13:38.965     Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
-2026-01-15 17:13:38.972     Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
-2026-01-15 17:13:38.977     Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
-2026-01-15 17:13:38.987     Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
-2026-01-15 17:13:38.994     Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
-2026-01-15 17:13:39.015     Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
-2026-01-15 17:13:39.035     Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
-2026-01-15 17:13:39.045     Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
-2026-01-15 17:13:39.062     Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
-2026-01-15 17:13:39.069     Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
-2026-01-15 17:13:39.085     Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
-2026-01-15 17:13:39.092     Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
-2026-01-15 17:13:39.099     Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
-2026-01-15 17:13:39.107     Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
-2026-01-15 17:13:39.113     Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
-2026-01-15 17:13:39.119     Scanning file GenApp/GenApp/src/bms/ssmap.bms 
-2026-01-15 17:13:39.229     Scanning file GenApp/GenApp/src/copy/lgcmared.cpy 
-2026-01-15 17:13:39.235     Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
-2026-01-15 17:13:39.239     Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
-2026-01-15 17:13:39.244     Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
-2026-01-15 17:13:39.248     Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
-2026-01-15 17:13:39.253     Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
-2026-01-15 17:13:39.258     Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
-2026-01-15 17:13:39.263     Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
-2026-01-15 17:13:39.267     Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
-2026-01-15 17:13:39.272     Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
-2026-01-15 17:13:39.276     Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
-2026-01-15 17:13:39.281     Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
-2026-01-15 17:13:39.285     Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
-2026-01-15 17:13:39.289     Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
-2026-01-15 17:13:39.296     Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
-2026-01-15 17:13:39.301     Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
-2026-01-15 17:13:39.305     Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
-2026-01-15 17:13:39.314 ** Storing results in the 'GenApp-main' DBB Collection.
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy                --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
-2026-01-15 17:13:43.173 ** Script configuration:
-2026-01-15 17:13:43.173     DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration
-2026-01-15 17:13:43.173     MOVE_FILES_FLAG -> true
-2026-01-15 17:13:43.173     REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
-2026-01-15 17:13:43.174     SCAN_CONTROL_TRANSFERS -> true
-2026-01-15 17:13:43.174     application -> GenApp
-2026-01-15 17:13:43.174     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-15 17:13:43.174     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-15 17:13:43.174     DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
-2026-01-15 17:13:43.174     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
-2026-01-15 17:13:43.175     DBB_MODELER_METADATASTORE_TYPE -> file
-2026-01-15 17:13:43.175     APPLICATION_DEFAULT_BRANCH -> main
-2026-01-15 17:13:43.178 ** Reading the Repository Layout Mapping definition.
-2026-01-15 17:13:43.179 ** Getting the list of files of 'Include File' type.
-2026-01-15 17:13:43.183 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmarea.cpy'.
-2026-01-15 17:13:43.224     Files depending on 'GenApp/src/copy/lgcmarea.cpy' :
-2026-01-15 17:13:43.224     'GenApp/GenApp/src/cobol/lgdpol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.224     'GenApp/GenApp/src/cobol/lgtestp3.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.224     'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgupol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgastat1.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgacvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgucus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgapdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgdpdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgtestp2.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgtestc1.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgapol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgupdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgucvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgtestp1.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgapvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgupvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgucdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgtestp4.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgdpvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgipdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.228     ==> 'lgcmarea' referenced by multiple applications - [UNASSIGNED, GenApp]
-2026-01-15 17:13:43.229     ==> Updating usage of Include File 'lgcmarea' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'.
-2026-01-15 17:13:43.245 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmared.cpy'.
-2026-01-15 17:13:43.250     The Include File 'lgcmared' is not referenced at all.
-2026-01-15 17:13:43.253 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgpolicy.cpy'.
-2026-01-15 17:13:43.270     Files depending on 'GenApp/src/copy/lgpolicy.cpy' :
-2026-01-15 17:13:43.270     'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgucdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgupdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgipdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgapdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgacdb02.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     ==> 'lgpolicy' referenced by multiple applications - [UNASSIGNED, GenApp]
-2026-01-15 17:13:43.271     ==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'.
-2026-01-15 17:13:43.278 ** Getting the list of files of 'Program' type.
-2026-01-15 17:13:43.279 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicus01.cbl'.
-2026-01-15 17:13:43.286     The Program 'lgicus01' is not statically called by any other program.
-2026-01-15 17:13:43.289 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpol01.cbl'.
-2026-01-15 17:13:43.295     The Program 'lgdpol01' is not statically called by any other program.
-2026-01-15 17:13:43.298 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipdb01.cbl'.
-2026-01-15 17:13:43.307     The Program 'lgipdb01' is not statically called by any other program.
-2026-01-15 17:13:43.309 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp3.cbl'.
-2026-01-15 17:13:43.315     The Program 'lgtestp3' is not statically called by any other program.
-2026-01-15 17:13:43.318 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp4.cbl'.
-2026-01-15 17:13:43.323     The Program 'lgtestp4' is not statically called by any other program.
-2026-01-15 17:13:43.326 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacvs01.cbl'.
-2026-01-15 17:13:43.331     The Program 'lgacvs01' is not statically called by any other program.
-2026-01-15 17:13:43.333 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgsetup.cbl'.
-2026-01-15 17:13:43.340     The Program 'lgsetup' is not statically called by any other program.
-2026-01-15 17:13:43.343 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapol01.cbl'.
-2026-01-15 17:13:43.349     The Program 'lgapol01' is not statically called by any other program.
-2026-01-15 17:13:43.352 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipvs01.cbl'.
-2026-01-15 17:13:43.357     The Program 'lgipvs01' is not statically called by any other program.
-2026-01-15 17:13:43.360 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupol01.cbl'.
-2026-01-15 17:13:43.366     The Program 'lgupol01' is not statically called by any other program.
-2026-01-15 17:13:43.368 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb01.cbl'.
-2026-01-15 17:13:43.374     The Program 'lgacdb01' is not statically called by any other program.
-2026-01-15 17:13:43.377 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb02.cbl'.
-2026-01-15 17:13:43.382     The Program 'lgacdb02' is not statically called by any other program.
-2026-01-15 17:13:43.384 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgstsq.cbl'.
-2026-01-15 17:13:43.395     The Program 'lgstsq' is not statically called by any other program.
-2026-01-15 17:13:43.397 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp1.cbl'.
-2026-01-15 17:13:43.403     The Program 'lgtestp1' is not statically called by any other program.
-2026-01-15 17:13:43.406 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp2.cbl'.
-2026-01-15 17:13:43.412     The Program 'lgtestp2' is not statically called by any other program.
-2026-01-15 17:13:43.414 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpdb01.cbl'.
-2026-01-15 17:13:43.419     The Program 'lgdpdb01' is not statically called by any other program.
-2026-01-15 17:13:43.422 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucus01.cbl'.
-2026-01-15 17:13:43.427     The Program 'lgucus01' is not statically called by any other program.
-2026-01-15 17:13:43.430 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapvs01.cbl'.
-2026-01-15 17:13:43.435     The Program 'lgapvs01' is not statically called by any other program.
-2026-01-15 17:13:43.438 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucdb01.cbl'.
-2026-01-15 17:13:43.443     The Program 'lgucdb01' is not statically called by any other program.
-2026-01-15 17:13:43.445 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpvs01.cbl'.
-2026-01-15 17:13:43.450     The Program 'lgdpvs01' is not statically called by any other program.
-2026-01-15 17:13:43.453 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestc1.cbl'.
-2026-01-15 17:13:43.459     The Program 'lgtestc1' is not statically called by any other program.
-2026-01-15 17:13:43.461 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgastat1.cbl'.
-2026-01-15 17:13:43.466     The Program 'lgastat1' is not statically called by any other program.
-2026-01-15 17:13:43.469 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapdb01.cbl'.
-2026-01-15 17:13:43.475     The Program 'lgapdb01' is not statically called by any other program.
-2026-01-15 17:13:43.478 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicvs01.cbl'.
-2026-01-15 17:13:43.483     The Program 'lgicvs01' is not statically called by any other program.
-2026-01-15 17:13:43.486 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipol01.cbl'.
-2026-01-15 17:13:43.492     The Program 'lgipol01' is not statically called by any other program.
-2026-01-15 17:13:43.494 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacus01.cbl'.
-2026-01-15 17:13:43.500     The Program 'lgacus01' is not statically called by any other program.
-2026-01-15 17:13:43.503 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgwebst5.cbl'.
-2026-01-15 17:13:43.511     The Program 'lgwebst5' is not statically called by any other program.
-2026-01-15 17:13:43.514 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucvs01.cbl'.
-2026-01-15 17:13:43.519     The Program 'lgucvs01' is not statically called by any other program.
-2026-01-15 17:13:43.521 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupdb01.cbl'.
-2026-01-15 17:13:43.528     The Program 'lgupdb01' is not statically called by any other program.
-2026-01-15 17:13:43.530 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicdb01.cbl'.
-2026-01-15 17:13:43.535     The Program 'lgicdb01' is not statically called by any other program.
-2026-01-15 17:13:43.538 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupvs01.cbl'.
-2026-01-15 17:13:43.544     The Program 'lgupvs01' is not statically called by any other program.
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 				--application GenApp 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
+2026-02-02 10:16:37.551 ** Script configuration:
+2026-02-02 10:16:37.552 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
+2026-02-02 10:16:37.552 	SCAN_CONTROL_TRANSFERS -> true
+2026-02-02 10:16:37.552 	application -> GenApp
+2026-02-02 10:16:37.552 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:16:37.552 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
+2026-02-02 10:16:37.553 	DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
+2026-02-02 10:16:37.553 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
+2026-02-02 10:16:37.554 	DBB_MODELER_METADATASTORE_TYPE -> file
+2026-02-02 10:16:37.554 	APPLICATION_DEFAULT_BRANCH -> main
+2026-02-02 10:16:37.554 ** Reading the existing Application Descriptor file.
+2026-02-02 10:16:37.570 ** Retrieving the list of files mapped to Source Groups.
+2026-02-02 10:16:37.571 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'. Skipping.
+2026-02-02 10:16:37.571 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.gitattributes'. Skipping.
+2026-02-02 10:16:37.581 ** Scanning the files.
+2026-02-02 10:16:37.581 	Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
+2026-02-02 10:16:37.590 	Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
+2026-02-02 10:16:37.598 	Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
+2026-02-02 10:16:37.605 	Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
+2026-02-02 10:16:37.612 	Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
+2026-02-02 10:16:37.625 	Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
+2026-02-02 10:16:37.633 	Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
+2026-02-02 10:16:37.642 	Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
+2026-02-02 10:16:37.661 	Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
+2026-02-02 10:16:37.673 	Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
+2026-02-02 10:16:37.690 	Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
+2026-02-02 10:16:37.699 	Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
+2026-02-02 10:16:37.720 	Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
+2026-02-02 10:16:37.727 	Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
+2026-02-02 10:16:37.735 	Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
+2026-02-02 10:16:37.744 	Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
+2026-02-02 10:16:37.751 	Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
+2026-02-02 10:16:37.758 	Scanning file GenApp/GenApp/src/bms/ssmap.bms 
+2026-02-02 10:16:37.880 	Scanning file GenApp/GenApp/src/copy/lgcmared.cpy 
+2026-02-02 10:16:37.887 	Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
+2026-02-02 10:16:37.893 	Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
+2026-02-02 10:16:37.900 	Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
+2026-02-02 10:16:37.912 	Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
+2026-02-02 10:16:37.918 	Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
+2026-02-02 10:16:37.923 	Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
+2026-02-02 10:16:37.930 	Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
+2026-02-02 10:16:37.934 	Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
+2026-02-02 10:16:37.940 	Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
+2026-02-02 10:16:37.944 	Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
+2026-02-02 10:16:37.949 	Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
+2026-02-02 10:16:37.954 	Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
+2026-02-02 10:16:37.959 	Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
+2026-02-02 10:16:37.968 	Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
+2026-02-02 10:16:37.974 	Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
+2026-02-02 10:16:37.978 	Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
+2026-02-02 10:16:37.991 ** Storing results in the 'GenApp-main' DBB Collection.
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 				--application GenApp 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
+2026-02-02 10:16:42.772 ** Script configuration:
+2026-02-02 10:16:42.772 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration
+2026-02-02 10:16:42.772 	MOVE_FILES_FLAG -> true
+2026-02-02 10:16:42.772 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
+2026-02-02 10:16:42.773 	SCAN_CONTROL_TRANSFERS -> true
+2026-02-02 10:16:42.773 	application -> GenApp
+2026-02-02 10:16:42.773 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:16:42.773 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
+2026-02-02 10:16:42.774 	DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
+2026-02-02 10:16:42.774 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
+2026-02-02 10:16:42.774 	DBB_MODELER_METADATASTORE_TYPE -> file
+2026-02-02 10:16:42.774 	APPLICATION_DEFAULT_BRANCH -> main
+2026-02-02 10:16:42.785 ** Reading the Repository Layout Mapping definition.
+2026-02-02 10:16:42.792 ** Getting the list of files of 'Include File' type.
+2026-02-02 10:16:42.797 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmarea.cpy'.
+2026-02-02 10:16:42.845 	Files depending on 'GenApp/src/copy/lgcmarea.cpy' :
+2026-02-02 10:16:42.845 	'GenApp/GenApp/src/cobol/lgdpol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.845 	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.845 	'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.845 	'GenApp/GenApp/src/cobol/lgupol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgastat1.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgacvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgucus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgapdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgdpdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgapol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgupdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgucvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgapvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgupvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgucdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgtestp4.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.849 	'GenApp/GenApp/src/cobol/lgdpvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.849 	'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.849 	'GenApp/GenApp/src/cobol/lgipdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.850 	==> 'lgcmarea' referenced by multiple applications - [UNASSIGNED, GenApp]
+2026-02-02 10:16:42.850 	==> Updating usage of Include File 'lgcmarea' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'.
+2026-02-02 10:16:42.875 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmared.cpy'.
+2026-02-02 10:16:42.880 	The Include File 'lgcmared' is not referenced at all.
+2026-02-02 10:16:42.887 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgpolicy.cpy'.
+2026-02-02 10:16:42.907 	Files depending on 'GenApp/src/copy/lgpolicy.cpy' :
+2026-02-02 10:16:42.907 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
+2026-02-02 10:16:42.907 	'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.907 	'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.907 	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgucdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgupdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgipdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.909 	'GenApp/GenApp/src/cobol/lgapdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.909 	'GenApp/GenApp/src/cobol/lgacdb02.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.909 	==> 'lgpolicy' referenced by multiple applications - [UNASSIGNED, GenApp]
+2026-02-02 10:16:42.909 	==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'.
+2026-02-02 10:16:42.926 ** Getting the list of files of 'Program' type.
+2026-02-02 10:16:42.927 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicus01.cbl'.
+2026-02-02 10:16:42.935 	The Program 'lgicus01' is not statically called by any other program.
+2026-02-02 10:16:42.941 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpol01.cbl'.
+2026-02-02 10:16:42.948 	The Program 'lgdpol01' is not statically called by any other program.
+2026-02-02 10:16:42.955 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipdb01.cbl'.
+2026-02-02 10:16:42.964 	The Program 'lgipdb01' is not statically called by any other program.
+2026-02-02 10:16:42.971 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp3.cbl'.
+2026-02-02 10:16:42.976 	The Program 'lgtestp3' is not statically called by any other program.
+2026-02-02 10:16:42.986 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp4.cbl'.
+2026-02-02 10:16:42.992 	The Program 'lgtestp4' is not statically called by any other program.
+2026-02-02 10:16:42.998 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacvs01.cbl'.
+2026-02-02 10:16:43.003 	The Program 'lgacvs01' is not statically called by any other program.
+2026-02-02 10:16:43.010 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgsetup.cbl'.
+2026-02-02 10:16:43.017 	The Program 'lgsetup' is not statically called by any other program.
+2026-02-02 10:16:43.025 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapol01.cbl'.
+2026-02-02 10:16:43.032 	The Program 'lgapol01' is not statically called by any other program.
+2026-02-02 10:16:43.039 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipvs01.cbl'.
+2026-02-02 10:16:43.044 	The Program 'lgipvs01' is not statically called by any other program.
+2026-02-02 10:16:43.050 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupol01.cbl'.
+2026-02-02 10:16:43.058 	The Program 'lgupol01' is not statically called by any other program.
+2026-02-02 10:16:43.064 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb01.cbl'.
+2026-02-02 10:16:43.070 	The Program 'lgacdb01' is not statically called by any other program.
+2026-02-02 10:16:43.076 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb02.cbl'.
+2026-02-02 10:16:43.082 	The Program 'lgacdb02' is not statically called by any other program.
+2026-02-02 10:16:43.088 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgstsq.cbl'.
+2026-02-02 10:16:43.100 	The Program 'lgstsq' is not statically called by any other program.
+2026-02-02 10:16:43.107 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp1.cbl'.
+2026-02-02 10:16:43.113 	The Program 'lgtestp1' is not statically called by any other program.
+2026-02-02 10:16:43.120 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp2.cbl'.
+2026-02-02 10:16:43.126 	The Program 'lgtestp2' is not statically called by any other program.
+2026-02-02 10:16:43.140 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpdb01.cbl'.
+2026-02-02 10:16:43.145 	The Program 'lgdpdb01' is not statically called by any other program.
+2026-02-02 10:16:43.152 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucus01.cbl'.
+2026-02-02 10:16:43.157 	The Program 'lgucus01' is not statically called by any other program.
+2026-02-02 10:16:43.164 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapvs01.cbl'.
+2026-02-02 10:16:43.169 	The Program 'lgapvs01' is not statically called by any other program.
+2026-02-02 10:16:43.175 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucdb01.cbl'.
+2026-02-02 10:16:43.181 	The Program 'lgucdb01' is not statically called by any other program.
+2026-02-02 10:16:43.187 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpvs01.cbl'.
+2026-02-02 10:16:43.193 	The Program 'lgdpvs01' is not statically called by any other program.
+2026-02-02 10:16:43.199 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestc1.cbl'.
+2026-02-02 10:16:43.205 	The Program 'lgtestc1' is not statically called by any other program.
+2026-02-02 10:16:43.212 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgastat1.cbl'.
+2026-02-02 10:16:43.217 	The Program 'lgastat1' is not statically called by any other program.
+2026-02-02 10:16:43.223 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapdb01.cbl'.
+2026-02-02 10:16:43.230 	The Program 'lgapdb01' is not statically called by any other program.
+2026-02-02 10:16:43.236 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicvs01.cbl'.
+2026-02-02 10:16:43.242 	The Program 'lgicvs01' is not statically called by any other program.
+2026-02-02 10:16:43.248 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipol01.cbl'.
+2026-02-02 10:16:43.255 	The Program 'lgipol01' is not statically called by any other program.
+2026-02-02 10:16:43.261 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacus01.cbl'.
+2026-02-02 10:16:43.266 	The Program 'lgacus01' is not statically called by any other program.
+2026-02-02 10:16:43.272 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgwebst5.cbl'.
+2026-02-02 10:16:43.280 	The Program 'lgwebst5' is not statically called by any other program.
+2026-02-02 10:16:43.286 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucvs01.cbl'.
+2026-02-02 10:16:43.292 	The Program 'lgucvs01' is not statically called by any other program.
+2026-02-02 10:16:43.297 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupdb01.cbl'.
+2026-02-02 10:16:43.304 	The Program 'lgupdb01' is not statically called by any other program.
+2026-02-02 10:16:43.310 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicdb01.cbl'.
+2026-02-02 10:16:43.315 	The Program 'lgicdb01' is not statically called by any other program.
+2026-02-02 10:16:43.321 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupvs01.cbl'.
+2026-02-02 10:16:43.326 	The Program 'lgupvs01' is not statically called by any other program.
 ~~~~
 </details>
 
@@ -515,24 +515,28 @@ Execution of the command:
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/generateZBuilderProperties.groovy                 --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
-2026-01-15 17:13:46.877 ** Script configuration:
-2026-01-15 17:13:46.877     application -> GenApp
-2026-01-15 17:13:46.877     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-15 17:13:46.877     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-15 17:13:46.877     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
-2026-01-15 17:13:46.877     TYPE_CONFIGURATIONS_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml
-2026-01-15 17:13:46.878 ** Reading the Types Configurations definitions from '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
-2026-01-15 17:13:46.880 ** Gathering the defined types for files.
-2026-01-15 17:13:46.881 ** Generating zBuilder language configuration files.
-2026-01-15 17:13:46.881     Type Configuration for type 'CBLCICSDB2' found in '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
-2026-01-15 17:13:46.882     [WARNING] No Type Configuration for type 'CBLDB2' found in '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
-2026-01-15 17:13:46.882     [WARNING] No Type Configuration for type 'CBLCICS' found in '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
-2026-01-15 17:13:46.882 ** Generating zBuilder Application configuration file.
-2026-01-15 17:13:46.882 ** Generating Dependencies Search Paths and Impact Analysis Query Patterns.
-2026-01-15 17:13:46.883 ** Application Configuration file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/dbb-app.yaml' successfully created.
-2026-01-15 17:13:46.883 ** [INFO] Make sure the zBuilder Configuration files (Language Task definitions) are accurate before running a build with zBuilder.
-2026-01-15 17:13:46.883 ** [INFO] For each Language Task definition, the Dependency Search Path variable potentially needs to be updated to match the layout of the Git repositories.
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/generateZBuilderProperties.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 				--application GenApp 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
+2026-02-02 10:16:46.488 ** Script configuration:
+2026-02-02 10:16:46.488 	application -> GenApp
+2026-02-02 10:16:46.488 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:16:46.488 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
+2026-02-02 10:16:46.488 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
+2026-02-02 10:16:46.488 	TYPE_CONFIGURATIONS_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml
+2026-02-02 10:16:46.488 	DBB_MODELER_WORK -> /u/mdalbin/Migration-Modeler-MDLB-work
+2026-02-02 10:16:46.488 	DBB_ZBUILDER -> /u/mdalbin/zBuilder
+2026-02-02 10:16:46.489 ** Reading the Types Configurations definitions from '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
+2026-02-02 10:16:46.498 ** Gathering the defined types for files.
+2026-02-02 10:16:46.501 ** Generating zBuilder language configuration files.
+2026-02-02 10:16:46.502 	Type Configuration for type 'CBLCICSDB2' found in '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
+2026-02-02 10:16:46.504 	[WARNING] No Type Configuration for type 'CBLDB2' found in '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
+2026-02-02 10:16:46.504 	[WARNING] No Type Configuration for type 'CBLCICS' found in '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
+2026-02-02 10:16:46.505 ** Generating zBuilder Application configuration file.
+2026-02-02 10:16:46.507 ** [INFO] 1 Language Configuration file created in '/u/mdalbin/Migration-Modeler-MDLB-work/build-configuration'.
+2026-02-02 10:16:46.507 ** [INFO] Before running builds with zBuilder, please copy the content of the '/u/mdalbin/Migration-Modeler-MDLB-work/build-configuration' folder to your zBuilder instance located at '/u/mdalbin/zBuilder'.
+2026-02-02 10:16:46.507 ** Generating Dependencies Search Paths and Impact Analysis Query Patterns.
+2026-02-02 10:16:46.509 ** Application Configuration file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/dbb-app.yaml' successfully created.
+2026-02-02 10:16:46.509 ** [INFO] Make sure the zBuilder Configuration files (Language Task definitions) are accurate before running a build with zBuilder.
+2026-02-02 10:16:46.509 ** [INFO] For each Language Task definition, the Dependency Search Path variable potentially needs to be updated to match the layout of the Git repositories.
 ~~~~
 </details>
 
@@ -549,20 +553,20 @@ Execution of command:
 `./src/scripts/utils/5-initApplicationRepositories.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
 ~~~~
-[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/metadataStoreUtility.groovy -c /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config --deleteBuildGroup --buildGroup GenApp-main -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
-2026-01-15 17:14:04.960 ** Script configuration:
-2026-01-15 17:14:04.960    deleteBuildGroup -> true
-2026-01-15 17:14:04.960    buildGroup -> GenApp-main
-2026-01-15 17:14:04.961    configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-15 17:14:04.961    logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
-2026-01-15 17:14:04.961 ** Deleting DBB BuildGroup GenApp-main
-2026-01-15 17:14:04.968 ** Deleting legacy collections in DBB BuildGroup dbb_default
+[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/metadataStoreUtility.groovy -c /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config --deleteBuildGroup --buildGroup GenApp-main -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
+2026-02-02 10:17:09.501 ** Script configuration:
+2026-02-02 10:17:09.501    deleteBuildGroup -> true
+2026-02-02 10:17:09.501    buildGroup -> GenApp-main
+2026-02-02 10:17:09.501    configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:17:09.502    logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
+2026-02-02 10:17:09.502 ** Deleting DBB BuildGroup GenApp-main
+2026-02-02 10:17:09.509 ** Deleting legacy collections in DBB BuildGroup dbb_default
 [CMD] git init --initial-branch=main
 Initialized empty Git repository in /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/
 [CMD] rm .gitattributes
 [CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/config/default-app-repo-config-files/.gitattributes .gitattributes
 [CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/config/default-app-repo-config-files/zapp_template.yaml zapp.yaml
-[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/zappUtils.groovy                     -z /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/zapp.yaml                     -a /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml                     -b /var/dbb/dbb-zappbuild -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
+[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/zappUtils.groovy 					-z /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/zapp.yaml 					-a /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml 					-b /var/dbb/dbb-zappbuild -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
 [CMD] cp /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/
 [CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/deployment/
 [CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/tagging/
@@ -573,23 +577,22 @@ No commits yet
 
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
-    .gitattributes
-    .project
-    GenApp/
-    application-conf/
-    applicationDescriptor.yml
-    azure-pipelines.yml
-    config/
-    dbb-app.yaml
-    deployment/
-    tagging/
-    zapp.yaml
+	.gitattributes
+	.project
+	GenApp/
+	application-conf/
+	applicationDescriptor.yml
+	azure-pipelines.yml
+	dbb-app.yaml
+	deployment/
+	tagging/
+	zapp.yaml
 
 nothing added to commit but untracked files present (use "git add" to track)
 [CMD] git add --all
 [CMD] git commit -m 'Initial Commit'
-[main (root-commit) d0cba95] Initial Commit
- 45 files changed, 11765 insertions(+)
+[main (root-commit) 57a8f4a] Initial Commit
+ 44 files changed, 11755 insertions(+)
  create mode 100644 .gitattributes
  create mode 100644 .project
  create mode 100644 GenApp/src/bms/ssmap.bms
@@ -630,14 +633,13 @@ nothing added to commit but untracked files present (use "git add" to track)
  create mode 100644 application-conf/baselineReference.config
  create mode 100644 applicationDescriptor.yml
  create mode 100644 azure-pipelines.yml
- create mode 100644 config/CBLCICSDB2.yaml
  create mode 100644 dbb-app.yaml
  create mode 100644 deployment/deployPackage.yml
  create mode 100644 tagging/createReleaseCandidate.yml
  create mode 100644 zapp.yaml
 [CMD] git tag rel-1.0.0
 [CMD] git branch release/rel-1.0.0 refs/tags/rel-1.0.0
-** /usr/lpp/dbb/v3r0/bin/dbb build full                             --hlq DBEHM.MIG                             --preview                           
+** /usr/lpp/dbb/v3r0/bin/dbb build full     						--hlq DBEHM.MIG     						--preview     						
 ~~~~
 
 </details>
@@ -690,774 +692,858 @@ Execution of command:
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy                --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
-2026-01-15 17:13:38.935 ** Script configuration:
-2026-01-15 17:13:38.935     REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
-2026-01-15 17:13:38.935     SCAN_CONTROL_TRANSFERS -> true
-2026-01-15 17:13:38.935     application -> GenApp
-2026-01-15 17:13:38.935     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-15 17:13:38.935     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-15 17:13:38.936     DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
-2026-01-15 17:13:38.936     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
-2026-01-15 17:13:38.936     DBB_MODELER_METADATASTORE_TYPE -> file
-2026-01-15 17:13:38.936     APPLICATION_DEFAULT_BRANCH -> main
-2026-01-15 17:13:38.937 ** Reading the existing Application Descriptor file.
-2026-01-15 17:13:38.940 ** Retrieving the list of files mapped to Source Groups.
-2026-01-15 17:13:38.940 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'. Skipping.
-2026-01-15 17:13:38.941 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.gitattributes'. Skipping.
-2026-01-15 17:13:38.951 ** Scanning the files.
-2026-01-15 17:13:38.951     Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
-2026-01-15 17:13:38.959     Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
-2026-01-15 17:13:38.965     Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
-2026-01-15 17:13:38.972     Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
-2026-01-15 17:13:38.977     Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
-2026-01-15 17:13:38.987     Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
-2026-01-15 17:13:38.994     Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
-2026-01-15 17:13:39.015     Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
-2026-01-15 17:13:39.035     Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
-2026-01-15 17:13:39.045     Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
-2026-01-15 17:13:39.062     Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
-2026-01-15 17:13:39.069     Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
-2026-01-15 17:13:39.085     Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
-2026-01-15 17:13:39.092     Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
-2026-01-15 17:13:39.099     Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
-2026-01-15 17:13:39.107     Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
-2026-01-15 17:13:39.113     Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
-2026-01-15 17:13:39.119     Scanning file GenApp/GenApp/src/bms/ssmap.bms 
-2026-01-15 17:13:39.229     Scanning file GenApp/GenApp/src/copy/lgcmared.cpy 
-2026-01-15 17:13:39.235     Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
-2026-01-15 17:13:39.239     Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
-2026-01-15 17:13:39.244     Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
-2026-01-15 17:13:39.248     Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
-2026-01-15 17:13:39.253     Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
-2026-01-15 17:13:39.258     Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
-2026-01-15 17:13:39.263     Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
-2026-01-15 17:13:39.267     Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
-2026-01-15 17:13:39.272     Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
-2026-01-15 17:13:39.276     Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
-2026-01-15 17:13:39.281     Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
-2026-01-15 17:13:39.285     Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
-2026-01-15 17:13:39.289     Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
-2026-01-15 17:13:39.296     Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
-2026-01-15 17:13:39.301     Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
-2026-01-15 17:13:39.305     Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
-2026-01-15 17:13:39.314 ** Storing results in the 'GenApp-main' DBB Collection.
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy                --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
-2026-01-16 10:38:33.846 ** Script configuration:
-2026-01-16 10:38:33.847     REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
-2026-01-16 10:38:33.847     SCAN_CONTROL_TRANSFERS -> true
-2026-01-16 10:38:33.847     application -> GenApp
-2026-01-16 10:38:33.847     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-16 10:38:33.848     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-16 10:38:33.848     DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
-2026-01-16 10:38:33.848     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
-2026-01-16 10:38:33.849     DBB_MODELER_METADATASTORE_TYPE -> file
-2026-01-16 10:38:33.849     APPLICATION_DEFAULT_BRANCH -> main
-2026-01-16 10:38:33.849 ** Reading the existing Application Descriptor file.
-2026-01-16 10:38:33.876 ** Retrieving the list of files mapped to Source Groups.
-2026-01-16 10:38:33.877 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'. Skipping.
-2026-01-16 10:38:33.878 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.gitattributes'. Skipping.
-2026-01-16 10:38:33.889 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/config/CBLCICSDB2.yaml'. Skipping.
-2026-01-16 10:38:33.890 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/dbb-app.yaml'. Skipping.
-2026-01-16 10:38:33.890 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/description'. Skipping.
-2026-01-16 10:38:33.891 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/applypatch-msg.sample'. Skipping.
-2026-01-16 10:38:33.891 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/commit-msg.sample'. Skipping.
-2026-01-16 10:38:33.891 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/fsmonitor-watchman.sample'. Skipping.
-2026-01-16 10:38:33.892 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/post-update.sample'. Skipping.
-2026-01-16 10:38:33.892 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-applypatch.sample'. Skipping.
-2026-01-16 10:38:33.893 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-commit.sample'. Skipping.
-2026-01-16 10:38:33.893 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-merge-commit.sample'. Skipping.
-2026-01-16 10:38:33.893 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/prepare-commit-msg.sample'. Skipping.
-2026-01-16 10:38:33.894 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-push.sample'. Skipping.
-2026-01-16 10:38:33.894 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-rebase.sample'. Skipping.
-2026-01-16 10:38:33.894 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-receive.sample'. Skipping.
-2026-01-16 10:38:33.895 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/push-to-checkout.sample'. Skipping.
-2026-01-16 10:38:33.895 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/sendemail-validate.sample'. Skipping.
-2026-01-16 10:38:33.896 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/update.sample'. Skipping.
-2026-01-16 10:38:33.896 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/info/exclude'. Skipping.
-2026-01-16 10:38:33.897 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/heads/release/rel-1.0.0'. Skipping.
-2026-01-16 10:38:33.897 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/heads/main'. Skipping.
-2026-01-16 10:38:33.898 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/tags/rel-1.0.0'. Skipping.
-2026-01-16 10:38:33.898 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/config'. Skipping.
-2026-01-16 10:38:33.899 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/36/512daf923067d0311f15995925416be25290b5'. Skipping.
-2026-01-16 10:38:33.899 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/8d/0eaea2f7e487513d472afe1a66d7da07f663b9'. Skipping.
-2026-01-16 10:38:33.900 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/7d/f90877fb98ccba6508a94e6fe3ff1ad865d682'. Skipping.
-2026-01-16 10:38:33.900 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d8/f18d43e8afa308163aebcff561e7dedf67759e'. Skipping.
-2026-01-16 10:38:33.901 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/ed/7e8c1b79aaa76736f0af3b735f667d3d26ad36'. Skipping.
-2026-01-16 10:38:33.901 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/7e/36d0d65c7ae8ca0ce7a451692820010cf2c51f'. Skipping.
-2026-01-16 10:38:33.902 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/17/cd1d6b0325b04277c7fc7a1ec27ce9bcbd2598'. Skipping.
-2026-01-16 10:38:33.902 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/e1/52fbd8c03e836ad0046953854f04b4665d75b9'. Skipping.
-2026-01-16 10:38:33.903 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/28/2aa20f6c7d61d15b8922c8d8e0552880351472'. Skipping.
-2026-01-16 10:38:33.903 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/28/0e6f742c84b40da642115cad3a0c86aa9c0aac'. Skipping.
-2026-01-16 10:38:33.904 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/13/0e880deea1c41c3ba7e57cbb0aa4e19f5ce9ad'. Skipping.
-2026-01-16 10:38:33.904 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/1b/9d6bcb233214bd016ac6ffd87d5b4e5a0644cc'. Skipping.
-2026-01-16 10:38:33.905 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/22/b550bafdc6e9f5103b1a28ca501d6bdae4ec76'. Skipping.
-2026-01-16 10:38:33.905 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/e5/86c7d2e00e602158da102e4c8d30deaeb142ae'. Skipping.
-2026-01-16 10:38:33.906 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/0d/b601b1f055ea023e104c7d24ab0ef5eea1ff05'. Skipping.
-2026-01-16 10:38:33.906 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/12/5b26f553c5647a5aabc69a45f0191aed5d5e01'. Skipping.
-2026-01-16 10:38:33.906 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/12/6b62bf8e868002e76f970f411637e7488e05bb'. Skipping.
-2026-01-16 10:38:33.907 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/42/d3f2e669c2f9f6cf9565e61b2a3f96ad1ff503'. Skipping.
-2026-01-16 10:38:33.907 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/fa/ffcce01f2da721aa453f5dda21d11f8d3ae693'. Skipping.
-2026-01-16 10:38:33.908 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/16/73ab0e7f0e1744ab58379576e6c835d4108474'. Skipping.
-2026-01-16 10:38:33.909 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b0/49dc9735257281c334afd74730dee59c62e2e8'. Skipping.
-2026-01-16 10:38:33.909 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f7/09ff109986301f101a1912b9d043756d7e596a'. Skipping.
-2026-01-16 10:38:33.909 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f7/1aff317ceeb25dca6e497b93a6ff9a5c8e2518'. Skipping.
-2026-01-16 10:38:33.910 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/a0/b94e23333057ca37382048c4f7fc6f2e0df75b'. Skipping.
-2026-01-16 10:38:33.910 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d4/24e6a718eb9ad584e21f7a899488500484f7e2'. Skipping.
-2026-01-16 10:38:33.911 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d9/455ae3c356b0e7a2440914f564ddbcbe30e28d'. Skipping.
-2026-01-16 10:38:33.911 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/83/2f54aa68fe84f78461085d00e3b3206e39fdb7'. Skipping.
-2026-01-16 10:38:33.912 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/6e/a11cb2dc20aa126f08701fe873ac2dae5ce0b6'. Skipping.
-2026-01-16 10:38:33.912 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/2e/f0cfc9de9ca7521899a87cf9e216be7f109d88'. Skipping.
-2026-01-16 10:38:33.913 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/82/766939ca20dfac5d9ab33782e4f45b2ade19fc'. Skipping.
-2026-01-16 10:38:33.913 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/9a/a1e257384925e8015d7e0864175961ce258290'. Skipping.
-2026-01-16 10:38:33.914 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/78/e7f1d24d01d4949e80fc149026a9d902eac1b9'. Skipping.
-2026-01-16 10:38:33.914 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/98/11fa56e0556c5d884a98ae06f7d007f64edafa'. Skipping.
-2026-01-16 10:38:33.915 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/37/0f90c505893d5ab01089e66e04528f8d40dab1'. Skipping.
-2026-01-16 10:38:33.915 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/bf/a3623bc647efd22c9550939cd8d5bf72cb91ad'. Skipping.
-2026-01-16 10:38:33.916 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/3e/9eed6daafd969231900049360b526396bf4091'. Skipping.
-2026-01-16 10:38:33.916 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/de/85d8fbe9f576dabc377e29616bc4e8fcf68a56'. Skipping.
-2026-01-16 10:38:33.917 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/c5/ea6c1fed91fd2154ac3f38533455da5481d974'. Skipping.
-2026-01-16 10:38:33.917 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b6/53161403e5df737d6e540d8c5a1988a043eafc'. Skipping.
-2026-01-16 10:38:33.918 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/cd/d0f9ff2c8b8046cce071bae83571570bc073e4'. Skipping.
-2026-01-16 10:38:33.918 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/6f/f0de34ffe1105f2acfa133f76f4c2a9fe2c95d'. Skipping.
-2026-01-16 10:38:33.919 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/72/756588cafd0baa190b8cbe9d51e697be473354'. Skipping.
-2026-01-16 10:38:33.920 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b2/7bd4267d2f3d7188095a0f549fb5cd87009a5d'. Skipping.
-2026-01-16 10:38:33.920 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/15/11e2f080004f3829fc9de21a0b681684da7ff7'. Skipping.
-2026-01-16 10:38:33.921 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/81/80f5cd516eb542440a4573db174af1369f44a8'. Skipping.
-2026-01-16 10:38:33.921 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d1/e33757aa74694d0039e8162918a840172d24f8'. Skipping.
-2026-01-16 10:38:33.922 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/59/fee299f9b88edb6925432ca41dc8a51dd50b97'. Skipping.
-2026-01-16 10:38:33.922 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/76/be470b4b4450038992dec6a9f9ac90a8611f2b'. Skipping.
-2026-01-16 10:38:33.923 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/75/1def8d69161d12e708eb37c902e2923fef560b'. Skipping.
-2026-01-16 10:38:33.923 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b4/a48625756286d8d8159714882707ed2da27fda'. Skipping.
-2026-01-16 10:38:33.924 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/31/94c3fdd79ab7638c2cc6c2c328829028c02c51'. Skipping.
-2026-01-16 10:38:33.924 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/8a/c3edea77f489aa91c07e6834824fa89412ab32'. Skipping.
-2026-01-16 10:38:33.925 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f0/f472bd00702a4d900984524a41504dd6359755'. Skipping.
-2026-01-16 10:38:33.925 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b3/3fe2dd683b6c6457cb46d0e3fa96d46fcfdd21'. Skipping.
-2026-01-16 10:38:33.926 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/55/71999ba294064ffb9518ffc6f3775a59ab742b'. Skipping.
-2026-01-16 10:38:33.926 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d0/cba9510054564db07d0a2e000e91337c10f3ec'. Skipping.
-2026-01-16 10:38:33.927 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/HEAD'. Skipping.
-2026-01-16 10:38:33.927 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/index'. Skipping.
-2026-01-16 10:38:33.927 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/COMMIT_EDITMSG'. Skipping.
-2026-01-16 10:38:33.928 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/HEAD'. Skipping.
-2026-01-16 10:38:33.928 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/refs/heads/main'. Skipping.
-2026-01-16 10:38:33.929 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/refs/heads/release/rel-1.0.0'. Skipping.
-2026-01-16 10:38:33.929 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/zapp.yaml'. Skipping.
-2026-01-16 10:38:33.930 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/application-conf/baselineReference.config'. Skipping.
-2026-01-16 10:38:33.930 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.project'. Skipping.
-2026-01-16 10:38:33.931 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/azure-pipelines.yml'. Skipping.
-2026-01-16 10:38:33.931 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/deployment/deployPackage.yml'. Skipping.
-2026-01-16 10:38:33.932 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/tagging/createReleaseCandidate.yml'. Skipping.
-2026-01-16 10:38:33.932 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/BuildReport.json'. Skipping.
-2026-01-16 10:38:33.932 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/BuildReport.html'. Skipping.
-2026-01-16 10:38:33.933 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/buildList.txt'. Skipping.
-2026-01-16 10:38:33.933 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/RuntimeReport.json'. Skipping.
-2026-01-16 10:38:33.933 ** Scanning the files.
-2026-01-16 10:38:33.933     Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
-2026-01-16 10:38:33.967     Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
-2026-01-16 10:38:33.998     Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
-2026-01-16 10:38:34.024     Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
-2026-01-16 10:38:34.030     Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
-2026-01-16 10:38:34.065     Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
-2026-01-16 10:38:34.072     Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
-2026-01-16 10:38:34.109     Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
-2026-01-16 10:38:34.123     Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
-2026-01-16 10:38:34.131     Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
-2026-01-16 10:38:34.145     Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
-2026-01-16 10:38:34.156     Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
-2026-01-16 10:38:34.188     Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
-2026-01-16 10:38:34.194     Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
-2026-01-16 10:38:34.201     Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
-2026-01-16 10:38:34.221     Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
-2026-01-16 10:38:34.226     Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
-2026-01-16 10:38:34.232     Scanning file GenApp/GenApp/src/bms/ssmap.bms 
-2026-01-16 10:38:34.341     Scanning file GenApp/GenApp/src/copy/lgcmared.cpy 
-2026-01-16 10:38:34.350     Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
-2026-01-16 10:38:34.356     Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
-2026-01-16 10:38:34.363     Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
-2026-01-16 10:38:34.368     Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
-2026-01-16 10:38:34.373     Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
-2026-01-16 10:38:34.381     Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
-2026-01-16 10:38:34.387     Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
-2026-01-16 10:38:34.392     Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
-2026-01-16 10:38:34.397     Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
-2026-01-16 10:38:34.402     Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
-2026-01-16 10:38:34.407     Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
-2026-01-16 10:38:34.412     Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
-2026-01-16 10:38:34.419     Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
-2026-01-16 10:38:34.427     Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
-2026-01-16 10:38:34.434     Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
-2026-01-16 10:38:34.440     Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
-2026-01-16 10:38:34.451 ** Storing results in the 'GenApp-main' DBB Collection.
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy                --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
-2026-01-16 11:41:10.115 ** Script configuration:
-2026-01-16 11:41:10.144     REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
-2026-01-16 11:41:10.145     SCAN_CONTROL_TRANSFERS -> true
-2026-01-16 11:41:10.146     application -> GenApp
-2026-01-16 11:41:10.147     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-16 11:41:10.149     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-16 11:41:10.151     DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
-2026-01-16 11:41:10.152     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
-2026-01-16 11:41:10.154     DBB_MODELER_METADATASTORE_TYPE -> file
-2026-01-16 11:41:10.155     APPLICATION_DEFAULT_BRANCH -> main
-2026-01-16 11:41:10.166 ** Reading the existing Application Descriptor file.
-2026-01-16 11:41:10.391 ** Retrieving the list of files mapped to Source Groups.
-2026-01-16 11:41:10.429 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'. Skipping.
-2026-01-16 11:41:10.430 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.gitattributes'. Skipping.
-2026-01-16 11:41:10.432 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapol01.cbl'. Skipping.
-2026-01-16 11:41:10.434 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestc1.cbl'. Skipping.
-2026-01-16 11:41:10.436 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacdb01.cbl'. Skipping.
-2026-01-16 11:41:10.437 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapvs01.cbl'. Skipping.
-2026-01-16 11:41:10.438 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpvs01.cbl'. Skipping.
-2026-01-16 11:41:10.440 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp3.cbl'. Skipping.
-2026-01-16 11:41:10.441 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucus01.cbl'. Skipping.
-2026-01-16 11:41:10.443 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgastat1.cbl'. Skipping.
-2026-01-16 11:41:10.444 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicdb01.cbl'. Skipping.
-2026-01-16 11:41:10.446 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupvs01.cbl'. Skipping.
-2026-01-16 11:41:10.447 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpdb01.cbl'. Skipping.
-2026-01-16 11:41:10.448 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucvs01.cbl'. Skipping.
-2026-01-16 11:41:10.450 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipdb01.cbl'. Skipping.
-2026-01-16 11:41:10.451 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp2.cbl'. Skipping.
-2026-01-16 11:41:10.453 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupol01.cbl'. Skipping.
-2026-01-16 11:41:10.454 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgstsq.cbl'. Skipping.
-2026-01-16 11:41:10.456 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacus01.cbl'. Skipping.
-2026-01-16 11:41:10.458 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgsetup.cbl'. Skipping.
-2026-01-16 11:41:10.461 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacvs01.cbl'. Skipping.
-2026-01-16 11:41:10.463 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacdb02.cbl'. Skipping.
-2026-01-16 11:41:10.465 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp4.cbl'. Skipping.
-2026-01-16 11:41:10.467 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicvs01.cbl'. Skipping.
-2026-01-16 11:41:10.470 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgwebst5.cbl'. Skipping.
-2026-01-16 11:41:10.471 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapdb01.cbl'. Skipping.
-2026-01-16 11:41:10.473 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpol01.cbl'. Skipping.
-2026-01-16 11:41:10.476 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipvs01.cbl'. Skipping.
-2026-01-16 11:41:10.478 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucdb01.cbl'. Skipping.
-2026-01-16 11:41:10.480 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp1.cbl'. Skipping.
-2026-01-16 11:41:10.482 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipol01.cbl'. Skipping.
-2026-01-16 11:41:10.483 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicus01.cbl'. Skipping.
-2026-01-16 11:41:10.486 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupdb01.cbl'. Skipping.
-2026-01-16 11:41:10.489 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/bms/ssmap.bms'. Skipping.
-2026-01-16 11:41:10.491 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgcmared.cpy'. Skipping.
-2026-01-16 11:41:10.493 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgcmarea.cpy'. Skipping.
-2026-01-16 11:41:10.495 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgpolicy.cpy'. Skipping.
-2026-01-16 11:41:10.496 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/config/CBLCICSDB2.yaml'. Skipping.
-2026-01-16 11:41:10.497 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/dbb-app.yaml'. Skipping.
-2026-01-16 11:41:10.499 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/description'. Skipping.
-2026-01-16 11:41:10.501 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/applypatch-msg.sample'. Skipping.
-2026-01-16 11:41:10.502 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/commit-msg.sample'. Skipping.
-2026-01-16 11:41:10.503 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/fsmonitor-watchman.sample'. Skipping.
-2026-01-16 11:41:10.504 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/post-update.sample'. Skipping.
-2026-01-16 11:41:10.505 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-applypatch.sample'. Skipping.
-2026-01-16 11:41:10.506 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-commit.sample'. Skipping.
-2026-01-16 11:41:10.507 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-merge-commit.sample'. Skipping.
-2026-01-16 11:41:10.508 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/prepare-commit-msg.sample'. Skipping.
-2026-01-16 11:41:10.509 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-push.sample'. Skipping.
-2026-01-16 11:41:10.510 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-rebase.sample'. Skipping.
-2026-01-16 11:41:10.511 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-receive.sample'. Skipping.
-2026-01-16 11:41:10.512 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/push-to-checkout.sample'. Skipping.
-2026-01-16 11:41:10.513 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/sendemail-validate.sample'. Skipping.
-2026-01-16 11:41:10.514 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/update.sample'. Skipping.
-2026-01-16 11:41:10.515 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/info/exclude'. Skipping.
-2026-01-16 11:41:10.517 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/heads/release/rel-1.0.0'. Skipping.
-2026-01-16 11:41:10.518 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/heads/main'. Skipping.
-2026-01-16 11:41:10.519 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/tags/rel-1.0.0'. Skipping.
-2026-01-16 11:41:10.520 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/config'. Skipping.
-2026-01-16 11:41:10.521 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/36/512daf923067d0311f15995925416be25290b5'. Skipping.
-2026-01-16 11:41:10.522 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/8d/0eaea2f7e487513d472afe1a66d7da07f663b9'. Skipping.
-2026-01-16 11:41:10.523 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/7d/f90877fb98ccba6508a94e6fe3ff1ad865d682'. Skipping.
-2026-01-16 11:41:10.524 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d8/f18d43e8afa308163aebcff561e7dedf67759e'. Skipping.
-2026-01-16 11:41:10.525 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/ed/7e8c1b79aaa76736f0af3b735f667d3d26ad36'. Skipping.
-2026-01-16 11:41:10.526 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/7e/36d0d65c7ae8ca0ce7a451692820010cf2c51f'. Skipping.
-2026-01-16 11:41:10.527 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/17/cd1d6b0325b04277c7fc7a1ec27ce9bcbd2598'. Skipping.
-2026-01-16 11:41:10.528 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/e1/52fbd8c03e836ad0046953854f04b4665d75b9'. Skipping.
-2026-01-16 11:41:10.529 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/28/2aa20f6c7d61d15b8922c8d8e0552880351472'. Skipping.
-2026-01-16 11:41:10.530 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/28/0e6f742c84b40da642115cad3a0c86aa9c0aac'. Skipping.
-2026-01-16 11:41:10.531 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/13/0e880deea1c41c3ba7e57cbb0aa4e19f5ce9ad'. Skipping.
-2026-01-16 11:41:10.532 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/1b/9d6bcb233214bd016ac6ffd87d5b4e5a0644cc'. Skipping.
-2026-01-16 11:41:10.533 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/22/b550bafdc6e9f5103b1a28ca501d6bdae4ec76'. Skipping.
-2026-01-16 11:41:10.534 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/e5/86c7d2e00e602158da102e4c8d30deaeb142ae'. Skipping.
-2026-01-16 11:41:10.535 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/0d/b601b1f055ea023e104c7d24ab0ef5eea1ff05'. Skipping.
-2026-01-16 11:41:10.535 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/12/5b26f553c5647a5aabc69a45f0191aed5d5e01'. Skipping.
-2026-01-16 11:41:10.537 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/12/6b62bf8e868002e76f970f411637e7488e05bb'. Skipping.
-2026-01-16 11:41:10.538 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/42/d3f2e669c2f9f6cf9565e61b2a3f96ad1ff503'. Skipping.
-2026-01-16 11:41:10.539 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/fa/ffcce01f2da721aa453f5dda21d11f8d3ae693'. Skipping.
-2026-01-16 11:41:10.541 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/16/73ab0e7f0e1744ab58379576e6c835d4108474'. Skipping.
-2026-01-16 11:41:10.542 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b0/49dc9735257281c334afd74730dee59c62e2e8'. Skipping.
-2026-01-16 11:41:10.543 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f7/09ff109986301f101a1912b9d043756d7e596a'. Skipping.
-2026-01-16 11:41:10.544 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f7/1aff317ceeb25dca6e497b93a6ff9a5c8e2518'. Skipping.
-2026-01-16 11:41:10.545 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/a0/b94e23333057ca37382048c4f7fc6f2e0df75b'. Skipping.
-2026-01-16 11:41:10.546 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d4/24e6a718eb9ad584e21f7a899488500484f7e2'. Skipping.
-2026-01-16 11:41:10.546 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d9/455ae3c356b0e7a2440914f564ddbcbe30e28d'. Skipping.
-2026-01-16 11:41:10.547 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/83/2f54aa68fe84f78461085d00e3b3206e39fdb7'. Skipping.
-2026-01-16 11:41:10.548 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/6e/a11cb2dc20aa126f08701fe873ac2dae5ce0b6'. Skipping.
-2026-01-16 11:41:10.548 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/2e/f0cfc9de9ca7521899a87cf9e216be7f109d88'. Skipping.
-2026-01-16 11:41:10.549 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/82/766939ca20dfac5d9ab33782e4f45b2ade19fc'. Skipping.
-2026-01-16 11:41:10.550 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/9a/a1e257384925e8015d7e0864175961ce258290'. Skipping.
-2026-01-16 11:41:10.551 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/78/e7f1d24d01d4949e80fc149026a9d902eac1b9'. Skipping.
-2026-01-16 11:41:10.551 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/98/11fa56e0556c5d884a98ae06f7d007f64edafa'. Skipping.
-2026-01-16 11:41:10.552 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/37/0f90c505893d5ab01089e66e04528f8d40dab1'. Skipping.
-2026-01-16 11:41:10.553 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/bf/a3623bc647efd22c9550939cd8d5bf72cb91ad'. Skipping.
-2026-01-16 11:41:10.553 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/3e/9eed6daafd969231900049360b526396bf4091'. Skipping.
-2026-01-16 11:41:10.554 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/de/85d8fbe9f576dabc377e29616bc4e8fcf68a56'. Skipping.
-2026-01-16 11:41:10.555 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/c5/ea6c1fed91fd2154ac3f38533455da5481d974'. Skipping.
-2026-01-16 11:41:10.555 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b6/53161403e5df737d6e540d8c5a1988a043eafc'. Skipping.
-2026-01-16 11:41:10.556 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/cd/d0f9ff2c8b8046cce071bae83571570bc073e4'. Skipping.
-2026-01-16 11:41:10.557 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/6f/f0de34ffe1105f2acfa133f76f4c2a9fe2c95d'. Skipping.
-2026-01-16 11:41:10.557 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/72/756588cafd0baa190b8cbe9d51e697be473354'. Skipping.
-2026-01-16 11:41:10.558 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b2/7bd4267d2f3d7188095a0f549fb5cd87009a5d'. Skipping.
-2026-01-16 11:41:10.559 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/15/11e2f080004f3829fc9de21a0b681684da7ff7'. Skipping.
-2026-01-16 11:41:10.559 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/81/80f5cd516eb542440a4573db174af1369f44a8'. Skipping.
-2026-01-16 11:41:10.560 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d1/e33757aa74694d0039e8162918a840172d24f8'. Skipping.
-2026-01-16 11:41:10.561 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/59/fee299f9b88edb6925432ca41dc8a51dd50b97'. Skipping.
-2026-01-16 11:41:10.561 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/76/be470b4b4450038992dec6a9f9ac90a8611f2b'. Skipping.
-2026-01-16 11:41:10.562 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/75/1def8d69161d12e708eb37c902e2923fef560b'. Skipping.
-2026-01-16 11:41:10.563 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b4/a48625756286d8d8159714882707ed2da27fda'. Skipping.
-2026-01-16 11:41:10.563 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/31/94c3fdd79ab7638c2cc6c2c328829028c02c51'. Skipping.
-2026-01-16 11:41:10.564 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/8a/c3edea77f489aa91c07e6834824fa89412ab32'. Skipping.
-2026-01-16 11:41:10.565 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f0/f472bd00702a4d900984524a41504dd6359755'. Skipping.
-2026-01-16 11:41:10.566 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b3/3fe2dd683b6c6457cb46d0e3fa96d46fcfdd21'. Skipping.
-2026-01-16 11:41:10.566 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/55/71999ba294064ffb9518ffc6f3775a59ab742b'. Skipping.
-2026-01-16 11:41:10.567 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d0/cba9510054564db07d0a2e000e91337c10f3ec'. Skipping.
-2026-01-16 11:41:10.568 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/HEAD'. Skipping.
-2026-01-16 11:41:10.568 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/index'. Skipping.
-2026-01-16 11:41:10.569 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/COMMIT_EDITMSG'. Skipping.
-2026-01-16 11:41:10.569 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/HEAD'. Skipping.
-2026-01-16 11:41:10.570 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/refs/heads/main'. Skipping.
-2026-01-16 11:41:10.570 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/refs/heads/release/rel-1.0.0'. Skipping.
-2026-01-16 11:41:10.571 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/zapp.yaml'. Skipping.
-2026-01-16 11:41:10.571 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/application-conf/baselineReference.config'. Skipping.
-2026-01-16 11:41:10.572 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.project'. Skipping.
-2026-01-16 11:41:10.572 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/azure-pipelines.yml'. Skipping.
-2026-01-16 11:41:10.573 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/deployment/deployPackage.yml'. Skipping.
-2026-01-16 11:41:10.574 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/tagging/createReleaseCandidate.yml'. Skipping.
-2026-01-16 11:41:10.574 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/BuildReport.json'. Skipping.
-2026-01-16 11:41:10.574 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/BuildReport.html'. Skipping.
-2026-01-16 11:41:10.575 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/buildList.txt'. Skipping.
-2026-01-16 11:41:10.575 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/RuntimeReport.json'. Skipping.
-2026-01-16 11:41:10.576 ** Scanning the files.
-2026-01-16 11:41:10.586 ** Storing results in the 'GenApp-main' DBB Collection.
-[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/recreateApplicationDescriptor.groovy               --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-createApplicationDescriptor.log
-2026-01-16 11:41:39.169 ** Script configuration:
-2026-01-16 11:41:39.199     REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
-2026-01-16 11:41:39.201     application -> GenApp
-2026-01-16 11:41:39.202     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-16 11:41:39.203     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-16 11:41:39.204     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-createApplicationDescriptor.log
-2026-01-16 11:41:39.205     DBB_MODELER_APPMAPPINGS_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/config/applications-mappings
-2026-01-16 11:41:39.206 ** Reading the Repository Layout Mapping definition.
-2026-01-16 11:41:39.433 ** Reading the Type Mapping definition.
-2026-01-16 11:41:39.434 *! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.
-2026-01-16 11:41:39.434 ** Loading the provided Applications Mapping files.
-2026-01-16 11:41:39.441 *** Importing 'applicationsMapping.yaml'
-2026-01-16 11:41:39.456 ** Importing existing Application Descriptor and reseting source groups, dependencies and consumers.
-2026-01-16 11:41:39.468 ** Getting the list of mapped files from '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp'
-2026-01-16 11:41:39.509 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'. Skipping.
-2026-01-16 11:41:39.516 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.gitattributes'. Skipping.
-2026-01-16 11:41:39.523 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapol01.cbl'. Skipping.
-2026-01-16 11:41:39.531 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestc1.cbl'. Skipping.
-2026-01-16 11:41:39.537 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacdb01.cbl'. Skipping.
-2026-01-16 11:41:39.543 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapvs01.cbl'. Skipping.
-2026-01-16 11:41:39.549 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpvs01.cbl'. Skipping.
-2026-01-16 11:41:39.554 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp3.cbl'. Skipping.
-2026-01-16 11:41:39.558 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucus01.cbl'. Skipping.
-2026-01-16 11:41:39.562 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgastat1.cbl'. Skipping.
-2026-01-16 11:41:39.567 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicdb01.cbl'. Skipping.
-2026-01-16 11:41:39.572 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupvs01.cbl'. Skipping.
-2026-01-16 11:41:39.578 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpdb01.cbl'. Skipping.
-2026-01-16 11:41:39.582 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucvs01.cbl'. Skipping.
-2026-01-16 11:41:39.587 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipdb01.cbl'. Skipping.
-2026-01-16 11:41:39.591 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp2.cbl'. Skipping.
-2026-01-16 11:41:39.595 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupol01.cbl'. Skipping.
-2026-01-16 11:41:39.598 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgstsq.cbl'. Skipping.
-2026-01-16 11:41:39.602 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacus01.cbl'. Skipping.
-2026-01-16 11:41:39.605 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgsetup.cbl'. Skipping.
-2026-01-16 11:41:39.611 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacvs01.cbl'. Skipping.
-2026-01-16 11:41:39.616 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacdb02.cbl'. Skipping.
-2026-01-16 11:41:39.619 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp4.cbl'. Skipping.
-2026-01-16 11:41:39.623 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicvs01.cbl'. Skipping.
-2026-01-16 11:41:39.628 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgwebst5.cbl'. Skipping.
-2026-01-16 11:41:39.632 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapdb01.cbl'. Skipping.
-2026-01-16 11:41:39.634 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpol01.cbl'. Skipping.
-2026-01-16 11:41:39.636 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipvs01.cbl'. Skipping.
-2026-01-16 11:41:39.639 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucdb01.cbl'. Skipping.
-2026-01-16 11:41:39.642 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp1.cbl'. Skipping.
-2026-01-16 11:41:39.646 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipol01.cbl'. Skipping.
-2026-01-16 11:41:39.649 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicus01.cbl'. Skipping.
-2026-01-16 11:41:39.652 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupdb01.cbl'. Skipping.
-2026-01-16 11:41:39.654 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/bms/ssmap.bms'. Skipping.
-2026-01-16 11:41:39.657 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgcmared.cpy'. Skipping.
-2026-01-16 11:41:39.659 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgcmarea.cpy'. Skipping.
-2026-01-16 11:41:39.661 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgpolicy.cpy'. Skipping.
-2026-01-16 11:41:39.662 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/config/CBLCICSDB2.yaml'. Skipping.
-2026-01-16 11:41:39.665 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/dbb-app.yaml'. Skipping.
-2026-01-16 11:41:39.668 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/description'. Skipping.
-2026-01-16 11:41:39.669 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/applypatch-msg.sample'. Skipping.
-2026-01-16 11:41:39.671 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/commit-msg.sample'. Skipping.
-2026-01-16 11:41:39.672 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/fsmonitor-watchman.sample'. Skipping.
-2026-01-16 11:41:39.673 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/post-update.sample'. Skipping.
-2026-01-16 11:41:39.674 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-applypatch.sample'. Skipping.
-2026-01-16 11:41:39.675 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-commit.sample'. Skipping.
-2026-01-16 11:41:39.676 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-merge-commit.sample'. Skipping.
-2026-01-16 11:41:39.677 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/prepare-commit-msg.sample'. Skipping.
-2026-01-16 11:41:39.678 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-push.sample'. Skipping.
-2026-01-16 11:41:39.679 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-rebase.sample'. Skipping.
-2026-01-16 11:41:39.680 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-receive.sample'. Skipping.
-2026-01-16 11:41:39.681 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/push-to-checkout.sample'. Skipping.
-2026-01-16 11:41:39.682 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/sendemail-validate.sample'. Skipping.
-2026-01-16 11:41:39.683 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/update.sample'. Skipping.
-2026-01-16 11:41:39.684 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/info/exclude'. Skipping.
-2026-01-16 11:41:39.685 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/heads/release/rel-1.0.0'. Skipping.
-2026-01-16 11:41:39.686 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/heads/main'. Skipping.
-2026-01-16 11:41:39.687 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/tags/rel-1.0.0'. Skipping.
-2026-01-16 11:41:39.687 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/config'. Skipping.
-2026-01-16 11:41:39.689 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/36/512daf923067d0311f15995925416be25290b5'. Skipping.
-2026-01-16 11:41:39.690 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/8d/0eaea2f7e487513d472afe1a66d7da07f663b9'. Skipping.
-2026-01-16 11:41:39.691 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/7d/f90877fb98ccba6508a94e6fe3ff1ad865d682'. Skipping.
-2026-01-16 11:41:39.692 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d8/f18d43e8afa308163aebcff561e7dedf67759e'. Skipping.
-2026-01-16 11:41:39.693 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/ed/7e8c1b79aaa76736f0af3b735f667d3d26ad36'. Skipping.
-2026-01-16 11:41:39.694 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/7e/36d0d65c7ae8ca0ce7a451692820010cf2c51f'. Skipping.
-2026-01-16 11:41:39.695 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/17/cd1d6b0325b04277c7fc7a1ec27ce9bcbd2598'. Skipping.
-2026-01-16 11:41:39.696 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/e1/52fbd8c03e836ad0046953854f04b4665d75b9'. Skipping.
-2026-01-16 11:41:39.697 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/28/2aa20f6c7d61d15b8922c8d8e0552880351472'. Skipping.
-2026-01-16 11:41:39.698 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/28/0e6f742c84b40da642115cad3a0c86aa9c0aac'. Skipping.
-2026-01-16 11:41:39.699 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/13/0e880deea1c41c3ba7e57cbb0aa4e19f5ce9ad'. Skipping.
-2026-01-16 11:41:39.699 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/1b/9d6bcb233214bd016ac6ffd87d5b4e5a0644cc'. Skipping.
-2026-01-16 11:41:39.700 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/22/b550bafdc6e9f5103b1a28ca501d6bdae4ec76'. Skipping.
-2026-01-16 11:41:39.701 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/e5/86c7d2e00e602158da102e4c8d30deaeb142ae'. Skipping.
-2026-01-16 11:41:39.703 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/0d/b601b1f055ea023e104c7d24ab0ef5eea1ff05'. Skipping.
-2026-01-16 11:41:39.704 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/12/5b26f553c5647a5aabc69a45f0191aed5d5e01'. Skipping.
-2026-01-16 11:41:39.704 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/12/6b62bf8e868002e76f970f411637e7488e05bb'. Skipping.
-2026-01-16 11:41:39.705 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/42/d3f2e669c2f9f6cf9565e61b2a3f96ad1ff503'. Skipping.
-2026-01-16 11:41:39.706 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/fa/ffcce01f2da721aa453f5dda21d11f8d3ae693'. Skipping.
-2026-01-16 11:41:39.707 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/16/73ab0e7f0e1744ab58379576e6c835d4108474'. Skipping.
-2026-01-16 11:41:39.708 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b0/49dc9735257281c334afd74730dee59c62e2e8'. Skipping.
-2026-01-16 11:41:39.709 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f7/09ff109986301f101a1912b9d043756d7e596a'. Skipping.
-2026-01-16 11:41:39.709 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f7/1aff317ceeb25dca6e497b93a6ff9a5c8e2518'. Skipping.
-2026-01-16 11:41:39.710 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/a0/b94e23333057ca37382048c4f7fc6f2e0df75b'. Skipping.
-2026-01-16 11:41:39.711 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d4/24e6a718eb9ad584e21f7a899488500484f7e2'. Skipping.
-2026-01-16 11:41:39.712 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d9/455ae3c356b0e7a2440914f564ddbcbe30e28d'. Skipping.
-2026-01-16 11:41:39.713 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/83/2f54aa68fe84f78461085d00e3b3206e39fdb7'. Skipping.
-2026-01-16 11:41:39.714 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/6e/a11cb2dc20aa126f08701fe873ac2dae5ce0b6'. Skipping.
-2026-01-16 11:41:39.715 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/2e/f0cfc9de9ca7521899a87cf9e216be7f109d88'. Skipping.
-2026-01-16 11:41:39.715 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/82/766939ca20dfac5d9ab33782e4f45b2ade19fc'. Skipping.
-2026-01-16 11:41:39.716 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/9a/a1e257384925e8015d7e0864175961ce258290'. Skipping.
-2026-01-16 11:41:39.717 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/78/e7f1d24d01d4949e80fc149026a9d902eac1b9'. Skipping.
-2026-01-16 11:41:39.718 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/98/11fa56e0556c5d884a98ae06f7d007f64edafa'. Skipping.
-2026-01-16 11:41:39.719 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/37/0f90c505893d5ab01089e66e04528f8d40dab1'. Skipping.
-2026-01-16 11:41:39.719 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/bf/a3623bc647efd22c9550939cd8d5bf72cb91ad'. Skipping.
-2026-01-16 11:41:39.720 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/3e/9eed6daafd969231900049360b526396bf4091'. Skipping.
-2026-01-16 11:41:39.721 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/de/85d8fbe9f576dabc377e29616bc4e8fcf68a56'. Skipping.
-2026-01-16 11:41:39.721 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/c5/ea6c1fed91fd2154ac3f38533455da5481d974'. Skipping.
-2026-01-16 11:41:39.722 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b6/53161403e5df737d6e540d8c5a1988a043eafc'. Skipping.
-2026-01-16 11:41:39.723 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/cd/d0f9ff2c8b8046cce071bae83571570bc073e4'. Skipping.
-2026-01-16 11:41:39.724 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/6f/f0de34ffe1105f2acfa133f76f4c2a9fe2c95d'. Skipping.
-2026-01-16 11:41:39.724 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/72/756588cafd0baa190b8cbe9d51e697be473354'. Skipping.
-2026-01-16 11:41:39.725 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b2/7bd4267d2f3d7188095a0f549fb5cd87009a5d'. Skipping.
-2026-01-16 11:41:39.726 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/15/11e2f080004f3829fc9de21a0b681684da7ff7'. Skipping.
-2026-01-16 11:41:39.726 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/81/80f5cd516eb542440a4573db174af1369f44a8'. Skipping.
-2026-01-16 11:41:39.727 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d1/e33757aa74694d0039e8162918a840172d24f8'. Skipping.
-2026-01-16 11:41:39.728 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/59/fee299f9b88edb6925432ca41dc8a51dd50b97'. Skipping.
-2026-01-16 11:41:39.729 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/76/be470b4b4450038992dec6a9f9ac90a8611f2b'. Skipping.
-2026-01-16 11:41:39.729 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/75/1def8d69161d12e708eb37c902e2923fef560b'. Skipping.
-2026-01-16 11:41:39.730 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b4/a48625756286d8d8159714882707ed2da27fda'. Skipping.
-2026-01-16 11:41:39.731 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/31/94c3fdd79ab7638c2cc6c2c328829028c02c51'. Skipping.
-2026-01-16 11:41:39.732 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/8a/c3edea77f489aa91c07e6834824fa89412ab32'. Skipping.
-2026-01-16 11:41:39.733 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f0/f472bd00702a4d900984524a41504dd6359755'. Skipping.
-2026-01-16 11:41:39.733 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b3/3fe2dd683b6c6457cb46d0e3fa96d46fcfdd21'. Skipping.
-2026-01-16 11:41:39.734 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/55/71999ba294064ffb9518ffc6f3775a59ab742b'. Skipping.
-2026-01-16 11:41:39.735 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d0/cba9510054564db07d0a2e000e91337c10f3ec'. Skipping.
-2026-01-16 11:41:39.735 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/HEAD'. Skipping.
-2026-01-16 11:41:39.736 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/index'. Skipping.
-2026-01-16 11:41:39.736 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/COMMIT_EDITMSG'. Skipping.
-2026-01-16 11:41:39.737 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/HEAD'. Skipping.
-2026-01-16 11:41:39.738 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/refs/heads/main'. Skipping.
-2026-01-16 11:41:39.739 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/refs/heads/release/rel-1.0.0'. Skipping.
-2026-01-16 11:41:39.739 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/zapp.yaml'. Skipping.
-2026-01-16 11:41:39.740 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/application-conf/baselineReference.config'. Skipping.
-2026-01-16 11:41:39.740 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.project'. Skipping.
-2026-01-16 11:41:39.741 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/azure-pipelines.yml'. Skipping.
-2026-01-16 11:41:39.741 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/deployment/deployPackage.yml'. Skipping.
-2026-01-16 11:41:39.742 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/tagging/createReleaseCandidate.yml'. Skipping.
-2026-01-16 11:41:39.743 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/BuildReport.json'. Skipping.
-2026-01-16 11:41:39.743 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/BuildReport.html'. Skipping.
-2026-01-16 11:41:39.744 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/buildList.txt'. Skipping.
-2026-01-16 11:41:39.744 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/RuntimeReport.json'. Skipping.
-2026-01-16 11:41:39.751 *! [WARNING] Some files were skipped as no matching Source Group was found based on their path. Check log file '/u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-createApplicationDescriptor.log'.
-2026-01-16 11:41:39.805 ** Created Application Description file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy                --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
-2026-01-15 17:13:43.173 ** Script configuration:
-2026-01-15 17:13:43.173     DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration
-2026-01-15 17:13:43.173     MOVE_FILES_FLAG -> true
-2026-01-15 17:13:43.173     REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
-2026-01-15 17:13:43.174     SCAN_CONTROL_TRANSFERS -> true
-2026-01-15 17:13:43.174     application -> GenApp
-2026-01-15 17:13:43.174     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-15 17:13:43.174     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-15 17:13:43.174     DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
-2026-01-15 17:13:43.174     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
-2026-01-15 17:13:43.175     DBB_MODELER_METADATASTORE_TYPE -> file
-2026-01-15 17:13:43.175     APPLICATION_DEFAULT_BRANCH -> main
-2026-01-15 17:13:43.178 ** Reading the Repository Layout Mapping definition.
-2026-01-15 17:13:43.179 ** Getting the list of files of 'Include File' type.
-2026-01-15 17:13:43.183 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmarea.cpy'.
-2026-01-15 17:13:43.224     Files depending on 'GenApp/src/copy/lgcmarea.cpy' :
-2026-01-15 17:13:43.224     'GenApp/GenApp/src/cobol/lgdpol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.224     'GenApp/GenApp/src/cobol/lgtestp3.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.224     'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgupol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgastat1.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgacvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgucus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgapdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.225     'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
-2026-01-15 17:13:43.225     'GenApp/GenApp/src/cobol/lgdpdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgtestp2.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgtestc1.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgapol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgupdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.226     'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
-2026-01-15 17:13:43.226     'GenApp/GenApp/src/cobol/lgucvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgtestp1.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgapvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgupvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgucdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgtestp4.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgdpvs01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.227     'GenApp/GenApp/src/cobol/lgipdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.228     ==> 'lgcmarea' referenced by multiple applications - [UNASSIGNED, GenApp]
-2026-01-15 17:13:43.229     ==> Updating usage of Include File 'lgcmarea' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'.
-2026-01-15 17:13:43.245 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmared.cpy'.
-2026-01-15 17:13:43.250     The Include File 'lgcmared' is not referenced at all.
-2026-01-15 17:13:43.253 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgpolicy.cpy'.
-2026-01-15 17:13:43.270     Files depending on 'GenApp/src/copy/lgpolicy.cpy' :
-2026-01-15 17:13:43.270     'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgucdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.270     'GenApp/GenApp/src/cobol/lgupdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgipdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgapdb01.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     'GenApp/GenApp/src/cobol/lgacdb02.cbl' in  Application  'GenApp'
-2026-01-15 17:13:43.271     ==> 'lgpolicy' referenced by multiple applications - [UNASSIGNED, GenApp]
-2026-01-15 17:13:43.271     ==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'.
-2026-01-15 17:13:43.278 ** Getting the list of files of 'Program' type.
-2026-01-15 17:13:43.279 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicus01.cbl'.
-2026-01-15 17:13:43.286     The Program 'lgicus01' is not statically called by any other program.
-2026-01-15 17:13:43.289 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpol01.cbl'.
-2026-01-15 17:13:43.295     The Program 'lgdpol01' is not statically called by any other program.
-2026-01-15 17:13:43.298 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipdb01.cbl'.
-2026-01-15 17:13:43.307     The Program 'lgipdb01' is not statically called by any other program.
-2026-01-15 17:13:43.309 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp3.cbl'.
-2026-01-15 17:13:43.315     The Program 'lgtestp3' is not statically called by any other program.
-2026-01-15 17:13:43.318 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp4.cbl'.
-2026-01-15 17:13:43.323     The Program 'lgtestp4' is not statically called by any other program.
-2026-01-15 17:13:43.326 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacvs01.cbl'.
-2026-01-15 17:13:43.331     The Program 'lgacvs01' is not statically called by any other program.
-2026-01-15 17:13:43.333 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgsetup.cbl'.
-2026-01-15 17:13:43.340     The Program 'lgsetup' is not statically called by any other program.
-2026-01-15 17:13:43.343 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapol01.cbl'.
-2026-01-15 17:13:43.349     The Program 'lgapol01' is not statically called by any other program.
-2026-01-15 17:13:43.352 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipvs01.cbl'.
-2026-01-15 17:13:43.357     The Program 'lgipvs01' is not statically called by any other program.
-2026-01-15 17:13:43.360 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupol01.cbl'.
-2026-01-15 17:13:43.366     The Program 'lgupol01' is not statically called by any other program.
-2026-01-15 17:13:43.368 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb01.cbl'.
-2026-01-15 17:13:43.374     The Program 'lgacdb01' is not statically called by any other program.
-2026-01-15 17:13:43.377 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb02.cbl'.
-2026-01-15 17:13:43.382     The Program 'lgacdb02' is not statically called by any other program.
-2026-01-15 17:13:43.384 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgstsq.cbl'.
-2026-01-15 17:13:43.395     The Program 'lgstsq' is not statically called by any other program.
-2026-01-15 17:13:43.397 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp1.cbl'.
-2026-01-15 17:13:43.403     The Program 'lgtestp1' is not statically called by any other program.
-2026-01-15 17:13:43.406 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp2.cbl'.
-2026-01-15 17:13:43.412     The Program 'lgtestp2' is not statically called by any other program.
-2026-01-15 17:13:43.414 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpdb01.cbl'.
-2026-01-15 17:13:43.419     The Program 'lgdpdb01' is not statically called by any other program.
-2026-01-15 17:13:43.422 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucus01.cbl'.
-2026-01-15 17:13:43.427     The Program 'lgucus01' is not statically called by any other program.
-2026-01-15 17:13:43.430 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapvs01.cbl'.
-2026-01-15 17:13:43.435     The Program 'lgapvs01' is not statically called by any other program.
-2026-01-15 17:13:43.438 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucdb01.cbl'.
-2026-01-15 17:13:43.443     The Program 'lgucdb01' is not statically called by any other program.
-2026-01-15 17:13:43.445 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpvs01.cbl'.
-2026-01-15 17:13:43.450     The Program 'lgdpvs01' is not statically called by any other program.
-2026-01-15 17:13:43.453 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestc1.cbl'.
-2026-01-15 17:13:43.459     The Program 'lgtestc1' is not statically called by any other program.
-2026-01-15 17:13:43.461 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgastat1.cbl'.
-2026-01-15 17:13:43.466     The Program 'lgastat1' is not statically called by any other program.
-2026-01-15 17:13:43.469 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapdb01.cbl'.
-2026-01-15 17:13:43.475     The Program 'lgapdb01' is not statically called by any other program.
-2026-01-15 17:13:43.478 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicvs01.cbl'.
-2026-01-15 17:13:43.483     The Program 'lgicvs01' is not statically called by any other program.
-2026-01-15 17:13:43.486 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipol01.cbl'.
-2026-01-15 17:13:43.492     The Program 'lgipol01' is not statically called by any other program.
-2026-01-15 17:13:43.494 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacus01.cbl'.
-2026-01-15 17:13:43.500     The Program 'lgacus01' is not statically called by any other program.
-2026-01-15 17:13:43.503 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgwebst5.cbl'.
-2026-01-15 17:13:43.511     The Program 'lgwebst5' is not statically called by any other program.
-2026-01-15 17:13:43.514 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucvs01.cbl'.
-2026-01-15 17:13:43.519     The Program 'lgucvs01' is not statically called by any other program.
-2026-01-15 17:13:43.521 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupdb01.cbl'.
-2026-01-15 17:13:43.528     The Program 'lgupdb01' is not statically called by any other program.
-2026-01-15 17:13:43.530 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicdb01.cbl'.
-2026-01-15 17:13:43.535     The Program 'lgicdb01' is not statically called by any other program.
-2026-01-15 17:13:43.538 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupvs01.cbl'.
-2026-01-15 17:13:43.544     The Program 'lgupvs01' is not statically called by any other program.
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy                --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --moveFiles                 --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy                --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --moveFiles                 --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy                --configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config                --application GenApp                --logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-rescan.log
-2026-01-16 11:42:49.236 ** Script configuration:
-2026-01-16 11:42:49.267     REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
-2026-01-16 11:42:49.268     SCAN_CONTROL_TRANSFERS -> true
-2026-01-16 11:42:49.268     application -> GenApp
-2026-01-16 11:42:49.269     configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-01-15.175657.config
-2026-01-16 11:42:49.270     DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
-2026-01-16 11:42:49.271     DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
-2026-01-16 11:42:49.272     logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-rescan.log
-2026-01-16 11:42:49.273     DBB_MODELER_METADATASTORE_TYPE -> file
-2026-01-16 11:42:49.275     APPLICATION_DEFAULT_BRANCH -> main
-2026-01-16 11:42:49.284 ** Reading the existing Application Descriptor file.
-2026-01-16 11:42:49.488 ** Retrieving the list of files mapped to Source Groups.
-2026-01-16 11:42:49.536 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'. Skipping.
-2026-01-16 11:42:49.540 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.gitattributes'. Skipping.
-2026-01-16 11:42:49.543 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapol01.cbl'. Skipping.
-2026-01-16 11:42:49.544 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestc1.cbl'. Skipping.
-2026-01-16 11:42:49.545 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacdb01.cbl'. Skipping.
-2026-01-16 11:42:49.547 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapvs01.cbl'. Skipping.
-2026-01-16 11:42:49.548 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpvs01.cbl'. Skipping.
-2026-01-16 11:42:49.550 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp3.cbl'. Skipping.
-2026-01-16 11:42:49.551 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucus01.cbl'. Skipping.
-2026-01-16 11:42:49.552 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgastat1.cbl'. Skipping.
-2026-01-16 11:42:49.554 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicdb01.cbl'. Skipping.
-2026-01-16 11:42:49.556 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupvs01.cbl'. Skipping.
-2026-01-16 11:42:49.558 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpdb01.cbl'. Skipping.
-2026-01-16 11:42:49.559 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucvs01.cbl'. Skipping.
-2026-01-16 11:42:49.560 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipdb01.cbl'. Skipping.
-2026-01-16 11:42:49.561 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp2.cbl'. Skipping.
-2026-01-16 11:42:49.563 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupol01.cbl'. Skipping.
-2026-01-16 11:42:49.564 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgstsq.cbl'. Skipping.
-2026-01-16 11:42:49.565 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacus01.cbl'. Skipping.
-2026-01-16 11:42:49.566 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgsetup.cbl'. Skipping.
-2026-01-16 11:42:49.567 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacvs01.cbl'. Skipping.
-2026-01-16 11:42:49.569 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacdb02.cbl'. Skipping.
-2026-01-16 11:42:49.570 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp4.cbl'. Skipping.
-2026-01-16 11:42:49.571 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicvs01.cbl'. Skipping.
-2026-01-16 11:42:49.572 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgwebst5.cbl'. Skipping.
-2026-01-16 11:42:49.573 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapdb01.cbl'. Skipping.
-2026-01-16 11:42:49.574 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpol01.cbl'. Skipping.
-2026-01-16 11:42:49.576 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipvs01.cbl'. Skipping.
-2026-01-16 11:42:49.577 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucdb01.cbl'. Skipping.
-2026-01-16 11:42:49.578 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp1.cbl'. Skipping.
-2026-01-16 11:42:49.579 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipol01.cbl'. Skipping.
-2026-01-16 11:42:49.581 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicus01.cbl'. Skipping.
-2026-01-16 11:42:49.582 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupdb01.cbl'. Skipping.
-2026-01-16 11:42:49.583 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/bms/ssmap.bms'. Skipping.
-2026-01-16 11:42:49.584 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgcmared.cpy'. Skipping.
-2026-01-16 11:42:49.585 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgcmarea.cpy'. Skipping.
-2026-01-16 11:42:49.587 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgpolicy.cpy'. Skipping.
-2026-01-16 11:42:49.588 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/config/CBLCICSDB2.yaml'. Skipping.
-2026-01-16 11:42:49.589 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/dbb-app.yaml'. Skipping.
-2026-01-16 11:42:49.590 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/description'. Skipping.
-2026-01-16 11:42:49.591 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/applypatch-msg.sample'. Skipping.
-2026-01-16 11:42:49.592 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/commit-msg.sample'. Skipping.
-2026-01-16 11:42:49.593 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/fsmonitor-watchman.sample'. Skipping.
-2026-01-16 11:42:49.595 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/post-update.sample'. Skipping.
-2026-01-16 11:42:49.596 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-applypatch.sample'. Skipping.
-2026-01-16 11:42:49.597 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-commit.sample'. Skipping.
-2026-01-16 11:42:49.598 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-merge-commit.sample'. Skipping.
-2026-01-16 11:42:49.599 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/prepare-commit-msg.sample'. Skipping.
-2026-01-16 11:42:49.600 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-push.sample'. Skipping.
-2026-01-16 11:42:49.602 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-rebase.sample'. Skipping.
-2026-01-16 11:42:49.603 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/pre-receive.sample'. Skipping.
-2026-01-16 11:42:49.604 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/push-to-checkout.sample'. Skipping.
-2026-01-16 11:42:49.605 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/sendemail-validate.sample'. Skipping.
-2026-01-16 11:42:49.606 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/hooks/update.sample'. Skipping.
-2026-01-16 11:42:49.608 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/info/exclude'. Skipping.
-2026-01-16 11:42:49.609 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/heads/release/rel-1.0.0'. Skipping.
-2026-01-16 11:42:49.611 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/heads/main'. Skipping.
-2026-01-16 11:42:49.613 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/refs/tags/rel-1.0.0'. Skipping.
-2026-01-16 11:42:49.614 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/config'. Skipping.
-2026-01-16 11:42:49.617 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/36/512daf923067d0311f15995925416be25290b5'. Skipping.
-2026-01-16 11:42:49.618 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/8d/0eaea2f7e487513d472afe1a66d7da07f663b9'. Skipping.
-2026-01-16 11:42:49.621 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/7d/f90877fb98ccba6508a94e6fe3ff1ad865d682'. Skipping.
-2026-01-16 11:42:49.623 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d8/f18d43e8afa308163aebcff561e7dedf67759e'. Skipping.
-2026-01-16 11:42:49.625 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/ed/7e8c1b79aaa76736f0af3b735f667d3d26ad36'. Skipping.
-2026-01-16 11:42:49.627 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/7e/36d0d65c7ae8ca0ce7a451692820010cf2c51f'. Skipping.
-2026-01-16 11:42:49.629 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/17/cd1d6b0325b04277c7fc7a1ec27ce9bcbd2598'. Skipping.
-2026-01-16 11:42:49.630 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/e1/52fbd8c03e836ad0046953854f04b4665d75b9'. Skipping.
-2026-01-16 11:42:49.632 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/28/2aa20f6c7d61d15b8922c8d8e0552880351472'. Skipping.
-2026-01-16 11:42:49.633 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/28/0e6f742c84b40da642115cad3a0c86aa9c0aac'. Skipping.
-2026-01-16 11:42:49.634 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/13/0e880deea1c41c3ba7e57cbb0aa4e19f5ce9ad'. Skipping.
-2026-01-16 11:42:49.635 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/1b/9d6bcb233214bd016ac6ffd87d5b4e5a0644cc'. Skipping.
-2026-01-16 11:42:49.636 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/22/b550bafdc6e9f5103b1a28ca501d6bdae4ec76'. Skipping.
-2026-01-16 11:42:49.637 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/e5/86c7d2e00e602158da102e4c8d30deaeb142ae'. Skipping.
-2026-01-16 11:42:49.639 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/0d/b601b1f055ea023e104c7d24ab0ef5eea1ff05'. Skipping.
-2026-01-16 11:42:49.640 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/12/5b26f553c5647a5aabc69a45f0191aed5d5e01'. Skipping.
-2026-01-16 11:42:49.642 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/12/6b62bf8e868002e76f970f411637e7488e05bb'. Skipping.
-2026-01-16 11:42:49.643 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/42/d3f2e669c2f9f6cf9565e61b2a3f96ad1ff503'. Skipping.
-2026-01-16 11:42:49.644 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/fa/ffcce01f2da721aa453f5dda21d11f8d3ae693'. Skipping.
-2026-01-16 11:42:49.645 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/16/73ab0e7f0e1744ab58379576e6c835d4108474'. Skipping.
-2026-01-16 11:42:49.646 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b0/49dc9735257281c334afd74730dee59c62e2e8'. Skipping.
-2026-01-16 11:42:49.647 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f7/09ff109986301f101a1912b9d043756d7e596a'. Skipping.
-2026-01-16 11:42:49.649 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f7/1aff317ceeb25dca6e497b93a6ff9a5c8e2518'. Skipping.
-2026-01-16 11:42:49.651 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/a0/b94e23333057ca37382048c4f7fc6f2e0df75b'. Skipping.
-2026-01-16 11:42:49.653 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d4/24e6a718eb9ad584e21f7a899488500484f7e2'. Skipping.
-2026-01-16 11:42:49.654 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d9/455ae3c356b0e7a2440914f564ddbcbe30e28d'. Skipping.
-2026-01-16 11:42:49.655 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/83/2f54aa68fe84f78461085d00e3b3206e39fdb7'. Skipping.
-2026-01-16 11:42:49.656 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/6e/a11cb2dc20aa126f08701fe873ac2dae5ce0b6'. Skipping.
-2026-01-16 11:42:49.657 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/2e/f0cfc9de9ca7521899a87cf9e216be7f109d88'. Skipping.
-2026-01-16 11:42:49.658 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/82/766939ca20dfac5d9ab33782e4f45b2ade19fc'. Skipping.
-2026-01-16 11:42:49.659 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/9a/a1e257384925e8015d7e0864175961ce258290'. Skipping.
-2026-01-16 11:42:49.660 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/78/e7f1d24d01d4949e80fc149026a9d902eac1b9'. Skipping.
-2026-01-16 11:42:49.661 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/98/11fa56e0556c5d884a98ae06f7d007f64edafa'. Skipping.
-2026-01-16 11:42:49.662 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/37/0f90c505893d5ab01089e66e04528f8d40dab1'. Skipping.
-2026-01-16 11:42:49.663 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/bf/a3623bc647efd22c9550939cd8d5bf72cb91ad'. Skipping.
-2026-01-16 11:42:49.664 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/3e/9eed6daafd969231900049360b526396bf4091'. Skipping.
-2026-01-16 11:42:49.665 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/de/85d8fbe9f576dabc377e29616bc4e8fcf68a56'. Skipping.
-2026-01-16 11:42:49.666 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/c5/ea6c1fed91fd2154ac3f38533455da5481d974'. Skipping.
-2026-01-16 11:42:49.667 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b6/53161403e5df737d6e540d8c5a1988a043eafc'. Skipping.
-2026-01-16 11:42:49.667 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/cd/d0f9ff2c8b8046cce071bae83571570bc073e4'. Skipping.
-2026-01-16 11:42:49.668 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/6f/f0de34ffe1105f2acfa133f76f4c2a9fe2c95d'. Skipping.
-2026-01-16 11:42:49.669 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/72/756588cafd0baa190b8cbe9d51e697be473354'. Skipping.
-2026-01-16 11:42:49.670 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b2/7bd4267d2f3d7188095a0f549fb5cd87009a5d'. Skipping.
-2026-01-16 11:42:49.670 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/15/11e2f080004f3829fc9de21a0b681684da7ff7'. Skipping.
-2026-01-16 11:42:49.671 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/81/80f5cd516eb542440a4573db174af1369f44a8'. Skipping.
-2026-01-16 11:42:49.672 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d1/e33757aa74694d0039e8162918a840172d24f8'. Skipping.
-2026-01-16 11:42:49.673 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/59/fee299f9b88edb6925432ca41dc8a51dd50b97'. Skipping.
-2026-01-16 11:42:49.673 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/76/be470b4b4450038992dec6a9f9ac90a8611f2b'. Skipping.
-2026-01-16 11:42:49.674 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/75/1def8d69161d12e708eb37c902e2923fef560b'. Skipping.
-2026-01-16 11:42:49.675 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b4/a48625756286d8d8159714882707ed2da27fda'. Skipping.
-2026-01-16 11:42:49.676 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/31/94c3fdd79ab7638c2cc6c2c328829028c02c51'. Skipping.
-2026-01-16 11:42:49.677 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/8a/c3edea77f489aa91c07e6834824fa89412ab32'. Skipping.
-2026-01-16 11:42:49.678 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/f0/f472bd00702a4d900984524a41504dd6359755'. Skipping.
-2026-01-16 11:42:49.679 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/b3/3fe2dd683b6c6457cb46d0e3fa96d46fcfdd21'. Skipping.
-2026-01-16 11:42:49.679 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/55/71999ba294064ffb9518ffc6f3775a59ab742b'. Skipping.
-2026-01-16 11:42:49.680 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/objects/d0/cba9510054564db07d0a2e000e91337c10f3ec'. Skipping.
-2026-01-16 11:42:49.681 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/HEAD'. Skipping.
-2026-01-16 11:42:49.681 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/index'. Skipping.
-2026-01-16 11:42:49.682 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/COMMIT_EDITMSG'. Skipping.
-2026-01-16 11:42:49.683 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/HEAD'. Skipping.
-2026-01-16 11:42:49.683 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/refs/heads/main'. Skipping.
-2026-01-16 11:42:49.684 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/logs/refs/heads/release/rel-1.0.0'. Skipping.
-2026-01-16 11:42:49.685 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/zapp.yaml'. Skipping.
-2026-01-16 11:42:49.685 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/application-conf/baselineReference.config'. Skipping.
-2026-01-16 11:42:49.686 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.project'. Skipping.
-2026-01-16 11:42:49.687 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/azure-pipelines.yml'. Skipping.
-2026-01-16 11:42:49.687 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/deployment/deployPackage.yml'. Skipping.
-2026-01-16 11:42:49.688 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/tagging/createReleaseCandidate.yml'. Skipping.
-2026-01-16 11:42:49.689 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/BuildReport.json'. Skipping.
-2026-01-16 11:42:49.689 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/BuildReport.html'. Skipping.
-2026-01-16 11:42:49.690 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/buildList.txt'. Skipping.
-2026-01-16 11:42:49.690 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/logs/RuntimeReport.json'. Skipping.
-2026-01-16 11:42:49.691 ** Scanning the files.
-2026-01-16 11:42:49.701 ** Storing results in the 'GenApp-main' DBB Collection.
-
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/scanApplication.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-scan.log
+2025-04-09 13:52:36.462 ** Script configuration:
+2025-04-09 13:52:36.505 	PIPELINE_USER -> ADO
+2025-04-09 13:52:36.508 	application -> CBSA
+2025-04-09 13:52:36.511 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 13:52:36.514 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-09 13:52:36.517 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-scan.log
+2025-04-09 13:52:36.520 	DBB_MODELER_METADATASTORE_TYPE -> db2
+2025-04-09 13:52:36.522 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
+2025-04-09 13:52:36.525 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
+2025-04-09 13:52:36.528 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
+2025-04-09 13:52:36.533 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
+2025-04-09 13:52:36.536 	APPLICATION_DEFAULT_BRANCH -> main
+2025-04-09 13:52:36.971 ** Scanning the files.
+2025-04-09 13:52:37.144 	Scanning file CBSA/CBSA/application-conf/DBDgen.properties 
+2025-04-09 13:52:37.282 	Scanning file CBSA/CBSA/src/cobol/getscode.cbl 
+2025-04-09 13:52:37.366 	Scanning file CBSA/CBSA/src/cobol/bnk1cca.cbl 
+2025-04-09 13:52:37.436 	Scanning file CBSA/CBSA/src/copy/contdb2.cpy 
+2025-04-09 13:52:37.444 	Scanning file CBSA/CBSA/src/cobol/updcust.cbl 
+2025-04-09 13:52:37.485 	Scanning file CBSA/CBSA/src/cobol/bnk1cac.cbl 
+2025-04-09 13:52:37.558 	Scanning file CBSA/CBSA/src/copy/bnk1dcm.cpy 
+2025-04-09 13:52:37.656 	Scanning file CBSA/CBSA/src/cobol/xfrfun.cbl 
+2025-04-09 13:52:37.742 	Scanning file CBSA/CBSA/src/copy/consent.cpy 
+2025-04-09 13:52:37.758 	Scanning file CBSA/CBSA/src/cobol/bnk1ccs.cbl 
+2025-04-09 13:52:37.827 	Scanning file CBSA/CBSA/src/copy/sortcode.cpy 
+2025-04-09 13:52:37.831 	Scanning file CBSA/CBSA/application-conf/file.properties 
+2025-04-09 13:52:37.871 	Scanning file CBSA/CBSA/src/copy/custctrl.cpy 
+2025-04-09 13:52:37.880 	Scanning file CBSA/CBSA/application-conf/PLI.properties 
+2025-04-09 13:52:37.895 	Scanning file CBSA/CBSA/src/cobol/crdtagy1.cbl 
+2025-04-09 13:52:37.917 	Scanning file CBSA/CBSA/src/cobol/bankdata.cbl 
+2025-04-09 13:52:37.996 	Scanning file CBSA/CBSA/src/cobol/crecust.cbl 
+2025-04-09 13:52:38.071 	Scanning file CBSA/CBSA/application-conf/TazUnitTest.properties 
+2025-04-09 13:52:38.083 	Scanning file CBSA/CBSA.yaml 
+2025-04-09 13:52:38.118 	Scanning file CBSA/CBSA/src/copy/delacc.cpy 
+2025-04-09 13:52:38.131 	Scanning file CBSA/CBSA/src/cobol/dpayapi.cbl 
+2025-04-09 13:52:38.155 	Scanning file CBSA/CBSA/src/copy/constapi.cpy 
+2025-04-09 13:52:38.166 	Scanning file CBSA/applicationDescriptor.yml 
+2025-04-09 13:52:38.200 	Scanning file CBSA/CBSA/src/copy/bnk1cam.cpy 
+2025-04-09 13:52:38.315 	Scanning file CBSA/CBSA/src/cobol/consttst.cbl 
+2025-04-09 13:52:38.327 	Scanning file CBSA/CBSA/src/cobol/crdtagy3.cbl 
+2025-04-09 13:52:38.346 	Scanning file CBSA/CBSA/src/cobol/delcus.cbl 
+2025-04-09 13:52:38.385 	Scanning file CBSA/CBSA/application-conf/Assembler.properties 
+2025-04-09 13:52:38.405 	Scanning file CBSA/CBSA/src/cobol/accoffl.cbl 
+2025-04-09 13:52:38.425 	Scanning file CBSA/CBSA/src/copy/updacc.cpy 
+2025-04-09 13:52:38.435 	Scanning file CBSA/.gitattributes 
+2025-04-09 13:52:38.448 	Scanning file CBSA/CBSA/src/copy/datastr.cpy 
+2025-04-09 13:52:38.453 	Scanning file CBSA/CBSA/application-conf/application.properties 
+2025-04-09 13:52:38.485 	Scanning file CBSA/CBSA/src/cobol/crdtagy4.cbl 
+2025-04-09 13:52:38.498 	Scanning file CBSA/CBSA/src/cobol/accload.cbl 
+2025-04-09 13:52:38.513 	Scanning file CBSA/CBSA/application-conf/Transfer.properties 
+2025-04-09 13:52:38.516 	Scanning file CBSA/tagging/createReleaseCandidate.yml 
+2025-04-09 13:52:38.548 	Scanning file CBSA/CBSA/src/copy/bnk1ccm.cpy 
+2025-04-09 13:52:38.594 	Scanning file CBSA/CBSA/application-conf/Cobol.properties 
+2025-04-09 13:52:38.607 	Scanning file CBSA/deployment/deployReleasePackage.yml 
+2025-04-09 13:52:38.623 	Scanning file CBSA/CBSA/application-conf/CRB.properties 
+2025-04-09 13:52:38.626 	Scanning file CBSA/CBSA/application-conf/bind.properties 
+2025-04-09 13:52:38.632 	Scanning file CBSA/CBSA/src/cobol/inqacc.cbl 
+2025-04-09 13:52:38.652 	Scanning file CBSA/CBSA/src/cobol/bnk1dac.cbl 
+2025-04-09 13:52:38.670 	Scanning file CBSA/CBSA/src/copy/customer.cpy 
+2025-04-09 13:52:38.677 	Scanning file CBSA/CBSA/src/copy/crecust.cpy 
+2025-04-09 13:52:38.683 	Scanning file CBSA/CBSA/src/copy/creacc.cpy 
+2025-04-09 13:52:38.692 	Scanning file CBSA/CBSA/application-conf/languageConfigurationMapping.properties 
+2025-04-09 13:52:38.696 	Scanning file CBSA/CBSA/application-conf/LinkEdit.properties 
+2025-04-09 13:52:38.706 	Scanning file CBSA/CBSA/src/cobol/dbcrfun.cbl 
+2025-04-09 13:52:38.724 	Scanning file CBSA/CBSA/src/copy/bnk1acc.cpy 
+2025-04-09 13:52:38.735 	Scanning file CBSA/CBSA/src/copy/bnk1uam.cpy 
+2025-04-09 13:52:38.776 	Scanning file CBSA/CBSA/src/cobol/abndproc.cbl 
+2025-04-09 13:52:38.782 	Scanning file CBSA/CBSA/src/cobol/acctctrl.cbl 
+2025-04-09 13:52:38.787 	Scanning file CBSA/CBSA/src/copy/procdb2.cpy 
+2025-04-09 13:52:38.792 	Scanning file CBSA/CBSA/application-conf/ACBgen.properties 
+2025-04-09 13:52:38.794 	Scanning file CBSA/tagging/createProductionReleaseTag.yml 
+2025-04-09 13:52:38.801 	Scanning file CBSA/CBSA/application-conf/MFS.properties 
+2025-04-09 13:52:38.806 	Scanning file CBSA/CBSA/application-conf/reports.properties 
+2025-04-09 13:52:38.816 	Scanning file CBSA/CBSA/src/copy/abndinfo.cpy 
+2025-04-09 13:52:38.821 	Scanning file CBSA/CBSA/src/copy/xfrfun.cpy 
+2025-04-09 13:52:38.824 	Scanning file CBSA/CBSA/application-conf/PSBgen.properties 
+2025-04-09 13:52:38.829 	Scanning file CBSA/CBSA/src/cobol/inqcust.cbl 
+2025-04-09 13:52:38.841 	Scanning file CBSA/CBSA/application-conf/Easytrieve.properties 
+2025-04-09 13:52:38.850 	Scanning file CBSA/CBSA/src/copy/constdb2.cpy 
+2025-04-09 13:52:38.855 	Scanning file CBSA/CBSA/src/copy/getcompy.cpy 
+2025-04-09 13:52:38.857 	Scanning file CBSA/CBSA/src/cobol/consent.cbl 
+2025-04-09 13:52:38.865 	Scanning file CBSA/CBSA/src/cobol/crdtagy2.cbl 
+2025-04-09 13:52:38.873 	Scanning file CBSA/CBSA/src/cobol/delacc.cbl 
+2025-04-09 13:52:38.884 	Scanning file CBSA/CBSA/application-conf/REXX.properties 
+2025-04-09 13:52:38.892 	Scanning file CBSA/zapp.yaml 
+2025-04-09 13:52:38.895 	Scanning file CBSA/CBSA/src/copy/inqacccu.cpy 
+2025-04-09 13:52:38.901 	Scanning file CBSA/CBSA/src/cobol/bnk1tfn.cbl 
+2025-04-09 13:52:38.914 	Scanning file CBSA/CBSA/src/cobol/proload.cbl 
+2025-04-09 13:52:38.921 	Scanning file CBSA/CBSA/src/cobol/inqacccu.cbl 
+2025-04-09 13:52:38.930 	Scanning file CBSA/CBSA/src/copy/bnk1cdm.cpy 
+2025-04-09 13:52:38.941 	Scanning file CBSA/CBSA/src/cobol/dpaytst.cbl 
+2025-04-09 13:52:38.945 	Scanning file CBSA/CBSA/src/cobol/bnk1cra.cbl 
+2025-04-09 13:52:38.956 	Scanning file CBSA/CBSA/src/cobol/prooffl.cbl 
+2025-04-09 13:52:38.962 	Scanning file CBSA/CBSA/src/cobol/updacc.cbl 
+2025-04-09 13:52:38.972 	Scanning file CBSA/CBSA/src/copy/acctctrl.cpy 
+2025-04-09 13:52:38.975 	Scanning file CBSA/CBSA/src/copy/delcus.cpy 
+2025-04-09 13:52:38.979 	Scanning file CBSA/CBSA/src/copy/proctran.cpy 
+2025-04-09 13:52:38.992 	Scanning file CBSA/CBSA/src/copy/updcust.cpy 
+2025-04-09 13:52:38.996 	Scanning file CBSA/CBSA/src/copy/getscode.cpy 
+2025-04-09 13:52:38.997 	Scanning file CBSA/CBSA/src/cobol/creacc.cbl 
+2025-04-09 13:52:39.011 	Scanning file CBSA/CBSA/src/cobol/crdtagy5.cbl 
+2025-04-09 13:52:39.018 	Scanning file CBSA/CBSA/src/copy/account.cpy 
+2025-04-09 13:52:39.024 	Scanning file CBSA/CBSA/src/copy/bnk1dam.cpy 
+2025-04-09 13:52:39.050 	Scanning file CBSA/CBSA/src/copy/paydbcr.cpy 
+2025-04-09 13:52:39.053 	Scanning file CBSA/CBSA/src/cobol/getcompy.cbl 
+2025-04-09 13:52:39.056 	Scanning file CBSA/CBSA/src/cobol/custctrl.cbl 
+2025-04-09 13:52:39.060 	Scanning file CBSA/CBSA/src/copy/accdb2.cpy 
+2025-04-09 13:52:39.063 	Scanning file CBSA/CBSA/application-conf/BMS.properties 
+2025-04-09 13:52:39.068 	Scanning file CBSA/CBSA/src/copy/inqacc.cpy 
+2025-04-09 13:52:39.072 	Scanning file CBSA/CBSA/src/copy/bnk1mai.cpy 
+2025-04-09 13:52:39.079 	Scanning file CBSA/CBSA/src/cobol/bnk1dcs.cbl 
+2025-04-09 13:52:39.096 	Scanning file CBSA/azure-pipelines.yml 
+2025-04-09 13:52:39.111 	Scanning file CBSA/CBSA/src/cobol/bnk1uac.cbl 
+2025-04-09 13:52:39.124 	Scanning file CBSA/CBSA/src/cobol/bnkmenu.cbl 
+2025-04-09 13:52:39.136 	Scanning file CBSA/CBSA/application-conf/README.md 
+2025-04-09 13:52:39.198 	Scanning file CBSA/CBSA/src/copy/inqcust.cpy 
+2025-04-09 13:52:39.201 	Scanning file CBSA/CBSA/src/copy/bnk1tfm.cpy 
+2025-04-09 13:52:39.217 ** Storing results in the 'CBSA-main' DBB Collection.
+2025-04-09 13:52:41.165 ** Setting collection owner to ADO
+[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/recreateApplicationDescriptor.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-createApplicationDescriptor.log
+2025-04-09 14:03:27.588 ** Script configuration:
+2025-04-09 14:03:27.617 	REPOSITORY_PATH_MAPPING_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/repositoryPathsMapping.yaml
+2025-04-09 14:03:27.620 	application -> CBSA
+2025-04-09 14:03:27.624 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 14:03:27.628 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-09 14:03:27.631 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-createApplicationDescriptor.log
+2025-04-09 14:03:27.634 ** Reading the Repository Layout Mapping definition.
+2025-04-09 14:03:27.864 ** Importing existing Application Descriptor and reset source groups, dependencies and consumers.
+2025-04-09 14:03:27.906 ** Getting List of files /u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA
+2025-04-09 14:03:28.112 *! [WARNING] '.git/objects/24/79cd7afe658ecc8801d10f9f8cb42382d53d16' is a hidden file. Skipped.
+2025-04-09 14:03:28.113 *! [WARNING] '.git/objects/46/3a5519cbcb1b8db463d628173cafc3751fb323' is a hidden file. Skipped.
+2025-04-09 14:03:28.115 *! [WARNING] '.git/objects/31/2d56358b0f4597312ad7d68b78ebd080fc11f5' is a hidden file. Skipped.
+2025-04-09 14:03:28.116 *! [WARNING] '.git/objects/c2/1945e6c7fac12410c0d444fc1956f6b9ef090a' is a hidden file. Skipped.
+2025-04-09 14:03:28.164 *! [WARNING] 'CBSA/application-conf/BMS.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.164 *! [WARNING] '.git/objects/12/c04ff4762844463e6e8d5b3a92c150fbb3c6ce' is a hidden file. Skipped.
+2025-04-09 14:03:28.168 ** Adding 'CBSA/src/cobol/delacc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.183 *! [WARNING] '.git/objects/2b/b5e69e60b48517664e8bc178ce5047d2dc6239' is a hidden file. Skipped.
+2025-04-09 14:03:28.183 *! [WARNING] '.git/objects/29/ef69588ebc7fb77045dc42407df52eb89b771b' is a hidden file. Skipped.
+2025-04-09 14:03:28.184 *! [WARNING] '.git/objects/e0/05e38176803fd06ebf016edf56c6347f7ebcca' is a hidden file. Skipped.
+2025-04-09 14:03:28.185 ** Adding 'CBSA/src/cobol/bnk1cac.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.189 *! [WARNING] '.git/objects/71/95a42c31f86e0f70315660d9da6d62f9769d1e' is a hidden file. Skipped.
+2025-04-09 14:03:28.189 *! [WARNING] '.git/objects/71/aba7981c900888d8f74ef1f3aa3e1efe91d405' is a hidden file. Skipped.
+2025-04-09 14:03:28.190 *! [WARNING] 'CBSA/application-conf/TazUnitTest.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.190 *! [WARNING] '.git/objects/b0/2d733e80ba87c613c4becba1438cfea345bb63' is a hidden file. Skipped.
+2025-04-09 14:03:28.192 ** Adding 'CBSA/src/cobol/creacc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.194 ** Adding 'CBSA/src/cobol/bnkmenu.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.196 *! [WARNING] 'CBSA/application-conf/Transfer.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.196 *! [WARNING] '.git/objects/e4/a208249eb9f188dac631a80aa69560a1b5c812' is a hidden file. Skipped.
+2025-04-09 14:03:28.197 *! [WARNING] '.git/objects/bb/6a183c5808c83f435ffe292d40ce3c1e78182e' is a hidden file. Skipped.
+2025-04-09 14:03:28.198 ** Adding 'CBSA/src/copy/datastr.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.199 *! [WARNING] '.git/objects/30/ec95859415287a39af962b759792828e403684' is a hidden file. Skipped.
+2025-04-09 14:03:28.199 *! [WARNING] '.git/objects/d3/e104ac3f1682cf5c81e6a4df77a916b5601adb' is a hidden file. Skipped.
+2025-04-09 14:03:28.199 *! [WARNING] '.git/hooks/prepare-commit-msg.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.200 ** Adding 'CBSA/src/copy/bnk1mai.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.201 *! [WARNING] '.git/objects/c8/6c28e6b894571ccad1c6beaa040d1b916a1a77' is a hidden file. Skipped.
+2025-04-09 14:03:28.201 *! [WARNING] '.git/objects/b6/deb95fdbfe6a2f08acb265c23cccc973e8b031' is a hidden file. Skipped.
+2025-04-09 14:03:28.203 *! [WARNING] 'CBSA/application-conf/PSBgen.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.203 *! [WARNING] '.git/objects/35/1b0c08fb96d69ec8f2e5c4a71121da780037dd' is a hidden file. Skipped.
+2025-04-09 14:03:28.203 *! [WARNING] '.git/objects/1d/7f5fcdba85d4c4d0bc6ab0bab4b287e69242db' is a hidden file. Skipped.
+2025-04-09 14:03:28.203 *! [WARNING] '.git/objects/de/ce936b7a48fba884a6d376305fbce1a2fc99e5' is a hidden file. Skipped.
+2025-04-09 14:03:28.204 *! [WARNING] '.git/objects/c8/82661ae39a9a8ed30486a8433c1b186cbc5159' is a hidden file. Skipped.
+2025-04-09 14:03:28.204 ** Adding 'CBSA/src/cobol/crdtagy3.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.206 *! [WARNING] '.git/objects/99/a8f2520e0dc26a905446e52245f7b6314133d9' is a hidden file. Skipped.
+2025-04-09 14:03:28.206 *! [WARNING] '.git/objects/7e/0340c01a352c55eaf478a5c7dbe8c290e50728' is a hidden file. Skipped.
+2025-04-09 14:03:28.206 *! [WARNING] '.git/objects/94/08dd2f2709f23766aa4d1ef89e6e175974b396' is a hidden file. Skipped.
+2025-04-09 14:03:28.206 *! [WARNING] '.git/objects/97/0f6a926b868353d6a285d20b07d29abfba4292' is a hidden file. Skipped.
+2025-04-09 14:03:28.207 ** Adding 'CBSA/src/cobol/bnk1uac.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.210 *! [WARNING] '.git/objects/d0/c5bf02bc846be691c4ea906c10118719d3bed3' is a hidden file. Skipped.
+2025-04-09 14:03:28.210 *! [WARNING] '.git/objects/69/27d3b72033e6e7e4f9d6527fb5d347e1fc67d4' is a hidden file. Skipped.
+2025-04-09 14:03:28.210 *! [WARNING] '.git/objects/ff/86efc8e05a7fc5e66defbf50820da4ab3bad95' is a hidden file. Skipped.
+2025-04-09 14:03:28.211 *! [WARNING] '.git/objects/ab/80f99d7e1e2cf005e04f11f43b710b6cfc765c' is a hidden file. Skipped.
+2025-04-09 14:03:28.211 *! [WARNING] '.git/objects/fb/741632c192243a1f4e7799371635f854bd40db' is a hidden file. Skipped.
+2025-04-09 14:03:28.211 *! [WARNING] '.git/objects/b6/97ad559100281f7737764166ced34b4398ae0d' is a hidden file. Skipped.
+2025-04-09 14:03:28.212 ** Adding 'CBSA/src/cobol/inqcust.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.213 *! [WARNING] '.git/objects/c0/6aacd0c94d044b5fb1d2cb22bc796b946bcf6f' is a hidden file. Skipped.
+2025-04-09 14:03:28.213 *! [WARNING] '.git/logs/HEAD' is a hidden file. Skipped.
+2025-04-09 14:03:28.214 *! [WARNING] 'CBSA/application-conf/PLI.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.214 *! [WARNING] '.git/objects/27/0fd7eb4a2109c25b62d78595d8ddd044de4983' is a hidden file. Skipped.
+2025-04-09 14:03:28.214 *! [WARNING] '.git/objects/6e/ba9fb7a278153965978bde08e8b79d7549a6e5' is a hidden file. Skipped.
+2025-04-09 14:03:28.214 *! [WARNING] '.git/objects/3e/aad50b56f466377be9bc01dca2e4188e888f53' is a hidden file. Skipped.
+2025-04-09 14:03:28.215 ** Adding 'CBSA/src/copy/getcompy.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.216 *! [WARNING] '.git/objects/b9/91d0ce37c9ca4668b3329286418980cdb49f42' is a hidden file. Skipped.
+2025-04-09 14:03:28.217 ** Adding 'CBSA/src/copy/updacc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.218 *! [WARNING] 'CBSA/application-conf/README.md' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.219 ** Adding 'CBSA/src/cobol/bankdata.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.220 ** Adding 'CBSA/src/cobol/dpaytst.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.222 ** Adding 'CBSA/src/cobol/prooffl.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.223 *! [WARNING] '.git/config' is a hidden file. Skipped.
+2025-04-09 14:03:28.224 *! [WARNING] '.git/objects/78/c46a8b3d2f9bf33608f9ebaa1ae56260a546b2' is a hidden file. Skipped.
+2025-04-09 14:03:28.224 *! [WARNING] 'deployment/deployReleasePackage.yml' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.224 *! [WARNING] '.git/objects/58/fd7a3493875afbad7928a3b9156e5a83894735' is a hidden file. Skipped.
+2025-04-09 14:03:28.225 ** Adding 'CBSA/src/copy/inqcust.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.226 *! [WARNING] '.git/hooks/pre-push.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.226 *! [WARNING] '.git/objects/5e/014abb1c1c7b87e5b7487894a0dd577ecd6903' is a hidden file. Skipped.
+2025-04-09 14:03:28.227 ** Adding 'CBSA/src/copy/accdb2.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.229 ** Adding 'CBSA/src/copy/abndinfo.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.230 *! [WARNING] '.git/objects/51/51bf1873f82fc708b223aaecccf9c628c35b1b' is a hidden file. Skipped.
+2025-04-09 14:03:28.230 *! [WARNING] '.git/objects/37/1a19b8d93fa4d1f491a4174865ff3b5dc57b6f' is a hidden file. Skipped.
+2025-04-09 14:03:28.230 *! [WARNING] '.git/objects/1a/6cc27fb0468b5f7c2a6608e4b3e64009467e22' is a hidden file. Skipped.
+2025-04-09 14:03:28.231 *! [WARNING] '.git/hooks/pre-rebase.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.231 *! [WARNING] '.git/info/exclude' is a hidden file. Skipped.
+2025-04-09 14:03:28.232 ** Adding 'CBSA/src/cobol/bnk1dac.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.233 *! [WARNING] 'CBSA/application-conf/ACBgen.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.233 *! [WARNING] '.git/hooks/applypatch-msg.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.234 *! [WARNING] 'CBSA/application-conf/Assembler.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.234 *! [WARNING] '.git/objects/2f/bc2fdb9097a629e3d0d899d0d4912a5ce4a678' is a hidden file. Skipped.
+2025-04-09 14:03:28.234 *! [WARNING] '.git/objects/57/a7db352970bbfae82cf24c95aa6cecc159b0e0' is a hidden file. Skipped.
+2025-04-09 14:03:28.235 ** Adding 'CBSA/src/cobol/getcompy.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.236 ** Adding 'CBSA/src/cobol/crecust.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.238 *! [WARNING] '.git/objects/f7/fbe29970a3bd547fcfd6e82df58e45190d46a8' is a hidden file. Skipped.
+2025-04-09 14:03:28.238 ** Adding 'applicationDescriptor.yml' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.239 *! [WARNING] '.git/hooks/pre-merge-commit.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.239 *! [WARNING] '.git/objects/d9/c46c2b0b76ac752b67f451dd45995cd5bc96d1' is a hidden file. Skipped.
+2025-04-09 14:03:28.239 *! [WARNING] '.git/objects/56/5ded23ee5a835cf93564fb69486880ef001304' is a hidden file. Skipped.
+2025-04-09 14:03:28.240 *! [WARNING] '.git/objects/c9/5be47dd3ede400e93ba367b5f5ac433a714d5a' is a hidden file. Skipped.
+2025-04-09 14:03:28.240 *! [WARNING] '.git/HEAD' is a hidden file. Skipped.
+2025-04-09 14:03:28.241 ** Adding 'CBSA/src/copy/bnk1dcm.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.242 ** Adding 'CBSA/src/cobol/crdtagy4.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.243 ** Adding 'CBSA/src/copy/bnk1acc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.245 ** Adding 'CBSA/src/copy/inqacc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.246 ** Adding 'azure-pipelines.yml' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.248 ** Adding 'CBSA/src/cobol/consttst.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.249 ** Adding 'CBSA/src/copy/crecust.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.250 *! [WARNING] '.git/objects/d4/c22ba5bfb0742e2395037184f5fc4174577a8c' is a hidden file. Skipped.
+2025-04-09 14:03:28.250 *! [WARNING] '.git/objects/63/a545e907d8944efa88a4cc3619141468ee9446' is a hidden file. Skipped.
+2025-04-09 14:03:28.250 *! [WARNING] '.git/objects/d3/7d2d4704218babc4ab9871cc3ea1f5271dc80d' is a hidden file. Skipped.
+2025-04-09 14:03:28.251 *! [WARNING] '.git/objects/89/7bf2e97ca69ede559524c31bae8d639ae1b81d' is a hidden file. Skipped.
+2025-04-09 14:03:28.251 ** Adding 'CBSA/src/cobol/bnk1cra.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.253 ** Adding 'CBSA/src/cobol/delcus.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.254 *! [WARNING] '.git/refs/tags/rel-1.4.0' is a hidden file. Skipped.
+2025-04-09 14:03:28.255 *! [WARNING] '.git/description' is a hidden file. Skipped.
+2025-04-09 14:03:28.255 *! [WARNING] '.git/objects/d9/7584fe7d7c5e0120ab762194b119287f6bc91d' is a hidden file. Skipped.
+2025-04-09 14:03:28.256 ** Adding 'CBSA/src/copy/bnk1ccm.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.257 ** Adding 'CBSA/src/cobol/accload.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.258 *! [WARNING] '.git/objects/7e/b890a9162ae1995c768e29ce41093b6189ca19' is a hidden file. Skipped.
+2025-04-09 14:03:28.258 *! [WARNING] '.git/objects/f7/f461db942e85d137f33609bdb50bd26015d1ec' is a hidden file. Skipped.
+2025-04-09 14:03:28.258 *! [WARNING] '.gitattributes' is a hidden file. Skipped.
+2025-04-09 14:03:28.258 *! [WARNING] '.git/objects/84/bc44ed9738bc69291a529f9b7b7a1b3cccdc88' is a hidden file. Skipped.
+2025-04-09 14:03:28.259 ** Adding 'CBSA/src/cobol/bnk1ccs.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.260 *! [WARNING] '.git/objects/41/c1fc24c5c355423d1cdad4477113b6c6f0945f' is a hidden file. Skipped.
+2025-04-09 14:03:28.261 ** Adding 'CBSA/src/copy/updcust.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.262 ** Adding 'CBSA/src/copy/bnk1uam.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.263 ** Adding 'CBSA/src/copy/delacc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.264 ** Adding 'CBSA/src/cobol/crdtagy5.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.265 ** Adding 'CBSA/src/cobol/bnk1cca.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.266 *! [WARNING] '.git/objects/9d/8cdd3cfd001f9ff47534b9a741f61f757cc90c' is a hidden file. Skipped.
+2025-04-09 14:03:28.266 *! [WARNING] '.git/objects/04/a5b554ae15152a060f462fe894e09e7188e394' is a hidden file. Skipped.
+2025-04-09 14:03:28.266 *! [WARNING] '.git/objects/f5/0cc01256b3b2f272a59bed37caeb1a61f5ba4c' is a hidden file. Skipped.
+2025-04-09 14:03:28.266 *! [WARNING] '.git/hooks/push-to-checkout.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.267 *! [WARNING] 'CBSA/application-conf/CRB.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.268 ** Adding 'CBSA/src/copy/customer.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.268 *! [WARNING] '.git/logs/refs/heads/rel-1.4.0' is a hidden file. Skipped.
+2025-04-09 14:03:28.268 *! [WARNING] '.git/refs/heads/main' is a hidden file. Skipped.
+2025-04-09 14:03:28.269 *! [WARNING] '.git/objects/d3/70465392addcb5a86920019826deec0e531a77' is a hidden file. Skipped.
+2025-04-09 14:03:28.269 *! [WARNING] '.git/objects/55/57d232d69aa70962e5580123403d3662157e2a' is a hidden file. Skipped.
+2025-04-09 14:03:28.269 ** Adding 'CBSA/src/copy/sortcode.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.271 ** Adding 'CBSA/src/cobol/custctrl.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.271 *! [WARNING] '.git/refs/heads/rel-1.4.0' is a hidden file. Skipped.
+2025-04-09 14:03:28.272 ** Adding 'CBSA/src/copy/custctrl.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.273 *! [WARNING] 'CBSA/application-conf/Easytrieve.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.273 *! [WARNING] '.git/objects/9c/3aec3ef67cd80287d375f825fe1b7abfb8be4d' is a hidden file. Skipped.
+2025-04-09 14:03:28.274 ** Adding 'CBSA/src/copy/bnk1cdm.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.275 *! [WARNING] 'tagging/createReleaseCandidate.yml' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.275 *! [WARNING] '.git/objects/68/c29e32bba41130b5f6308b06ffbaf11d7214cc' is a hidden file. Skipped.
+2025-04-09 14:03:28.275 *! [WARNING] '.git/objects/bc/ecf21e6187f0d2dba5c129c53954a8363f0d0e' is a hidden file. Skipped.
+2025-04-09 14:03:28.276 ** Adding 'zapp.yaml' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.277 *! [WARNING] '.git/objects/e2/f2519db2ebf10fdce9c1d18535aa730e9cc942' is a hidden file. Skipped.
+2025-04-09 14:03:28.277 *! [WARNING] '.git/objects/40/46a14e3b7f9b0137176c8039e1034e9e8c39fd' is a hidden file. Skipped.
+2025-04-09 14:03:28.277 *! [WARNING] '.git/objects/56/364507a259c6881a4e9a961213a9aa5a6405e7' is a hidden file. Skipped.
+2025-04-09 14:03:28.278 *! [WARNING] '.git/objects/14/833274735adb257e1062eaa63d495febe9e962' is a hidden file. Skipped.
+2025-04-09 14:03:28.278 *! [WARNING] 'CBSA.yaml' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.279 ** Adding 'CBSA/src/cobol/abndproc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.280 *! [WARNING] '.git/objects/b8/cea7df2b43bfac6d4e9336022a286e44a1147c' is a hidden file. Skipped.
+2025-04-09 14:03:28.280 *! [WARNING] 'CBSA/application-conf/LinkEdit.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.281 ** Adding 'CBSA/src/copy/proctran.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.282 *! [WARNING] '.git/objects/02/20c1299e5ed367b9d602d8a11c9909a081c026' is a hidden file. Skipped.
+2025-04-09 14:03:28.282 *! [WARNING] '.git/objects/b1/8656b5144b139b6a3b4515d4883a5d0e9ee2ce' is a hidden file. Skipped.
+2025-04-09 14:03:28.282 *! [WARNING] '.git/objects/91/4e9ff51f5d103fd6d253b345de9ae1c3cd34d4' is a hidden file. Skipped.
+2025-04-09 14:03:28.282 ** Adding 'CBSA/src/copy/xfrfun.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.283 *! [WARNING] '.git/logs/refs/heads/main' is a hidden file. Skipped.
+2025-04-09 14:03:28.284 *! [WARNING] 'CBSA/application-conf/bind.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.284 ** Adding 'CBSA/src/cobol/bnk1dcs.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.285 ** Adding 'CBSA/src/cobol/updcust.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.286 *! [WARNING] '.git/objects/b4/de9dd27006fd84de0770e4a4fc0c9a0393e2f0' is a hidden file. Skipped.
+2025-04-09 14:03:28.287 ** Adding 'CBSA/src/cobol/acctctrl.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.288 ** Adding 'CBSA/src/copy/bnk1tfm.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.289 *! [WARNING] '.git/objects/f4/33cbfff90207efad95d399c2632acc1684f942' is a hidden file. Skipped.
+2025-04-09 14:03:28.289 ** Adding 'CBSA/src/copy/acctctrl.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.290 *! [WARNING] '.git/objects/57/9fef02baff9b735fc28867aef660f088b64710' is a hidden file. Skipped.
+2025-04-09 14:03:28.290 *! [WARNING] 'CBSA/application-conf/MFS.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.291 ** Adding 'CBSA/src/cobol/crdtagy1.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.292 *! [WARNING] '.git/objects/b1/7e73e90052cbe5144318dc9cf00cdf04589042' is a hidden file. Skipped.
+2025-04-09 14:03:28.292 ** Adding 'CBSA/src/copy/paydbcr.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.293 *! [WARNING] '.git/objects/01/d96e12b164d97cc7f2c72489c8cd3205a8b69f' is a hidden file. Skipped.
+2025-04-09 14:03:28.293 *! [WARNING] '.git/objects/b0/aed0954293fc2763f3c02ec65cbaa53603015d' is a hidden file. Skipped.
+2025-04-09 14:03:28.294 *! [WARNING] 'tagging/createProductionReleaseTag.yml' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.294 *! [WARNING] '.git/objects/e4/96c6a4e7a960de791e1fd97a02ae6614769936' is a hidden file. Skipped.
+2025-04-09 14:03:28.294 *! [WARNING] '.git/objects/aa/3a09c5ec672fef16b4d689127e80ca5ce595ce' is a hidden file. Skipped.
+2025-04-09 14:03:28.295 ** Adding 'CBSA/src/copy/account.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.296 *! [WARNING] '.git/objects/fa/3508648b495e92bc320f8110bfd3d78a4d5a3a' is a hidden file. Skipped.
+2025-04-09 14:03:28.296 *! [WARNING] '.git/objects/56/eec383e79ddc7d93386976ba31b6f06180c1a0' is a hidden file. Skipped.
+2025-04-09 14:03:28.297 ** Adding 'CBSA/src/copy/creacc.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.298 ** Adding 'CBSA/src/copy/getscode.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.299 ** Adding 'CBSA/src/cobol/getscode.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.300 ** Adding 'CBSA/src/copy/bnk1dam.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.301 *! [WARNING] '.git/index' is a hidden file. Skipped.
+2025-04-09 14:03:28.301 ** Adding 'CBSA/src/cobol/bnk1tfn.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.302 ** Adding 'CBSA/src/cobol/proload.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.303 *! [WARNING] '.git/objects/a1/4465df829b167bbb644dffc1027434adbf3c32' is a hidden file. Skipped.
+2025-04-09 14:03:28.304 ** Adding 'CBSA/src/copy/bnk1cam.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.305 *! [WARNING] '.git/objects/04/9cc7eb352d85ce38026a8f3029f22e711b8b9a' is a hidden file. Skipped.
+2025-04-09 14:03:28.305 *! [WARNING] '.git/objects/8e/b541c571cd537e557c27e56eb472e9cafb0308' is a hidden file. Skipped.
+2025-04-09 14:03:28.305 *! [WARNING] '.git/objects/47/f9f61e0fdb34ee5ebbf7fc11529e50b079a04b' is a hidden file. Skipped.
+2025-04-09 14:03:28.306 ** Adding 'CBSA/src/copy/delcus.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.306 *! [WARNING] '.git/objects/82/14b4cdd014e9e1f1c45fae193c49364def5894' is a hidden file. Skipped.
+2025-04-09 14:03:28.307 ** Adding 'CBSA/src/cobol/dbcrfun.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.308 *! [WARNING] '.git/objects/94/7a658dffaf7b8a8a1348ad9dabbdca1f87fbb0' is a hidden file. Skipped.
+2025-04-09 14:03:28.308 ** Adding 'CBSA/src/cobol/updacc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.309 ** Adding 'CBSA/src/cobol/consent.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.310 *! [WARNING] '.git/objects/33/44cbdf7b601794f0ef2341235f09f126fe4562' is a hidden file. Skipped.
+2025-04-09 14:03:28.310 *! [WARNING] '.git/hooks/update.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.311 ** Adding 'CBSA/src/copy/inqacccu.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.312 *! [WARNING] '.git/hooks/pre-applypatch.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.312 *! [WARNING] '.git/hooks/pre-commit.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.312 *! [WARNING] '.git/objects/1e/cc8a7b26eee8c6498737ad40975ca9597e7809' is a hidden file. Skipped.
+2025-04-09 14:03:28.313 *! [WARNING] 'CBSA/application-conf/application.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.313 *! [WARNING] 'CBSA/application-conf/file.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.314 ** Adding 'CBSA/src/cobol/xfrfun.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.315 *! [WARNING] '.git/hooks/commit-msg.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.315 *! [WARNING] '.git/objects/cb/75236314e2fba04aca378ad29061942e6900a5' is a hidden file. Skipped.
+2025-04-09 14:03:28.315 *! [WARNING] '.git/objects/b8/33431450f198af575ebdf622a8144df7c0962a' is a hidden file. Skipped.
+2025-04-09 14:03:28.315 ** Adding 'CBSA/src/copy/consent.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/objects/01/61b1e6bcf09c021887fb147e8223ca06b5cd38' is a hidden file. Skipped.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/objects/ff/7f1a74d6d78a6d35e4559b32cdff813a5fb12e' is a hidden file. Skipped.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/objects/21/b32b59cad6603ee75673876be89e6c04c4c122' is a hidden file. Skipped.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/hooks/sendemail-validate.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.317 *! [WARNING] '.git/hooks/pre-receive.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.318 ** Adding 'CBSA/src/cobol/inqacccu.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.319 ** Adding 'CBSA/src/cobol/crdtagy2.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.320 ** Adding 'CBSA/src/copy/constapi.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.321 ** Adding 'CBSA/src/copy/constdb2.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.322 *! [WARNING] '.git/hooks/post-update.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.322 *! [WARNING] '.git/objects/a5/3363cedacbac465382e28beb8d10c843b769cb' is a hidden file. Skipped.
+2025-04-09 14:03:28.322 *! [WARNING] '.git/COMMIT_EDITMSG' is a hidden file. Skipped.
+2025-04-09 14:03:28.322 *! [WARNING] '.git/objects/33/4b8f087b5e1bd5c05036a920378e8e1f3c0276' is a hidden file. Skipped.
+2025-04-09 14:03:28.323 ** Adding 'CBSA/src/cobol/inqacc.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.324 *! [WARNING] '.git/objects/b5/6eafbe98c4e46afb0c8c60ee97cf437292a68c' is a hidden file. Skipped.
+2025-04-09 14:03:28.324 ** Adding 'CBSA/src/copy/procdb2.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.325 *! [WARNING] '.git/hooks/fsmonitor-watchman.sample' is a hidden file. Skipped.
+2025-04-09 14:03:28.325 *! [WARNING] '.git/objects/6f/3549f765104b58d630d2a4ce871fc1b9e4bb7a' is a hidden file. Skipped.
+2025-04-09 14:03:28.325 *! [WARNING] '.git/objects/f5/5399eea902ae9bc01584c1e3bc71f4db98eef6' is a hidden file. Skipped.
+2025-04-09 14:03:28.326 *! [WARNING] 'CBSA/application-conf/Cobol.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.326 *! [WARNING] '.git/objects/a6/ee2080f7c783724cafee89a81049a3f2893e75' is a hidden file. Skipped.
+2025-04-09 14:03:28.326 *! [WARNING] '.git/objects/34/390dbd6e6f281f6101d179897949a51393c264' is a hidden file. Skipped.
+2025-04-09 14:03:28.326 *! [WARNING] 'CBSA/application-conf/REXX.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.327 *! [WARNING] 'CBSA/application-conf/reports.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.327 *! [WARNING] 'CBSA/application-conf/languageConfigurationMapping.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.327 *! [WARNING] '.git/objects/02/166f4a72bce317273224f2a3d700916aca7d37' is a hidden file. Skipped.
+2025-04-09 14:03:28.328 *! [WARNING] '.git/objects/c2/432e4bf3b85f883fdcaff1adb419b1ebf3fd18' is a hidden file. Skipped.
+2025-04-09 14:03:28.328 *! [WARNING] '.git/objects/30/7bdf0f7c3097788578484f004d2a0fa05d9271' is a hidden file. Skipped.
+2025-04-09 14:03:28.328 *! [WARNING] '.git/objects/66/afa88844c422af69da0d35243993d4e50dac3c' is a hidden file. Skipped.
+2025-04-09 14:03:28.328 ** Adding 'CBSA/src/cobol/accoffl.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.329 *! [WARNING] '.git/objects/31/52dd3e66ff2ee3aa671a03aa7e3cb41ca864a5' is a hidden file. Skipped.
+2025-04-09 14:03:28.330 ** Adding 'CBSA/src/cobol/dpayapi.cbl' to Application Descriptor into source group 'cobol'.
+2025-04-09 14:03:28.331 *! [WARNING] '.git/objects/b2/849d92d4dd7bd253384f910a069f98802f64f1' is a hidden file. Skipped.
+2025-04-09 14:03:28.331 *! [WARNING] '.git/objects/b4/79ed3b38c3f9680850dc34a3c9d10e24ddb52f' is a hidden file. Skipped.
+2025-04-09 14:03:28.331 ** Adding 'CBSA/src/copy/contdb2.cpy' to Application Descriptor into source group 'copy'.
+2025-04-09 14:03:28.332 *! [WARNING] '.git/objects/b6/f7290235118fd79e38875919d38e2885dc2335' is a hidden file. Skipped.
+2025-04-09 14:03:28.333 *! [WARNING] 'CBSA/application-conf/DBDgen.properties' did not match any rule defined in the repository path mapping configuration. Skipped.
+2025-04-09 14:03:28.453 ** Created Application Description file '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/CBSA.yaml'
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/assessUsage.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--moveFiles 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-assessUsage.log
+2025-04-09 14:03:55.371 ** Script configuration:
+2025-04-09 14:03:55.413 	DBB_MODELER_APPCONFIG_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/modeler-configs
+2025-04-09 14:03:55.416 	application -> CBSA
+2025-04-09 14:03:55.419 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 14:03:55.423 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-09 14:03:55.427 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-assessUsage.log
+2025-04-09 14:03:55.430 	DBB_MODELER_METADATASTORE_TYPE -> db2
+2025-04-09 14:03:55.433 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
+2025-04-09 14:03:55.435 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
+2025-04-09 14:03:55.438 	moveFiles -> true
+2025-04-09 14:03:55.441 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
+2025-04-09 14:03:55.444 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
+2025-04-09 14:03:56.121 ** Getting the list of files of 'Include File' type.
+2025-04-09 14:03:56.197 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/datastr.cpy'.
+2025-04-09 14:03:56.711 	Files depending on 'CBSA/src/copy/datastr.cpy' :
+2025-04-09 14:03:56.720 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.721 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.722 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.723 	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.724 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.724 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.725 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.726 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.727 	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.728 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.729 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.730 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.730 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.731 	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.732 	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.733 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.734 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:56.735 	==> 'datastr' is owned by the 'CBSA' application
+2025-04-09 14:03:56.747 	==> Updating usage of Include File 'datastr' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:56.862 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1ccm.cpy'.
+2025-04-09 14:03:57.058 	Files depending on 'CBSA/src/copy/bnk1ccm.cpy' :
+2025-04-09 14:03:57.058 	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.058 	==> 'bnk1ccm' is owned by the 'CBSA' application
+2025-04-09 14:03:57.059 	==> Updating usage of Include File 'bnk1ccm' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.107 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dam.cpy'.
+2025-04-09 14:03:57.197 	Files depending on 'CBSA/src/copy/bnk1dam.cpy' :
+2025-04-09 14:03:57.197 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.197 	==> 'bnk1dam' is owned by the 'CBSA' application
+2025-04-09 14:03:57.198 	==> Updating usage of Include File 'bnk1dam' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.238 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/paydbcr.cpy'.
+2025-04-09 14:03:57.311 	Files depending on 'CBSA/src/copy/paydbcr.cpy' :
+2025-04-09 14:03:57.311 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.311 	==> 'paydbcr' is owned by the 'CBSA' application
+2025-04-09 14:03:57.313 	==> Updating usage of Include File 'paydbcr' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.346 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cam.cpy'.
+2025-04-09 14:03:57.417 	Files depending on 'CBSA/src/copy/bnk1cam.cpy' :
+2025-04-09 14:03:57.417 	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.417 	==> 'bnk1cam' is owned by the 'CBSA' application
+2025-04-09 14:03:57.418 	==> Updating usage of Include File 'bnk1cam' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.448 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/creacc.cpy'.
+2025-04-09 14:03:57.509 	Files depending on 'CBSA/src/copy/creacc.cpy' :
+2025-04-09 14:03:57.510 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.510 	==> 'creacc' is owned by the 'CBSA' application
+2025-04-09 14:03:57.511 	==> Updating usage of Include File 'creacc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.539 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1dcm.cpy'.
+2025-04-09 14:03:57.602 	Files depending on 'CBSA/src/copy/bnk1dcm.cpy' :
+2025-04-09 14:03:57.602 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.602 	==> 'bnk1dcm' is owned by the 'CBSA' application
+2025-04-09 14:03:57.603 	==> Updating usage of Include File 'bnk1dcm' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.631 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/procdb2.cpy'.
+2025-04-09 14:03:57.685 	The Include File 'procdb2' is not referenced at all.
+2025-04-09 14:03:57.715 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constdb2.cpy'.
+2025-04-09 14:03:57.765 	The Include File 'constdb2' is not referenced at all.
+2025-04-09 14:03:57.791 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/abndinfo.cpy'.
+2025-04-09 14:03:57.899 	Files depending on 'CBSA/src/copy/abndinfo.cpy' :
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/custctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/bnk1ccs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.899 	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/acctctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.900 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/abndproc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.901 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/bnk1cac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/bnkmenu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.902 	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.903 	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.903 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.903 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.903 	==> 'abndinfo' is owned by the 'CBSA' application
+2025-04-09 14:03:57.904 	==> Updating usage of Include File 'abndinfo' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:57.931 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1tfm.cpy'.
+2025-04-09 14:03:57.989 	Files depending on 'CBSA/src/copy/bnk1tfm.cpy' :
+2025-04-09 14:03:57.989 	'CBSA/CBSA/src/cobol/bnk1tfn.cbl' in  Application  'CBSA'
+2025-04-09 14:03:57.989 	==> 'bnk1tfm' is owned by the 'CBSA' application
+2025-04-09 14:03:57.990 	==> Updating usage of Include File 'bnk1tfm' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.016 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1acc.cpy'.
+2025-04-09 14:03:58.078 	Files depending on 'CBSA/src/copy/bnk1acc.cpy' :
+2025-04-09 14:03:58.079 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.079 	==> 'bnk1acc' is owned by the 'CBSA' application
+2025-04-09 14:03:58.080 	==> Updating usage of Include File 'bnk1acc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.106 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/proctran.cpy'.
+2025-04-09 14:03:58.176 	Files depending on 'CBSA/src/copy/proctran.cpy' :
+2025-04-09 14:03:58.176 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.176 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.177 	==> 'proctran' is owned by the 'CBSA' application
+2025-04-09 14:03:58.178 	==> Updating usage of Include File 'proctran' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.203 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/sortcode.cpy'.
+2025-04-09 14:03:58.285 	Files depending on 'CBSA/src/copy/sortcode.cpy' :
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/crdtagy5.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/custctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.286 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/getscode.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/crdtagy4.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/acctctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.287 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/crdtagy1.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/crdtagy3.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/crdtagy2.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.288 	==> 'sortcode' is owned by the 'CBSA' application
+2025-04-09 14:03:58.289 	==> Updating usage of Include File 'sortcode' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.315 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/acctctrl.cpy'.
+2025-04-09 14:03:58.375 	Files depending on 'CBSA/src/copy/acctctrl.cpy' :
+2025-04-09 14:03:58.375 	'CBSA/CBSA/src/cobol/acctctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.375 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.376 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.376 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.376 	==> 'acctctrl' is owned by the 'CBSA' application
+2025-04-09 14:03:58.380 	==> Updating usage of Include File 'acctctrl' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.408 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/custctrl.cpy'.
+2025-04-09 14:03:58.484 	Files depending on 'CBSA/src/copy/custctrl.cpy' :
+2025-04-09 14:03:58.485 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.485 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.485 	'CBSA/CBSA/src/cobol/custctrl.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.485 	==> 'custctrl' is owned by the 'CBSA' application
+2025-04-09 14:03:58.489 	==> Updating usage of Include File 'custctrl' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.519 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/xfrfun.cpy'.
+2025-04-09 14:03:58.568 	Files depending on 'CBSA/src/copy/xfrfun.cpy' :
+2025-04-09 14:03:58.568 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.568 	==> 'xfrfun' is owned by the 'CBSA' application
+2025-04-09 14:03:58.569 	==> Updating usage of Include File 'xfrfun' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.595 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/crecust.cpy'.
+2025-04-09 14:03:58.636 	Files depending on 'CBSA/src/copy/crecust.cpy' :
+2025-04-09 14:03:58.636 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.636 	==> 'crecust' is owned by the 'CBSA' application
+2025-04-09 14:03:58.637 	==> Updating usage of Include File 'crecust' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.667 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacccu.cpy'.
+2025-04-09 14:03:58.717 	Files depending on 'CBSA/src/copy/inqacccu.cpy' :
+2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/bnk1cca.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.717 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.717 	==> 'inqacccu' is owned by the 'CBSA' application
+2025-04-09 14:03:58.718 	==> Updating usage of Include File 'inqacccu' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.743 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1cdm.cpy'.
+2025-04-09 14:03:58.791 	Files depending on 'CBSA/src/copy/bnk1cdm.cpy' :
+2025-04-09 14:03:58.792 	'CBSA/CBSA/src/cobol/bnk1cra.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.792 	==> 'bnk1cdm' is owned by the 'CBSA' application
+2025-04-09 14:03:58.792 	==> Updating usage of Include File 'bnk1cdm' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.816 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getscode.cpy'.
+2025-04-09 14:03:58.854 	Files depending on 'CBSA/src/copy/getscode.cpy' :
+2025-04-09 14:03:58.854 	'CBSA/CBSA/src/cobol/getscode.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.854 	==> 'getscode' is owned by the 'CBSA' application
+2025-04-09 14:03:58.855 	==> Updating usage of Include File 'getscode' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.878 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/consent.cpy'.
+2025-04-09 14:03:58.922 	Files depending on 'CBSA/src/copy/consent.cpy' :
+2025-04-09 14:03:58.922 	'CBSA/CBSA/src/cobol/dpayapi.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.922 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.922 	'CBSA/CBSA/src/cobol/consent.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.922 	==> 'consent' is owned by the 'CBSA' application
+2025-04-09 14:03:58.923 	==> Updating usage of Include File 'consent' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:58.947 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1mai.cpy'.
+2025-04-09 14:03:58.991 	Files depending on 'CBSA/src/copy/bnk1mai.cpy' :
+2025-04-09 14:03:58.991 	'CBSA/CBSA/src/cobol/bnkmenu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:58.991 	==> 'bnk1mai' is owned by the 'CBSA' application
+2025-04-09 14:03:58.992 	==> Updating usage of Include File 'bnk1mai' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.020 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/constapi.cpy'.
+2025-04-09 14:03:59.080 	Files depending on 'CBSA/src/copy/constapi.cpy' :
+2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/dpayapi.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/consttst.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.080 	'CBSA/CBSA/src/cobol/consent.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.081 	==> 'constapi' is owned by the 'CBSA' application
+2025-04-09 14:03:59.081 	==> Updating usage of Include File 'constapi' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.108 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delacc.cpy'.
+2025-04-09 14:03:59.147 	Files depending on 'CBSA/src/copy/delacc.cpy' :
+2025-04-09 14:03:59.147 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.147 	==> 'delacc' is owned by the 'CBSA' application
+2025-04-09 14:03:59.148 	==> Updating usage of Include File 'delacc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.173 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/delcus.cpy'.
+2025-04-09 14:03:59.222 	Files depending on 'CBSA/src/copy/delcus.cpy' :
+2025-04-09 14:03:59.223 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.223 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.223 	==> 'delcus' is owned by the 'CBSA' application
+2025-04-09 14:03:59.223 	==> Updating usage of Include File 'delcus' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.247 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/getcompy.cpy'.
+2025-04-09 14:03:59.288 	Files depending on 'CBSA/src/copy/getcompy.cpy' :
+2025-04-09 14:03:59.288 	'CBSA/CBSA/src/cobol/getcompy.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.288 	==> 'getcompy' is owned by the 'CBSA' application
+2025-04-09 14:03:59.289 	==> Updating usage of Include File 'getcompy' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.314 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/accdb2.cpy'.
+2025-04-09 14:03:59.351 	The Include File 'accdb2' is not referenced at all.
+2025-04-09 14:03:59.374 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/contdb2.cpy'.
+2025-04-09 14:03:59.416 	The Include File 'contdb2' is not referenced at all.
+2025-04-09 14:03:59.440 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqcust.cpy'.
+2025-04-09 14:03:59.487 	Files depending on 'CBSA/src/copy/inqcust.cpy' :
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.487 	==> 'inqcust' is owned by the 'CBSA' application
+2025-04-09 14:03:59.488 	==> Updating usage of Include File 'inqcust' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.513 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updacc.cpy'.
+2025-04-09 14:03:59.551 	Files depending on 'CBSA/src/copy/updacc.cpy' :
+2025-04-09 14:03:59.551 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.551 	==> 'updacc' is owned by the 'CBSA' application
+2025-04-09 14:03:59.552 	==> Updating usage of Include File 'updacc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.575 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/inqacc.cpy'.
+2025-04-09 14:03:59.622 	Files depending on 'CBSA/src/copy/inqacc.cpy' :
+2025-04-09 14:03:59.623 	'CBSA/CBSA/src/cobol/bnk1dac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.623 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.623 	==> 'inqacc' is owned by the 'CBSA' application
+2025-04-09 14:03:59.624 	==> Updating usage of Include File 'inqacc' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.647 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/updcust.cpy'.
+2025-04-09 14:03:59.691 	Files depending on 'CBSA/src/copy/updcust.cpy' :
+2025-04-09 14:03:59.691 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.691 	'CBSA/CBSA/src/cobol/bnk1dcs.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.691 	==> 'updcust' is owned by the 'CBSA' application
+2025-04-09 14:03:59.693 	==> Updating usage of Include File 'updcust' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.718 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/bnk1uam.cpy'.
+2025-04-09 14:03:59.767 	Files depending on 'CBSA/src/copy/bnk1uam.cpy' :
+2025-04-09 14:03:59.767 	'CBSA/CBSA/src/cobol/bnk1uac.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.767 	==> 'bnk1uam' is owned by the 'CBSA' application
+2025-04-09 14:03:59.767 	==> Updating usage of Include File 'bnk1uam' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.791 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/account.cpy'.
+2025-04-09 14:03:59.844 	Files depending on 'CBSA/src/copy/account.cpy' :
+2025-04-09 14:03:59.844 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.844 	'CBSA/CBSA/src/cobol/xfrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.844 	'CBSA/CBSA/src/cobol/dbcrfun.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/inqacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/dpaytst.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/consent.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/updacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/delacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.845 	==> 'account' is owned by the 'CBSA' application
+2025-04-09 14:03:59.846 	==> Updating usage of Include File 'account' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.870 ** Analyzing impacted applications for file 'CBSA/CBSA/src/copy/customer.cpy'.
+2025-04-09 14:03:59.922 	Files depending on 'CBSA/src/copy/customer.cpy' :
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/bankdata.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/crecust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/inqcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/inqacccu.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/updcust.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/delcus.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	'CBSA/CBSA/src/cobol/creacc.cbl' in  Application  'CBSA'
+2025-04-09 14:03:59.923 	==> 'customer' is owned by the 'CBSA' application
+2025-04-09 14:03:59.924 	==> Updating usage of Include File 'customer' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA/applicationDescriptor.yml'.
+2025-04-09 14:03:59.951 ** Getting the list of files of 'Program' type.
+2025-04-09 14:03:59.976 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cac.cbl'.
+2025-04-09 14:04:00.019 	The Program 'bnk1cac' is not called by any other program.
+2025-04-09 14:04:00.120 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/proload.cbl'.
+2025-04-09 14:04:00.163 	The Program 'proload' is not called by any other program.
+2025-04-09 14:04:00.188 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dac.cbl'.
+2025-04-09 14:04:00.225 	The Program 'bnk1dac' is not called by any other program.
+2025-04-09 14:04:00.248 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpayapi.cbl'.
+2025-04-09 14:04:00.288 	The Program 'dpayapi' is not called by any other program.
+2025-04-09 14:04:00.312 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dpaytst.cbl'.
+2025-04-09 14:04:00.351 	The Program 'dpaytst' is not called by any other program.
+2025-04-09 14:04:00.399 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accoffl.cbl'.
+2025-04-09 14:04:00.435 	The Program 'accoffl' is not called by any other program.
+2025-04-09 14:04:00.461 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy5.cbl'.
+2025-04-09 14:04:00.496 	The Program 'crdtagy5' is not called by any other program.
+2025-04-09 14:04:00.519 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/creacc.cbl'.
+2025-04-09 14:04:00.540 	The Program 'creacc' is not called by any other program.
+2025-04-09 14:04:00.584 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy4.cbl'.
+2025-04-09 14:04:00.623 	The Program 'crdtagy4' is not called by any other program.
+2025-04-09 14:04:00.646 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnkmenu.cbl'.
+2025-04-09 14:04:00.680 	The Program 'bnkmenu' is not called by any other program.
+2025-04-09 14:04:00.705 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bankdata.cbl'.
+2025-04-09 14:04:00.746 	The Program 'bankdata' is not called by any other program.
+2025-04-09 14:04:00.774 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/prooffl.cbl'.
+2025-04-09 14:04:00.812 	The Program 'prooffl' is not called by any other program.
+2025-04-09 14:04:00.835 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1tfn.cbl'.
+2025-04-09 14:04:00.867 	The Program 'bnk1tfn' is not called by any other program.
+2025-04-09 14:04:00.890 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cca.cbl'.
+2025-04-09 14:04:00.924 	The Program 'bnk1cca' is not called by any other program.
+2025-04-09 14:04:00.948 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/dbcrfun.cbl'.
+2025-04-09 14:04:00.980 	The Program 'dbcrfun' is not called by any other program.
+2025-04-09 14:04:01.008 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/acctctrl.cbl'.
+2025-04-09 14:04:01.027 	The Program 'acctctrl' is not called by any other program.
+2025-04-09 14:04:01.052 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/custctrl.cbl'.
+2025-04-09 14:04:01.070 	The Program 'custctrl' is not called by any other program.
+2025-04-09 14:04:01.092 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/xfrfun.cbl'.
+2025-04-09 14:04:01.116 	The Program 'xfrfun' is not called by any other program.
+2025-04-09 14:04:01.137 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crecust.cbl'.
+2025-04-09 14:04:01.159 	The Program 'crecust' is not called by any other program.
+2025-04-09 14:04:01.182 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacccu.cbl'.
+2025-04-09 14:04:01.201 	The Program 'inqacccu' is not called by any other program.
+2025-04-09 14:04:01.223 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getscode.cbl'.
+2025-04-09 14:04:01.239 	The Program 'getscode' is not called by any other program.
+2025-04-09 14:04:01.261 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consent.cbl'.
+2025-04-09 14:04:01.278 	The Program 'consent' is not called by any other program.
+2025-04-09 14:04:01.300 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy3.cbl'.
+2025-04-09 14:04:01.334 	The Program 'crdtagy3' is not called by any other program.
+2025-04-09 14:04:01.356 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delacc.cbl'.
+2025-04-09 14:04:01.377 	The Program 'delacc' is not called by any other program.
+2025-04-09 14:04:01.398 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/delcus.cbl'.
+2025-04-09 14:04:01.429 	The Program 'delcus' is not called by any other program.
+2025-04-09 14:04:01.450 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1dcs.cbl'.
+2025-04-09 14:04:01.490 	The Program 'bnk1dcs' is not called by any other program.
+2025-04-09 14:04:01.513 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy2.cbl'.
+2025-04-09 14:04:01.548 	The Program 'crdtagy2' is not called by any other program.
+2025-04-09 14:04:01.571 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/abndproc.cbl'.
+2025-04-09 14:04:01.610 	The Program 'abndproc' is not called by any other program.
+2025-04-09 14:04:01.642 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1ccs.cbl'.
+2025-04-09 14:04:01.684 	The Program 'bnk1ccs' is not called by any other program.
+2025-04-09 14:04:01.708 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/crdtagy1.cbl'.
+2025-04-09 14:04:01.744 	The Program 'crdtagy1' is not called by any other program.
+2025-04-09 14:04:01.770 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1cra.cbl'.
+2025-04-09 14:04:01.807 	The Program 'bnk1cra' is not called by any other program.
+2025-04-09 14:04:01.832 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/getcompy.cbl'.
+2025-04-09 14:04:01.865 	The Program 'getcompy' is not called by any other program.
+2025-04-09 14:04:01.901 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/accload.cbl'.
+2025-04-09 14:04:01.939 	The Program 'accload' is not called by any other program.
+2025-04-09 14:04:01.963 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqcust.cbl'.
+2025-04-09 14:04:01.982 	The Program 'inqcust' is not called by any other program.
+2025-04-09 14:04:02.007 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/bnk1uac.cbl'.
+2025-04-09 14:04:02.053 	The Program 'bnk1uac' is not called by any other program.
+2025-04-09 14:04:02.077 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updacc.cbl'.
+2025-04-09 14:04:02.100 	The Program 'updacc' is not called by any other program.
+2025-04-09 14:04:02.123 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/consttst.cbl'.
+2025-04-09 14:04:02.160 	The Program 'consttst' is not called by any other program.
+2025-04-09 14:04:02.185 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/inqacc.cbl'.
+2025-04-09 14:04:02.206 	The Program 'inqacc' is not called by any other program.
+2025-04-09 14:04:02.230 ** Analyzing impacted applications for file 'CBSA/CBSA/src/cobol/updcust.cbl'.
+2025-04-09 14:04:02.245 	The Program 'updcust' is not called by any other program.
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/scanApplication.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-rescan.log
+2025-04-09 14:04:40.138 ** Script configuration:
+2025-04-09 14:04:40.175 	PIPELINE_USER -> ADO
+2025-04-09 14:04:40.178 	application -> CBSA
+2025-04-09 14:04:40.182 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+2025-04-09 14:04:40.185 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
+2025-04-09 14:04:40.187 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-rescan.log
+2025-04-09 14:04:40.190 	DBB_MODELER_METADATASTORE_TYPE -> db2
+2025-04-09 14:04:40.193 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
+2025-04-09 14:04:40.196 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
+2025-04-09 14:04:40.198 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
+2025-04-09 14:04:40.201 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
+2025-04-09 14:04:40.204 	APPLICATION_DEFAULT_BRANCH -> main
+2025-04-09 14:04:40.660 ** Scanning the files.
+2025-04-09 14:04:40.819 	Scanning file CBSA/CBSA/application-conf/DBDgen.properties 
+2025-04-09 14:04:40.922 	Scanning file CBSA/CBSA/src/cobol/getscode.cbl 
+2025-04-09 14:04:40.949 	Scanning file CBSA/CBSA/src/cobol/bnk1cca.cbl 
+2025-04-09 14:04:41.106 	Scanning file CBSA/CBSA/src/copy/contdb2.cpy 
+2025-04-09 14:04:41.116 	Scanning file CBSA/CBSA/src/cobol/updcust.cbl 
+2025-04-09 14:04:41.156 	Scanning file CBSA/CBSA/src/cobol/bnk1cac.cbl 
+2025-04-09 14:04:41.230 	Scanning file CBSA/CBSA/src/copy/bnk1dcm.cpy 
+2025-04-09 14:04:41.328 	Scanning file CBSA/CBSA/src/cobol/xfrfun.cbl 
+2025-04-09 14:04:41.437 	Scanning file CBSA/CBSA/src/copy/consent.cpy 
+2025-04-09 14:04:41.452 	Scanning file CBSA/CBSA/src/cobol/bnk1ccs.cbl 
+2025-04-09 14:04:41.528 	Scanning file CBSA/CBSA/src/copy/sortcode.cpy 
+2025-04-09 14:04:41.532 	Scanning file CBSA/CBSA/application-conf/file.properties 
+2025-04-09 14:04:41.575 	Scanning file CBSA/CBSA/src/copy/custctrl.cpy 
+2025-04-09 14:04:41.584 	Scanning file CBSA/CBSA/application-conf/PLI.properties 
+2025-04-09 14:04:41.599 	Scanning file CBSA/CBSA/src/cobol/crdtagy1.cbl 
+2025-04-09 14:04:41.623 	Scanning file CBSA/CBSA/src/cobol/bankdata.cbl 
+2025-04-09 14:04:41.710 	Scanning file CBSA/CBSA/src/cobol/crecust.cbl 
+2025-04-09 14:04:41.789 	Scanning file CBSA/CBSA/application-conf/TazUnitTest.properties 
+2025-04-09 14:04:41.802 	Scanning file CBSA/CBSA.yaml 
+2025-04-09 14:04:41.839 	Scanning file CBSA/CBSA/src/copy/delacc.cpy 
+2025-04-09 14:04:41.853 	Scanning file CBSA/CBSA/src/cobol/dpayapi.cbl 
+2025-04-09 14:04:41.881 	Scanning file CBSA/CBSA/src/copy/constapi.cpy 
+2025-04-09 14:04:41.892 	Scanning file CBSA/applicationDescriptor.yml 
+2025-04-09 14:04:41.927 	Scanning file CBSA/CBSA/src/copy/bnk1cam.cpy 
+2025-04-09 14:04:41.999 	Scanning file CBSA/CBSA/src/cobol/consttst.cbl 
+2025-04-09 14:04:42.016 	Scanning file CBSA/CBSA/src/cobol/crdtagy3.cbl 
+2025-04-09 14:04:42.032 	Scanning file CBSA/CBSA/src/cobol/delcus.cbl 
+2025-04-09 14:04:42.064 	Scanning file CBSA/CBSA/application-conf/Assembler.properties 
+2025-04-09 14:04:42.082 	Scanning file CBSA/CBSA/src/cobol/accoffl.cbl 
+2025-04-09 14:04:42.098 	Scanning file CBSA/CBSA/src/copy/updacc.cpy 
+2025-04-09 14:04:42.107 	Scanning file CBSA/.gitattributes 
+2025-04-09 14:04:42.119 	Scanning file CBSA/CBSA/src/copy/datastr.cpy 
+2025-04-09 14:04:42.124 	Scanning file CBSA/CBSA/application-conf/application.properties 
+2025-04-09 14:04:42.154 	Scanning file CBSA/CBSA/src/cobol/crdtagy4.cbl 
+2025-04-09 14:04:42.167 	Scanning file CBSA/CBSA/src/cobol/accload.cbl 
+2025-04-09 14:04:42.180 	Scanning file CBSA/CBSA/application-conf/Transfer.properties 
+2025-04-09 14:04:42.183 	Scanning file CBSA/tagging/createReleaseCandidate.yml 
+2025-04-09 14:04:42.256 	Scanning file CBSA/CBSA/src/copy/bnk1ccm.cpy 
+2025-04-09 14:04:42.301 	Scanning file CBSA/CBSA/application-conf/Cobol.properties 
+2025-04-09 14:04:42.317 	Scanning file CBSA/deployment/deployReleasePackage.yml 
+2025-04-09 14:04:42.336 	Scanning file CBSA/CBSA/application-conf/CRB.properties 
+2025-04-09 14:04:42.339 	Scanning file CBSA/CBSA/application-conf/bind.properties 
+2025-04-09 14:04:42.347 	Scanning file CBSA/CBSA/src/cobol/inqacc.cbl 
+2025-04-09 14:04:42.368 	Scanning file CBSA/CBSA/src/cobol/bnk1dac.cbl 
+2025-04-09 14:04:42.390 	Scanning file CBSA/CBSA/src/copy/customer.cpy 
+2025-04-09 14:04:42.399 	Scanning file CBSA/CBSA/src/copy/crecust.cpy 
+2025-04-09 14:04:42.405 	Scanning file CBSA/CBSA/src/copy/creacc.cpy 
+2025-04-09 14:04:42.414 	Scanning file CBSA/CBSA/application-conf/languageConfigurationMapping.properties 
+2025-04-09 14:04:42.419 	Scanning file CBSA/CBSA/application-conf/LinkEdit.properties 
+2025-04-09 14:04:42.431 	Scanning file CBSA/CBSA/src/cobol/dbcrfun.cbl 
+2025-04-09 14:04:42.453 	Scanning file CBSA/CBSA/src/copy/bnk1acc.cpy 
+2025-04-09 14:04:42.466 	Scanning file CBSA/CBSA/src/copy/bnk1uam.cpy 
+2025-04-09 14:04:42.510 	Scanning file CBSA/CBSA/src/cobol/abndproc.cbl 
+2025-04-09 14:04:42.519 	Scanning file CBSA/CBSA/src/cobol/acctctrl.cbl 
+2025-04-09 14:04:42.525 	Scanning file CBSA/CBSA/src/copy/procdb2.cpy 
+2025-04-09 14:04:42.530 	Scanning file CBSA/CBSA/application-conf/ACBgen.properties 
+2025-04-09 14:04:42.533 	Scanning file CBSA/tagging/createProductionReleaseTag.yml 
+2025-04-09 14:04:42.540 	Scanning file CBSA/CBSA/application-conf/MFS.properties 
+2025-04-09 14:04:42.546 	Scanning file CBSA/CBSA/application-conf/reports.properties 
+2025-04-09 14:04:42.557 	Scanning file CBSA/CBSA/src/copy/abndinfo.cpy 
+2025-04-09 14:04:42.562 	Scanning file CBSA/CBSA/src/copy/xfrfun.cpy 
+2025-04-09 14:04:42.566 	Scanning file CBSA/CBSA/application-conf/PSBgen.properties 
+2025-04-09 14:04:42.574 	Scanning file CBSA/CBSA/src/cobol/inqcust.cbl 
+2025-04-09 14:04:42.592 	Scanning file CBSA/CBSA/application-conf/Easytrieve.properties 
+2025-04-09 14:04:42.600 	Scanning file CBSA/CBSA/src/copy/constdb2.cpy 
+2025-04-09 14:04:42.606 	Scanning file CBSA/CBSA/src/copy/getcompy.cpy 
+2025-04-09 14:04:42.608 	Scanning file CBSA/CBSA/src/cobol/consent.cbl 
+2025-04-09 14:04:42.617 	Scanning file CBSA/CBSA/src/cobol/crdtagy2.cbl 
+2025-04-09 14:04:42.626 	Scanning file CBSA/CBSA/src/cobol/delacc.cbl 
+2025-04-09 14:04:42.639 	Scanning file CBSA/CBSA/application-conf/REXX.properties 
+2025-04-09 14:04:42.647 	Scanning file CBSA/zapp.yaml 
+2025-04-09 14:04:42.651 	Scanning file CBSA/CBSA/src/copy/inqacccu.cpy 
+2025-04-09 14:04:42.658 	Scanning file CBSA/CBSA/src/cobol/bnk1tfn.cbl 
+2025-04-09 14:04:42.675 	Scanning file CBSA/CBSA/src/cobol/proload.cbl 
+2025-04-09 14:04:42.683 	Scanning file CBSA/CBSA/src/cobol/inqacccu.cbl 
+2025-04-09 14:04:42.696 	Scanning file CBSA/CBSA/src/copy/bnk1cdm.cpy 
+2025-04-09 14:04:42.712 	Scanning file CBSA/CBSA/src/cobol/dpaytst.cbl 
+2025-04-09 14:04:42.717 	Scanning file CBSA/CBSA/src/cobol/bnk1cra.cbl 
+2025-04-09 14:04:42.734 	Scanning file CBSA/CBSA/src/cobol/prooffl.cbl 
+2025-04-09 14:04:42.742 	Scanning file CBSA/CBSA/src/cobol/updacc.cbl 
+2025-04-09 14:04:42.752 	Scanning file CBSA/CBSA/src/copy/acctctrl.cpy 
+2025-04-09 14:04:42.757 	Scanning file CBSA/CBSA/src/copy/delcus.cpy 
+2025-04-09 14:04:42.761 	Scanning file CBSA/CBSA/src/copy/proctran.cpy 
+2025-04-09 14:04:42.779 	Scanning file CBSA/CBSA/src/copy/updcust.cpy 
+2025-04-09 14:04:42.783 	Scanning file CBSA/CBSA/src/copy/getscode.cpy 
+2025-04-09 14:04:42.785 	Scanning file CBSA/CBSA/src/cobol/creacc.cbl 
+2025-04-09 14:04:42.803 	Scanning file CBSA/CBSA/src/cobol/crdtagy5.cbl 
+2025-04-09 14:04:42.810 	Scanning file CBSA/CBSA/src/copy/account.cpy 
+2025-04-09 14:04:42.816 	Scanning file CBSA/CBSA/src/copy/bnk1dam.cpy 
+2025-04-09 14:04:42.839 	Scanning file CBSA/CBSA/src/copy/paydbcr.cpy 
+2025-04-09 14:04:42.842 	Scanning file CBSA/CBSA/src/cobol/getcompy.cbl 
+2025-04-09 14:04:42.845 	Scanning file CBSA/CBSA/src/cobol/custctrl.cbl 
+2025-04-09 14:04:42.849 	Scanning file CBSA/CBSA/src/copy/accdb2.cpy 
+2025-04-09 14:04:42.853 	Scanning file CBSA/CBSA/application-conf/BMS.properties 
+2025-04-09 14:04:42.857 	Scanning file CBSA/CBSA/src/copy/inqacc.cpy 
+2025-04-09 14:04:42.862 	Scanning file CBSA/CBSA/src/copy/bnk1mai.cpy 
+2025-04-09 14:04:42.867 	Scanning file CBSA/CBSA/src/cobol/bnk1dcs.cbl 
+2025-04-09 14:04:42.883 	Scanning file CBSA/azure-pipelines.yml 
+2025-04-09 14:04:42.895 	Scanning file CBSA/CBSA/src/cobol/bnk1uac.cbl 
+2025-04-09 14:04:42.908 	Scanning file CBSA/CBSA/src/cobol/bnkmenu.cbl 
+2025-04-09 14:04:42.920 	Scanning file CBSA/CBSA/application-conf/README.md 
+2025-04-09 14:04:42.974 	Scanning file CBSA/CBSA/src/copy/inqcust.cpy 
+2025-04-09 14:04:42.976 	Scanning file CBSA/CBSA/src/copy/bnk1tfm.cpy 
+2025-04-09 14:04:42.987 ** Storing results in the 'CBSA-main' DBB Collection.
+2025-04-09 14:04:44.955 ** Setting collection owner to ADO
 ~~~~
 
 </details>

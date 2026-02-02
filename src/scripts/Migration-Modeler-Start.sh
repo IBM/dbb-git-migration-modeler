@@ -187,7 +187,7 @@ if [ $rc -eq 0 ]; then
 	echo
 	echo "[PHASE] Generate build configuration"
 	if [[ $INTERACTIVE_RUN == "true" ]]; then
-		read -p "Do you want to generate the $BUILD_FRAMEWORK configurations (Y/n): " variable
+		read -p "Do you want to generate the $BUILD_FRAMEWORK Configuration files (Y/n): " variable
 	else
 		variable="Y"
 	fi

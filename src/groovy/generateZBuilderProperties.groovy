@@ -80,6 +80,7 @@ def zBuilderConfigurationFolderPath = "${props.DBB_MODELER_WORK}/build-configura
 File zBuilderConfigurationFolder = new File(zBuilderConfigurationFolderPath)
 if (!zBuilderConfigurationFolder.exists()) {
     zBuilderConfigurationFolder.mkdirs()
+    logger.logMessage("** Creating folder '${zBuilderConfigurationFolderPath}'")
 }
 
 // If there are Types Configurations files to create
@@ -92,24 +93,28 @@ if (typesConfigurationsToCreate && typesConfigurationsToCreate.size() > 0) {
     
         if (typeConfiguration) {
             logger.logMessage("\tType Configuration for type '${typeToCreate}' found in '${props.TYPE_CONFIGURATIONS_FILE}'.")
-            def typeConfigurationVariables = []
-            typeConfiguration.variables.each() { variable ->
-                typeConfigurationVariables << [ "name": variable.name, "value": variable.value ]
-            }
             File typeConfigurationYamlFile = new File("${zBuilderConfigurationFolderPath}/${typeToCreate}.yaml")
-            def yamlBuilder = new YamlBuilder()
-                yamlBuilder {
-                config typeConfigurationVariables
+            // Don't overwrite the file if it already exists
+            if (!typeConfigurationYamlFile.exists()) {
+                File yamlFileParentFolder = typeConfigurationYamlFile.getParentFile()
+                if (!yamlFileParentFolder.exists()) {
+                    yamlFileParentFolder.mkdirs()
+                }                
+
+                def typeConfigurationVariables = []
+                typeConfiguration.variables.each() { variable ->
+                    typeConfigurationVariables << [ "name": variable.name, "value": variable.value ]
+                }
+                def yamlBuilder = new YamlBuilder()
+                    yamlBuilder {
+                    config typeConfigurationVariables
+                }
+                
+                typeConfigurationYamlFile.withWriter("UTF-8") { writer ->
+                    writer.write(yamlBuilder.toString())
+                }
+                FileUtils.setFileTag(typeConfigurationYamlFile.getAbsolutePath(), "UTF-8")
             }
-            File yamlFileParentFolder = typeConfigurationYamlFile.getParentFile()
-            if (!yamlFileParentFolder.exists()) {
-                yamlFileParentFolder.mkdirs()
-            }                
-            
-            typeConfigurationYamlFile.withWriter("UTF-8") { writer ->
-                writer.write(yamlBuilder.toString())
-            }
-            FileUtils.setFileTag(typeConfigurationYamlFile.getAbsolutePath(), "UTF-8")
             // We build a set of types that were actually found and created
             // This set will be used when we later process all the files to check if it's necessary
             //   to create the languageConfigurationSource entry
@@ -136,11 +141,11 @@ if (filesToLanguageConfigurations && filesToLanguageConfigurations.size() > 0 &&
             // Search for existing languageConfiguration matching the path of the config file
             languageConfigurationVariable = task.variables.find() { variable ->
                 variable.name.equals("languageConfigurationSource") &&
-                variable.value.equals("\${APP_DIR}/config/${fileToLanguageConfiguration.type}.yaml")
+                variable.value.equals("\${DBB_BUILD}/build-configuration/${fileToLanguageConfiguration.type}.yaml")
             }
             // if not found, create it
             if (!languageConfigurationVariable) {
-                languageConfigurationVariable = [ "name": "languageConfigurationSource", "value": "\${APP_DIR}/config/${fileToLanguageConfiguration.type}.yaml", "forFiles": [] ]        
+                languageConfigurationVariable = [ "name": "languageConfigurationSource", "value": "\${DBB_BUILD}/build-configuration/${fileToLanguageConfiguration.type}.yaml", "forFiles": [] ]        
             }
             // add the file to the forFiles for this override
             languageConfigurationVariable.forFiles << fileToLanguageConfiguration.file
@@ -151,6 +156,12 @@ if (filesToLanguageConfigurations && filesToLanguageConfigurations.size() > 0 &&
     }
 } else {
     logger.logMessage("** No Configuration type found for application '${props.application}'.")
+}
+
+// Some types were created
+if (createdTypesConfigurations && createdTypesConfigurations.size() > 0) {
+    logger.logMessage("** [INFO] ${createdTypesConfigurations.size()} Language Configuration file${createdTypesConfigurations.size() == 1 ? "" : "(s)"} created in '${zBuilderConfigurationFolderPath}'.")
+    logger.logMessage("** [INFO] Before running builds with zBuilder, please copy the content of the '${zBuilderConfigurationFolderPath}' folder to your zBuilder instance located at '${props.DBB_ZBUILDER}'.")
 }
 
 // generating dependencies path in configuration file
@@ -322,6 +333,32 @@ def parseArgs(String[] args) {
         System.exit(1)
     }
 
+    if (configuration.DBB_MODELER_WORK) {
+        File directory = new File(configuration.DBB_MODELER_WORK)
+        if (directory.exists()) {
+            props.DBB_MODELER_WORK = configuration.DBB_MODELER_WORK
+        } else {
+            logger.logMessage("*! [ERROR] The DBB Git Migration Modeler work folder '${configuration.DBB_MODELER_WORK}' does not exist. Exiting.")
+            System.exit(1)
+        }
+    } else {
+        logger.logMessage("*! [ERROR] The DBB Git Migration Modeler work folder must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+        System.exit(1)
+    }
+
+    if (configuration.DBB_ZBUILDER) {
+        File directory = new File(configuration.DBB_ZBUILDER)
+        if (directory.exists()) {
+            props.DBB_ZBUILDER = configuration.DBB_ZBUILDER
+        } else {
+            logger.logMessage("*! [ERROR] The DBB zBuilder instance '${configuration.DBB_ZBUILDER}' does not exist. Exiting.")
+            System.exit(1)
+        }
+    } else {
+        logger.logMessage("*! [ERROR] The DBB zBuilder instance must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+        System.exit(1)
+    }
+
     if (configuration.DBB_MODELER_APPLICATION_DIR) {
         File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
         if (directory.exists()) {
@@ -333,7 +370,7 @@ def parseArgs(String[] args) {
     } else {
         logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
         System.exit(1)
-    }    
+    }
 
     if (configuration.TYPE_CONFIGURATIONS_FILE) {
         File file = new File(configuration.TYPE_CONFIGURATIONS_FILE)
