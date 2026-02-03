@@ -125,6 +125,7 @@ if (typesConfigurationsToCreate && typesConfigurationsToCreate.size() > 0) {
     }
 }
 
+// generate application-level dbb-app.yaml configuration file
 if (filesToLanguageConfigurations && filesToLanguageConfigurations.size() > 0 && createdTypesConfigurations && createdTypesConfigurations.size() > 0) {
     logger.logMessage("** Generating zBuilder Application configuration file.")
     filesToLanguageConfigurations.each() { fileToLanguageConfiguration ->
@@ -167,10 +168,10 @@ if (createdTypesConfigurations && createdTypesConfigurations.size() > 0) {
 // generating dependencies path in configuration file
 logger.logMessage("** Generating Dependencies Search Paths and Impact Analysis Query Patterns.")
 
-def matchingSourcesGroup = applicationDescriptor.sources.findAll { source ->
+def sourceGroupsWithPrograms = applicationDescriptor.sources.findAll { source ->
     source.artifactsType.equalsIgnoreCase("Program") 
 }
-matchingSourcesGroup.each() { matchingSourceGroup ->
+sourceGroupsWithPrograms.each() { sourceGroupWithPrograms ->
     
     def impactAnalysisTask = applicationDBBAppYaml.tasks.find() { task ->
         task.task.equals("ImpactAnalysis")
@@ -186,79 +187,95 @@ matchingSourcesGroup.each() { matchingSourceGroup ->
         impactQueryPatterns = [ "name": "impactQueryPatterns", "value": [] ]
         impactAnalysisTask.variables << impactQueryPatterns
     }
-    if (matchingSourceGroup.name.equals("cobol")) {
+    if (sourceGroupWithPrograms.language.equalsIgnoreCase("COBOL")) {
         // Creating default entries for Impact Query Patterns
-        def dependencyPattern = [ "languageExt": matchingSourceGroup.fileExtension, "dependencyPatterns": [] ]
+        def dependencyPattern = [ "languageExt": sourceGroupWithPrograms.fileExtension, "dependencyPatterns": [] ]
         // BMS
-        def BMSGroup = applicationDescriptor.sources.find() { sourceGroup ->
-            sourceGroup.name.equals("bms")
+        def BMSGroups = applicationDescriptor.sources.findAll() { sourceGroup ->
+            sourceGroup.language.equalsIgnoreCase("ASM") && 
+            sourceGroup.artifactsType.equals("BMS")
         }
-        if (BMSGroup) {
-            dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${BMSGroup.repositoryPath}/*.${BMSGroup.fileExtension}"
+        if (BMSGroups) {
+            BMSGroups.each() { BMSGroup ->
+                dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${BMSGroup.repositoryPath}/*.${BMSGroup.fileExtension}"
+            }
         }
         // Cobol Copybook
-        def CopyGroup = applicationDescriptor.sources.find() { sourceGroup ->
-            sourceGroup.name.equals("copy")
+        def CopyGroups = applicationDescriptor.sources.findAll() { sourceGroup ->
+            sourceGroup.language.equalsIgnoreCase("COBOL") && 
+            sourceGroup.artifactsType.equals("Include File")
         }
-        if (CopyGroup) {
-            dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${CopyGroup.repositoryPath}/*.${CopyGroup.fileExtension}"
+        if (CopyGroups) {
+            CopyGroups.each() { CopyGroup ->
+                dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${CopyGroup.repositoryPath}/*.${CopyGroup.fileExtension}"
+            }
         }
         // Cobol program
-        dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${matchingSourceGroup.repositoryPath}/*.${matchingSourceGroup.fileExtension}"
+        dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${sourceGroupWithPrograms.repositoryPath}/*.${sourceGroupWithPrograms.fileExtension}"
         impactQueryPatterns.value << dependencyPattern
 
         // Creating default entries for Dependencies Search Path
         def languageTask = applicationDBBAppYaml.tasks.find() { task ->
-            task.task.equals(matchingSourceGroup.languageProcessor)
+            task.task.equals(sourceGroupWithPrograms.languageProcessor)
         }
         if (!languageTask) {
-            languageTask = [ "task": matchingSourceGroup.languageProcessor, "variables": [] ]
+            languageTask = [ "task": sourceGroupWithPrograms.languageProcessor, "variables": [] ]
             applicationDBBAppYaml.tasks << languageTask
         }
-        if (CopyGroup) {
-            def dependencySearchPath = [ "name": "dependencySearchPath", "value": "search:\${WORKSPACE}/?path=\${APP_DIR_NAME}/${CopyGroup.repositoryPath}/*.${CopyGroup.fileExtension}" ]
-            languageTask.variables << dependencySearchPath
+        if (CopyGroups) {
+            CopyGroups.each() { CopyGroup ->
+                def dependencySearchPath = [ "name": "dependencySearchPath", "value": "search:\${WORKSPACE}/?path=\${APP_DIR_NAME}/${CopyGroup.repositoryPath}/*.${CopyGroup.fileExtension}" ]
+                languageTask.variables << dependencySearchPath
+            }
         }
     }
-    if (matchingSourceGroup.name.equals("link")) {
+    if (sourceGroupWithPrograms.language.equalsIgnoreCase("link")) {
         // Creating default entries for Impact Query Patterns
-        def dependencyPattern = [ "languageExt": matchingSourceGroup.fileExtension, "dependencyPatterns": [] ]
+        def dependencyPattern = [ "languageExt": sourceGroupWithPrograms.fileExtension, "dependencyPatterns": [] ]
         // Cobol program
-        def CobolGroup = applicationDescriptor.sources.find() { sourceGroup ->
-            sourceGroup.name.equals("cobol")
+        def CobolGroups = applicationDescriptor.sources.findAll() { sourceGroup ->
+            sourceGroup.language.equalsIgnoreCase("COBOL") && 
+            sourceGroup.artifactsType.equals("Program")
         }
-        if (CobolGroup) {
-            dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${CobolGroup.repositoryPath}/*.${CobolGroup.fileExtension}"
+        if (CobolGroups) {
+            CobolGroups.each() { CobolGroup ->
+                dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${CobolGroup.repositoryPath}/*.${CobolGroup.fileExtension}"
+            }
         }
         impactQueryPatterns.value << dependencyPattern
     }
     
     
-    if (matchingSourceGroup.name.equals("asm")) {
+    if (sourceGroupWithPrograms.language.equalsIgnoreCase("ASM")) {
         // Creating default entries for Impact Query Patterns
-        def dependencyPattern = [ "languageExt": matchingSourceGroup.fileExtension, "dependencyPatterns": [] ]
+        def dependencyPattern = [ "languageExt": sourceGroupWithPrograms.fileExtension, "dependencyPatterns": [] ]
         // ASM macros
-        def ASMMacroGroup = applicationDescriptor.sources.find() { sourceGroup ->
-            sourceGroup.name.equals("macro")
+        def ASMMacroGroups = applicationDescriptor.sources.findAll() { sourceGroup ->
+            sourceGroup.language.equalsIgnoreCase("ASM") && 
+            sourceGroup.artifactsType.equals("Include File")
         }
-        if (ASMMacroGroup) {
-            dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${ASMMacroGroup.repositoryPath}/*.${ASMMacroGroup.fileExtension}"
+        if (ASMMacroGroups) {
+            ASMMacroGroups.each() { ASMMacroGroup ->
+                dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${ASMMacroGroup.repositoryPath}/*.${ASMMacroGroup.fileExtension}"
+            }
         }
         // ASM program
-        dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${matchingSourceGroup.repositoryPath}/*.${matchingSourceGroup.fileExtension}"
+        dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${sourceGroupWithPrograms.repositoryPath}/*.${sourceGroupWithPrograms.fileExtension}"
         impactQueryPatterns.value << dependencyPattern
 
         // Creating default entries for Dependencies Search Path
         def languageTask = applicationDBBAppYaml.tasks.find() { task ->
-            task.task.equals(matchingSourceGroup.languageProcessor)
+            task.task.equals(sourceGroupWithPrograms.languageProcessor)
         }
         if (!languageTask) {
-            languageTask = [ "task": matchingSourceGroup.languageProcessor, "variables": [] ]
+            languageTask = [ "task": sourceGroupWithPrograms.languageProcessor, "variables": [] ]
             applicationDBBAppYaml.tasks << languageTask
         }
-        if (ASMMacroGroup) {
-            def dependencySearchPath = [ "name": "dependencySearchPath", "value": "search:\${WORKSPACE}/?path=\${APP_DIR_NAME}/${ASMMacroGroup.repositoryPath}/*.${ASMMacroGroup.fileExtension}" ]
-            languageTask.variables << dependencySearchPath
+        if (ASMMacroGroups) {
+            ASMMacroGroups.each() { ASMMacroGroup ->
+                def dependencySearchPath = [ "name": "dependencySearchPath", "value": "search:\${WORKSPACE}/?path=\${APP_DIR_NAME}/${ASMMacroGroup.repositoryPath}/*.${ASMMacroGroup.fileExtension}" ]
+                languageTask.variables << dependencySearchPath
+            }
         } 
     }
 }
