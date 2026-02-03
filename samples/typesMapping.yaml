@@ -1,4 +1,5 @@
-## List of datasets members to which types are assigned
+## Mapping of datasets members to their associated type configuration. 
+## The type configuration details are managed in typesConfiguration.yaml
 datasetMembers:
     - datasetMember: "DBEHM.MIG.COBOL(LGACDB01)"
       ## For each dataset member, a single type is assigned
