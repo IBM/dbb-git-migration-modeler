@@ -176,9 +176,13 @@ if [ $rc -eq 0 ]; then
 					echo "    <comment></comment>" >>$idzProjectFile
 					echo "    <projects>" >>$idzProjectFile
 					echo "    </projects>" >>$idzProjectFile
-					echo "    <buildSpec>" >>$idzProjectFile
-					echo "    </natures>" >>$idzProjectFile
-					echo "</projectDescription>" >>$idzProjectFile
+                    echo "    <buildSpec>" >>$idzProjectFile
+                    echo "    </buildSpec>" >>$idzProjectFile
+                    echo "    <natures>" >>$idzProjectFile
+                    echo "        <nature>com.ibm.ftt.ui.views.project.navigator.local</nature>" >>$idzProjectFile
+                    echo "        <nature>com.ibm.ftt.dbbz.integration.dbbzprojectnature</nature>" >>$idzProjectFile
+                    echo "    </natures>" >>$idzProjectFile
+                    echo "</projectDescription>" >>$idzProjectFile
 					rc=$?
 				fi
 

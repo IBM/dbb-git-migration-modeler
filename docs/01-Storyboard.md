@@ -47,7 +47,7 @@ The purpose of this stage is to generate properties and property files that are 
 
 This phase will generate the necessary properties and files required to leverage the [Language Configuration Source definition](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=index-task-language#languageconfigurationsource) available in zBuilder, or the [Language configuration mapping](https://github.com/IBM/dbb-zappbuild/blob/main/docs/FilePropertyManagement.md#language-configuration-mapping) feature available in [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/), depending on the chosen build framework. The build engineering team needs to review and make the generated configurations available in the build framework.
 
-At the application level, the corresponding language configuration mappings are generated and inserted in the repository's `config` folder when zBuilder is used, or the [application-conf](https://github.com/IBM/dbb-zappbuild/tree/main/samples/application-conf) folder when zAppBuild is used.
+At the application level, the corresponding language configuration mappings are generated and inserted in the repository's folder when zBuilder is used, or the [application-conf](https://github.com/IBM/dbb-zappbuild/tree/main/samples/application-conf) folder of each repository when zAppBuild is used.
 
 ## The Initialization phase
 
