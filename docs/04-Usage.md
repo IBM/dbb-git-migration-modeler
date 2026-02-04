@@ -50,7 +50,7 @@ The outcome of this script are subfolders created in the `DBB_MODELER_APPLICATIO
 The script uses the type of each artifact to generate (or reuse if already existing) Language Configurations, as configured in the [Types Configurations file](../samples/typesConfigurations.yaml).
    * **Outputs**
       * When using *DBB zBuilder*:
-         * These Language Configurations files are turned into DBB zBuilder's Language Configuration definition files, placed into a `config` subfolder in each Git repository.  
+         * The Types Configurations files turn into DBB zBuilder's Language Configuration definition files, placed into a `build-configuration` in the working directory of DBB Git Migration Modeler. These files should be reviewed by the build engineering team and integrated into the managed zBuilder instance.
          * A `dbb-app.yaml` file is created within each repository's folder in the `DBB_MODELER_APPLICATION_DIR` folder, and contains configuration to enable the use of Language Configurations. The generated `dbb-app.yaml` file also contains configuration to enable impact analysis and dependency search paths for common types of artifact (Cobol, Assembler and LinkEdit artifacts). Additional manual configuration might be required for other types of artifacts.
       * When using *dbb-zAppBuild*:
          * These Language Configurations files are placed into a copy of the *dbb-zAppBuild* instance pointed by the `DBB_ZAPPBUILD` variable, the copy being stored in the `DBB_MODELER_APPLICATION_DIR` folder.  
