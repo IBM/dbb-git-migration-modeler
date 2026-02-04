@@ -16,7 +16,7 @@ For each repository path, the `artifactsType` property is used during [the Asses
 Only artifacts of types `Program` or `Include File` will be included in the analysis.
 It is recommended to keep the current settings defined in the provided [Repository Paths Mapping file](../samples/repositoryPathsMapping.yaml) for the `artifactsType` property.
 
-3. The [Types file](../samples/types.yaml) (YAML format) lists the dataset members and their associated type (like a language definition), as typically described in the legacy SCM tool. This YAML file is optional, and should be built with an SCM-provided utility or from an SCM-provided report. Types mapping are meant to be used only for programs or artifacts that require a build process, not for Includes Files.  
+3. The [Types Mapping file](../samples/typesMapping.yaml) (YAML format) lists the dataset members and their associated type (like a language definition), as typically described in the legacy SCM tool. This YAML file is optional, although being an important input file to the extraction phase, and should be built with an SCM-provided utility or from an SCM-provided report. Types mapping are meant to be used only for programs or artifacts that require a build process, not for Includes Files.  
 Entries of this file are composed of the artifact's name which is the fully-qualified dataset member and a type.
 
 During the [Framing phase](01-Storyboard.md#the-framing-phase), the *type* information can be used as a criteria to dispatch files.
@@ -306,7 +306,7 @@ datasetMembers:
             value: "AMODE(31)"
 ~~~~
 
-Where *CBLCICSDB2*, *CBLDB2* and *CBLCICS* represent configurations with specific properties. These types should be defined in the [Types Configurations file](../samples/typesConfigurations.yaml) accordingly, for instance:
+Where *CBLCICSDB2*, *CBLDB2* and *CBLCICS* represent configurations with specific properties. These types need to be defined in the [Types Configurations file](../samples/typesConfigurations.yaml) accordingly, for instance:
 
 ~~~~YAML
 typesConfigurations:
@@ -342,7 +342,7 @@ typesConfigurations:
         value: "true"
 ~~~~
 
-With this configuration, the [Property Generation script](../src/scripts/utils/4-generateProperties.sh) will generate Language Configurations for each of these types.
+With this configuration, the [Property Generation script](../src/scripts/utils/4-generateProperties.sh) will generate Language Configurations for each of these types and add the corresponding mappings to the application-level configuration for each repository.
 
 # Working with the DBB Git Migration Modeler utility
 
