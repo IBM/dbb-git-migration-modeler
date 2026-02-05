@@ -1,9 +1,31 @@
-- typeConfiguration: "CBLCICSDB2"
-  cobol_compileParms: "LIB,SOURCE,CICS,SQL"
-  isCICS: true
-  isSQL: true
-  cobol_linkedit: true
-- typeConfiguration: "PLICICS"
-  pli_compileParms: "PP(INCLUDE('ID(++INCLUDE)'))"
-  pli_linkedit: true
-  isCICS: true
+## Sample Types Configurations for zBuilder
+##
+##
+## This file contains configuration allowing Migration Modeler to generate zBuilder Language configurations
+##   that define a fixed build configuration for a set of mapped files.
+## 
+##   Please read through https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=index-task-language#languageconfigurationsource
+##
+## Important notice: dbb-zappbuild is using different property names than zBuilder
+## e.g., Compiler options for Cobol in dbb-zappbuild is called cobol_compileParms
+##
+ 
+typesConfigurations:
+  - typeConfiguration: "CBLCICSDB2"
+    variables:
+      - name: "compileParms"
+        value: "LIB,SOURCE,CICS,SQL"
+      - name: "IS_CICS"
+        value: "true"
+      - name: "IS_SQL"
+        value: "true"
+      - name: "doLinkEdit"
+        value: "false"
+  - typeConfiguration: "PLICICS"
+    variables:
+      - name: "compileParms"
+        value: "PP(INCLUDE('ID(++INCLUDE)'))"
+      - name: "doLinkEdit"
+        value: "true"
+      - name: "IS_CICS"
+        value: "true"

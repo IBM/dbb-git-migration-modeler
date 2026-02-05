@@ -97,7 +97,7 @@ if [ $rc -eq 0 ]; then
 	if [[ $INTERACTIVE_RUN == "true" ]]; then
 		read -p "Do you want to clean the working directory '$DBB_MODELER_WORK' (Y/n): " variable
 	else
-		variable="N"
+		variable="Y"
 	fi
 
 	if [[ -z "$variable" || $variable =~ ^[Yy]$ ]]; then
@@ -111,10 +111,14 @@ if [ $rc -eq 0 ]; then
 			rm -rf $DBB_MODELER_APPLICATION_DIR
 			echo "[INFO] Removed '${DBB_MODELER_APPLICATION_DIR}' folder"
 		fi
-		if [ -d $DBB_MODELER_LOGS ]; then
-			rm -rf $DBB_MODELER_LOGS
-			echo "[INFO] Removed '${DBB_MODELER_LOGS}' folder"
-		fi
+        if [ -d $DBB_MODELER_LOGS ]; then
+            rm -rf $DBB_MODELER_LOGS
+            echo "[INFO] Removed '${DBB_MODELER_LOGS}' folder"
+        fi
+        if [ -d $DBB_MODELER_BUILD_CONFIGURATION ]; then
+            rm -rf $DBB_MODELER_BUILD_CONFIGURATION
+            echo "[INFO] Removed '${DBB_MODELER_BUILD_CONFIGURATION}' folder"
+        fi
 	fi
 fi
 
@@ -187,7 +191,7 @@ if [ $rc -eq 0 ]; then
 	echo
 	echo "[PHASE] Generate build configuration"
 	if [[ $INTERACTIVE_RUN == "true" ]]; then
-		read -p "Do you want to generate the dbb-zAppBuild configurations (Y/n): " variable
+		read -p "Do you want to generate the $BUILD_FRAMEWORK Configuration files (Y/n): " variable
 	else
 		variable="Y"
 	fi

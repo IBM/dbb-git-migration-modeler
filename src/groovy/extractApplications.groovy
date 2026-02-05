@@ -61,7 +61,7 @@ unassignedApplicationMappingConfiguration.application = "UNASSIGNED"
 @Field HashSet<String> filteredApplications = new HashSet<String>()
 
 // Types Configurations
-@Field ArrayList typesMapping
+@Field def typesMapping
 // script properties
 @Field Properties props = new Properties()
 @Field repositoryPathsMapping
@@ -101,9 +101,16 @@ if (props.REPOSITORY_PATH_MAPPING_FILE) {
 // Read the Types from file
 logger.logMessage("** Reading the Type Mapping definition.")
 if (props.APPLICATION_TYPES_MAPPING) {
-	typesMapping = loadTypesMapping(props.APPLICATION_TYPES_MAPPING)
+    File typeMappingFile = new File(props.APPLICATION_TYPES_MAPPING)
+    if (!typeMappingFile.exists()) {
+        logger.logMessage("*! [WARNING] The Types Mapping file '$props.APPLICATION_TYPES_MAPPING' was not found.")
+    } else {        
+        def yamlSlurper = new groovy.yaml.YamlSlurper()
+        typesMapping = yamlSlurper.parse(typeMappingFile).datasetMembers
+    }
+	
 } else {
-	logger.logMessage("*! [WARNING] No Types File provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
+	logger.logMessage("*! [WARNING] No Types Mapping file provided. The 'UNKNOWN' type will be assigned by default to all artifacts.")
 }
 
 logger.logMessage("** Loading the provided Applications Mapping files.")
@@ -388,7 +395,7 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 			(scannedLanguage, scannedFileType) = scanDatasetMember(constructDatasetForZFileOperation(dataset, member))
 		}
 		def lastQualifier = getLastQualifier(dataset)
-		def memberType = getTypeForDatasetMember(typesMapping, datasetMember)
+		def memberType = getTypeForDatasetMember(datasetMember)
 		// Identifying the matching Repository Path
 		// based on 1) the scan result if enabled
 		// 2) the type if set
@@ -575,27 +582,15 @@ def estimateDatasetMemberSize(String datasetMember) {
 	}
 }
 
-// Reads a HashMap from the MEMBER_TYPE_MAPPING file with comma separator (',') and returns it
-def loadTypesMapping(String APPLICATION_TYPES_MAPPING) {
-    File typeMappingFile = new File(APPLICATION_TYPES_MAPPING)
-    if (!typeMappingFile.exists()) {
-        logger.logMessage("*! [WARNING] The Types Mapping file '$APPLICATION_TYPES_MAPPING' was not found.")
-        return null
-    } else {        
-        def yamlSlurper = new groovy.yaml.YamlSlurper()
-        return yamlSlurper.parse(typeMappingFile).datasetMembers
-    }
-}
-
-def getTypeForDatasetMember(ArrayList types, String datasetMember) {
-    if (!types) {
+def getTypeForDatasetMember(String datasetMember) {
+    if (!typesMapping) {
         return "UNKNOWN"
     } else {
-        def foundType = types.find { type ->
-          type.datasetMember.equalsIgnoreCase(datasetMember)
+        def foundType = typesMapping.find { typeMapping ->
+          typeMapping.datasetMember.equalsIgnoreCase(datasetMember)
         } 
         if (foundType) {
-            return foundType.types.sort().join("-")
+            return foundType.type
         } else {
             return "UNKNOWN"
         }

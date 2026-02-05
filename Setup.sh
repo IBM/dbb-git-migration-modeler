@@ -80,6 +80,7 @@ fi
 DBB_MODELER_APPCONFIG_DIR="$DBB_MODELER_WORK/work/migration-configuration"
 DBB_MODELER_APPLICATION_DIR="$DBB_MODELER_WORK/repositories"
 DBB_MODELER_LOGS="$DBB_MODELER_WORK/logs"
+DBB_MODELER_BUILD_CONFIGURATION="$DBB_MODELER_WORK/build-configuration"
 DBB_MODELER_DEFAULT_APP_REPO_CONFIG="$DBB_MODELER_WORK/config/default-app-repo-config-files"
 
 # Migration Modeler MetaDataStore configuration
@@ -112,6 +113,11 @@ SCAN_DATASET_MEMBERS=false
 SCAN_DATASET_MEMBERS_ENCODING=IBM-1047
 # Enable scanning of control transfers (e.g. CALL)
 SCAN_CONTROL_TRANSFERS=true
+# Build Framework to use. Either zBuilder or zAppBuild
+# Default to zBuilder
+BUILD_FRAMEWORK=
+# Location of zBuilder configured instance
+DBB_ZBUILDER=/var/dbb/zBuilder
 # Reference to zAppBuild
 DBB_ZAPPBUILD=/var/dbb/dbb-zappbuild
 # Reference to DBB Community Repo
@@ -150,10 +156,40 @@ PIPELINE_USER_GROUP=JENKINSG
 PIPELINE_CI=
 
 # Arrays for configuration parameters, that will the Setup script will prompt the user for
-path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_DEFAULT_APP_REPO_CONFIG)
-input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_TYPES_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_CONTROL_TRANSFERS SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_ZAPPBUILD DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH MOVE_FILES_FLAG PUBLISH_ARTIFACTS INTERACTIVE_RUN)
+path_config_array=(DBB_MODELER_APPCONFIG_DIR DBB_MODELER_APPLICATION_DIR DBB_MODELER_LOGS DBB_MODELER_BUILD_CONFIGURATION DBB_MODELER_DEFAULT_APP_REPO_CONFIG)
+input_array=(DBB_MODELER_APPMAPPINGS_DIR REPOSITORY_PATH_MAPPING_FILE APPLICATION_TYPES_MAPPING TYPE_CONFIGURATIONS_FILE APPLICATION_ARTIFACTS_HLQ SCAN_CONTROL_TRANSFERS SCAN_DATASET_MEMBERS SCAN_DATASET_MEMBERS_ENCODING DBB_COMMUNITY_REPO APPLICATION_DEFAULT_BRANCH MOVE_FILES_FLAG PUBLISH_ARTIFACTS INTERACTIVE_RUN)
 # Publishing options that are conditionally prompted, if PUBLISH_ARTIFACTS=true
 publishing_options=(ARTIFACT_REPOSITORY_SERVER_URL ARTIFACT_REPOSITORY_USER ARTIFACT_REPOSITORY_PASSWORD ARTIFACT_REPOSITORY_SUFFIX PIPELINE_USER PIPELINE_USER_GROUP)
+
+echo
+# Specify DBB Build Framework and related options
+# Ask until a valid option was provided
+while [ -z $BUILD_FRAMEWORK ]; do
+	echo "[SETUP] Specifying the Build Framework configuration"
+	read -p "Specify the Build Framework to use with DBB ("zBuilder" or "zAppBuild") [default: zBuilder]: " variable
+	if [ "$variable" ]; then
+		BUILD_FRAMEWORK="${variable}"
+	else 
+		BUILD_FRAMEWORK="zBuilder"
+	fi
+	if [ "${BUILD_FRAMEWORK}" != "zBuilder" ] && [ "${BUILD_FRAMEWORK}" != "zAppBuild" ]; then
+		echo "[WARNING] The Build Framework can only be 'zBuilder' or 'zAppBuild'. Please provide a valid option."
+		BUILD_FRAMEWORK=""
+	fi
+done
+
+if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
+	read -p "Specify the location of the DBB zBuilder installation [default: ${DBB_ZBUILDER}]: " variable
+	if [ "$variable" ]; then
+		declare DBB_ZBUILDER="${variable}"
+	fi
+fi
+if [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
+	read -p "Specify the location of the zAppBuild installation [default: ${DBB_ZAPPBUILD}]: " variable
+	if [ "$variable" ]; then
+		declare DBB_ZAPPBUILD="${variable}"
+	fi
+fi
 
 echo
 echo "[SETUP] DBB Metadatastore type and configuration"
@@ -163,22 +199,22 @@ if [ "$variable" ]; then
 fi
 
 if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
-	read -p "Specify the location of the DBB File Metadatastore [default: ${DBB_MODELER_FILE_METADATA_STORE_DIR}]: " variable
+	read -p "Specify the location of the DBB File MetadataStore [default: ${DBB_MODELER_FILE_METADATA_STORE_DIR}]: " variable
 	if [ "$variable" ]; then
 		declare DBB_MODELER_FILE_METADATA_STORE_DIR="${variable}"
 	fi
 fi
 
 if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
-	read -p "Specify the location of the DBB Db2 Metadatastore configuration file [default: ${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}]: " variable
+	read -p "Specify the location of the DBB Db2 MetadataStore configuration file [default: ${DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE}]: " variable
 	if [ "$variable" ]; then
 		declare DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE="${variable}"
 	fi
-	read -p "Specify the DBB Db2 Metadatastore JDBC User ID [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}]: " variable
+	read -p "Specify the DBB Db2 MetadataStore JDBC User ID [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}]: " variable
 	if [ "$variable" ]; then
 		declare DBB_MODELER_DB2_METADATASTORE_JDBC_ID="${variable}"
 	fi
-	read -p "Specify the DBB Db2 Metadatastore JDBC Password File [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE} ]: " variable
+	read -p "Specify the DBB Db2 MetadataStore JDBC Password File [default: ${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE} ]: " variable
 	if [ "$variable" ]; then
 		declare DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE="${variable}"
 	fi
@@ -285,6 +321,12 @@ if [ $rc -eq 0 ]; then
 	echo "DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 
 	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "# DBB Git Migration Modeler - Build Framework configuration" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "BUILD_FRAMEWORK=${BUILD_FRAMEWORK}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_ZBUILDER=${DBB_ZBUILDER}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+	echo "DBB_ZAPPBUILD=${DBB_ZAPPBUILD}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
+
+	echo "" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	echo "# DBB Git Migration Modeler configuration parms" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	for config in ${input_array[@]}; do
 		echo "${config}=${!config}" >>$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE_FOLDER/$DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
@@ -342,7 +384,7 @@ if [ $rc -eq 0 ]; then
 	echo "Tailor the following input files prior to using the DBB Git Migration Modeler:"
 	echo "  - Applications Mapping file(s) located in $DBB_MODELER_APPMAPPINGS_DIR"
 	echo "  - $REPOSITORY_PATH_MAPPING_FILE"
-	echo "  - $APPLICATION_MEMBER_TYPE_MAPPING (optional)"
+	echo "  - $APPLICATION_TYPES_MAPPING (optional)"
 	echo "  - $TYPE_CONFIGURATIONS_FILE (optional)"
 	echo
 	echo "Once tailored, run the following command:"

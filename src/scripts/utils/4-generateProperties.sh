@@ -69,7 +69,7 @@ if [ $rc -eq 0 ]; then
 	dir=$(dirname "$0")
 	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
- 	# Adding commas before and after the passed parm, to search for pattern including commas
+	# Adding commas before and after the passed parm, to search for pattern including commas
     APPLICATION_FILTER=",${APPLICATION_FILTER},"
 
 	cd $DBB_MODELER_APPLICATION_DIR
@@ -80,7 +80,13 @@ if [ $rc -eq 0 ]; then
 			echo "*******************************************************************"
 			echo "Generate properties for application '$applicationDir'"
 			echo "*******************************************************************"
-			CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/generateProperties.groovy \
+			if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
+				GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZBuilderProperties.groovy
+			elif [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
+				GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZAppBuildProperties.groovy
+			fi
+					
+			CMD="$DBB_HOME/bin/groovyz $GENERATE_PROPERTIES_SCRIPT \
 				--configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
 				--application $applicationDir \
 				--logFile $DBB_MODELER_LOGS/4-$applicationDir-generateProperties.log"

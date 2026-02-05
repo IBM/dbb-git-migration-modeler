@@ -46,12 +46,15 @@ The outcome of this script are subfolders created in the `DBB_MODELER_APPLICATIO
       As it contains additional details, we refer to is as the final Application Descriptor file.
       * The DBB Migration mapping file is also updated accordingly, if files were moved from an owning application to another. 
 
-4. [Property Generation script (4-generateProperties.sh)](../src/scripts/utils/4-generateProperties.sh): this script generates build properties for [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/).
-This step is optional.  
+4. [Property Generation script (4-generateProperties.sh)](../src/scripts/utils/4-generateProperties.sh): this script generates build properties for [DBB zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=building-zos-applications-zbuilder) or [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/), depending on the chosen configuration. This step is optional, but it is highly encouraged to leverage the automatic generation of build properties, to facilitate the migration to Git.  
 The script uses the type of each artifact to generate (or reuse if already existing) Language Configurations, as configured in the [Types Configurations file](../samples/typesConfigurations.yaml).
    * **Outputs**
-      * These Language Configurations files are placed into a copy of the dbb-zAppBuild instance pointed by the `DBB_ZAPPBUILD` variable, the copy being stored in the `DBB_MODELER_APPLICATION_DIR` folder.  
-      * An **application-conf** folder is created within each application's subfolder in the `DBB_MODELER_APPLICATION_DIR` folder, and contains customized files to enable the use of the Language Configurations. A manual step needs to be performed to completely enable this configuration.
+      * When using *DBB zBuilder*:
+         * The Types Configurations files turn into DBB zBuilder's Language Configuration definition files, placed into a `build-configuration` in the working directory of DBB Git Migration Modeler. These files should be reviewed by the build engineering team and integrated into the managed zBuilder instance.
+         * A `dbb-app.yaml` file is created within each repository's folder in the `DBB_MODELER_APPLICATION_DIR` folder, and contains configuration to enable the use of Language Configurations. The generated `dbb-app.yaml` file also contains configuration to enable impact analysis and dependency search paths for common types of artifact (Cobol, Assembler and LinkEdit artifacts). Additional manual configuration might be required for other types of artifacts.
+      * When using *dbb-zAppBuild*:
+         * These Language Configurations files are placed into a copy of the *dbb-zAppBuild* instance pointed by the `DBB_ZAPPBUILD` variable, the copy being stored in the `DBB_MODELER_APPLICATION_DIR` folder.  
+         * An **application-conf** folder is created within each application's subfolder in the `DBB_MODELER_APPLICATION_DIR` folder, and contains customized files to enable the use of the Language Configurations. A manual step needs to be performed to completely enable this configuration.
 
 5. [Init Application Repositories script (5-initApplicationRepositories.sh)](../src/scripts/utils/5-initApplicationRepositories.sh) is provided to perform the following steps for each application:
    1. Initialization of the Git repository using a default `.gitattributes` file, creation of a customized `zapp.yaml` file, creation of a customized `.project` file, creation of a `baselineReference.config` file, copy of the pipeline definitions, creation of a baseline tag and commit of the changes,
@@ -79,163 +82,162 @@ Execution of the command:
 
 Output log:
 ~~~~  
-[INFO] /usr/lpp/dbb//bin/groovyz /u/dbehm/git/dbb-git-migration-modeler/src/groovy/extractApplications.groovy 		--configFile /u/dbehm/git/dbb-git-migration-modeler/DBB_GIT_MIGRATION_MODELER-2025-09-17.151101.config 		--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/1-extractApplications.log
-2025-09-17 15:43:53.117 ** Script configuration:
-2025-09-17 15:43:53.154 	DBB_MODELER_APPCONFIG_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration
-2025-09-17 15:43:53.154 	REPOSITORY_PATH_MAPPING_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/config/repositoryPathsMapping.yaml
-2025-09-17 15:43:53.155 	configurationFilePath -> /u/dbehm/git/dbb-git-migration-modeler/DBB_GIT_MIGRATION_MODELER-2025-09-17.151101.config
-2025-09-17 15:43:53.155 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
-2025-09-17 15:43:53.156 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/1-extractApplications.log
-2025-09-17 15:43:53.156 	DBB_MODELER_APPMAPPINGS_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/config/application-mappings
-2025-09-17 15:43:53.156 	APPLICATION_MEMBER_TYPE_MAPPING -> /u/ibmuser/dbb-git-migration-modeler-work/config/types/types.txt
-2025-09-17 15:43:53.157 	SCAN_DATASET_MEMBERS_ENCODING -> IBM-1047
-2025-09-17 15:43:53.157 	SCAN_DATASET_MEMBERS -> false
-2025-09-17 15:43:53.158 ** Reading the Repository Layout Mapping definition.
-2025-09-17 15:43:53.372 ** Reading the Type Mapping definition.
-2025-09-17 15:43:53.388 ** Loading the provided Applications Mapping files.
-2025-09-17 15:43:53.394 *** Importing 'applicationsMapping.yaml'
-2025-09-17 15:43:53.409 ** Iterating through the provided datasets and mapped applications.
-2025-09-17 15:43:53.436 **** Found 'DBEHM.MIG.BMS' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA'
-2025-09-17 15:43:53.511 ***** 'DBEHM.MIG.BMS(EPSMLIS)' - Mapped Application: UNASSIGNED
-2025-09-17 15:43:53.533 ***** 'DBEHM.MIG.BMS(EPSMORT)' - Mapped Application: UNASSIGNED
-2025-09-17 15:43:53.551 ***** 'DBEHM.MIG.BMS(SSMAP)' - Mapped Application: GenApp
-2025-09-17 15:43:53.555 **** Found 'DBEHM.MIG.COPY' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA'
-2025-09-17 15:43:53.566 ***** 'DBEHM.MIG.COPY(ABNDINFO)' - Mapped Application: CBSA
-2025-09-17 15:43:53.570 ***** 'DBEHM.MIG.COPY(ACCDB2)' - Mapped Application: CBSA
-2025-09-17 15:43:53.576 ***** 'DBEHM.MIG.COPY(ACCOUNT)' - Mapped Application: CBSA
-2025-09-17 15:43:53.580 ***** 'DBEHM.MIG.COPY(ACCTCTRL)' - Mapped Application: CBSA
-2025-09-17 15:43:53.583 ***** 'DBEHM.MIG.COPY(BNK1ACC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.587 ***** 'DBEHM.MIG.COPY(BNK1CAM)' - Mapped Application: CBSA
-2025-09-17 15:43:53.591 ***** 'DBEHM.MIG.COPY(BNK1CCM)' - Mapped Application: CBSA
-2025-09-17 15:43:53.594 ***** 'DBEHM.MIG.COPY(BNK1CDM)' - Mapped Application: CBSA
-2025-09-17 15:43:53.597 ***** 'DBEHM.MIG.COPY(BNK1DAM)' - Mapped Application: CBSA
-2025-09-17 15:43:53.600 ***** 'DBEHM.MIG.COPY(BNK1DCM)' - Mapped Application: CBSA
-2025-09-17 15:43:53.604 ***** 'DBEHM.MIG.COPY(BNK1MAI)' - Mapped Application: CBSA
-2025-09-17 15:43:53.607 ***** 'DBEHM.MIG.COPY(BNK1TFM)' - Mapped Application: CBSA
-2025-09-17 15:43:53.610 ***** 'DBEHM.MIG.COPY(BNK1UAM)' - Mapped Application: CBSA
-2025-09-17 15:43:53.614 ***** 'DBEHM.MIG.COPY(CONSENT)' - Mapped Application: CBSA
-2025-09-17 15:43:53.617 ***** 'DBEHM.MIG.COPY(CONSTAPI)' - Mapped Application: CBSA
-2025-09-17 15:43:53.620 ***** 'DBEHM.MIG.COPY(CONSTDB2)' - Mapped Application: CBSA
-2025-09-17 15:43:53.624 ***** 'DBEHM.MIG.COPY(CONTDB2)' - Mapped Application: CBSA
-2025-09-17 15:43:53.627 ***** 'DBEHM.MIG.COPY(CREACC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.632 ***** 'DBEHM.MIG.COPY(CRECUST)' - Mapped Application: CBSA
-2025-09-17 15:43:53.635 ***** 'DBEHM.MIG.COPY(CUSTCTRL)' - Mapped Application: CBSA
-2025-09-17 15:43:53.638 ***** 'DBEHM.MIG.COPY(CUSTOMER)' - Mapped Application: CBSA
-2025-09-17 15:43:53.643 ***** 'DBEHM.MIG.COPY(DATASTR)' - Mapped Application: UNASSIGNED
-2025-09-17 15:43:53.648 ***** 'DBEHM.MIG.COPY(DELACC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.651 ***** 'DBEHM.MIG.COPY(DELCUS)' - Mapped Application: CBSA
-2025-09-17 15:43:53.655 ***** 'DBEHM.MIG.COPY(GETCOMPY)' - Mapped Application: CBSA
-2025-09-17 15:43:53.658 ***** 'DBEHM.MIG.COPY(GETSCODE)' - Mapped Application: CBSA
-2025-09-17 15:43:53.661 ***** 'DBEHM.MIG.COPY(INQACC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.665 ***** 'DBEHM.MIG.COPY(INQACCCU)' - Mapped Application: CBSA
-2025-09-17 15:43:53.668 ***** 'DBEHM.MIG.COPY(INQCUST)' - Mapped Application: CBSA
-2025-09-17 15:43:53.670 ***** 'DBEHM.MIG.COPY(LGCMAREA)' - Mapped Application: GenApp
-2025-09-17 15:43:53.673 ***** 'DBEHM.MIG.COPY(LGCMARED)' - Mapped Application: GenApp
-2025-09-17 15:43:53.676 ***** 'DBEHM.MIG.COPY(LGPOLICY)' - Mapped Application: GenApp
-2025-09-17 15:43:53.679 ***** 'DBEHM.MIG.COPY(LINPUT)' - Mapped Application: RetirementCalculator
-2025-09-17 15:43:53.682 ***** 'DBEHM.MIG.COPY(PAYDBCR)' - Mapped Application: UNASSIGNED
-2025-09-17 15:43:53.686 ***** 'DBEHM.MIG.COPY(PROCDB2)' - Mapped Application: CBSA
-2025-09-17 15:43:53.688 ***** 'DBEHM.MIG.COPY(PROCTRAN)' - Mapped Application: CBSA
-2025-09-17 15:43:53.691 ***** 'DBEHM.MIG.COPY(SORTCODE)' - Mapped Application: UNASSIGNED
-2025-09-17 15:43:53.694 ***** 'DBEHM.MIG.COPY(UPDACC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.697 ***** 'DBEHM.MIG.COPY(UPDCUST)' - Mapped Application: CBSA
-2025-09-17 15:43:53.699 ***** 'DBEHM.MIG.COPY(XFRFUN)' - Mapped Application: CBSA
-2025-09-17 15:43:53.701 **** Found 'DBEHM.MIG.COBOL' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA'
-2025-09-17 15:43:53.706 ***** 'DBEHM.MIG.COBOL(ABNDPROC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.707 ***** 'DBEHM.MIG.COBOL(ACCLOAD)' - Mapped Application: CBSA
-2025-09-17 15:43:53.708 ***** 'DBEHM.MIG.COBOL(ACCOFFL)' - Mapped Application: CBSA
-2025-09-17 15:43:53.710 ***** 'DBEHM.MIG.COBOL(ACCTCTRL)' - Mapped Application: CBSA
-2025-09-17 15:43:53.711 ***** 'DBEHM.MIG.COBOL(BANKDATA)' - Mapped Application: CBSA
-2025-09-17 15:43:53.712 ***** 'DBEHM.MIG.COBOL(BNKMENU)' - Mapped Application: CBSA
-2025-09-17 15:43:53.713 ***** 'DBEHM.MIG.COBOL(BNK1CAC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.715 ***** 'DBEHM.MIG.COBOL(BNK1CCA)' - Mapped Application: CBSA
-2025-09-17 15:43:53.716 ***** 'DBEHM.MIG.COBOL(BNK1CCS)' - Mapped Application: CBSA
-2025-09-17 15:43:53.717 ***** 'DBEHM.MIG.COBOL(BNK1CRA)' - Mapped Application: CBSA
-2025-09-17 15:43:53.718 ***** 'DBEHM.MIG.COBOL(BNK1DAC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.719 ***** 'DBEHM.MIG.COBOL(BNK1DCS)' - Mapped Application: CBSA
-2025-09-17 15:43:53.721 ***** 'DBEHM.MIG.COBOL(BNK1TFN)' - Mapped Application: CBSA
-2025-09-17 15:43:53.722 ***** 'DBEHM.MIG.COBOL(BNK1UAC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.723 ***** 'DBEHM.MIG.COBOL(CONSENT)' - Mapped Application: CBSA
-2025-09-17 15:43:53.724 ***** 'DBEHM.MIG.COBOL(CONSTTST)' - Mapped Application: CBSA
-2025-09-17 15:43:53.725 ***** 'DBEHM.MIG.COBOL(CRDTAGY1)' - Mapped Application: CBSA
-2025-09-17 15:43:53.726 ***** 'DBEHM.MIG.COBOL(CRDTAGY2)' - Mapped Application: CBSA
-2025-09-17 15:43:53.728 ***** 'DBEHM.MIG.COBOL(CRDTAGY3)' - Mapped Application: CBSA
-2025-09-17 15:43:53.729 ***** 'DBEHM.MIG.COBOL(CRDTAGY4)' - Mapped Application: CBSA
-2025-09-17 15:43:53.730 ***** 'DBEHM.MIG.COBOL(CRDTAGY5)' - Mapped Application: CBSA
-2025-09-17 15:43:53.732 ***** 'DBEHM.MIG.COBOL(CREACC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.733 ***** 'DBEHM.MIG.COBOL(CRECUST)' - Mapped Application: CBSA
-2025-09-17 15:43:53.734 ***** 'DBEHM.MIG.COBOL(CUSTCTRL)' - Mapped Application: CBSA
-2025-09-17 15:43:53.736 ***** 'DBEHM.MIG.COBOL(DBCRFUN)' - Mapped Application: CBSA
-2025-09-17 15:43:53.737 ***** 'DBEHM.MIG.COBOL(DELACC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.739 ***** 'DBEHM.MIG.COBOL(DELCUS)' - Mapped Application: CBSA
-2025-09-17 15:43:53.740 ***** 'DBEHM.MIG.COBOL(DPAYAPI)' - Mapped Application: CBSA
-2025-09-17 15:43:53.742 ***** 'DBEHM.MIG.COBOL(DPAYTST)' - Mapped Application: CBSA
-2025-09-17 15:43:53.744 ***** 'DBEHM.MIG.COBOL(EBUD0RUN)' - Mapped Application: RetirementCalculator
-2025-09-17 15:43:53.746 ***** 'DBEHM.MIG.COBOL(EBUD01)' - Mapped Application: RetirementCalculator
-2025-09-17 15:43:53.748 ***** 'DBEHM.MIG.COBOL(EBUD02)' - Mapped Application: RetirementCalculator
-2025-09-17 15:43:53.750 ***** 'DBEHM.MIG.COBOL(EBUD03)' - Mapped Application: RetirementCalculator
-2025-09-17 15:43:53.751 ***** 'DBEHM.MIG.COBOL(GETCOMPY)' - Mapped Application: CBSA
-2025-09-17 15:43:53.753 ***** 'DBEHM.MIG.COBOL(GETSCODE)' - Mapped Application: CBSA
-2025-09-17 15:43:53.754 ***** 'DBEHM.MIG.COBOL(INQACC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.756 ***** 'DBEHM.MIG.COBOL(INQACCCU)' - Mapped Application: CBSA
-2025-09-17 15:43:53.757 ***** 'DBEHM.MIG.COBOL(INQCUST)' - Mapped Application: CBSA
-2025-09-17 15:43:53.759 ***** 'DBEHM.MIG.COBOL(LGACDB01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.760 ***** 'DBEHM.MIG.COBOL(LGACDB02)' - Mapped Application: GenApp
-2025-09-17 15:43:53.762 ***** 'DBEHM.MIG.COBOL(LGACUS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.763 ***** 'DBEHM.MIG.COBOL(LGACVS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.765 ***** 'DBEHM.MIG.COBOL(LGAPDB01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.767 ***** 'DBEHM.MIG.COBOL(LGAPOL01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.769 ***** 'DBEHM.MIG.COBOL(LGAPVS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.771 ***** 'DBEHM.MIG.COBOL(LGASTAT1)' - Mapped Application: GenApp
-2025-09-17 15:43:53.772 ***** 'DBEHM.MIG.COBOL(LGDPDB01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.774 ***** 'DBEHM.MIG.COBOL(LGDPOL01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.775 ***** 'DBEHM.MIG.COBOL(LGDPVS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.777 ***** 'DBEHM.MIG.COBOL(LGICDB01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.778 ***** 'DBEHM.MIG.COBOL(LGICUS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.780 ***** 'DBEHM.MIG.COBOL(LGICVS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.782 ***** 'DBEHM.MIG.COBOL(LGIPDB01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.783 ***** 'DBEHM.MIG.COBOL(LGIPOL01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.785 ***** 'DBEHM.MIG.COBOL(LGIPVS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.786 ***** 'DBEHM.MIG.COBOL(LGSETUP)' - Mapped Application: GenApp
-2025-09-17 15:43:53.788 ***** 'DBEHM.MIG.COBOL(LGSTSQ)' - Mapped Application: GenApp
-2025-09-17 15:43:53.789 ***** 'DBEHM.MIG.COBOL(LGTESTC1)' - Mapped Application: GenApp
-2025-09-17 15:43:53.791 ***** 'DBEHM.MIG.COBOL(LGTESTP1)' - Mapped Application: GenApp
-2025-09-17 15:43:53.793 ***** 'DBEHM.MIG.COBOL(LGTESTP2)' - Mapped Application: GenApp
-2025-09-17 15:43:53.794 ***** 'DBEHM.MIG.COBOL(LGTESTP3)' - Mapped Application: GenApp
-2025-09-17 15:43:53.796 ***** 'DBEHM.MIG.COBOL(LGTESTP4)' - Mapped Application: GenApp
-2025-09-17 15:43:53.797 ***** 'DBEHM.MIG.COBOL(LGUCDB01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.799 ***** 'DBEHM.MIG.COBOL(LGUCUS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.800 ***** 'DBEHM.MIG.COBOL(LGUCVS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.802 ***** 'DBEHM.MIG.COBOL(LGUPDB01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.804 ***** 'DBEHM.MIG.COBOL(LGUPOL01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.807 ***** 'DBEHM.MIG.COBOL(LGUPVS01)' - Mapped Application: GenApp
-2025-09-17 15:43:53.808 ***** 'DBEHM.MIG.COBOL(LGWEBST5)' - Mapped Application: GenApp
-2025-09-17 15:43:53.810 ***** 'DBEHM.MIG.COBOL(OLDACDB1)' - Mapped Application: UNASSIGNED
-2025-09-17 15:43:53.814 ***** 'DBEHM.MIG.COBOL(OLDACDB2)' - Mapped Application: UNASSIGNED
-2025-09-17 15:43:53.816 ***** 'DBEHM.MIG.COBOL(PROLOAD)' - Mapped Application: CBSA
-2025-09-17 15:43:53.818 ***** 'DBEHM.MIG.COBOL(PROOFFL)' - Mapped Application: CBSA
-2025-09-17 15:43:53.819 ***** 'DBEHM.MIG.COBOL(UPDACC)' - Mapped Application: CBSA
-2025-09-17 15:43:53.821 ***** 'DBEHM.MIG.COBOL(UPDCUST)' - Mapped Application: CBSA
-2025-09-17 15:43:53.823 ***** 'DBEHM.MIG.COBOL(XFRFUN)' - Mapped Application: CBSA
-2025-09-17 15:43:53.848 ** Generating Applications Configurations files.
-2025-09-17 15:43:53.849 ** Generating Configuration files for application UNASSIGNED.
-2025-09-17 15:43:53.927 	Created DBB Migration Utility mapping file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/UNASSIGNED.mapping
-2025-09-17 15:43:53.987 	Created Application Description file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/UNASSIGNED.yml
-2025-09-17 15:43:54.034 	Estimated storage size of migrated members: 36,244 bytes
-2025-09-17 15:43:54.034 ** Generating Configuration files for application CBSA.
-2025-09-17 15:43:54.103 	Created DBB Migration Utility mapping file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/CBSA.mapping
-2025-09-17 15:43:54.151 	Created Application Description file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/CBSA.yml
-2025-09-17 15:43:54.401 	Estimated storage size of migrated members: 1,147,571 bytes
-2025-09-17 15:43:54.401 ** Generating Configuration files for application GenApp.
-2025-09-17 15:43:54.432 	Created DBB Migration Utility mapping file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/GenApp.mapping
-2025-09-17 15:43:54.455 	Created Application Description file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/GenApp.yml
-2025-09-17 15:43:54.546 	Estimated storage size of migrated members: 463,749 bytes
-2025-09-17 15:43:54.546 ** Generating Configuration files for application RetirementCalculator.
-2025-09-17 15:43:54.562 	Created DBB Migration Utility mapping file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/RetirementCalculator.mapping
-2025-09-17 15:43:54.580 	Created Application Description file /u/ibmuser/dbb-git-migration-modeler-work/work/migration-configuration/RetirementCalculator.yml
-2025-09-17 15:43:54.592 	Estimated storage size of migrated members: 12,838 bytes
-2025-09-17 15:43:54.594 ** Estimated storage size of all migrated members: 1,660,402 bytes
-
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/extractApplications.groovy 		--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 		--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
+2026-02-02 10:16:15.357 ** Script configuration:
+2026-02-02 10:16:15.403 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration
+2026-02-02 10:16:15.405 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
+2026-02-02 10:16:15.407 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:16:15.410 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
+2026-02-02 10:16:15.411 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
+2026-02-02 10:16:15.412 	DBB_MODELER_APPMAPPINGS_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/config/applications-mappings
+2026-02-02 10:16:15.414 	SCAN_DATASET_MEMBERS_ENCODING -> IBM-1047
+2026-02-02 10:16:15.416 	APPLICATION_TYPES_MAPPING -> /u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesMapping.yaml
+2026-02-02 10:16:15.418 	SCAN_DATASET_MEMBERS -> false
+2026-02-02 10:16:15.420 ** Reading the Repository Layout Mapping definition.
+2026-02-02 10:16:15.669 ** Reading the Type Mapping definition.
+2026-02-02 10:16:15.680 ** Loading the provided Applications Mapping files.
+2026-02-02 10:16:15.686 *** Importing 'applicationsMapping.yaml'
+2026-02-02 10:16:15.709 ** Iterating through the provided datasets and mapped applications.
+2026-02-02 10:16:15.727 **** Found 'DBEHM.MIG.BMS' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA' 
+2026-02-02 10:16:15.785 ***** 'DBEHM.MIG.BMS(EPSMLIS)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:15.817 ***** 'DBEHM.MIG.BMS(EPSMORT)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:15.845 ***** 'DBEHM.MIG.BMS(SSMAP)' - Mapped Application: GenApp
+2026-02-02 10:16:15.849 **** Found 'DBEHM.MIG.COPY' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA' 
+2026-02-02 10:16:15.860 ***** 'DBEHM.MIG.COPY(ABNDINFO)' - Mapped Application: CBSA
+2026-02-02 10:16:15.872 ***** 'DBEHM.MIG.COPY(ACCDB2)' - Mapped Application: CBSA
+2026-02-02 10:16:15.881 ***** 'DBEHM.MIG.COPY(ACCOUNT)' - Mapped Application: CBSA
+2026-02-02 10:16:15.891 ***** 'DBEHM.MIG.COPY(ACCTCTRL)' - Mapped Application: CBSA
+2026-02-02 10:16:15.901 ***** 'DBEHM.MIG.COPY(BNK1ACC)' - Mapped Application: CBSA
+2026-02-02 10:16:15.907 ***** 'DBEHM.MIG.COPY(BNK1CAM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.915 ***** 'DBEHM.MIG.COPY(BNK1CCM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.922 ***** 'DBEHM.MIG.COPY(BNK1CDM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.927 ***** 'DBEHM.MIG.COPY(BNK1DAM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.932 ***** 'DBEHM.MIG.COPY(BNK1DCM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.937 ***** 'DBEHM.MIG.COPY(BNK1MAI)' - Mapped Application: CBSA
+2026-02-02 10:16:15.942 ***** 'DBEHM.MIG.COPY(BNK1TFM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.946 ***** 'DBEHM.MIG.COPY(BNK1UAM)' - Mapped Application: CBSA
+2026-02-02 10:16:15.951 ***** 'DBEHM.MIG.COPY(CONSENT)' - Mapped Application: CBSA
+2026-02-02 10:16:15.955 ***** 'DBEHM.MIG.COPY(CONSTAPI)' - Mapped Application: CBSA
+2026-02-02 10:16:15.958 ***** 'DBEHM.MIG.COPY(CONSTDB2)' - Mapped Application: CBSA
+2026-02-02 10:16:15.962 ***** 'DBEHM.MIG.COPY(CONTDB2)' - Mapped Application: CBSA
+2026-02-02 10:16:15.966 ***** 'DBEHM.MIG.COPY(CREACC)' - Mapped Application: CBSA
+2026-02-02 10:16:15.970 ***** 'DBEHM.MIG.COPY(CRECUST)' - Mapped Application: CBSA
+2026-02-02 10:16:15.974 ***** 'DBEHM.MIG.COPY(CUSTCTRL)' - Mapped Application: CBSA
+2026-02-02 10:16:15.978 ***** 'DBEHM.MIG.COPY(CUSTOMER)' - Mapped Application: CBSA
+2026-02-02 10:16:15.983 ***** 'DBEHM.MIG.COPY(DATASTR)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:15.986 ***** 'DBEHM.MIG.COPY(DELACC)' - Mapped Application: CBSA
+2026-02-02 10:16:15.990 ***** 'DBEHM.MIG.COPY(DELCUS)' - Mapped Application: CBSA
+2026-02-02 10:16:15.994 ***** 'DBEHM.MIG.COPY(GETCOMPY)' - Mapped Application: CBSA
+2026-02-02 10:16:15.998 ***** 'DBEHM.MIG.COPY(GETSCODE)' - Mapped Application: CBSA
+2026-02-02 10:16:16.001 ***** 'DBEHM.MIG.COPY(INQACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.005 ***** 'DBEHM.MIG.COPY(INQACCCU)' - Mapped Application: CBSA
+2026-02-02 10:16:16.009 ***** 'DBEHM.MIG.COPY(INQCUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.012 ***** 'DBEHM.MIG.COPY(LGCMAREA)' - Mapped Application: GenApp
+2026-02-02 10:16:16.016 ***** 'DBEHM.MIG.COPY(LGCMARED)' - Mapped Application: GenApp
+2026-02-02 10:16:16.019 ***** 'DBEHM.MIG.COPY(LGPOLICY)' - Mapped Application: GenApp
+2026-02-02 10:16:16.024 ***** 'DBEHM.MIG.COPY(LINPUT)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.028 ***** 'DBEHM.MIG.COPY(PAYDBCR)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:16.031 ***** 'DBEHM.MIG.COPY(PROCDB2)' - Mapped Application: CBSA
+2026-02-02 10:16:16.035 ***** 'DBEHM.MIG.COPY(PROCTRAN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.039 ***** 'DBEHM.MIG.COPY(SORTCODE)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:16.043 ***** 'DBEHM.MIG.COPY(UPDACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.046 ***** 'DBEHM.MIG.COPY(UPDCUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.050 ***** 'DBEHM.MIG.COPY(XFRFUN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.052 **** Found 'DBEHM.MIG.COBOL' referenced by applications 'RetirementCalculator', 'GenApp', 'CBSA' 
+2026-02-02 10:16:16.060 ***** 'DBEHM.MIG.COBOL(ABNDPROC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.062 ***** 'DBEHM.MIG.COBOL(ACCLOAD)' - Mapped Application: CBSA
+2026-02-02 10:16:16.064 ***** 'DBEHM.MIG.COBOL(ACCOFFL)' - Mapped Application: CBSA
+2026-02-02 10:16:16.066 ***** 'DBEHM.MIG.COBOL(ACCTCTRL)' - Mapped Application: CBSA
+2026-02-02 10:16:16.068 ***** 'DBEHM.MIG.COBOL(BANKDATA)' - Mapped Application: CBSA
+2026-02-02 10:16:16.070 ***** 'DBEHM.MIG.COBOL(BNKMENU)' - Mapped Application: CBSA
+2026-02-02 10:16:16.072 ***** 'DBEHM.MIG.COBOL(BNK1CAC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.074 ***** 'DBEHM.MIG.COBOL(BNK1CCA)' - Mapped Application: CBSA
+2026-02-02 10:16:16.076 ***** 'DBEHM.MIG.COBOL(BNK1CCS)' - Mapped Application: CBSA
+2026-02-02 10:16:16.078 ***** 'DBEHM.MIG.COBOL(BNK1CRA)' - Mapped Application: CBSA
+2026-02-02 10:16:16.079 ***** 'DBEHM.MIG.COBOL(BNK1DAC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.081 ***** 'DBEHM.MIG.COBOL(BNK1DCS)' - Mapped Application: CBSA
+2026-02-02 10:16:16.083 ***** 'DBEHM.MIG.COBOL(BNK1TFN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.085 ***** 'DBEHM.MIG.COBOL(BNK1UAC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.087 ***** 'DBEHM.MIG.COBOL(CONSENT)' - Mapped Application: CBSA
+2026-02-02 10:16:16.089 ***** 'DBEHM.MIG.COBOL(CONSTTST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.091 ***** 'DBEHM.MIG.COBOL(CRDTAGY1)' - Mapped Application: CBSA
+2026-02-02 10:16:16.093 ***** 'DBEHM.MIG.COBOL(CRDTAGY2)' - Mapped Application: CBSA
+2026-02-02 10:16:16.095 ***** 'DBEHM.MIG.COBOL(CRDTAGY3)' - Mapped Application: CBSA
+2026-02-02 10:16:16.097 ***** 'DBEHM.MIG.COBOL(CRDTAGY4)' - Mapped Application: CBSA
+2026-02-02 10:16:16.100 ***** 'DBEHM.MIG.COBOL(CRDTAGY5)' - Mapped Application: CBSA
+2026-02-02 10:16:16.102 ***** 'DBEHM.MIG.COBOL(CREACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.104 ***** 'DBEHM.MIG.COBOL(CRECUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.106 ***** 'DBEHM.MIG.COBOL(CUSTCTRL)' - Mapped Application: CBSA
+2026-02-02 10:16:16.108 ***** 'DBEHM.MIG.COBOL(DBCRFUN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.111 ***** 'DBEHM.MIG.COBOL(DELACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.113 ***** 'DBEHM.MIG.COBOL(DELCUS)' - Mapped Application: CBSA
+2026-02-02 10:16:16.116 ***** 'DBEHM.MIG.COBOL(DPAYAPI)' - Mapped Application: CBSA
+2026-02-02 10:16:16.118 ***** 'DBEHM.MIG.COBOL(DPAYTST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.121 ***** 'DBEHM.MIG.COBOL(EBUD0RUN)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.124 ***** 'DBEHM.MIG.COBOL(EBUD01)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.127 ***** 'DBEHM.MIG.COBOL(EBUD02)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.130 ***** 'DBEHM.MIG.COBOL(EBUD03)' - Mapped Application: RetirementCalculator
+2026-02-02 10:16:16.133 ***** 'DBEHM.MIG.COBOL(GETCOMPY)' - Mapped Application: CBSA
+2026-02-02 10:16:16.135 ***** 'DBEHM.MIG.COBOL(GETSCODE)' - Mapped Application: CBSA
+2026-02-02 10:16:16.138 ***** 'DBEHM.MIG.COBOL(INQACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.141 ***** 'DBEHM.MIG.COBOL(INQACCCU)' - Mapped Application: CBSA
+2026-02-02 10:16:16.143 ***** 'DBEHM.MIG.COBOL(INQCUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.146 ***** 'DBEHM.MIG.COBOL(LGACDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.149 ***** 'DBEHM.MIG.COBOL(LGACDB02)' - Mapped Application: GenApp
+2026-02-02 10:16:16.151 ***** 'DBEHM.MIG.COBOL(LGACUS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.154 ***** 'DBEHM.MIG.COBOL(LGACVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.157 ***** 'DBEHM.MIG.COBOL(LGAPDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.160 ***** 'DBEHM.MIG.COBOL(LGAPOL01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.163 ***** 'DBEHM.MIG.COBOL(LGAPVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.165 ***** 'DBEHM.MIG.COBOL(LGASTAT1)' - Mapped Application: GenApp
+2026-02-02 10:16:16.168 ***** 'DBEHM.MIG.COBOL(LGDPDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.171 ***** 'DBEHM.MIG.COBOL(LGDPOL01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.174 ***** 'DBEHM.MIG.COBOL(LGDPVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.177 ***** 'DBEHM.MIG.COBOL(LGICDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.179 ***** 'DBEHM.MIG.COBOL(LGICUS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.182 ***** 'DBEHM.MIG.COBOL(LGICVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.185 ***** 'DBEHM.MIG.COBOL(LGIPDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.187 ***** 'DBEHM.MIG.COBOL(LGIPOL01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.190 ***** 'DBEHM.MIG.COBOL(LGIPVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.193 ***** 'DBEHM.MIG.COBOL(LGSETUP)' - Mapped Application: GenApp
+2026-02-02 10:16:16.195 ***** 'DBEHM.MIG.COBOL(LGSTSQ)' - Mapped Application: GenApp
+2026-02-02 10:16:16.198 ***** 'DBEHM.MIG.COBOL(LGTESTC1)' - Mapped Application: GenApp
+2026-02-02 10:16:16.201 ***** 'DBEHM.MIG.COBOL(LGTESTP1)' - Mapped Application: GenApp
+2026-02-02 10:16:16.203 ***** 'DBEHM.MIG.COBOL(LGTESTP2)' - Mapped Application: GenApp
+2026-02-02 10:16:16.206 ***** 'DBEHM.MIG.COBOL(LGTESTP3)' - Mapped Application: GenApp
+2026-02-02 10:16:16.209 ***** 'DBEHM.MIG.COBOL(LGTESTP4)' - Mapped Application: GenApp
+2026-02-02 10:16:16.211 ***** 'DBEHM.MIG.COBOL(LGUCDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.214 ***** 'DBEHM.MIG.COBOL(LGUCUS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.216 ***** 'DBEHM.MIG.COBOL(LGUCVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.219 ***** 'DBEHM.MIG.COBOL(LGUPDB01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.222 ***** 'DBEHM.MIG.COBOL(LGUPOL01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.224 ***** 'DBEHM.MIG.COBOL(LGUPVS01)' - Mapped Application: GenApp
+2026-02-02 10:16:16.227 ***** 'DBEHM.MIG.COBOL(LGWEBST5)' - Mapped Application: GenApp
+2026-02-02 10:16:16.230 ***** 'DBEHM.MIG.COBOL(OLDACDB1)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:16.233 ***** 'DBEHM.MIG.COBOL(OLDACDB2)' - Mapped Application: UNASSIGNED
+2026-02-02 10:16:16.236 ***** 'DBEHM.MIG.COBOL(PROLOAD)' - Mapped Application: CBSA
+2026-02-02 10:16:16.238 ***** 'DBEHM.MIG.COBOL(PROOFFL)' - Mapped Application: CBSA
+2026-02-02 10:16:16.241 ***** 'DBEHM.MIG.COBOL(UPDACC)' - Mapped Application: CBSA
+2026-02-02 10:16:16.243 ***** 'DBEHM.MIG.COBOL(UPDCUST)' - Mapped Application: CBSA
+2026-02-02 10:16:16.246 ***** 'DBEHM.MIG.COBOL(XFRFUN)' - Mapped Application: CBSA
+2026-02-02 10:16:16.253 ** Generating Applications Configurations files.
+2026-02-02 10:16:16.255 ** Generating Configuration files for Application: RetirementCalculator
+2026-02-02 10:16:16.353 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/RetirementCalculator.mapping
+2026-02-02 10:16:16.403 	Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/RetirementCalculator/applicationDescriptor.yml
+2026-02-02 10:16:16.502 	Estimated storage size of migrated members: 12,838 bytes
+2026-02-02 10:16:16.503 ** Generating Configuration files for Application: UNASSIGNED
+2026-02-02 10:16:16.516 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/UNASSIGNED.mapping
+2026-02-02 10:16:16.528 	Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/UNASSIGNED/applicationDescriptor.yml
+2026-02-02 10:16:16.566 	Estimated storage size of migrated members: 36,244 bytes
+2026-02-02 10:16:16.566 ** Generating Configuration files for Application: CBSA
+2026-02-02 10:16:16.652 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/CBSA.mapping
+2026-02-02 10:16:16.695 	Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/CBSA/applicationDescriptor.yml
+2026-02-02 10:16:17.098 	Estimated storage size of migrated members: 1,147,571 bytes
+2026-02-02 10:16:17.099 ** Generating Configuration files for Application: GenApp
+2026-02-02 10:16:17.136 	Created DBB Migration Utility mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/GenApp.mapping
+2026-02-02 10:16:17.157 	Created/Updated Application Description file /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml
+2026-02-02 10:16:17.394 	Estimated storage size of migrated members: 463,749 bytes
+2026-02-02 10:16:17.396 ** Estimated storage size of all migrated members: 1,660,402 bytes
 ~~~~
 </details>
 
@@ -252,46 +254,46 @@ Execution of the command:
 
 Output log:  
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /usr/lpp/dbb/v3r0/migration/bin/migrate.groovy -l /u/ibmuser/dbb-git-migration-modeler-work/logs/2-GenApp.migration.log -np info -r /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp /u/ibmuser/dbb-git-migration-modeler-work/modeler-configs/GenApp.mapping
-Messages will be saved in /u/ibmuser/dbb-git-migration-modeler-work/logs/2-GenApp.migration.log
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /usr/lpp/dbb/v3r0/migration/bin/migrate.groovy -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/2-GenApp.migration.log -le UTF-8 -np info -r /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/GenApp.mapping
+Messages will be saved in '/u/mdalbin/Migration-Modeler-MDLB-work/logs/2-GenApp.migration.log' with encoding 'UTF-8'
 Non-printable scan level is info
-Local GIT repository: /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp
-Migrate data sets using mapping file /u/ibmuser/dbb-git-migration-modeler-work/modeler-configs/GenApp.mapping
-Copying [DBEHM.MIG.OTHER.COBOL, LGASTAT1] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgastat1.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGSTSQ] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgstsq.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COPY, LGCMAREA] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/copy/lgcmarea.cpy using IBM-1047
-Copying [DBEHM.MIG.BMS, SSMAP] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/bms/ssmap.bms using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP3] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestp3.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGDPOL01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgdpol01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP1] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestp1.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGICDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgicdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUPVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgupvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUPOL01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgupol01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUCDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgucdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGWEBST5] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgwebst5.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGAPVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgapvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUCUS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgucus01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGACUS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgacus01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGACVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgacvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGIPOL01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgipol01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COPY, LGPOLICY] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/copy/lgpolicy.cpy using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGDPVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgdpvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGACDB02] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgacdb02.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGAPOL01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgapol01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGICVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgicvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGIPVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgipvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGDPDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgdpdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUCVS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgucvs01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COPY, LGCMARED] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/copy/lgcmared.cpy using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP4] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestp4.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTP2] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestp2.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGUPDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgupdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGICUS01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgicus01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGAPDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgapdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGTESTC1] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgtestc1.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGSETUP] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgsetup.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGIPDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgipdb01.cbl using IBM-1047
-Copying [DBEHM.MIG.OTHER.COBOL, LGACDB01] to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/src/cobol/lgacdb01.cbl using IBM-1047
+Local GIT repository: /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp
+Migrate data sets using mapping file /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/GenApp.mapping
+Copying [DBEHM.MIG.COBOL, LGAPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapol01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGTESTC1] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestc1.cbl using IBM-1047
+Copying [DBEHM.MIG.BMS, SSMAP] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/bms/ssmap.bms using IBM-1047
+Copying [DBEHM.MIG.COPY, LGCMARED] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgcmared.cpy using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGACDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGAPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGDPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGTESTP3] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp3.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGUCUS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucus01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGASTAT1] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgastat1.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGICDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGUPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGDPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGUCVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGIPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGTESTP2] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp2.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGUPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupol01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGSTSQ] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgstsq.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGACUS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacus01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGSETUP] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgsetup.cbl using IBM-1047
+Copying [DBEHM.MIG.COPY, LGCMAREA] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgcmarea.cpy using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGACVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGACDB02] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgacdb02.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGTESTP4] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp4.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGICVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGWEBST5] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgwebst5.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGAPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgapdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGDPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgdpol01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGIPVS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipvs01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGUCDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgucdb01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGTESTP1] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgtestp1.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGIPOL01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgipol01.cbl using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGICUS01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgicus01.cbl using IBM-1047
+Copying [DBEHM.MIG.COPY, LGPOLICY] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/copy/lgpolicy.cpy using IBM-1047
+Copying [DBEHM.MIG.COBOL, LGUPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/GenApp/src/cobol/lgupdb01.cbl using IBM-1047
 ~~~~
 </details>
 
@@ -312,224 +314,185 @@ Execution of the command:
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/scanApplication.groovy 			--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-scan.log
-2025-04-10 14:27:43.213 ** Script configuration:
-2025-04-10 14:27:43.247 	PIPELINE_USER -> ADO
-2025-04-10 14:27:43.250 	application -> GenApp
-2025-04-10 14:27:43.254 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-10 14:27:43.257 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
-2025-04-10 14:27:43.260 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-scan.log
-2025-04-10 14:27:43.264 	DBB_MODELER_METADATASTORE_TYPE -> db2
-2025-04-10 14:27:43.267 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
-2025-04-10 14:27:43.270 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
-2025-04-10 14:27:43.274 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
-2025-04-10 14:27:43.276 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
-2025-04-10 14:27:43.279 	APPLICATION_DEFAULT_BRANCH -> main
-2025-04-10 14:27:43.733 ** Scanning the files.
-2025-04-10 14:27:43.841 	Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
-2025-04-10 14:27:44.005 	Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
-2025-04-10 14:27:44.042 	Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
-2025-04-10 14:27:44.070 	Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
-2025-04-10 14:27:44.094 	Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
-2025-04-10 14:27:44.185 	Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
-2025-04-10 14:27:44.214 	Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
-2025-04-10 14:27:44.239 	Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
-2025-04-10 14:27:44.312 	Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
-2025-04-10 14:27:44.351 	Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
-2025-04-10 14:27:44.406 	Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
-2025-04-10 14:27:44.470 	Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
-2025-04-10 14:27:44.503 	Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
-2025-04-10 14:27:44.535 	Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
-2025-04-10 14:27:44.555 	Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
-2025-04-10 14:27:44.581 	Scanning file GenApp/.gitattributes 
-2025-04-10 14:27:44.583 	Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
-2025-04-10 14:27:44.602 	Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
-2025-04-10 14:27:44.620 	Scanning file GenApp/GenApp/src/bms/ssmap.bms 
-2025-04-10 14:27:44.865 	Scanning file GenApp/GenApp/src/copy/lgcmared.cpy 
-2025-04-10 14:27:44.877 	Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
-2025-04-10 14:27:44.887 	Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
-2025-04-10 14:27:44.897 	Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
-2025-04-10 14:27:44.906 	Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
-2025-04-10 14:27:44.916 	Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
-2025-04-10 14:27:44.926 	Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
-2025-04-10 14:27:44.938 	Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
-2025-04-10 14:27:44.952 	Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
-2025-04-10 14:27:44.961 	Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
-2025-04-10 14:27:44.970 	Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
-2025-04-10 14:27:44.979 	Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
-2025-04-10 14:27:44.988 	Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
-2025-04-10 14:27:44.997 	Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
-2025-04-10 14:27:45.013 	Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
-2025-04-10 14:27:45.022 	Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
-2025-04-10 14:27:45.033 	Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
-2025-04-10 14:27:45.058 ** Storing results in the 'GenApp-main' DBB Collection.
-2025-04-10 14:27:46.395 ** Setting collection owner to ADO
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/assessUsage.groovy 			--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--moveFiles 			--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-assessUsage.log
-2025-04-10 14:28:43.396 ** Script configuration:
-2025-04-10 14:28:43.447 	DBB_MODELER_APPCONFIG_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/modeler-configs
-2025-04-10 14:28:43.450 	application -> GenApp
-2025-04-10 14:28:43.453 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-10 14:28:43.456 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
-2025-04-10 14:28:43.459 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-assessUsage.log
-2025-04-10 14:28:43.462 	DBB_MODELER_METADATASTORE_TYPE -> db2
-2025-04-10 14:28:43.465 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
-2025-04-10 14:28:43.469 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
-2025-04-10 14:28:43.472 	moveFiles -> true
-2025-04-10 14:28:43.475 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
-2025-04-10 14:28:43.478 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
-2025-04-10 14:28:44.162 ** Getting the list of files of 'Include File' type.
-2025-04-10 14:28:44.195 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgpolicy.cpy'.
-2025-04-10 14:28:44.597 	Files depending on 'GenApp/src/copy/lgpolicy.cpy' :
-2025-04-10 14:28:44.605 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
-2025-04-10 14:28:44.606 	'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:44.606 	'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:44.607 	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:44.608 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
-2025-04-10 14:28:44.609 	'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:44.609 	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:44.610 	'GenApp/GenApp/src/cobol/lgacdb02.cbl' in  Application  'GenApp'
-2025-04-10 14:28:44.612 	==> 'lgpolicy' referenced by multiple applications - [UNASSIGNED, GenApp]
-2025-04-10 14:28:44.613 	==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/applicationDescriptor.yml'.
-2025-04-10 14:28:45.152 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmared.cpy'.
-2025-04-10 14:28:45.260 	The Include File 'lgcmared' is not referenced at all.
-2025-04-10 14:28:45.462 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmarea.cpy'.
-2025-04-10 14:28:45.578 	Files depending on 'GenApp/src/copy/lgcmarea.cpy' :
-2025-04-10 14:28:45.578 	'GenApp/GenApp/src/cobol/lgdpol01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.578 	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgupol01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgucvs01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.579 	'GenApp/GenApp/src/cobol/lgastat1.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgapvs01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgacvs01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgupvs01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.581 	'GenApp/GenApp/src/cobol/lgucus01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgtestp4.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgdpvs01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.582 	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.583 	'GenApp/GenApp/src/cobol/lgapol01.cbl' in  Application  'GenApp'
-2025-04-10 14:28:45.585 	==> 'lgcmarea' is owned by the 'GenApp' application
-2025-04-10 14:28:45.586 	==> Updating usage of Include File 'lgcmarea' to 'private' in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/applicationDescriptor.yml'.
-2025-04-10 14:28:45.788 ** Getting the list of files of 'Program' type.
-2025-04-10 14:28:45.813 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicus01.cbl'.
-2025-04-10 14:28:45.873 	The Program 'lgicus01' is not called by any other program.
-2025-04-10 14:28:46.076 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpol01.cbl'.
-2025-04-10 14:28:46.146 	The Program 'lgdpol01' is not called by any other program.
-2025-04-10 14:28:46.338 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipdb01.cbl'.
-2025-04-10 14:28:46.406 	The Program 'lgipdb01' is not called by any other program.
-2025-04-10 14:28:46.610 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp3.cbl'.
-2025-04-10 14:28:46.662 	The Program 'lgtestp3' is not called by any other program.
-2025-04-10 14:28:46.853 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp4.cbl'.
-2025-04-10 14:28:46.904 	The Program 'lgtestp4' is not called by any other program.
-2025-04-10 14:28:47.102 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacvs01.cbl'.
-2025-04-10 14:28:47.151 	The Program 'lgacvs01' is not called by any other program.
-2025-04-10 14:28:47.364 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgsetup.cbl'.
-2025-04-10 14:28:47.415 	The Program 'lgsetup' is not called by any other program.
-2025-04-10 14:28:47.604 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapol01.cbl'.
-2025-04-10 14:28:47.655 	The Program 'lgapol01' is not called by any other program.
-2025-04-10 14:28:47.848 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipvs01.cbl'.
-2025-04-10 14:28:47.893 	The Program 'lgipvs01' is not called by any other program.
-2025-04-10 14:28:48.088 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupol01.cbl'.
-2025-04-10 14:28:48.136 	The Program 'lgupol01' is not called by any other program.
-2025-04-10 14:28:48.325 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb01.cbl'.
-2025-04-10 14:28:48.375 	The Program 'lgacdb01' is not called by any other program.
-2025-04-10 14:28:48.563 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb02.cbl'.
-2025-04-10 14:28:48.607 	The Program 'lgacdb02' is not called by any other program.
-2025-04-10 14:28:48.795 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgstsq.cbl'.
-2025-04-10 14:28:48.857 	The Program 'lgstsq' is not called by any other program.
-2025-04-10 14:28:49.067 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp1.cbl'.
-2025-04-10 14:28:49.108 	The Program 'lgtestp1' is not called by any other program.
-2025-04-10 14:28:49.298 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp2.cbl'.
-2025-04-10 14:28:49.343 	The Program 'lgtestp2' is not called by any other program.
-2025-04-10 14:28:49.535 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpdb01.cbl'.
-2025-04-10 14:28:49.576 	The Program 'lgdpdb01' is not called by any other program.
-2025-04-10 14:28:49.779 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucus01.cbl'.
-2025-04-10 14:28:49.819 	The Program 'lgucus01' is not called by any other program.
-2025-04-10 14:28:50.006 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapvs01.cbl'.
-2025-04-10 14:28:50.051 	The Program 'lgapvs01' is not called by any other program.
-2025-04-10 14:28:50.235 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucdb01.cbl'.
-2025-04-10 14:28:50.275 	The Program 'lgucdb01' is not called by any other program.
-2025-04-10 14:28:50.464 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpvs01.cbl'.
-2025-04-10 14:28:50.501 	The Program 'lgdpvs01' is not called by any other program.
-2025-04-10 14:28:50.524 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestc1.cbl'.
-2025-04-10 14:28:50.558 	The Program 'lgtestc1' is not called by any other program.
-2025-04-10 14:28:50.580 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgastat1.cbl'.
-2025-04-10 14:28:50.618 	The Program 'lgastat1' is not called by any other program.
-2025-04-10 14:28:50.638 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapdb01.cbl'.
-2025-04-10 14:28:50.686 	The Program 'lgapdb01' is not called by any other program.
-2025-04-10 14:28:50.706 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicvs01.cbl'.
-2025-04-10 14:28:50.742 	The Program 'lgicvs01' is not called by any other program.
-2025-04-10 14:28:50.763 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipol01.cbl'.
-2025-04-10 14:28:50.798 	The Program 'lgipol01' is not called by any other program.
-2025-04-10 14:28:50.818 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacus01.cbl'.
-2025-04-10 14:28:50.852 	The Program 'lgacus01' is not called by any other program.
-2025-04-10 14:28:50.873 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgwebst5.cbl'.
-2025-04-10 14:28:50.913 	The Program 'lgwebst5' is not called by any other program.
-2025-04-10 14:28:50.937 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucvs01.cbl'.
-2025-04-10 14:28:50.976 	The Program 'lgucvs01' is not called by any other program.
-2025-04-10 14:28:50.997 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupdb01.cbl'.
-2025-04-10 14:28:51.042 	The Program 'lgupdb01' is not called by any other program.
-2025-04-10 14:28:51.064 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicdb01.cbl'.
-2025-04-10 14:28:51.099 	The Program 'lgicdb01' is not called by any other program.
-2025-04-10 14:28:51.126 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupvs01.cbl'.
-2025-04-10 14:28:51.164 	The Program 'lgupvs01' is not called by any other program.
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/scanApplication.groovy 			--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-rescan.log
-2025-04-10 14:29:27.767 ** Script configuration:
-2025-04-10 14:29:27.810 	PIPELINE_USER -> ADO
-2025-04-10 14:29:27.813 	application -> GenApp
-2025-04-10 14:29:27.816 	configurationFilePath -> /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
-2025-04-10 14:29:27.819 	DBB_MODELER_APPLICATION_DIR -> /u/ibmuser/dbb-git-migration-modeler-work/repositories
-2025-04-10 14:29:27.821 	logFile -> /u/ibmuser/dbb-git-migration-modeler-work/logs/3-GenApp-rescan.log
-2025-04-10 14:29:27.826 	DBB_MODELER_METADATASTORE_TYPE -> db2
-2025-04-10 14:29:27.829 	DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf
-2025-04-10 14:29:27.832 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORD -> 
-2025-04-10 14:29:27.834 	DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE -> /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt
-2025-04-10 14:29:27.838 	DBB_MODELER_DB2_METADATASTORE_JDBC_ID -> MDALBIN
-2025-04-10 14:29:27.840 	APPLICATION_DEFAULT_BRANCH -> main
-2025-04-10 14:29:28.281 ** Scanning the files.
-2025-04-10 14:29:28.390 	Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
-2025-04-10 14:29:28.522 	Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
-2025-04-10 14:29:28.602 	Scanning file GenApp/applicationDescriptor.yml 
-2025-04-10 14:29:28.647 	Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
-2025-04-10 14:29:28.671 	Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
-2025-04-10 14:29:28.693 	Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
-2025-04-10 14:29:28.744 	Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
-2025-04-10 14:29:28.772 	Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
-2025-04-10 14:29:28.796 	Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
-2025-04-10 14:29:28.866 	Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
-2025-04-10 14:29:28.906 	Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
-2025-04-10 14:29:28.958 	Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
-2025-04-10 14:29:29.025 	Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
-2025-04-10 14:29:29.057 	Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
-2025-04-10 14:29:29.084 	Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
-2025-04-10 14:29:29.152 	Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
-2025-04-10 14:29:29.177 	Scanning file GenApp/.gitattributes 
-2025-04-10 14:29:29.178 	Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
-2025-04-10 14:29:29.196 	Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
-2025-04-10 14:29:29.214 	Scanning file GenApp/GenApp/src/bms/ssmap.bms 
-2025-04-10 14:29:29.439 	Scanning file GenApp/GenApp/src/copy/lgcmared.cpy 
-2025-04-10 14:29:29.450 	Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
-2025-04-10 14:29:29.460 	Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
-2025-04-10 14:29:29.470 	Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
-2025-04-10 14:29:29.479 	Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
-2025-04-10 14:29:29.489 	Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
-2025-04-10 14:29:29.498 	Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
-2025-04-10 14:29:29.511 	Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
-2025-04-10 14:29:29.520 	Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
-2025-04-10 14:29:29.531 	Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
-2025-04-10 14:29:29.542 	Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
-2025-04-10 14:29:29.550 	Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
-2025-04-10 14:29:29.557 	Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
-2025-04-10 14:29:29.565 	Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
-2025-04-10 14:29:29.578 	Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
-2025-04-10 14:29:29.585 	Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
-2025-04-10 14:29:29.595 	Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
-2025-04-10 14:29:29.617 ** Storing results in the 'GenApp-main' DBB Collection.
-2025-04-10 14:29:30.884 ** Setting collection owner to ADO
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 				--application GenApp 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
+2026-02-02 10:16:37.551 ** Script configuration:
+2026-02-02 10:16:37.552 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
+2026-02-02 10:16:37.552 	SCAN_CONTROL_TRANSFERS -> true
+2026-02-02 10:16:37.552 	application -> GenApp
+2026-02-02 10:16:37.552 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:16:37.552 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
+2026-02-02 10:16:37.553 	DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
+2026-02-02 10:16:37.553 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
+2026-02-02 10:16:37.554 	DBB_MODELER_METADATASTORE_TYPE -> file
+2026-02-02 10:16:37.554 	APPLICATION_DEFAULT_BRANCH -> main
+2026-02-02 10:16:37.554 ** Reading the existing Application Descriptor file.
+2026-02-02 10:16:37.570 ** Retrieving the list of files mapped to Source Groups.
+2026-02-02 10:16:37.571 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'. Skipping.
+2026-02-02 10:16:37.571 - Additional message - [INFO] No matching Repository Path was found for file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.gitattributes'. Skipping.
+2026-02-02 10:16:37.581 ** Scanning the files.
+2026-02-02 10:16:37.581 	Scanning file GenApp/GenApp/src/cobol/lgtestp2.cbl 
+2026-02-02 10:16:37.590 	Scanning file GenApp/GenApp/src/cobol/lgicus01.cbl 
+2026-02-02 10:16:37.598 	Scanning file GenApp/GenApp/src/cobol/lgucus01.cbl 
+2026-02-02 10:16:37.605 	Scanning file GenApp/GenApp/src/cobol/lgucvs01.cbl 
+2026-02-02 10:16:37.612 	Scanning file GenApp/GenApp/src/cobol/lgapdb01.cbl 
+2026-02-02 10:16:37.625 	Scanning file GenApp/GenApp/src/cobol/lgdpdb01.cbl 
+2026-02-02 10:16:37.633 	Scanning file GenApp/GenApp/src/cobol/lgicvs01.cbl 
+2026-02-02 10:16:37.642 	Scanning file GenApp/GenApp/src/copy/lgpolicy.cpy 
+2026-02-02 10:16:37.661 	Scanning file GenApp/GenApp/src/cobol/lgsetup.cbl 
+2026-02-02 10:16:37.673 	Scanning file GenApp/GenApp/src/copy/lgcmarea.cpy 
+2026-02-02 10:16:37.690 	Scanning file GenApp/GenApp/src/cobol/lgacdb01.cbl 
+2026-02-02 10:16:37.699 	Scanning file GenApp/GenApp/src/cobol/lgipdb01.cbl 
+2026-02-02 10:16:37.720 	Scanning file GenApp/GenApp/src/cobol/lgupvs01.cbl 
+2026-02-02 10:16:37.727 	Scanning file GenApp/GenApp/src/cobol/lgtestp1.cbl 
+2026-02-02 10:16:37.735 	Scanning file GenApp/GenApp/src/cobol/lgtestc1.cbl 
+2026-02-02 10:16:37.744 	Scanning file GenApp/GenApp/src/cobol/lgdpol01.cbl 
+2026-02-02 10:16:37.751 	Scanning file GenApp/GenApp/src/cobol/lgapol01.cbl 
+2026-02-02 10:16:37.758 	Scanning file GenApp/GenApp/src/bms/ssmap.bms 
+2026-02-02 10:16:37.880 	Scanning file GenApp/GenApp/src/copy/lgcmared.cpy 
+2026-02-02 10:16:37.887 	Scanning file GenApp/GenApp/src/cobol/lgucdb01.cbl 
+2026-02-02 10:16:37.893 	Scanning file GenApp/GenApp/src/cobol/lgacdb02.cbl 
+2026-02-02 10:16:37.900 	Scanning file GenApp/GenApp/src/cobol/lgipol01.cbl 
+2026-02-02 10:16:37.912 	Scanning file GenApp/GenApp/src/cobol/lgapvs01.cbl 
+2026-02-02 10:16:37.918 	Scanning file GenApp/GenApp/src/cobol/lgicdb01.cbl 
+2026-02-02 10:16:37.923 	Scanning file GenApp/GenApp/src/cobol/lgtestp4.cbl 
+2026-02-02 10:16:37.930 	Scanning file GenApp/GenApp/src/cobol/lgdpvs01.cbl 
+2026-02-02 10:16:37.934 	Scanning file GenApp/GenApp/src/cobol/lgupol01.cbl 
+2026-02-02 10:16:37.940 	Scanning file GenApp/GenApp/src/cobol/lgacvs01.cbl 
+2026-02-02 10:16:37.944 	Scanning file GenApp/GenApp/src/cobol/lgipvs01.cbl 
+2026-02-02 10:16:37.949 	Scanning file GenApp/GenApp/src/cobol/lgastat1.cbl 
+2026-02-02 10:16:37.954 	Scanning file GenApp/GenApp/src/cobol/lgacus01.cbl 
+2026-02-02 10:16:37.959 	Scanning file GenApp/GenApp/src/cobol/lgupdb01.cbl 
+2026-02-02 10:16:37.968 	Scanning file GenApp/GenApp/src/cobol/lgtestp3.cbl 
+2026-02-02 10:16:37.974 	Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
+2026-02-02 10:16:37.978 	Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
+2026-02-02 10:16:37.991 ** Storing results in the 'GenApp-main' DBB Collection.
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 				--application GenApp 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
+2026-02-02 10:16:42.772 ** Script configuration:
+2026-02-02 10:16:42.772 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration
+2026-02-02 10:16:42.772 	MOVE_FILES_FLAG -> true
+2026-02-02 10:16:42.772 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
+2026-02-02 10:16:42.773 	SCAN_CONTROL_TRANSFERS -> true
+2026-02-02 10:16:42.773 	application -> GenApp
+2026-02-02 10:16:42.773 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:16:42.773 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
+2026-02-02 10:16:42.774 	DBB_MODELER_FILE_METADATA_STORE_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/dbb-filemetadatastore
+2026-02-02 10:16:42.774 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
+2026-02-02 10:16:42.774 	DBB_MODELER_METADATASTORE_TYPE -> file
+2026-02-02 10:16:42.774 	APPLICATION_DEFAULT_BRANCH -> main
+2026-02-02 10:16:42.785 ** Reading the Repository Layout Mapping definition.
+2026-02-02 10:16:42.792 ** Getting the list of files of 'Include File' type.
+2026-02-02 10:16:42.797 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmarea.cpy'.
+2026-02-02 10:16:42.845 	Files depending on 'GenApp/src/copy/lgcmarea.cpy' :
+2026-02-02 10:16:42.845 	'GenApp/GenApp/src/cobol/lgdpol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.845 	'GenApp/GenApp/src/cobol/lgtestp3.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.845 	'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.845 	'GenApp/GenApp/src/cobol/lgupol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgastat1.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgacvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgucus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgapdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgdpdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.846 	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgtestp2.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgtestc1.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgapol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.847 	'GenApp/GenApp/src/cobol/lgupdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgucvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgtestp1.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgapvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgupvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgucdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.848 	'GenApp/GenApp/src/cobol/lgtestp4.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.849 	'GenApp/GenApp/src/cobol/lgdpvs01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.849 	'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.849 	'GenApp/GenApp/src/cobol/lgipdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.850 	==> 'lgcmarea' referenced by multiple applications - [UNASSIGNED, GenApp]
+2026-02-02 10:16:42.850 	==> Updating usage of Include File 'lgcmarea' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'.
+2026-02-02 10:16:42.875 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgcmared.cpy'.
+2026-02-02 10:16:42.880 	The Include File 'lgcmared' is not referenced at all.
+2026-02-02 10:16:42.887 ** Analyzing impacted applications for file 'GenApp/GenApp/src/copy/lgpolicy.cpy'.
+2026-02-02 10:16:42.907 	Files depending on 'GenApp/src/copy/lgpolicy.cpy' :
+2026-02-02 10:16:42.907 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb1.cbl' in  Application  'UNASSIGNED'
+2026-02-02 10:16:42.907 	'GenApp/GenApp/src/cobol/lgipol01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.907 	'GenApp/GenApp/src/cobol/lgicus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.907 	'GenApp/GenApp/src/cobol/lgacdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgucdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgupdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'UNASSIGNED/UNASSIGNED/src/cobol/oldacdb2.cbl' in  Application  'UNASSIGNED'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgacus01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgicdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.908 	'GenApp/GenApp/src/cobol/lgipdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.909 	'GenApp/GenApp/src/cobol/lgapdb01.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.909 	'GenApp/GenApp/src/cobol/lgacdb02.cbl' in  Application  'GenApp'
+2026-02-02 10:16:42.909 	==> 'lgpolicy' referenced by multiple applications - [UNASSIGNED, GenApp]
+2026-02-02 10:16:42.909 	==> Updating usage of Include File 'lgpolicy' to 'public' in '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml'.
+2026-02-02 10:16:42.926 ** Getting the list of files of 'Program' type.
+2026-02-02 10:16:42.927 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicus01.cbl'.
+2026-02-02 10:16:42.935 	The Program 'lgicus01' is not statically called by any other program.
+2026-02-02 10:16:42.941 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpol01.cbl'.
+2026-02-02 10:16:42.948 	The Program 'lgdpol01' is not statically called by any other program.
+2026-02-02 10:16:42.955 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipdb01.cbl'.
+2026-02-02 10:16:42.964 	The Program 'lgipdb01' is not statically called by any other program.
+2026-02-02 10:16:42.971 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp3.cbl'.
+2026-02-02 10:16:42.976 	The Program 'lgtestp3' is not statically called by any other program.
+2026-02-02 10:16:42.986 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp4.cbl'.
+2026-02-02 10:16:42.992 	The Program 'lgtestp4' is not statically called by any other program.
+2026-02-02 10:16:42.998 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacvs01.cbl'.
+2026-02-02 10:16:43.003 	The Program 'lgacvs01' is not statically called by any other program.
+2026-02-02 10:16:43.010 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgsetup.cbl'.
+2026-02-02 10:16:43.017 	The Program 'lgsetup' is not statically called by any other program.
+2026-02-02 10:16:43.025 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapol01.cbl'.
+2026-02-02 10:16:43.032 	The Program 'lgapol01' is not statically called by any other program.
+2026-02-02 10:16:43.039 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipvs01.cbl'.
+2026-02-02 10:16:43.044 	The Program 'lgipvs01' is not statically called by any other program.
+2026-02-02 10:16:43.050 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupol01.cbl'.
+2026-02-02 10:16:43.058 	The Program 'lgupol01' is not statically called by any other program.
+2026-02-02 10:16:43.064 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb01.cbl'.
+2026-02-02 10:16:43.070 	The Program 'lgacdb01' is not statically called by any other program.
+2026-02-02 10:16:43.076 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacdb02.cbl'.
+2026-02-02 10:16:43.082 	The Program 'lgacdb02' is not statically called by any other program.
+2026-02-02 10:16:43.088 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgstsq.cbl'.
+2026-02-02 10:16:43.100 	The Program 'lgstsq' is not statically called by any other program.
+2026-02-02 10:16:43.107 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp1.cbl'.
+2026-02-02 10:16:43.113 	The Program 'lgtestp1' is not statically called by any other program.
+2026-02-02 10:16:43.120 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestp2.cbl'.
+2026-02-02 10:16:43.126 	The Program 'lgtestp2' is not statically called by any other program.
+2026-02-02 10:16:43.140 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpdb01.cbl'.
+2026-02-02 10:16:43.145 	The Program 'lgdpdb01' is not statically called by any other program.
+2026-02-02 10:16:43.152 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucus01.cbl'.
+2026-02-02 10:16:43.157 	The Program 'lgucus01' is not statically called by any other program.
+2026-02-02 10:16:43.164 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapvs01.cbl'.
+2026-02-02 10:16:43.169 	The Program 'lgapvs01' is not statically called by any other program.
+2026-02-02 10:16:43.175 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucdb01.cbl'.
+2026-02-02 10:16:43.181 	The Program 'lgucdb01' is not statically called by any other program.
+2026-02-02 10:16:43.187 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgdpvs01.cbl'.
+2026-02-02 10:16:43.193 	The Program 'lgdpvs01' is not statically called by any other program.
+2026-02-02 10:16:43.199 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgtestc1.cbl'.
+2026-02-02 10:16:43.205 	The Program 'lgtestc1' is not statically called by any other program.
+2026-02-02 10:16:43.212 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgastat1.cbl'.
+2026-02-02 10:16:43.217 	The Program 'lgastat1' is not statically called by any other program.
+2026-02-02 10:16:43.223 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgapdb01.cbl'.
+2026-02-02 10:16:43.230 	The Program 'lgapdb01' is not statically called by any other program.
+2026-02-02 10:16:43.236 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicvs01.cbl'.
+2026-02-02 10:16:43.242 	The Program 'lgicvs01' is not statically called by any other program.
+2026-02-02 10:16:43.248 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgipol01.cbl'.
+2026-02-02 10:16:43.255 	The Program 'lgipol01' is not statically called by any other program.
+2026-02-02 10:16:43.261 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgacus01.cbl'.
+2026-02-02 10:16:43.266 	The Program 'lgacus01' is not statically called by any other program.
+2026-02-02 10:16:43.272 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgwebst5.cbl'.
+2026-02-02 10:16:43.280 	The Program 'lgwebst5' is not statically called by any other program.
+2026-02-02 10:16:43.286 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgucvs01.cbl'.
+2026-02-02 10:16:43.292 	The Program 'lgucvs01' is not statically called by any other program.
+2026-02-02 10:16:43.297 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupdb01.cbl'.
+2026-02-02 10:16:43.304 	The Program 'lgupdb01' is not statically called by any other program.
+2026-02-02 10:16:43.310 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgicdb01.cbl'.
+2026-02-02 10:16:43.315 	The Program 'lgicdb01' is not statically called by any other program.
+2026-02-02 10:16:43.321 ** Analyzing impacted applications for file 'GenApp/GenApp/src/cobol/lgupvs01.cbl'.
+2026-02-02 10:16:43.326 	The Program 'lgupvs01' is not statically called by any other program.
 ~~~~
 </details>
 
@@ -539,9 +502,9 @@ The [Property Generation script (4-generateProperties.sh)](../src/scripts/utils/
 
 The script will search for all the applications' subfolders in the `DBB_MODELER_APPLICATION_DIR` folder and will process application definitions found in this folder.
 For each application found, it will search for the artifacts of type 'Program', and, for each of them, will check if a Language Configuration exists, based on the *type* information.
-If the Language Configuration doesn't exist, the script will create it (potentially combining multiple type configurations if necessary).
+If the Language Configuration doesn't exist, the script will create it.
 
-This script will also generate application's related configuration, stored in a custom *application-conf* subfolder.
+This script will also generate application's related configuration, stored in a `config` subfolder when using DBB zBuilder or in a custom `application-conf` subfolder when using zAppBuild.
 If configuration was changed, an *INFO* message is shown, explaining that a manual task must be performed to enable the use of the Language Configuration mapping for a given application.
 
 <details>
@@ -552,20 +515,28 @@ Execution of the command:
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/generateProperties.groovy 			--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 			--application GenApp 			--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/4-GenApp-generateProperties.log
-2025-04-10 14:30:55.834 ** Reading the Types Configurations definitions from '/u/ibmuser/dbb-git-migration-modeler-work/typesConfigurations.yaml'.
-2025-04-10 14:30:56.090 ** Copying default application-conf directory to /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/application-conf
-2025-04-10 14:30:56.153 ** Getting the list of files.
-2025-04-10 14:30:56.154 *** Generate/Validate Language Configuration properties files.
-2025-04-10 14:30:56.171 	Assessing file lgacdb01 with type CBLCICSDB2.
-2025-04-10 14:30:56.173 	Generating new Language Configuration /u/ibmuser/dbb-git-migration-modeler-work/repositories/dbb-zappbuild/build-conf/language-conf/CBLCICSDB2.properties for type 'CBLCICSDB2'
-2025-04-10 14:30:56.212 	Assessing file lgacdb02 with type CBLDB2.
-2025-04-10 14:30:56.212 	Generating new Language Configuration /u/ibmuser/dbb-git-migration-modeler-work/repositories/dbb-zappbuild/build-conf/language-conf/CBLDB2.properties for type 'CBLDB2'
-2025-04-10 14:30:56.229 	Assessing file lgacus01 with type PLICICS.
-2025-04-10 14:30:56.230 	Generating new Language Configuration /u/ibmuser/dbb-git-migration-modeler-work/repositories/dbb-zappbuild/build-conf/language-conf/PLICICS.properties for type 'PLICICS'
-2025-04-10 14:30:56.246 *** Generate the language configuration mapping file /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/application-conf/languageConfigurationMapping.properties.
-2025-04-10 14:30:56.253 *** Generate loadLanguageConfigurationProperties configuration in /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/application-conf/file.properties.
-2025-04-10 14:30:56.486 ** INFO: Don't forget to enable the use of Language Configuration by uncommenting the 'loadLanguageConfigurationProperties' property in '/u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/GenApp/application-conf/file.properties'
+[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/generateZBuilderProperties.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 				--application GenApp 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
+2026-02-02 10:16:46.488 ** Script configuration:
+2026-02-02 10:16:46.488 	application -> GenApp
+2026-02-02 10:16:46.488 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:16:46.488 	DBB_MODELER_APPLICATION_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/repositories
+2026-02-02 10:16:46.488 	logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
+2026-02-02 10:16:46.488 	TYPE_CONFIGURATIONS_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml
+2026-02-02 10:16:46.488 	DBB_MODELER_WORK -> /u/mdalbin/Migration-Modeler-MDLB-work
+2026-02-02 10:16:46.488 	DBB_ZBUILDER -> /u/mdalbin/zBuilder
+2026-02-02 10:16:46.489 ** Reading the Types Configurations definitions from '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
+2026-02-02 10:16:46.498 ** Gathering the defined types for files.
+2026-02-02 10:16:46.501 ** Generating zBuilder language configuration files.
+2026-02-02 10:16:46.502 	Type Configuration for type 'CBLCICSDB2' found in '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
+2026-02-02 10:16:46.504 	[WARNING] No Type Configuration for type 'CBLDB2' found in '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
+2026-02-02 10:16:46.504 	[WARNING] No Type Configuration for type 'CBLCICS' found in '/u/mdalbin/Migration-Modeler-MDLB-work/config/types/typesConfigurations.yaml'.
+2026-02-02 10:16:46.505 ** Generating zBuilder Application configuration file.
+2026-02-02 10:16:46.507 ** [INFO] 1 Language Configuration file created in '/u/mdalbin/Migration-Modeler-MDLB-work/build-configuration'.
+2026-02-02 10:16:46.507 ** [INFO] Before running builds with zBuilder, please copy the content of the '/u/mdalbin/Migration-Modeler-MDLB-work/build-configuration' folder to your zBuilder instance located at '/u/mdalbin/zBuilder'.
+2026-02-02 10:16:46.507 ** Generating Dependencies Search Paths and Impact Analysis Query Patterns.
+2026-02-02 10:16:46.509 ** Application Configuration file '/u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/dbb-app.yaml' successfully created.
+2026-02-02 10:16:46.509 ** [INFO] Make sure the zBuilder Configuration files (Language Task definitions) are accurate before running a build with zBuilder.
+2026-02-02 10:16:46.509 ** [INFO] For each Language Task definition, the Dependency Search Path variable potentially needs to be updated to match the layout of the Git repositories.
 ~~~~
 </details>
 
@@ -582,17 +553,23 @@ Execution of command:
 `./src/scripts/utils/5-initApplicationRepositories.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
 ~~~~
+[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/metadataStoreUtility.groovy -c /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config --deleteBuildGroup --buildGroup GenApp-main -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
+2026-02-02 10:17:09.501 ** Script configuration:
+2026-02-02 10:17:09.501    deleteBuildGroup -> true
+2026-02-02 10:17:09.501    buildGroup -> GenApp-main
+2026-02-02 10:17:09.501    configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
+2026-02-02 10:17:09.502    logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
+2026-02-02 10:17:09.502 ** Deleting DBB BuildGroup GenApp-main
+2026-02-02 10:17:09.509 ** Deleting legacy collections in DBB BuildGroup dbb_default
 [CMD] git init --initial-branch=main
-Initialized empty Git repository in /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/.git/
-[CMD] chtag -c IBM-1047 -t applicationDescriptor.yml
+Initialized empty Git repository in /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/
 [CMD] rm .gitattributes
-[CMD] cp /u/ibmuser/dbb-git-migration-modeler-work/git-config/.gitattributes .gitattributes
-[CMD] cp /u/ibmuser/dbb-git-migration-modeler-work/git-config/zapp.yaml zapp.yaml
-[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/utils/zappUtils.groovy 					-z /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/zapp.yaml -a /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/applicationDescriptor.yml -b /var/dbb/dbb-zappbuild_300
-** Build finished
-[CMD] cp /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/
-[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/deployment/
-[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp/tagging/
+[CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/config/default-app-repo-config-files/.gitattributes .gitattributes
+[CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/config/default-app-repo-config-files/zapp_template.yaml zapp.yaml
+[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/zappUtils.groovy 					-z /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/zapp.yaml 					-a /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml 					-b /var/dbb/dbb-zappbuild -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
+[CMD] cp /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/
+[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/deployment/
+[CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/tagging/
 [CMD] git status
 On branch main
 
@@ -601,9 +578,12 @@ No commits yet
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
 	.gitattributes
+	.project
 	GenApp/
+	application-conf/
 	applicationDescriptor.yml
 	azure-pipelines.yml
+	dbb-app.yaml
 	deployment/
 	tagging/
 	zapp.yaml
@@ -611,29 +591,10 @@ Untracked files:
 nothing added to commit but untracked files present (use "git add" to track)
 [CMD] git add --all
 [CMD] git commit -m 'Initial Commit'
-[main (root-commit) 086b763] Initial Commit
- 62 files changed, 13390 insertions(+)
+[main (root-commit) 57a8f4a] Initial Commit
+ 44 files changed, 11755 insertions(+)
  create mode 100644 .gitattributes
- create mode 100644 GenApp/application-conf/ACBgen.properties
- create mode 100644 GenApp/application-conf/Assembler.properties
- create mode 100644 GenApp/application-conf/BMS.properties
- create mode 100644 GenApp/application-conf/CRB.properties
- create mode 100644 GenApp/application-conf/Cobol.properties
- create mode 100644 GenApp/application-conf/DBDgen.properties
- create mode 100644 GenApp/application-conf/Easytrieve.properties
- create mode 100644 GenApp/application-conf/LinkEdit.properties
- create mode 100644 GenApp/application-conf/MFS.properties
- create mode 100644 GenApp/application-conf/PLI.properties
- create mode 100644 GenApp/application-conf/PSBgen.properties
- create mode 100644 GenApp/application-conf/README.md
- create mode 100644 GenApp/application-conf/REXX.properties
- create mode 100755 GenApp/application-conf/TazUnitTest.properties
- create mode 100644 GenApp/application-conf/Transfer.properties
- create mode 100644 GenApp/application-conf/application.properties
- create mode 100644 GenApp/application-conf/bind.properties
- create mode 100644 GenApp/application-conf/file.properties
- create mode 100644 GenApp/application-conf/languageConfigurationMapping.properties
- create mode 100644 GenApp/application-conf/reports.properties
+ create mode 100644 .project
  create mode 100644 GenApp/src/bms/ssmap.bms
  create mode 100644 GenApp/src/cobol/lgacdb01.cbl
  create mode 100644 GenApp/src/cobol/lgacdb02.cbl
@@ -669,17 +630,16 @@ nothing added to commit but untracked files present (use "git add" to track)
  create mode 100644 GenApp/src/copy/lgcmarea.cpy
  create mode 100644 GenApp/src/copy/lgcmared.cpy
  create mode 100644 GenApp/src/copy/lgpolicy.cpy
+ create mode 100644 application-conf/baselineReference.config
  create mode 100644 applicationDescriptor.yml
  create mode 100644 azure-pipelines.yml
- create mode 100644 deployment/deployReleasePackage.yml
- create mode 100644 tagging/createProductionReleaseTag.yml
+ create mode 100644 dbb-app.yaml
+ create mode 100644 deployment/deployPackage.yml
  create mode 100644 tagging/createReleaseCandidate.yml
  create mode 100644 zapp.yaml
-[CMD] git tag rel-2.1.0
-[CMD] git branch rel-2.1.0 refs/tags/rel-2.1.0
-** /usr/lpp/dbb/v3r0/bin/groovyz /var/dbb/dbb-zappbuild_300/build.groovy 				--workspace /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp 				--application GenApp 				--outDir /u/ibmuser/dbb-git-migration-modeler-work/logs/GenApp 				--fullBuild 				--hlq DBEHM.MIG --preview 				--logEncoding UTF-8 				--applicationCurrentBranch main 				--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=db2,metadataStoreDb2ConnectionConf=/u/ibmuser/dbb-git-migration-modeler-work/db2Connection.conf --id MDALBIN --pwFile /u/ibmuser/dbb-git-migration-modeler-work/MDALBIN-password.txt 				--propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
-** /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/dbb-MD/Pipeline/PackageBuildOutputs/PackageBuildOutputs.groovy 				--workDir /u/ibmuser/dbb-git-migration-modeler-work/logs/GenApp \ 
-				--addExtension 				--branch main 				--version rel-2.1.0 				--tarFileName GenApp-rel-2.1.0.tar 				--applicationFolderPath /u/ibmuser/dbb-git-migration-modeler-work/repositories/GenApp 				--owner ADO:JENKINSG -p --artifactRepositoryUrl http://10.3.20.231:8081/artifactory 				     --artifactRepositoryUser admin 				     --artifactRepositoryPassword artifactoryadmin 				     --artifactRepositoryName GenApp
+[CMD] git tag rel-1.0.0
+[CMD] git branch release/rel-1.0.0 refs/tags/rel-1.0.0
+** /usr/lpp/dbb/v3r0/bin/dbb build full     						--hlq DBEHM.MIG     						--preview     						
 ~~~~
 
 </details>

@@ -168,7 +168,20 @@ validateConfigurationFile() {
 			ERRMSG="[ERROR] The specified DBB MetadataStore technology is not 'file' or 'db2'."
 			echo $ERRMSG
 		fi
-		if [ ! -d "${DBB_ZAPPBUILD}" ]; then
+
+		if [ "${BUILD_FRAMEWORK}" != "zBuilder" ] && [ "${BUILD_FRAMEWORK}" != "zAppBuild" ]; then
+			rc=8
+			ERRMSG="[ERROR] The specified Build Framework '${BUILD_FRAMEWORK}' is not a valid option ('zBuilder' or 'zAppBuild')."
+			echo $ERRMSG
+		fi
+		
+		if [ "${BUILD_FRAMEWORK}" == "zBuilder" ] && [ ! -d "${DBB_ZBUILDER}" ]; then
+			rc=8
+			ERRMSG="[ERROR] The zBuilder instance '${DBB_ZBUILDER}' doesn't exist."
+			echo $ERRMSG
+		fi
+		
+		if [ "${BUILD_FRAMEWORK}" == "zAppBuild" ] && [ ! -d "${DBB_ZAPPBUILD}" ]; then
 			rc=8
 			ERRMSG="[ERROR] The dbb-zappbuild instance '${DBB_ZAPPBUILD}' doesn't exist."
 			echo $ERRMSG
@@ -265,7 +278,7 @@ initializeWorkDirectory() {
 			fi	
 		fi
 		if [ $rc -eq 0 ]; then
-			echo "  [INFO] Copying sample Files to Types Mapping file to '$APPLICATION_TYPES_MAPPING'"
+			echo "  [INFO] Copying sample Types Mapping file to '$APPLICATION_TYPES_MAPPING'"
 			mkdir -p "$(dirname $APPLICATION_TYPES_MAPPING)"
 			cp $DBB_MODELER_HOME/samples/typesMapping.yaml $APPLICATION_TYPES_MAPPING
 			command_rc=$?
