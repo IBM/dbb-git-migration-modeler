@@ -24,40 +24,69 @@ import com.ibm.dbb.utils.FileUtils
 
 // Initialization
 parseArgs(args)
- 
-File ZAPPFile = new File(props.ZAPPFilePath)
+
+def ZAPPFilePath = props.DBB_MODELER_APPLICATION_DIR + "/" + props.application + "/zapp.yaml"
+File ZAPPFile = new File(ZAPPFilePath)
 if (!ZAPPFile.exists()) {
-	logger.logMessage("*! [ERROR] The ZAPP file '${props.ZAPPFilePath}' was not found. Exiting.")
-	System.exit(1) 
-}
-File applicationDescriptorFile = new File(props.applicationDescriptorFilePath)
-if (!applicationDescriptorFile.exists()) {
-	logger.logMessage("*! [ERROR] The Application Descriptor file '${props.ApplicationDescriptorFilePath}' was not found. Exiting.")
+	logger.logMessage("*! [ERROR] The ZAPP file '${ZAPPFilePath}' was not found. Exiting.")
 	System.exit(1) 
 }
 
-readZAppFile(ZAPPFile)
+def applicationDescriptorFilePath = props.DBB_MODELER_APPLICATION_DIR + "/" + props.application + "/applicationDescriptor.yml"
+File applicationDescriptorFile = new File(applicationDescriptorFilePath)
+if (!applicationDescriptorFile.exists()) {
+	logger.logMessage("*! [ERROR] The Application Descriptor file '${applicationDescriptorFilePath}' was not found. Exiting.")
+	System.exit(1) 
+}
+
+zapp = readZAppFile(ZAPPFile)
 applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
 
 zapp.name = "${applicationDescriptor.application}"
 zapp.description = "ZAPP file for the ${applicationDescriptor.application} application"
-def dbbBuildProfile = zapp.profiles.find() { profile ->
-	profile.name.equals("dbb-build")
-}
-if (dbbBuildProfile) {
-	dbbBuildProfile.settings.application = "${applicationDescriptor.application}"
-	dbbBuildProfile.settings.buildScriptPath = "${props.buildScriptPath}"
-}
 
-def includeFilesSourceGroups = applicationDescriptor.sources.findAll() { source ->
-	source.artifactsType.equals("Include File")
-}
-
-if (includeFilesSourceGroups) {
-	includeFilesSourceGroups.each() { includeFilesSourceGroup ->
-		def propertyGroup = addPropertyGroup(includeFilesSourceGroup.name, includeFilesSourceGroup.language)
-		addLibrayToPropertyGroup(propertyGroup, "syslib", "local", includeFilesSourceGroup.repositoryPath)	 
-	}
+if (props.BUILD_FRAMEWORK.equals("zBuilder")) {
+    def includeFilesSourceGroups = applicationDescriptor.sources.findAll() { source ->
+        source.artifactsType.equals("Include File")
+    }
+    
+    if (includeFilesSourceGroups) {
+        includeFilesSourceGroups.each() { includeFilesSourceGroup ->
+            def propertyGroup = addPropertyGroup(includeFilesSourceGroup.name, includeFilesSourceGroup.language)
+            addLibrayToPropertyGroup(propertyGroup, "syslib", "local", includeFilesSourceGroup.repositoryPath)   
+        }
+    }
+    def groovyzBuildProfile = zapp.profiles.find() { profile ->
+        profile.name.equals("groovyz-userbuild")
+    }
+    if (groovyzBuildProfile) {
+        zapp.profiles.removeElement(groovyzBuildProfile)
+    }
+} else if (props.BUILD_FRAMEWORK.equals("zAppBuild")) {
+    def groovyzBuildProfile = zapp.profiles.find() { profile ->
+        profile.name.equals("groovyz-userbuild")
+    }
+    if (groovyzBuildProfile) {
+        groovyzBuildProfile.settings.application = "${applicationDescriptor.application}"
+        groovyzBuildProfile.settings.buildScriptPath = "${props.DBB_ZAPPBUILD}"
+    }
+    
+    def includeFilesSourceGroups = applicationDescriptor.sources.findAll() { source ->
+        source.artifactsType.equals("Include File")
+    }
+    
+    if (includeFilesSourceGroups) {
+        includeFilesSourceGroups.each() { includeFilesSourceGroup ->
+            def propertyGroup = addPropertyGroup(includeFilesSourceGroup.name, includeFilesSourceGroup.language)
+            addLibrayToPropertyGroup(propertyGroup, "syslib", "local", includeFilesSourceGroup.repositoryPath)   
+        }
+    }
+    def zBuilderProfile = zapp.profiles.find() { profile ->
+        profile.name.equals("zBuilder-userbuild")
+    }
+    if (zBuilderProfile) {
+        zapp.profiles.removeElement(zBuilderProfile)
+    }
 }
 
 writeZAppFile(ZAPPFile)
@@ -68,15 +97,13 @@ logger.close()
  * Parse CLI config
  */
 def parseArgs(String[] args) {
-
+    Properties configuration = new Properties()
 	String usage = 'zappUtils.groovy [options]'
-
-	def cli = new CliBuilder(usage:usage)
-	// required sandbox options
-	cli.z(longOpt:'zapp', args:1, 'Absolute path to the ZAPP file')
-	cli.a(longOpt:'applicationDescriptor', args:1, 'Absolute path to the application\'s Application Descriptor file')
-	cli.b(longOpt:'buildScriptPath', args:1, 'Absolute path to the Build Script framework (dbb-zappbuild)')
-	cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
+    String header = 'options:'
+	def cli = new CliBuilder(usage:usage, header:header)
+    cli.a(longOpt:'application', args:1, required:true, 'Application name.')
+    cli.l(longOpt:'logFile', args:1, required:false, 'Relative or absolute path to an output log file')
+    cli.c(longOpt:'configFile', args:1, required:true, 'Path to the DBB Git Migration Modeler Configuration file (created by the Setup script)')
 
 	def opts = cli.parse(args)
 	if (!opts) {
@@ -87,25 +114,74 @@ def parseArgs(String[] args) {
 		props.logFile = opts.l
 		logger.create(props.logFile)		
 	}
+	
+    if (opts.a) {
+        props.application = opts.a
+    } else {
+        logger.logMessage("*! [ERROR] The Application name (option -a/--application) must be provided. Exiting.")
+        System.exit(1)                     
+    }
 
-	if (opts.z) {
-		props.ZAPPFilePath = opts.z
-	} else {
-		println("*! [ERROR] The path to the ZAPP file must be specified. Exiting.")
-		System.exit(1) 
-	}
-	if (opts.a) {
-		props.applicationDescriptorFilePath = opts.a
-	} else {
-		println("*! [ERROR] The path to the Application Descriptor file must be specified. Exiting.")
-		System.exit(1) 
-	}
-	if (opts.b) {
-		props.buildScriptPath = opts.b
-	} else {
-		println("*! [ERROR] The path to the Build Script framework must be specified. Exiting.")
-		System.exit(1) 
-	}
+    if (opts.c) {
+        props.configurationFilePath = opts.c
+        File configurationFile = new File(props.configurationFilePath)
+        if (configurationFile.exists()) {
+            configurationFile.withReader() { reader ->
+                configuration.load(reader)
+            }
+        } else {
+            logger.logMessage("*! [ERROR] The DBB Git Migration Modeler Configuration file '${opts.c}' does not exist. Exiting.")
+            System.exit(1)                     
+        }
+    } else {
+        logger.logMessage("*! [ERROR] The path to the DBB Git Migration Modeler Configuration file was not specified ('-c/--configFile' parameter). Exiting.")
+        System.exit(1)
+    }
+
+    if (configuration.DBB_MODELER_APPLICATION_DIR) {
+        File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
+        if (directory.exists()) {
+            props.DBB_MODELER_APPLICATION_DIR = configuration.DBB_MODELER_APPLICATION_DIR
+        } else {
+            logger.logMessage("*! [ERROR] The Application's directory '${configuration.DBB_MODELER_APPLICATION_DIR}' does not exist. Exiting.")
+            System.exit(1)
+        }
+    } else {
+        logger.logMessage("*! [ERROR] The Applications directory must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+        System.exit(1)
+    }
+
+    if (configuration.BUILD_FRAMEWORK) {
+        props.BUILD_FRAMEWORK = configuration.BUILD_FRAMEWORK
+        if (props.BUILD_FRAMEWORK.equals("zBuilder")) {
+            File directory = new File(configuration.DBB_ZBUILDER)
+            if (directory.exists()) {
+                props.DBB_ZBUILDER = configuration.DBB_ZBUILDER
+            } else {
+                logger.logMessage("*! [ERROR] The DBB zBuilder instance '${configuration.DBB_ZBUILDER}' does not exist. Exiting.")
+                System.exit(1)
+            }
+        } else if (props.BUILD_FRAMEWORK.equals("zAppBuild")) {
+            File directory = new File(configuration.DBB_ZAPPBUILD)
+            if (directory.exists()) {
+                props.DBB_ZAPPBUILD = configuration.DBB_ZAPPBUILD
+            } else {
+                logger.logMessage("*! [ERROR] The DBB zAppBuild instance '${configuration.DBB_ZAPPBUILD}' does not exist. Exiting.")
+                System.exit(1)
+            }
+        } else {
+            logger.logMessage("*! [ERROR] The DBB Framework can only be 'zBuilder' or 'zAppBuild' The '${configuration.BUILD_FRAMEWORK}' value defined in the DBB Git Migration Modeler Configuration file is invalid. Exiting.")
+            System.exit(1)
+        }
+    } else {
+        logger.logMessage("*! [ERROR] The DBB Build Framework must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+        System.exit(1)
+    }
+
+    logger.logMessage("** Script configuration:")
+    props.each() { k, v ->
+        logger.logMessage("\t$k -> $v")
+    }
 }
 
 
@@ -129,10 +205,10 @@ class ZAppPropertyGroupLibrary {
 def readZAppFile(File yamlFile) {
     // Internal objects
     def yamlSlurper = new groovy.yaml.YamlSlurper()
-    zapp = yamlSlurper.parse(yamlFile)
 	yamlFile.withReader("UTF-8") { reader ->
-		zapp = yamlSlurper.parse(reader)
+		zappFileContent = yamlSlurper.parse(reader)
 	}
+	return zappFileContent
 }
 
 /**

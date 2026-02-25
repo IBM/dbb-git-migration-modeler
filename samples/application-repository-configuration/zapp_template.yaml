@@ -14,22 +14,39 @@ author:
   name: IBM CORPORATION
 
 profiles:
-  - name: dbb-build
+  # User build profile example, requires IBM Dependency-Based Build v3.0.3
+  - name: zBuilder-userbuild
     type: dbb
     settings:
-      application: 
-      command: $DBB_HOME/bin/groovyz
-      buildScriptPath: 
-      buildScriptArgs:
-        - --userBuild
-        - --workspace ${zopeneditor.userbuild.userSettings.dbbWorkspace}
-        - --application ${application}
-        - --hlq ${zopeneditor.userbuild.userSettings.dbbHlq}
-        - --outDir ${zopeneditor.userbuild.userSettings.dbbLogDir}
-        - --verbose
-        - --propFiles /var/dbb/dbb-zappbuild-config/build.properties,/var/dbb/dbb-zappbuild-config/datasets.properties
+      command: "$DBB_HOME/bin/dbb build"
+      lifecycle: user
+      lifecycleArgs:
+        - "--hlq ${dbbHlq}"
+        - "--errPrefix ${errPrefix}" # will be ignored if Advanced Features are not available
       additionalDependencies:
-        - ${application}/application-conf
+        - "dbb-app.yaml"
       logFilePatterns:
-        - ${buildFile.basename}.log
-        - BuildReport.*  
+        - "*.log"
+        - "BuildReport.html"
+        - "*.json"
+
+  # User build profile example, requires IBM Dependency-Based Build v2.x
+  - name: groovyz-userbuild
+    type: dbb
+    settings:
+      application:
+      command: "unset JAVA_OPTS; $DBB_HOME/bin/groovyz"
+      buildScriptPath:
+      buildScriptArgs:
+        - "--userBuild"
+        - "--workspace ${dbbWorkspace}"
+        - "--application ${application}"
+        - "--hlq ${dbbHlq}"
+        - "--outDir ${dbbLogDir}"
+        - "--errPrefix ${errPrefix}" # will be ignored if Advanced Features are not available
+        # - "--dependencyFile ${dependencyFile}" # use with older versions of dbb-zappbuild
+      additionalDependencies:
+        - "${application}/application-conf"
+      logFilePatterns:
+        - "${buildFile.basename}.log"
+        - "BuildReport.*"
