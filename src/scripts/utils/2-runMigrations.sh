@@ -86,7 +86,7 @@ if [ $rc -eq 0 ]; then
             fi
             cd $DBB_MODELER_APPLICATION_DIR/$application
 
-            CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/bin/migrate.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
+            CMD="$DBB_HOME/bin/groovyz $DBB_HOME/migration/migrateDatasets/migrateDatasets.groovy -l $DBB_MODELER_LOGS/2-$application.migration.log -le UTF-8 -np info -r $DBB_MODELER_APPLICATION_DIR/$application $DBB_MODELER_APPCONFIG_DIR/$mappingFile"
             echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/2-$application.migration.log
             $CMD
         fi
