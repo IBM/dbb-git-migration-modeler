@@ -132,9 +132,9 @@ if [ $rc -eq 0 ]; then
 					echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					$CMD >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/zappUtils.groovy \
-					-z $DBB_MODELER_APPLICATION_DIR/$applicationDir/zapp.yaml \
-					-a $DBB_MODELER_APPLICATION_DIR/$applicationDir/applicationDescriptor.yml \
-					-b $DBB_ZAPPBUILD -l $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log"
+					-c $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+					-a $applicationDir \
+					-l $DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log"
 					echo "[CMD] ${CMD}" >>$DBB_MODELER_LOGS/5-$applicationDir-initApplicationRepository.log
 					$CMD
 					rc=$?
