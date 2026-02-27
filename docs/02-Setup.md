@@ -3,6 +3,7 @@
 ## Technical pre-requisites
 
 The DBB Git Migration Modeler is using IBM Dependency Based Build (DBB) APIs to perform some tasks during the migration process. DBB should be installed and configured prior to running the DBB Git Migration Modeler.
+The currently supported version of DBB is 3.0.4.1. 
 
 Also, the DBB Git Migration Modeler is using `git` commands to perform some tasks during the Initialization step.
 

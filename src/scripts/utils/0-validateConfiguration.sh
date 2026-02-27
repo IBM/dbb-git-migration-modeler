@@ -98,11 +98,16 @@ validateEnvironment() {
 validateConfigurationFile() {
 	. $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE
 	command_rc=$?
+
 	if [ $command_rc -ne 0 ]; then
 		rc=8
 		ERRMSG="[ERROR] Unable to source the DBB Git Migration Modeler Configuration file '${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}'."
 		echo $ERRMSG
 	else
+        ## Checking DBB Toolkit version
+        REQUIRED_DBB_TOOLKIT_VERSION="$(cat $DBB_MODELER_HOME/release.properties | grep "Minimal-DBB-version" | awk -F "=" '{print $2}')"
+        validateDBBTookitVersion
+            
 		if [ "$DBB_MODELER_METADATASTORE_TYPE" = "db2" ]; then
 			if [ -z "${DBB_MODELER_DB2_METADATASTORE_JDBC_ID}" ]; then
 				rc=8
@@ -129,39 +134,11 @@ validateConfigurationFile() {
 				ERRMSG="[ERROR] The Db2 MetadataStore Password File '${DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE}' does not exist."
 				echo $ERRMSG
 			fi
-			## Checking DBB Toolkit version
-			REQUIRED_DBB_TOOLKIT_VERSION="2.0.2"
-			validateDBBTookitVersion
-			if [ $rc -ne 0 ]; then
-				if [ $rc -eq 4 ]; then
-					rc=8
-					ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the File-based MetadataStore, the minimal recommended version for the DBB Toolkit is 2.0.2."
-					echo $ERRMSG
-				else
-					rc=8
-					ERRMSG="[ERROR] The DBB Toolkit's version could not be verified."
-					echo $ERRMSG
-				fi
-			fi
 		elif [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
 			if [ "$DBB_MODELER_FILE_METADATA_STORE_DIR" = "" ]; then
 				rc=8
 				ERRMSG="[ERROR] The location of the DBB File-based MetadataStore must be specified."
 				echo $ERRMSG
-			fi
-			## Checking DBB Toolkit version
-			REQUIRED_DBB_TOOLKIT_VERSION="3.0.1"
-			validateDBBTookitVersion	
-			if [ $rc -ne 0 ]; then
-				if [ $rc -eq 4 ]; then
-					rc=8
-					ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. To use the Db2-based MetadataStore, the minimal recommended version for the DBB Toolkit is 3.0.1."
-					echo $ERRMSG
-				else
-					rc=8
-					ERRMSG="[ERROR] The DBB Toolkit's version could not be verified."
-					echo $ERRMSG
-				fi
 			fi
 		else
 			rc=8
@@ -353,6 +330,15 @@ validateDBBTookitVersion() {
 				fi
 			fi
 		fi
+        if [ $rc -eq 4 ]; then
+            rc=8
+            ERRMSG="[ERROR] The DBB Toolkit's version is $CURRENT_DBB_TOOLKIT_VERSION. The minimal recommended version for the DBB Toolkit is $REQUIRED_DBB_TOOLKIT_VERSION."
+            echo $ERRMSG
+        fi
+    else
+        rc=8
+        ERRMSG="[ERROR] The DBB Toolkit's version could not be verified."
+        echo $ERRMSG
 	fi
 }
 
