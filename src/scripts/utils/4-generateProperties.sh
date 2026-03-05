@@ -68,6 +68,14 @@ if [ $rc -eq 0 ]; then
 	# Environment variables setup
 	dir=$(dirname "$0")
 	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+	
+    if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
+        CMD="$DBB_HOME/bin/groovyz $DBB_MODELER_HOME/src/groovy/utils/updateZBuilderConfiguration.groovy \
+            --configFile $DBB_GIT_MIGRATION_MODELER_CONFIG_FILE \
+            --logFile $DBB_MODELER_LOGS/4-updateZBuilderConfiguration.log"
+        echo "[INFO] ${CMD}" >> $DBB_MODELER_LOGS/4-updateZBuilderConfiguration.log
+        $CMD
+    fi
 
 	# Adding commas before and after the passed parm, to search for pattern including commas
     APPLICATION_FILTER=",${APPLICATION_FILTER},"
