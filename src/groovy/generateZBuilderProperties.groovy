@@ -147,10 +147,10 @@ if (filesToLanguageConfigurations && filesToLanguageConfigurations.size() > 0 &&
             // if not found, create it
             if (!languageConfigurationVariable) {
                 languageConfigurationVariable = [ "name": "languageConfigurationSource", "value": "\${DBB_BUILD}/build-configuration/${fileToLanguageConfiguration.type}.yaml", "forFiles": [] ]        
+                task.variables << languageConfigurationVariable
             }
             // add the file to the forFiles for this override
             languageConfigurationVariable.forFiles << fileToLanguageConfiguration.file
-            task.variables << languageConfigurationVariable
                 
                 
         }
