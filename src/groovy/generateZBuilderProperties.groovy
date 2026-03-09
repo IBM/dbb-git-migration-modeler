@@ -190,17 +190,14 @@ sourceGroupsWithPrograms.each() { sourceGroupWithPrograms ->
 
 	if (sourceGroupWithPrograms.language.equalsIgnoreCase("COBOL")) {
 		// Creating default entries for Impact Query Patterns
-		def createNewDependencyPattern
 		def dependencyPattern = impactQueryPatterns.value.find() { languageExt ->
 			languageExt.languageExt.equals(sourceGroupWithPrograms.fileExtension)
 		}
 		if (!dependencyPattern) {
 			// generate new
-			createNewDependencyPattern = true
 			dependencyPattern = [ "languageExt": sourceGroupWithPrograms.fileExtension, "dependencyPatterns": [] ]
-		} else (
-			createNewDependencyPattern = false
-			)
+			impactQueryPatterns.value << dependencyPattern
+		} 
 
 		// BMS
 		def BMSGroups = applicationDescriptor.sources.findAll() { sourceGroup ->
@@ -233,10 +230,6 @@ sourceGroupsWithPrograms.each() { sourceGroupWithPrograms ->
 		if (!dependencyPattern.dependencyPatterns.contains(pattern)) {
 			dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${sourceGroupWithPrograms.repositoryPath}/*.${sourceGroupWithPrograms.fileExtension}"
 		}
-		// Add new pattern
-		if (createNewDependencyPattern && createNewDependencyPattern.toBoolean()) {
-			impactQueryPatterns.value << dependencyPattern
-		}
 
 		// Creating default entries for Dependencies Search Path
 		def languageTask = applicationDBBAppYaml.tasks.find() { task ->
@@ -268,7 +261,6 @@ sourceGroupsWithPrograms.each() { sourceGroupWithPrograms ->
 				dependencyPattern.dependencyPatterns << "\${APP_DIR_NAME}/${CobolGroup.repositoryPath}/*.${CobolGroup.fileExtension}"
 			}
 		}
-		//impactQueryPatterns.value << dependencyPattern
 	}
 
 
