@@ -93,7 +93,7 @@ if [ $rc -eq 0 ]; then
 
 	PGM="Refresh-Application-Descriptor-Files.sh"
 	# Print Prolog
-	export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F 'MigrationModelerRelease=' '{printf $2}'`
+	export MigrationModelerRelease=`cat $DBB_MODELER_HOME/release.properties | awk -F 'Migration-Modeler-release==' '{printf $2}'`
 	Prolog
 fi
 	
