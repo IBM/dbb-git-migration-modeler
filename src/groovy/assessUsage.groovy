@@ -270,8 +270,8 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 								applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
 
 								// Move logical file to new DBB Metadatstore BuildGroup
-								def sourceFilePath = "${props.application}/${qualifiedFile}"
-								def targetFilePath = "${owningApplication}/${targetRepositoryPath}/${file}.${fileExtension}"
+								def sourceFilePath = "${qualifiedFile}"
+								def targetFilePath = "${targetRepositoryPath}/${file}.${fileExtension}"
 
 								// Update application mappings
 

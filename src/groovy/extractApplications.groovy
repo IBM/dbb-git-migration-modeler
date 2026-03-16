@@ -309,6 +309,13 @@ def parseArgs(String[] args) {
 		props.SCAN_DATASET_MEMBERS = "false"
 	}
 
+	if (configuration.APPLICATION_DEFAULT_BRANCH) {
+		props.APPLICATION_DEFAULT_BRANCH = configuration.APPLICATION_DEFAULT_BRANCH
+	} else {
+		logger.logMessage("*! [ERROR] The default branch name setting APPLICATION_DEFAULT_BRANCH must be specified in the DBB Git Migration Modeler Configuration file. Exiting.")
+		System.exit(1)
+	}
+	
 	logger.logMessage("** Script configuration:")
 	props.each() { k, v ->
 		logger.logMessage("\t$k -> $v")
@@ -373,13 +380,13 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 		applicationDescriptor.description = applicationConfiguration.description
 		applicationDescriptor.owner = applicationConfiguration.owner
 		// Adding baseline to ApplicationDescriptor
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", applicationConfiguration.baseline)
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "${props.APPLICATION_DEFAULT_BRANCH}", "release", applicationConfiguration.baseline)
 		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/${applicationConfiguration.baseline}", "release", applicationConfiguration.baseline)
 	} else {
 		applicationDescriptor.application = "UNASSIGNED"
 		applicationDescriptor.description = "Unassigned components"
 		applicationDescriptor.owner = "None"
-		applicationDescriptorUtils.addBaseline(applicationDescriptor, "main", "release", "rel-1.0.0")
+		applicationDescriptorUtils.addBaseline(applicationDescriptor, "${props.APPLICATION_DEFAULT_BRANCH}", "release", "rel-1.0.0")
 		applicationDescriptorUtils.addBaseline(applicationDescriptor, "release/rel-1.0.0", "release", "rel-1.0.0")
 	}
 
