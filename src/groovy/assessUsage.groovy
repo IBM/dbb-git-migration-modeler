@@ -170,7 +170,7 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 					logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
 
 				impactedFiles.each { impactedFile ->
-					def referencingCollection = impactedFile.getCollection().getName().replace("${props.APPLICATION_DEFAULT_BRANCH}", "")
+					def referencingCollection = impactedFile.getCollection().getName().replace("-${props.APPLICATION_DEFAULT_BRANCH}", "")
 					logger.logMessage("\t'${impactedFile.getFile()}' in  Application  '$referencingCollection'")
 					referencingCollections.add(referencingCollection)
 				}
@@ -373,7 +373,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 		logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
 
 		impactedFiles.each { impactedFile ->
-			def referencingCollection = impactedFile.getCollection().getName().replace("${props.APPLICATION_DEFAULT_BRANCH}", "")
+			def referencingCollection = impactedFile.getCollection().getName().replace("-${props.APPLICATION_DEFAULT_BRANCH}", "")
 			logger.logMessage("\t'${impactedFile.getFile()}' in  Application  '$referencingCollection'")
 			referencingCollections.add(referencingCollection)
 		}
