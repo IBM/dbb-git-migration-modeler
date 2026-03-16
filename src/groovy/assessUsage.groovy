@@ -651,7 +651,7 @@ def sortListByDependencyTree(List<String> files){
 
 	// Create topSort
 	files.each { file ->
-		lFile = metadataStoreUtils.getLogicalFile(file, "${props.application}")
+		lFile = metadataStoreUtils.getLogicalFile(file, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}")
 		if (lFile) {
 			logicalDependencies = lFile.getLogicalDependencies()
 			includesFilesNestedDependencies.put(file, logicalDependencies)

@@ -140,19 +140,18 @@ def addLogicalFile(LogicalFile file, String targetBuildGroupName,  String target
 /**
  * Returns the logical file for an application
  */
-def getLogicalFile(String file, String application) {
-	def referenceName="${application}-main"
-	def buildGroup = metadataStore.getBuildGroup(referenceName)
+def getLogicalFile(String file, String buildGroupName,  String collectionName) {
+	def buildGroup = metadataStore.getBuildGroup(buildGroupName)
 	if (buildGroup) {
-		def collection = buildGroup.getCollection(referenceName)
+		def collection = buildGroup.getCollection(collectionName)
 		if (collection) {
 			lFile = collection.getLogicalFile("${application}/${file}")
 			return lFile
 		} else {
-			logger.logMessage("\t*! [ERROR] The collection '$referenceName' in buildgroup '$referenceName' could not be found.")
+			logger.logMessage("\t*! [ERROR] The collection '$collectionName' in buildgroup '$buildGroupName' could not be found.")
 		}
 	} else {
-		logger.logMessage("\t*! [ERROR] The buildgroup '$referenceName' could not be found.")
+		logger.logMessage("\t*! [ERROR] The buildgroup '$buildGroupName' could not be found.")
 		
 	}
 	return null
