@@ -145,7 +145,7 @@ def getLogicalFile(String file, String buildGroupName,  String collectionName) {
 	if (buildGroup) {
 		def collection = buildGroup.getCollection(collectionName)
 		if (collection) {
-			lFile = collection.getLogicalFile("${application}/${file}")
+			lFile = collection.getLogicalFile(file)
 			return lFile
 		} else {
 			logger.logMessage("\t*! [ERROR] The collection '$collectionName' in buildgroup '$buildGroupName' could not be found.")
