@@ -30,19 +30,19 @@ parseArgs(args)
 
 initScriptParameters()
 
-applicationDescriptorFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml")
+def applicationDescriptorFile = new File("${props.applicationDirectory}/applicationDescriptor.yml")
 
 logger.logMessage("** Reading the existing Application Descriptor file.")
 
 if (applicationDescriptorFile.exists()) { 
 	applicationDescriptor = applicationDescriptorUtils.readApplicationDescriptor(applicationDescriptorFile)
 } else {
-	logger.logMessage("*! [WARNING] The Application Descriptor file ${props.DBB_MODELER_APPLICATION_DIR}/${props.application}/applicationDescriptor.yml was not found. Exiting.")
+	logger.logMessage("*! [WARNING] The Application Descriptor file ${applicationDirectory}/applicationDescriptor.yml was not found. Exiting.")
 	System.exit(1)
 }
 
 logger.logMessage("** Retrieving the list of files mapped to Source Groups.")
-HashSet<String> files = fileUtils.getMappedFilesFromApplicationDescriptor(props.DBB_MODELER_APPLICATION_DIR, props.application, applicationDescriptor, logger)
+HashSet<String> files = fileUtils.getMappedFilesFromApplicationDescriptor(props.applicationDirectory, applicationDescriptor, logger)
 logger.logMessage("** Scanning the files.")
 List<LogicalFile> logicalFiles = scanFiles(files)
 
@@ -73,7 +73,7 @@ def scanFiles(files) {
 	files.each { file ->
 		logger.logMessage("\tScanning file $file ")
 		try {
-			logicalFile = scanner.scan(file, props.DBB_MODELER_APPLICATION_DIR)
+			logicalFile = scanner.scan(file, props.applicationDirectory)
 			logicalFiles.add(logicalFile)
 		} catch (Exception e) {
 			logger.logMessage("\t*! [ERROR] Something went wrong when scanning the file '$file'.")
@@ -130,11 +130,13 @@ def parseArgs(String[] args) {
 	}
 
 	if (configuration.DBB_MODELER_APPLICATION_DIR) {
-		File directory = new File(configuration.DBB_MODELER_APPLICATION_DIR)
+		// Set application directory
+		def applicationDirectory = "${configuration.DBB_MODELER_APPLICATION_DIR}/${props.application}"
+		File directory = new File(applicationDirectory)
 		if (directory.exists()) {
-			props.DBB_MODELER_APPLICATION_DIR = configuration.DBB_MODELER_APPLICATION_DIR
+			props.applicationDirectory = applicationDirectory
 		} else {
-			logger.logMessage("*! [ERROR] The Applications directory '${configuration.DBB_MODELER_APPLICATION_DIR}' does not exist. Exiting.")
+			logger.logMessage("*! [ERROR] Application Directory '${applicationDirectory}' does not exist. Exiting.")
 			System.exit(1)
 		}
 	} else {
@@ -235,12 +237,6 @@ def parseArgs(String[] args) {
  */
 def initScriptParameters() {
 	// Settings
-	File applicationFolderFile = new File("${props.DBB_MODELER_APPLICATION_DIR}/${props.application}")
-	if (!applicationFolderFile.exists()){
-		logger.logMessage("*! [ERROR] Application Directory '${props.DBB_MODELER_APPLICATION_DIR}/${props.application}' does not exist. Exiting.")
-		System.exit(1)
-	}
-
 	if (props.DBB_MODELER_FILE_METADATA_STORE_DIR) {	
 		metadataStoreUtils.initializeFileMetadataStore("${props.DBB_MODELER_FILE_METADATA_STORE_DIR}")
 	} else {

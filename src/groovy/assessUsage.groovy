@@ -170,7 +170,7 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 					logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
 
 				impactedFiles.each { impactedFile ->
-					def referencingCollection = impactedFile.getCollection().getName().replace("-main", "")
+					def referencingCollection = impactedFile.getCollection().getName().replace("-${props.APPLICATION_DEFAULT_BRANCH}", "")
 					logger.logMessage("\t'${impactedFile.getFile()}' in  Application  '$referencingCollection'")
 					referencingCollections.add(referencingCollection)
 				}
@@ -270,8 +270,8 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
 								applicationDescriptorUtils.removeFileDefinition(applicationDescriptor, sourceGroupName, file)
 
 								// Move logical file to new DBB Metadatstore BuildGroup
-								def sourceFilePath = "${props.application}/${qualifiedFile}"
-								def targetFilePath = "${owningApplication}/${targetRepositoryPath}/${file}.${fileExtension}"
+								def sourceFilePath = "${qualifiedFile}"
+								def targetFilePath = "${targetRepositoryPath}/${file}.${fileExtension}"
 
 								// Update application mappings
 
@@ -373,7 +373,7 @@ def assessImpactedFilesForPrograms(HashMap<String, ArrayList<String>> programs) 
 		logger.logMessage("\tFiles depending on '${repositoryPath}/${file}.${fileExtension}' :")
 
 		impactedFiles.each { impactedFile ->
-			def referencingCollection = impactedFile.getCollection().getName().replace("-main", "")
+			def referencingCollection = impactedFile.getCollection().getName().replace("-${props.APPLICATION_DEFAULT_BRANCH}", "")
 			logger.logMessage("\t'${impactedFile.getFile()}' in  Application  '$referencingCollection'")
 			referencingCollections.add(referencingCollection)
 		}
@@ -651,7 +651,7 @@ def sortListByDependencyTree(List<String> files){
 
 	// Create topSort
 	files.each { file ->
-		lFile = metadataStoreUtils.getLogicalFile(file, "${props.application}")
+		lFile = metadataStoreUtils.getLogicalFile(file, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}")
 		if (lFile) {
 			logicalDependencies = lFile.getLogicalDependencies()
 			includesFilesNestedDependencies.put(file, logicalDependencies)

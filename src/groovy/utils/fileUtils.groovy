@@ -31,18 +31,22 @@ def relativizePath(String path, String root) {
 /**
  * Get list of files relative to DBB_MODELER_APPLICATION_DIR
  */
-def getMappedFilesFromApplicationDescriptor(String DBB_MODELER_APPLICATION_DIR, String application, applicationDescriptor, logger) {
+def getMappedFilesFromApplicationDescriptor(String applicationDirectory, applicationDescriptor, logger) {
 	HashSet<String> filesList = new HashSet<String>()
-
-	Files.walk(Paths.get("${DBB_MODELER_APPLICATION_DIR}/${application}")).forEach { filePath ->
+	Files.walk(Paths.get(applicationDirectory)).forEach { filePath ->
 		if (Files.isRegularFile(filePath)) {
-			relativeFilePathFromAppDir = relativizePath(filePath.toString(), DBB_MODELER_APPLICATION_DIR)
-			relativeFilePathFromApplication = relativizePath(filePath.toString(), "${DBB_MODELER_APPLICATION_DIR}/${application}")
+			relativeFilePathFromAppDir = relativizePath(filePath.toString(), applicationDirectory)
+			relativeDirectoryFromAppDir = Paths.get(relativeFilePathFromAppDir.toString()).getParent().toString()
 			
-			genericRepositoryFolder = Paths.get(relativeFilePathFromApplication.toString()).getParent().toString()
-			def matchingApplicationDescriptorEntry = applicationDescriptor.sources.find() { sourceDefinition ->
-				sourceDefinition.repositoryPath.equals(genericRepositoryFolder)
+			def matchingApplicationDescriptorEntry = applicationDescriptor.sources.find() {
+				sourceDefinition ->
+				// Direct match with repositoryPath
+				if (sourceDefinition.repositoryPath.equals(relativeDirectoryFromAppDir)) {
+					return true
+				}
+				return false
 			}
+			
 			if (matchingApplicationDescriptorEntry) {
 				filesList.add(relativeFilePathFromAppDir)
 			} else {
