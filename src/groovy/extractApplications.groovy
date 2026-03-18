@@ -433,7 +433,7 @@ def generateApplicationFiles(ApplicationMappingConfiguration applicationConfigur
 			language = (matchingRepositoryPath.language) ? (matchingRepositoryPath.language) : lastQualifier
 			languageProcessor = (matchingRepositoryPath.languageProcessor) ? (matchingRepositoryPath.languageProcessor) : lastQualifier + ".groovy"
 			targetRepositoryPath = (matchingRepositoryPath.repositoryPath) ? matchingRepositoryPath.repositoryPath.replaceAll('\\$application',application).replaceAll('\\$component',component).replaceAll("//", "/") : "$application/$lastQualifier"
-			// remove potential trailing /
+			// remove any leading / - for instance when no component is specified 
 			if (targetRepositoryPath.startsWith('/')) {
 				targetRepositoryPath = targetRepositoryPath.drop(1)
 			}
