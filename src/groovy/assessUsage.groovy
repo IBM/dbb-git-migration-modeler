@@ -278,7 +278,7 @@ def assessImpactedFilesForIncludeFiles(HashMap<String, ArrayList<String>> includ
                                 updateMappingFiles(props.DBB_MODELER_APPCONFIG_DIR, props.application, sourceFilePath, owningApplication, targetFilePath);
 
                                 logger.logMessage("\t==> Moving DBB Metadata for '$file' from buildGroup ${props.application}-${props.APPLICATION_DEFAULT_BRANCH} to new buildgroup ${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}.")
-                                metadataStoreUtils.moveLogicalFile(props.DBB_MODELER_APPLICATION_DIR, sourceFilePath, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", targetFilePath, "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}", "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}")
+                                metadataStoreUtils.moveLogicalFile("${props.DBB_MODELER_APPLICATION_DIR}/${owningApplication}", sourceFilePath, "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", "${props.application}-${props.APPLICATION_DEFAULT_BRANCH}", targetFilePath, "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}", "${owningApplication}-${props.APPLICATION_DEFAULT_BRANCH}")
                             }
                         } else {
                             // just modify the scope as PUBLIC or SHARED
