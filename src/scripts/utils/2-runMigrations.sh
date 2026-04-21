@@ -73,6 +73,13 @@ if [ $rc -eq 0 ]; then
     APPLICATION_FILTER=",${APPLICATION_FILTER},"
 
 	cd $DBB_MODELER_APPCONFIG_DIR
+    ls *.mapping
+    rc=$?
+    if [ $rc -ne 0 ]; then
+        echo "[ERROR] No DBB Migration Utility mapping file was found. Please check the extraction phase log and check for any error. rc="$rc
+        exit $rc
+    fi
+
     for mappingFile in `ls *.mapping`
     do
         application=`echo $mappingFile | awk -F. '{ print $1 }'`
