@@ -349,7 +349,7 @@ if [ $rc -eq 0 ]; then
                             CMD="$DBB_HOME/bin/dbb build metadata \
                                 --hlq $APPLICATION_ARTIFACTS_HLQ \
                                 ${METADATASTORE_OPTIONS}"            
-                        else
+                        fi
                     elif [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
                         if [ "$DBB_MODELER_METADATASTORE_TYPE" = "file" ]; then
                             declare METADATASTORE_OPTIONS="--propOverwrites createBuildOutputSubfolder=false,metadataStoreType=$DBB_MODELER_METADATASTORE_TYPE,metadataStoreFileLocation=$DBB_MODELER_FILE_METADATA_STORE_DIR"
