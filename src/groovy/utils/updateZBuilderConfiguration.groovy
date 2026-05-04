@@ -132,7 +132,6 @@ def parseArgs(String[] args) {
 
     if (configuration.BUILD_FRAMEWORK) {
         props.BUILD_FRAMEWORK = configuration.BUILD_FRAMEWORK
-        println(configuration.BUILD_FRAMEWORK)
         if (!configuration.BUILD_FRAMEWORK.equals("zBuilder") && !configuration.BUILD_FRAMEWORK.equals("zAppBuild")) {
             logger.logMessage("*! [ERROR] The DBB Build Framework can only be 'zBuilder' or 'zAppBuild' The '${configuration.BUILD_FRAMEWORK}' value defined in the DBB Git Migration Modeler Configuration file is invalid. Exiting.")
             System.exit(1)

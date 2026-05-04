@@ -65,15 +65,15 @@ if [ $rc -eq 0 ]; then
 fi
 
 if [ $rc -eq 0 ]; then
-	# Environment variables setup
-	dir=$(dirname "$0")
-	. $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
+    # Environment variables setup
+    dir=$(dirname "$0")
+    . $dir/0-validateConfiguration.sh -c ${DBB_GIT_MIGRATION_MODELER_CONFIG_FILE}
 
-	# Adding commas before and after the passed parm, to search for pattern including commas
+    # Adding commas before and after the passed parm, to search for pattern including commas
     APPLICATION_FILTER=",${APPLICATION_FILTER},"
 
-	cd $DBB_MODELER_APPCONFIG_DIR
-    ls *.mapping
+    cd $DBB_MODELER_APPCONFIG_DIR
+    ls *.mapping > /dev/null 2>&1
     rc=$?
     if [ $rc -ne 0 ]; then
         echo "[ERROR] No DBB Migration Utility mapping file was found. Please check the extraction phase log and check for any error. rc="$rc
