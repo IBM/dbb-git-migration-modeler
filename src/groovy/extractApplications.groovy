@@ -108,7 +108,7 @@ if (props.APPLICATION_TYPES_MAPPING) {
         logger.logMessage("*! [WARNING] The Types Mapping file '$props.APPLICATION_TYPES_MAPPING' was not found.")
     } else {        
         LoaderOptions options = new LoaderOptions()
-        options.setCodePointLimit(20 * 1024 * 1024)  // 10 MB
+        options.setCodePointLimit(20 * 1024 * 1024)
         Yaml yaml = new Yaml(options)
         typesMapping = yaml.load(typeMappingFile.newInputStream())
     }
