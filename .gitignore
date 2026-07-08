@@ -1,1 +1,5 @@
 work-*
+.gradle/
+build/
+gradle*/
+lib/
