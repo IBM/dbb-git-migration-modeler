@@ -34,6 +34,8 @@ import java.text.DecimalFormat
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import java.nio.file.PathMatcher
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.LoaderOptions
 
 @Field def applicationDescriptorUtils = loadScript(new File("utils/applicationDescriptorUtils.groovy"))
 @Field def logger = loadScript(new File("utils/logger.groovy"))
@@ -105,8 +107,10 @@ if (props.APPLICATION_TYPES_MAPPING) {
     if (!typeMappingFile.exists()) {
         logger.logMessage("*! [WARNING] The Types Mapping file '$props.APPLICATION_TYPES_MAPPING' was not found.")
     } else {        
-        def yamlSlurper = new groovy.yaml.YamlSlurper()
-        typesMapping = yamlSlurper.parse(typeMappingFile).datasetMembers
+        LoaderOptions options = new LoaderOptions()
+        options.setCodePointLimit(20 * 1024 * 1024)  // 10 MB
+        Yaml yaml = new Yaml(options)
+        typesMapping = yaml.load(typeMappingFile.newInputStream())
     }
 	
 } else {
@@ -597,8 +601,8 @@ def getTypeForDatasetMember(String datasetMember) {
     if (!typesMapping) {
         return "UNKNOWN"
     } else {
-        def foundType = typesMapping.find { typeMapping ->
-          typeMapping.datasetMember.equalsIgnoreCase(datasetMember)
+        def foundType = typesMapping.datasetMembers.find { datasetMembersEntry ->
+            datasetMembersEntry.datasetMember.equalsIgnoreCase(datasetMember)
         } 
         if (foundType) {
             return foundType.type
