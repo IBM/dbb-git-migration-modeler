@@ -90,6 +90,8 @@ if [ $rc -eq 0 ]; then
 			echo "*******************************************************************"
 			if [ "$BUILD_FRAMEWORK" = "zBuilder" ]; then
 				GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZBuilderProperties.groovy
+			elif [ "$BUILD_FRAMEWORK" = "zAppBuild" ]; then
+				GENERATE_PROPERTIES_SCRIPT=$DBB_MODELER_HOME/src/groovy/generateZAppBuildProperties.groovy
 			fi
 					
 			CMD="$DBB_HOME/bin/groovyz $GENERATE_PROPERTIES_SCRIPT \
