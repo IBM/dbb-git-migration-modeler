@@ -3,7 +3,10 @@
 
 # file encodings
 *.cpy zos-working-tree-encoding=ibm-1047
+*.copy zos-working-tree-encoding=ibm-1047
 *.cbl zos-working-tree-encoding=ibm-1047
+*.cob zos-working-tree-encoding=ibm-1047
+*.cobol zos-working-tree-encoding=ibm-1047
 *.csd zos-working-tree-encoding=ibm-1047
 *.config zos-working-tree-encoding=ibm-1047
 *.bms zos-working-tree-encoding=ibm-1047
