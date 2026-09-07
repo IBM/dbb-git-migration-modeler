@@ -41,7 +41,7 @@ This stage is optional and allows to statically migrate build configuration from
 We encourage customers to use the dynamic scanners in Dependency Based Build to determine the runtime flags for each build file.
 The outputs of this stage becomes relevant when the final migration is taking place.
 
-The purpose of this stage is to generate properties and property files that are used by the [DBB zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=zbuilder-getting-started) build framework, which can either be. The properties and properties files are created based on the information gathered in specific input files:
+The purpose of this stage is to generate properties and property files that are used by the [DBB zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=zbuilder-getting-started) build framework. The properties and properties files are created based on the information gathered in specific input files:
 - the [Types Mapping file](../samples/typesMapping.yaml), defined later in this documentation.
 - the [Types Configurations file](../samples/typesConfigurations)
 

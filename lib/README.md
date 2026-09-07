@@ -1,6 +1,6 @@
 # Local Library Directory
 
-This directory is configured to hold z/OS-specific libraries for local compilation on Windows.
+This directory is configured to hold z/OS-specific libraries for local compilation on Windows, Linux or MacOS.
 
 ## Directory Structure
 

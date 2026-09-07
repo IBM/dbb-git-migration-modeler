@@ -4,7 +4,7 @@ repositoryPaths:
   - repositoryPath: $component/src/cobol
     artifactsType: "Program"
     sourceGroup: "cobol"
-    language: "COBOL"
+    language: "cobol"
     languageProcessor: "Cobol"
     fileExtension: cbl
     toLowerCase: true
@@ -15,7 +15,7 @@ repositoryPaths:
   - repositoryPath: $component/src/copy
     artifactsType: "Include File"
     sourceGroup: "copy"
-    language: "COBOL"
+    language: "cobol"
     languageProcessor: ""
     fileExtension: cpy
     toLowerCase: true
@@ -29,7 +29,7 @@ repositoryPaths:
   - repositoryPath: $component/src/pli
     artifactsType: "Program"
     sourceGroup: "pli"
-    language: "PL/I"
+    language: "pl1"
     languageProcessor: "PLI"
     fileExtension: cbl
     toLowerCase: true
@@ -43,7 +43,7 @@ repositoryPaths:
   - repositoryPath: $component/src/asm
     artifactsType: "Program"
     sourceGroup: "asm"
-    language: "ASM"
+    language: "asm"
     languageProcessor: "Assembler"
     fileExtension: asm
     toLowerCase: true
@@ -54,7 +54,7 @@ repositoryPaths:
   - repositoryPath: $component/src/bms
     artifactsType: "BMS"
     sourceGroup: "bms"
-    language: "ASM"
+    language: "asm"
     languageProcessor: "BMS"
     fileExtension: bms
     toLowerCase: true
@@ -65,7 +65,7 @@ repositoryPaths:
   - repositoryPath: $component/src/link
     artifactsType: "Other"
     sourceGroup: "link"
-    language: "LINK"
+    language: "other"
     languageProcessor: "LinkEdit"
     fileExtension: lnk
     toLowerCase: true
@@ -76,7 +76,7 @@ repositoryPaths:
   - repositoryPath: $component/src/jcl
     artifactsType: "Other"
     sourceGroup: "jcl"
-    language: "JCL"
+    language: "jcl"
     languageProcessor: "Transfer"
     fileExtension: jcl
     toLowerCase: true
