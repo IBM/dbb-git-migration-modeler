@@ -52,7 +52,7 @@ The Application Descriptor files are meant to also describe the list of artifact
 
 The DBB Git Migration Modeler supports only the **DBB zBuilder** build framework. Support for **dbb-zAppBuild** has been removed as of this version.
 
-If you were previously using dbb-zAppBuild, you should consider moving to **DBB zBuilder** before using this version of the  DBB Git Migration Modeler. Refer to the [IBM DBB zBuilder documentation](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=zbuilder-getting-started) for guidance.
+If you were previously using dbb-zAppBuild, consider moving to **DBB zBuilder** before using this version of the  DBB Git Migration Modeler. Refer to the [IBM DBB zBuilder documentation](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=zbuilder-getting-started) for guidance.
 
 ## Migrations scenarios for the DBB Git Migration Modeler
 

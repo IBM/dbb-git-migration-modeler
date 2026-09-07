@@ -245,7 +245,7 @@ The **Run Migrations** phase (`MigrateDatasets` Java class) only requires the pa
 It will search for all the DBB Migration mapping files located in the `DBB_MODELER_APPCONFIG_DIR` directory, and will process them in sequence.
 
 <details>
-  <summary>Output example for a single application (CBSA)</summary>
+  <summary>Output example for application GenApp</summary>
 Execution of the command:
 
 `./Migration-Modeler-Start.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
@@ -307,7 +307,7 @@ It will iterate over all application directories found in the `DBB_MODELER_APPLI
 2. The second sub-phase is an analysis of how the different Include Files and Programs are used by all known applications.
 
 <details>
-  <summary>Output example for a single application (CBSA)</summary>
+  <summary>Output example for application GenApp</summary>
 Execution of the command:
 
 `./Migration-Modeler-Start.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`

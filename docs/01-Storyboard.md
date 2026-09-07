@@ -81,7 +81,7 @@ When running this utility, two main types of files will be created for each appl
 * A DBB Migration Mapping file (Text format): this file contains instructions on how the DBB Migration utility should operate when running a migration.
 This structure of mapping file and how to invoke the DBB Migration utility with a mapping file is described in [the official DBB documentation](https://www.ibm.com/docs/en/dbb/2.0?topic=migrating-source-files-from-zos-git#running-migration-using-a-mapping-file).
 
-For [the Property Generation phase](#the-property-generation-phase), the following output files are created when using zBuilder.
+For [the Property Generation phase](#the-property-generation-phase), the following output files are created.
 
 For each repository:
 * Language Configuration files, containing properties defined for types configurations (as defined in the [Types Configurations file](../samples/typesConfigurations.yaml)). These Language Configuration files are stored in a `config` folder of each repository

@@ -65,7 +65,7 @@ The following software must be available before building or running the DBB Git 
 
 > **Important**: The Java implementation of the DBB Git Migration Modeler supports only the **DBB zBuilder** build framework. The dbb-zAppBuild framework is no longer supported.
 
-## Key Libraries
+### Required Libraries
 
 The following libraries are provided by IBM — **no manual installation is required** when running on z/OS:
 
@@ -77,7 +77,7 @@ The following libraries are resolved automatically by Gradle at build time:
 - **Apache Commons CLI 1.5.0**: Command-line argument parsing
 - **SnakeYAML 2.0**: YAML configuration file parsing
 
-### Building locally (off z/OS)
+### Building on x86
 
 When building on a workstation (Windows, Linux, macOS), the IBM-provided JAR files are not available from a public Maven repository and must be supplied manually:
 
