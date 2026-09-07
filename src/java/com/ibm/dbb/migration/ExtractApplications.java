@@ -466,7 +466,7 @@ public class ExtractApplications {
                 language = matchingRepositoryPath.getLanguage() != null ? 
                     matchingRepositoryPath.getLanguage() : lastQualifier;
                 languageProcessor = matchingRepositoryPath.getLanguageProcessor() != null ? 
-                    matchingRepositoryPath.getLanguageProcessor() : lastQualifier + ".groovy";
+                    matchingRepositoryPath.getLanguageProcessor() : lastQualifier;
                 
                 targetRepositoryPath = matchingRepositoryPath.getRepositoryPath() != null ?
                     matchingRepositoryPath.getRepositoryPath()
