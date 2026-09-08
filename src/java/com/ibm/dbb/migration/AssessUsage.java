@@ -635,6 +635,9 @@ public class AssessUsage {
     private Map<ImpactFile, String> findImpactedFilesWithBuildGroup(String impactSearch, String file) throws BuildException, DependencyException, IOException {
         Map<ImpactFile, String> impactsWithBuildGroup = new HashMap<>();
         
+        System.out.println("------------------------");
+        System.out.println(impactSearch);
+        System.out.println("------------------------");
         for (BuildGroup buildGroup : metadataStoreUtils.getBuildGroups()) {
             if ("dbb_default".equals(buildGroup.getName())) continue;
             
