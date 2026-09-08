@@ -897,7 +897,8 @@ public class AssessUsage {
             props.getProperty("application") + "-" + props.getProperty("APPLICATION_DEFAULT_BRANCH"),
             targetFilePath,
             owningApplication + "-" + props.getProperty("APPLICATION_DEFAULT_BRANCH"),
-            owningApplication + "-" + props.getProperty("APPLICATION_DEFAULT_BRANCH")
+            owningApplication + "-" + props.getProperty("APPLICATION_DEFAULT_BRANCH"),
+            Boolean.parseBoolean(props.getProperty("SCAN_CONTROL_TRANSFERS", "false"))
         );
     }
     

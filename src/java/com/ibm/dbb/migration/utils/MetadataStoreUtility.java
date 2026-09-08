@@ -187,7 +187,7 @@ public class MetadataStoreUtility {
     public void moveLogicalFile(String applicationDir, String sourceFilePath,
                                String sourceBuildGroup, String sourceCollection,
                                String targetFilePath, String targetBuildGroup,
-                               String targetCollection) throws BuildException {
+                               String targetCollection, boolean scanControlTransfers) throws BuildException {
         if (metadataStore == null) {
             throw new IllegalStateException("MetadataStore not initialized");
         }
@@ -202,7 +202,7 @@ public class MetadataStoreUtility {
         }
         
         // Step 2: Scan the file at the target location (this captures all dependencies)
-        LogicalFile scannedLogicalFile = scanFile(applicationDir, targetFilePath);
+        LogicalFile scannedLogicalFile = scanFile(applicationDir, targetFilePath, scanControlTransfers);
         
         if (scannedLogicalFile == null) {
             throw new BuildException("Failed to scan file at target location: " + targetFilePath);
@@ -249,12 +249,12 @@ public class MetadataStoreUtility {
      * @param file File path relative to workspace
      * @return Scanned LogicalFile or null if scan fails
      */
-    private LogicalFile scanFile(String workspace, String file) {
+    private LogicalFile scanFile(String workspace, String file, boolean scanControlTransfers) {
         LogicalFile logicalFile = null;
         com.ibm.dbb.dependency.DependencyScanner scanner = new com.ibm.dbb.dependency.DependencyScanner();
         
-        // Enable Control Transfer flag in DBB Scanner
-        scanner.setCollectControlTransfers("true");
+        // Enabling Control Transfer flag in DBB Scanner
+        scanner.setCollectControlTransfers(String.valueOf(scanControlTransfers));
         
         try {
             logicalFile = scanner.scan(file, workspace);
