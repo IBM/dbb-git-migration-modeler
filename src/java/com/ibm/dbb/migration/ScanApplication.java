@@ -117,7 +117,7 @@ public class ScanApplication {
         for (String file : files) {
             logger.logMessage("\tScanning file '" + props.getProperty("applicationDirectory") + "/" + file + "'");
             try {
-                LogicalFile logicalFile = scanner.scan(file, props.getProperty("applicationDirectory"));
+                LogicalFile logicalFile = scanner.scan(file, props.getProperty("applicationDirectory"), "IBM-1047");
                 logicalFiles.add(logicalFile);
             } catch (Exception e) {
                 logger.logMessage("\t*! [ERROR] Something went wrong when scanning the file '" + file + "'.");
