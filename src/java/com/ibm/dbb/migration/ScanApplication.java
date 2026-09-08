@@ -115,7 +115,7 @@ public class ScanApplication {
         scanner.setCollectControlTransfers(String.valueOf(scanControlTransfers));
         
         for (String file : files) {
-            logger.logMessage("\tScanning file " + file);
+            logger.logMessage("\tScanning file '" + props.getProperty("applicationDirectory") + "/" + file + "'");
             try {
                 LogicalFile logicalFile = scanner.scan(file, props.getProperty("applicationDirectory"));
                 logicalFiles.add(logicalFile);

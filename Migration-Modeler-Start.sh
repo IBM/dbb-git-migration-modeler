@@ -78,6 +78,8 @@ if [ -n "$DBB_HOME" ]; then
 	CLASSPATH="$CLASSPATH:$DBB_HOME/lib/*"
 fi
 
+echo $CLASSPATH
+
 # Run the MigrationOrchestrator Java class
 java -Ddbb.modeler.home="$DBB_MODELER_HOME" \
      -cp "$CLASSPATH" \
