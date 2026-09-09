@@ -26,7 +26,7 @@ if [ ! -f "$JAR_FILE" ]; then
 fi
 
 # Build classpath with all dependencies
-CLASSPATH="$JAR_FILE"
+CLASSPATH="$JAR_FILE:$CLASSPATH"
 if [ -d "$LIB_DIR" ]; then
 	for jar in "$LIB_DIR"/*.jar; do
 		CLASSPATH="$CLASSPATH:$jar"

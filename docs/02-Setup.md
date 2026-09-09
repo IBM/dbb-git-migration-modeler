@@ -19,8 +19,23 @@ When using a file-based MetadataStore, the location of the MetadataStore is spec
 When using a Db2-based MetadataStore, some configuration steps must be executed prior to using the DBB Git Migration Modeler. A Db2 database and the Db2 tables corresponding to the DBB-provided schema must be created.
 Instructions to create a Db2-based MetadataStore with DBB can be found in this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-zos-as-metadata-database) for Db2 z/OS and this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-luw-as-metadata-database) for Db2 LUW.
 
+### Db2 JDBC driver requirement
+
+The DBB Git Migration Modeler scripts (`Setup.sh`, `Migration-Modeler-Start.sh`, `Refresh-Application-Descriptor-Files.sh`) build the Java classpath at runtime and prepend the value of the `CLASSPATH` environment variable. When using a Db2-based MetadataStore, the **Db2 JDBC driver JARs must be present in the `CLASSPATH` environment variable** before running any of these scripts, otherwise the JVM will fail with `java.lang.ClassNotFoundException: com.ibm.db2.jcc.DB2Driver`.
+
+The required JARs are:
+- `db2jcc4.jar` — the Db2 JDBC Type 4 driver
+- `db2jcc_license_cisuz.jar` — the Db2 JDBC driver license file
+
+These files are provided with the Db2 client installation. Export `CLASSPATH` before running the scripts:
+
+```sh
+export CLASSPATH=/path/to/db2/jdbc/db2jcc4.jar:/path/to/db2/jdbc/db2jcc_license_cisuz.jar
+./Setup.sh
+```
+
 The configuration to access the Db2-based MetadataStore with the DBB Git Migration Modeler is performed through the `DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE`, `DBB_MODELER_DB2_METADATASTORE_ID` and `DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE` properties.
-These required properties are collected during the Setup phase, as described in the next section. 
+These required properties are collected during the Setup phase, as described in the next section.
 Once the Db2 MetadataStore connection is correctly configured and checked, the DBB Git Migration Modeler is ready to be used with a Db2-based MetadataStore.
 
 As part of the Setup process, a validation is performed using the `CheckMetadataStore.sh` script, to verify that the DBB MetadataStore (whether it's a file-based or a Db2-based MetadataStore) can be used.
