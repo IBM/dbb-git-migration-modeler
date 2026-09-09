@@ -110,7 +110,6 @@ public class Setup {
         // Step 2 – build defaults from chosen work directory
         // ----------------------------------------------------------------
         Properties config = new Properties();
-        config.setProperty("DBB_MODELER_HOME",                      modelerHome);
         config.setProperty("DBB_MODELER_WORK",                      modelerWork);
         config.setProperty("DBB_MODELER_APPCONFIG_DIR",             modelerWork + "/work/migration-configuration");
         config.setProperty("DBB_MODELER_APPLICATION_DIR",           modelerWork + "/repositories");
@@ -328,7 +327,6 @@ public class Setup {
             writer.println("# Generated at " + new Date());
             writer.println();
 
-            writer.println("DBB_MODELER_HOME=" + config.getProperty("DBB_MODELER_HOME"));
             writer.println("DBB_MODELER_WORK=" + config.getProperty("DBB_MODELER_WORK"));
             writer.println();
 

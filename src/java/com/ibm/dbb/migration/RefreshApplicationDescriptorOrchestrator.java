@@ -128,7 +128,7 @@ public class RefreshApplicationDescriptorOrchestrator {
         try (FileInputStream fis = new FileInputStream(configFile)) {
             config.load(fis);
 
-            String dbbModelerHome = config.getProperty("DBB_MODELER_HOME");
+            String dbbModelerHome = System.getProperty("dbb.modeler.home");
             if (dbbModelerHome != null) {
                 File releaseFile = new File(dbbModelerHome, "release.properties");
                 if (releaseFile.exists()) {

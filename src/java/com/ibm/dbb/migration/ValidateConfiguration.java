@@ -72,10 +72,7 @@ public class ValidateConfiguration {
 
         ValidationContext ctx = new ValidationContext();
 
-        String modelerHome = configProperties.getProperty("DBB_MODELER_HOME");
-        if (modelerHome == null || modelerHome.isEmpty()) {
-            ctx.addError("DBB_MODELER_HOME property is not defined in the configuration file");
-        }
+        String modelerHome = System.getProperty("dbb.modeler.home");
 
         validateEnvironment(ctx);
 
@@ -286,7 +283,7 @@ public class ValidateConfiguration {
             return;
         }
 
-        String modelerHome = configProperties.getProperty("DBB_MODELER_HOME");
+        String modelerHome = System.getProperty("dbb.modeler.home");
 
         try {
             String workDir = configProperties.getProperty("DBB_MODELER_WORK");
