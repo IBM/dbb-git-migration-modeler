@@ -39,7 +39,8 @@ if [ -n "$DBB_HOME" ]; then
 fi
 
 # Run the Setup Java class
-java -Ddbb.modeler.home="$DBB_MODELER_HOME" \
+java -Dfile.encoding=COMPAT \
+     -Ddbb.modeler.home="$DBB_MODELER_HOME" \
      -cp "$CLASSPATH" \
      com.ibm.dbb.migration.Setup
 rc=$?
