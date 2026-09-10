@@ -115,6 +115,11 @@ public class UpdateZBuilderConfiguration {
             db2UrlVar.put("name", "db2Url");
             db2UrlVar.put("value", props.getProperty("DBB_MODELER_DB2_URL"));
             variables.add(db2UrlVar);
+
+            Map<String, String> db2ConfVar = new LinkedHashMap<>();
+            db2ConfVar.put("name", "db2Conf");
+            db2ConfVar.put("value", props.getProperty("DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"));
+            variables.add(db2ConfVar);
         }
 
         // Write updated YAML back, preserving top-level structure order
@@ -204,6 +209,8 @@ public class UpdateZBuilderConfiguration {
             } else if ("db2".equals(metadataStoreType)) {
                 ConfigurationUtility.validateAndLoadRequiredPropertyValue(configProperties, props,
                     "DBB_MODELER_DB2_URL", "The DB2 URL");
+                ConfigurationUtility.loadRequiredProperty(configProperties, props,
+                    "DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE", "The DB2 connection configuration file");
             }
         } catch (IllegalArgumentException e) {
             logger.logMessage("*! [ERROR] " + e.getMessage() + " Exiting.");
