@@ -202,7 +202,7 @@ public class UpdateZBuilderConfiguration {
                 ConfigurationUtility.loadRequiredProperty(configProperties, props,
                     "DBB_MODELER_FILE_METADATA_STORE_DIR", "The location for the File MetadataStore");
             } else if ("db2".equals(metadataStoreType)) {
-                ConfigurationUtility.loadRequiredProperty(configProperties, props,
+                ConfigurationUtility.validateAndLoadRequiredPropertyValue(configProperties, props,
                     "DBB_MODELER_DB2_URL", "The DB2 URL");
             }
         } catch (IllegalArgumentException e) {
