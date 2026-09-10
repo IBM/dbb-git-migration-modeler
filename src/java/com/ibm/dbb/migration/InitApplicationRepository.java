@@ -17,9 +17,12 @@ import com.ibm.dbb.migration.utils.FileUtility;
 import com.ibm.dbb.migration.model.ApplicationDescriptor;
 import com.ibm.dbb.build.BuildException;
 import org.apache.commons.cli.*;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.nio.file.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -610,13 +613,105 @@ public class InitApplicationRepository {
     private void updateZBuilderConfiguration(String appName, String logsDir) throws IOException {
         logger.logMessage("** Updating zBuilder 'dbb-build.yaml' with MetadataInit task configuration");
 
-        List<String> updateArgs = new ArrayList<>(Arrays.asList("-c", configFilePath));
-        String updateLog = logsDir + File.separator + "5-" + appName + "-updateZBuilderConfiguration.log";
-        updateArgs.add("-l");
-        updateArgs.add(updateLog);
-
         try {
-            UpdateZBuilderConfiguration.main(updateArgs.toArray(new String[0]));
+            String dbbBuildYamlFilePath = configProperties.getProperty("DBB_ZBUILDER") + "/dbb-build.yaml";
+            File dbbBuildYamlFile = new File(dbbBuildYamlFilePath);
+            if (!dbbBuildYamlFile.exists()) {
+                throw new FileNotFoundException(
+                    "The DBB zBuilder dbb-build.yaml file was not found at '" + dbbBuildYamlFilePath + "'.");
+            }
+
+            Yaml yaml = new Yaml();
+            Map<String, Object> dbbBuildYaml;
+            try (FileReader reader = new FileReader(dbbBuildYamlFile)) {
+                dbbBuildYaml = yaml.load(reader);
+            }
+
+            // Create a timestamped backup
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+            String backupFilePath = configProperties.getProperty("DBB_ZBUILDER") + "/dbb-build-backup-" + timestamp + ".yaml";
+            Files.copy(Paths.get(dbbBuildYamlFilePath), Paths.get(backupFilePath), StandardCopyOption.COPY_ATTRIBUTES);
+            try {
+                com.ibm.dbb.utils.FileUtils.setFileTag(backupFilePath,
+                    com.ibm.dbb.utils.FileUtils.getFileTag(dbbBuildYamlFilePath));
+            } catch (Exception e) {
+                // Ignore file tagging on non-z/OS systems
+            }
+
+            logger.logMessage("** Modifying the DBB zBuilder 'dbb-build.yaml' file located at '" +
+                dbbBuildYamlFilePath + "'.");
+
+            // Find or create the MetadataInit task
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> tasks = (List<Map<String, Object>>) dbbBuildYaml.get("tasks");
+            if (tasks == null) {
+                tasks = new ArrayList<>();
+                dbbBuildYaml.put("tasks", tasks);
+            }
+
+            Map<String, Object> metadataInitTask = tasks.stream()
+                .filter(t -> "MetadataInit".equals(t.get("task")))
+                .findFirst()
+                .orElse(null);
+
+            if (metadataInitTask == null) {
+                metadataInitTask = new LinkedHashMap<>();
+                metadataInitTask.put("task", "MetadataInit");
+                tasks.add(metadataInitTask);
+            }
+
+            // Reset and rebuild variables
+            List<Map<String, String>> variables = new ArrayList<>();
+            metadataInitTask.put("variables", variables);
+
+            String metadataStoreType = configProperties.getProperty("DBB_MODELER_METADATASTORE_TYPE");
+            Map<String, String> typeVar = new LinkedHashMap<>();
+            typeVar.put("name", "type");
+            typeVar.put("value", metadataStoreType);
+            variables.add(typeVar);
+
+            if ("file".equals(metadataStoreType)) {
+                Map<String, String> locationVar = new LinkedHashMap<>();
+                locationVar.put("name", "fileLocation");
+                locationVar.put("value", configProperties.getProperty("DBB_MODELER_FILE_METADATA_STORE_DIR"));
+                variables.add(locationVar);
+            } else if ("db2".equals(metadataStoreType)) {
+                Map<String, String> db2UrlVar = new LinkedHashMap<>();
+                db2UrlVar.put("name", "db2Url");
+                db2UrlVar.put("value", configProperties.getProperty("DBB_MODELER_DB2_URL"));
+                variables.add(db2UrlVar);
+
+                Map<String, String> db2ConfVar = new LinkedHashMap<>();
+                db2ConfVar.put("name", "db2Conf");
+                db2ConfVar.put("value", configProperties.getProperty("DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"));
+                variables.add(db2ConfVar);
+            }
+
+            // Write updated YAML back, preserving top-level structure order
+            DumperOptions options = new DumperOptions();
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+            options.setPrettyFlow(true);
+            Yaml yamlWriter = new Yaml(options);
+
+            Map<String, Object> output = new LinkedHashMap<>();
+            if (dbbBuildYaml.containsKey("version"))    output.put("version",    dbbBuildYaml.get("version"));
+            if (dbbBuildYaml.containsKey("include"))    output.put("include",    dbbBuildYaml.get("include"));
+            if (dbbBuildYaml.containsKey("lifecycles")) output.put("lifecycles", dbbBuildYaml.get("lifecycles"));
+            output.put("tasks", tasks);
+
+            try (OutputStreamWriter writer = new OutputStreamWriter(
+                    new FileOutputStream(dbbBuildYamlFile), "UTF-8")) {
+                yamlWriter.dump(output, writer);
+            }
+            try {
+                com.ibm.dbb.utils.FileUtils.setFileTag(dbbBuildYamlFile.getAbsolutePath(), "UTF-8");
+            } catch (Exception e) {
+                // Ignore file tagging on non-z/OS systems
+            }
+
+            logger.logMessage("** The DBB zBuilder 'dbb-build.yaml' file located at '" +
+                dbbBuildYamlFilePath + "' was successfully modified.");
+
         } catch (Exception e) {
             exitCode = 8;
             logger.logMessage("*! [ERROR] Failed to update zBuilder configuration: " + e.getMessage() + ". rc=" + exitCode);
