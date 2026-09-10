@@ -607,6 +607,22 @@ public class InitApplicationRepository {
             directory, logFile);
     }
     
+    private void updateZBuilderConfiguration(String appName, String logsDir) throws IOException {
+        logger.logMessage("** Updating zBuilder 'dbb-build.yaml' with MetadataInit task configuration");
+
+        List<String> updateArgs = new ArrayList<>(Arrays.asList("-c", configFilePath));
+        String updateLog = logsDir + File.separator + "5-" + appName + "-updateZBuilderConfiguration.log";
+        updateArgs.add("-l");
+        updateArgs.add(updateLog);
+
+        try {
+            UpdateZBuilderConfiguration.main(updateArgs.toArray(new String[0]));
+        } catch (Exception e) {
+            exitCode = 8;
+            logger.logMessage("*! [ERROR] Failed to update zBuilder configuration: " + e.getMessage() + ". rc=" + exitCode);
+        }
+    }
+
     private void runPreviewBuild(File appRepoDir, String appName, String logsDir, String logFile) throws IOException {
         if (exitCode != 0) return;
         
@@ -619,6 +635,11 @@ public class InitApplicationRepository {
         String metadataStoreType = configProperties.getProperty("DBB_MODELER_METADATASTORE_TYPE");
         String dbbHome = System.getenv("DBB_HOME");
         String zBuilderPath = configProperties.getProperty("DBB_ZBUILDER");
+
+        // Update the zBuilder dbb-build.yaml with the MetadataInit task configuration
+        updateZBuilderConfiguration(appName, logsDir);
+        if (exitCode != 0) return;
+
         
         Map<String, String> env = new HashMap<>(System.getenv());
         env.put("DBB_BUILD", zBuilderPath);
