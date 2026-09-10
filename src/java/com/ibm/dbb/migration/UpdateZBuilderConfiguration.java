@@ -101,23 +101,23 @@ public class UpdateZBuilderConfiguration {
         String metadataStoreType = props.getProperty("DBB_MODELER_METADATASTORE_TYPE");
         Map<String, String> typeVar = new LinkedHashMap<>();
         typeVar.put("name", "type");
-        typeVar.put("value", metadataStoreType);
+        typeVar.put("value", "\"" + metadataStoreType + "\"");
         variables.add(typeVar);
 
         if ("file".equals(metadataStoreType)) {
             Map<String, String> locationVar = new LinkedHashMap<>();
             locationVar.put("name", "fileLocation");
-            locationVar.put("value", props.getProperty("DBB_MODELER_FILE_METADATA_STORE_DIR"));
+            locationVar.put("value", "\"" + props.getProperty("DBB_MODELER_FILE_METADATA_STORE_DIR") + "\"");
             variables.add(locationVar);
         } else if ("db2".equals(metadataStoreType)) {
             Map<String, String> db2UrlVar = new LinkedHashMap<>();
             db2UrlVar.put("name", "db2Url");
-            db2UrlVar.put("value", props.getProperty("DBB_MODELER_DB2_URL"));
+            db2UrlVar.put("value", "\"" + props.getProperty("DBB_MODELER_DB2_URL") + "\"");
             variables.add(db2UrlVar);
 
             Map<String, String> db2ConfVar = new LinkedHashMap<>();
             db2ConfVar.put("name", "db2Conf");
-            db2ConfVar.put("value", props.getProperty("DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"));
+            db2ConfVar.put("value", "\"" + props.getProperty("DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE") + "\"");
             variables.add(db2ConfVar);
         }
 
