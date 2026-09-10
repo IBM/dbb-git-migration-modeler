@@ -125,6 +125,7 @@ public class UpdateZBuilderConfiguration {
         // Write updated YAML back, preserving top-level structure order
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.DOUBLE_QUOTED);
         options.setPrettyFlow(true);
         Yaml yamlWriter = new Yaml(options);
 
