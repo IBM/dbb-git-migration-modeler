@@ -14,6 +14,9 @@ import com.ibm.dbb.migration.utils.Logger;
 import org.apache.commons.cli.*;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.nodes.ScalarNode;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 import java.io.*;
 import java.nio.file.*;
 import java.text.SimpleDateFormat;
@@ -95,29 +98,29 @@ public class UpdateZBuilderConfiguration {
         }
 
         // Reset and rebuild variables
-        List<Map<String, String>> variables = new ArrayList<>();
+        List<Map<String, Object>> variables = new ArrayList<>();
         metadataInitTask.put("variables", variables);
 
         String metadataStoreType = props.getProperty("DBB_MODELER_METADATASTORE_TYPE");
-        Map<String, String> typeVar = new LinkedHashMap<>();
+        Map<String, Object> typeVar = new LinkedHashMap<>();
         typeVar.put("name", "type");
-        typeVar.put("value", "'" + metadataStoreType + "'");
+        typeVar.put("value", new QuotedValue(metadataStoreType));
         variables.add(typeVar);
 
         if ("file".equals(metadataStoreType)) {
-            Map<String, String> locationVar = new LinkedHashMap<>();
+            Map<String, Object> locationVar = new LinkedHashMap<>();
             locationVar.put("name", "fileLocation");
-            locationVar.put("value", "'" + props.getProperty("DBB_MODELER_FILE_METADATA_STORE_DIR") + "'");
+            locationVar.put("value", new QuotedValue(props.getProperty("DBB_MODELER_FILE_METADATA_STORE_DIR")));
             variables.add(locationVar);
         } else if ("db2".equals(metadataStoreType)) {
-            Map<String, String> db2UrlVar = new LinkedHashMap<>();
+            Map<String, Object> db2UrlVar = new LinkedHashMap<>();
             db2UrlVar.put("name", "db2Url");
-            db2UrlVar.put("value", "'" + props.getProperty("DBB_MODELER_DB2_URL") + "'");
+            db2UrlVar.put("value", new QuotedValue(props.getProperty("DBB_MODELER_DB2_URL")));
             variables.add(db2UrlVar);
 
-            Map<String, String> db2ConfVar = new LinkedHashMap<>();
+            Map<String, Object> db2ConfVar = new LinkedHashMap<>();
             db2ConfVar.put("name", "db2Conf");
-            db2ConfVar.put("value", "'" + props.getProperty("DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE") + "'");
+            db2ConfVar.put("value", new QuotedValue(props.getProperty("DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE")));
             variables.add(db2ConfVar);
         }
 
@@ -125,7 +128,12 @@ public class UpdateZBuilderConfiguration {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         options.setPrettyFlow(true);
-        Yaml yamlWriter = new Yaml(options);
+        Representer representer = new Representer(options) {{
+            representers.put(QuotedValue.class, d ->
+                new ScalarNode(Tag.STR, ((QuotedValue) d).v, null, null,
+                    DumperOptions.ScalarStyle.DOUBLE_QUOTED));
+        }};
+        Yaml yamlWriter = new Yaml(representer, options);
 
         Map<String, Object> output = new LinkedHashMap<>();
         if (dbbBuildYaml.containsKey("version"))    output.put("version",    dbbBuildYaml.get("version"));
@@ -217,4 +225,8 @@ public class UpdateZBuilderConfiguration {
         }
     }
 
+    private static final class QuotedValue {
+        final String v;
+        QuotedValue(String v) { this.v = v; }
+    }
 }
