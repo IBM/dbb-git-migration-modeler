@@ -121,6 +121,7 @@ public class Setup {
         config.setProperty("DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE", modelerHome + "/config/db2Connection.conf");
         config.setProperty("DBB_MODELER_DB2_METADATASTORE_JDBC_ID",         "user");
         config.setProperty("DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE", modelerHome + "/config/db2Password.txt");
+        config.setProperty("DBB_MODELER_DB2_URL",                   "jdbc:db2://localhost:5035/DBC");
         config.setProperty("DBB_MODELER_APPMAPPINGS_DIR",           modelerWork + "/config/applications-mappings");
         config.setProperty("REPOSITORY_PATH_MAPPING_FILE",          modelerWork + "/config/repositoryPathsMapping.yaml");
         config.setProperty("APPLICATION_TYPES_MAPPING",             modelerWork + "/config/types/typesMapping.yaml");
@@ -173,6 +174,8 @@ public class Setup {
                 prompt("Specify the DBB Db2 MetadataStore JDBC User ID", config.getProperty("DBB_MODELER_DB2_METADATASTORE_JDBC_ID")));
             config.setProperty("DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE",
                 prompt("Specify the DBB Db2 MetadataStore JDBC Password File", config.getProperty("DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE")));
+            config.setProperty("DBB_MODELER_DB2_URL",
+                prompt("Specify the DB2 URL in JDBC format", config.getProperty("DBB_MODELER_DB2_URL")));
         }
 
         // ----------------------------------------------------------------
@@ -342,6 +345,7 @@ public class Setup {
             writer.println("DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE=" + config.getProperty("DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE"));
             writer.println("DBB_MODELER_DB2_METADATASTORE_JDBC_ID=" + config.getProperty("DBB_MODELER_DB2_METADATASTORE_JDBC_ID"));
             writer.println("DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE=" + config.getProperty("DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE"));
+            writer.println("DBB_MODELER_DB2_URL=" + config.getProperty("DBB_MODELER_DB2_URL", ""));
             writer.println();
 
             writer.println("# DBB Git Migration Modeler - Build Framework configuration");
