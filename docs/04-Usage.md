@@ -2,40 +2,40 @@
 
 In the sample walkthrough below, all COBOL programs files of all applications are stored in a library called `COBOL`. COBOL Include files are stored in the `COPYBOOK` library.
 
-The DBB Git Migration Modeler utility is a set of shell scripts that are wrapping groovy scripts. The scripts are using DBB APIs and groovy APIs.
+The DBB Git Migration Modeler utility is a Java application. All migration phases are implemented as Java classes in the `com.ibm.dbb.migration` package and are coordinated by the `MigrationOrchestrator` class. The application is invoked through shell scripts that set up the Java classpath.
 
-There are 2 primary command scripts located in the [src/scripts subfolder](../src/scripts) :
+There are 2 primary command scripts:
 
-* The [Migration-Modeler-Start script](../src/scripts/Migration-Modeler-Start.sh) facilitates the assignment of source files to applications, the migration of source files to USS folders, the usage assessment of include files and submodules,  the generation of build configurations, and the initialization of Git repositories.
+* The [Migration-Modeler-Start script](../Migration-Modeler-Start.sh) facilitates the assignment of source files to applications, the migration of source files to USS folders, the usage assessment of include files and submodules, the generation of build configurations, and the initialization of Git repositories.
 * The [Refresh-Application-Descriptor-Files script](../src/scripts/Refresh-Application-Descriptor-Files.sh) is used to re-create Application Descriptors for existing applications that are already managed in Git.
 
 The below sections explain these two primary scripts.
 
 ## The Migration-Modeler-Start script
 
-To facilitate the extraction, migration, classification, generation of build configuration and initialization of Git repositories, a sample script, called the [Migration-Modeler-Start script](../src/scripts/Migration-Modeler-Start.sh), is provided to guide the user through the multiple steps of the process.
+To facilitate the extraction, migration, classification, generation of build configuration and initialization of Git repositories, the [Migration-Modeler-Start script](../Migration-Modeler-Start.sh) is provided to guide the user through the multiple steps of the process.
 
 This script is invoked with the path to the DBB Git Migration Modeler configuration file passed as a parameter.
 The DBB Git Migration Modeler configuration file contains the input parameters to the process.
 
-Each stage of the process is represented by specific scripts under the covers. The Migration-Modeler-Start script calls the individual scripts in sequence, passing them the path to the DBB Git Migration Modeler configuration file via the `-c` parameter. We recommend to execute the `Migration-Modeler-Start.sh` script.
+The script invokes the `MigrationOrchestrator` Java class, which internally coordinates all phases in sequence. We recommend running `Migration-Modeler-Start.sh` to execute the complete migration workflow.
 
-For reference, the following list is a description of the scripts called by the `Migration-Modeler-Start.sh` script:
+For reference, the following list is a description of the phases executed by `MigrationOrchestrator`:
 
-1. [Extract Applications script (1-extractApplication.sh)](../src/scripts/utils/1-extractApplications.sh): this script scans the content of the provided datasets and assesses each member based on the applications' naming conventions defined in Applications Mapping files.
+1. **Extract Applications** (`ExtractApplications` Java class): this phase scans the content of the provided datasets and assesses each member based on the applications' naming conventions defined in Applications Mapping files.
 For each member found, it searches in the *Applications Mapping* YAML file if a naming convention, applied as a filter, matches the member name:
    * If it's a match, the member is assigned to the application that owns the matching naming convention.
    * If no convention is matching, the member is assigned to the *UNASSIGNED* application.
-   * **Outputs**: After the execution of this script, the `DBB_MODELER_APPCONFIG_DIR` folder contains 2 files per application found:
+   * **Outputs**: After the execution of this phase, the `DBB_MODELER_APPCONFIG_DIR` folder contains 2 files per application found:
       * An initial Application Descriptor file.
       * A DBB Migration mapping file depending on the definitions in the *Repository Paths* mapping file.
 
-2. [Run Migrations script (2-runMigrations.sh)](../src/scripts/utils/2-runMigrations.sh): this script executes the DBB Migration utility for each application with the generated DBB Migration Mapping files created by the previous step.
+2. **Run Migrations** (`MigrateDatasets` Java class): this phase executes the DBB Migration utility for each application with the generated DBB Migration Mapping files created by the previous step.
 It will copy all the files assigned to the given applications' subfolders. Unassigned members are migrated into an *UNASSIGNED* application.
-The outcome of this script are subfolders created in the `DBB_MODELER_APPLICATION_DIR` folder for each application. A benefit from this step is the documentation about non-roundtripable and non-printable characters for each application. 
+The outcome of this phase is subfolders created in the `DBB_MODELER_APPLICATION_DIR` folder for each application. A benefit from this step is the documentation about non-roundtripable and non-printable characters for each application.
 
-3. [Classification script (3-classify.sh)](../src/scripts/utils/3-classify.sh): this script scans the source code and performs the classification process. It calls two groovy scripts ([scanApplication.groovy](../src/groovy/scanApplication.groovy) and [assessUsage.groovy](../src/groovy/assessUsage.groovy)) to respectively scans the content of each files of the applications using the DBB scanner, and assesses how Include Files and Programs are used by all the applications.
-   * For the scanning phase, the script iterates through the list of identified applications, and uses the DBB scanner to understand the dependencies for each artifact.
+3. **Classify and Assess** (`ScanApplication` and `AssessUsage` Java classes): this phase scans the source code and performs the classification process. It uses the DBB scanner to understand the content of each application's files, and assesses how Include Files and Programs are used by all the applications.
+   * For the scanning phase, the orchestrator iterates through the list of identified applications, and uses the DBB scanner to understand the dependencies for each artifact.
    This information is stored in the DBB Metadatastore that holds the dependencies information.
 
    * The second phase of the process uses this Metadata information to understand how Include Files and Programs are used across all applications and classify the Include Files in three categories (Private, Public or Shared) and Programs in three categories ("main", "internal submodule", "service submodule").
@@ -43,31 +43,27 @@ The outcome of this script are subfolders created in the `DBB_MODELER_APPLICATIO
 
    * **Outputs**
       * The Application Descriptor file for each application is updated to reflect the findings of this step, and stored in the application's subfolder located in the `DBB_MODELER_APPLICATION_DIR` folder (if not already present).
-      As it contains additional details, we refer to is as the final Application Descriptor file.
-      * The DBB Migration mapping file is also updated accordingly, if files were moved from an owning application to another. 
+      As it contains additional details, we refer to it as the final Application Descriptor file.
+      * The DBB Migration mapping file is also updated accordingly, if files were moved from an owning application to another.
 
-4. [Property Generation script (4-generateProperties.sh)](../src/scripts/utils/4-generateProperties.sh): this script generates build properties for [DBB zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=building-zos-applications-zbuilder) or [dbb-zAppBuild](https://github.com/IBM/dbb-zappbuild/), depending on the chosen configuration. This step is optional, but it is highly encouraged to leverage the automatic generation of build properties, to facilitate the migration to Git.  
-The script uses the type of each artifact to generate (or reuse if already existing) Language Configurations, as configured in the [Types Configurations file](../samples/typesConfigurations.yaml).
-   * **Outputs**
-      * When using *DBB zBuilder*:
+4. **Generate Build Properties** (`GenerateZBuilderProperties` Java class): this phase generates build properties for [DBB zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=building-zos-applications-zbuilder). This step is optional, but it is highly encouraged to leverage the automatic generation of build properties, to facilitate the migration to Git.
+The phase uses the type of each artifact to generate (or reuse if already existing) Language Configurations, as configured in the [Types Configurations file](../samples/typesConfigurations.yaml).
+   * **Outputs for *DBB zBuilder* configuration**:
          * The Types Configurations files turn into DBB zBuilder's Language Configuration definition files, placed into a `build-configuration` in the working directory of DBB Git Migration Modeler. These files should be reviewed by the build engineering team and integrated into the managed zBuilder instance.
          * A `dbb-app.yaml` file is created within each repository's folder in the `DBB_MODELER_APPLICATION_DIR` folder, and contains configuration to enable the use of Language Configurations. The generated `dbb-app.yaml` file also contains configuration to enable impact analysis and dependency search paths for common types of artifact (Cobol, Assembler and LinkEdit artifacts). Additional manual configuration might be required for other types of artifacts.
-      * When using *dbb-zAppBuild*:
-         * These Language Configurations files are placed into a copy of the *dbb-zAppBuild* instance pointed by the `DBB_ZAPPBUILD` variable, the copy being stored in the `DBB_MODELER_APPLICATION_DIR` folder.  
-         * An **application-conf** folder is created within each application's subfolder in the `DBB_MODELER_APPLICATION_DIR` folder, and contains customized files to enable the use of the Language Configurations. A manual step needs to be performed to completely enable this configuration.
 
-5. [Init Application Repositories script (5-initApplicationRepositories.sh)](../src/scripts/utils/5-initApplicationRepositories.sh) is provided to perform the following steps for each application:
+5. **Initialize Application Repositories** (`InitApplicationRepository` Java class): this phase performs the following steps for each application:
    1. Initialization of the Git repository using a default `.gitattributes` file, creation of a customized `zapp.yaml` file, creation of a customized `.project` file, creation of a `baselineReference.config` file, copy of the pipeline definitions, creation of a baseline tag and commit of the changes,
-   2. Execution of a full build with dbb-zAppBuild, using the preview option (no file is actually built) as a preview of the expected outcomes,
-   3. Creation of a baseline package using the `PackageBuildOutputs.groovy` script based on the preview build report. The purpose of this step is to package the existing build artifacts (load modules, DBRMs, jobs, etc.) that correspond to the version of the migrated source code files.
+   2. Execution of a full build with zBuilder, using the preview option (no file is actually built) as a preview of the expected outcomes,
+   3. Creation of a baseline package based on the preview build report. The purpose of this step is to package the existing build artifacts (load modules, DBRMs, jobs, etc.) that correspond to the version of the migrated source code files.
 
-An additional parameter can be passed to these five scripts and to the [Migration-Modeler-Start script](../src/scripts/Migration-Modeler-Start.sh) to specify a list of applications.
-This list can be used to filter down the applications to process during the migration. Through the `-a` parameter, the user can specify a comma-separated list of applications, for which the migration will be performed. When provided to the [Migration-Modeler-Start script](../src/scripts/Migration-Modeler-Start.sh), this list is conveyed to the subsequent scripts and used throughout the process.
+An additional parameter can be passed to the [Migration-Modeler-Start script](../Migration-Modeler-Start.sh) to specify a list of applications.
+This list can be used to filter down the applications to process during the migration. Through the `-a` parameter, the user can specify a comma-separated list of applications, for which the migration will be performed. When provided, this list is passed to the `MigrationOrchestrator` and used throughout all phases.
 This parameter can be used to limit the scope of the migration to applications that are ready to be migrated, even if many others applications are defined in the Applications Mappings files. This filtering capability can help in a phased migration approach, to successively target individual applications.
 
 ### Extracting members from datasets into applications
 
-The [Extract Applications script (1-extractApplication.sh)](../src/scripts/utils/1-extractApplications.sh) requires the path to the DBB Git Migration Modeler configuration file.
+The **Extract Applications** phase (`ExtractApplications` Java class) is invoked automatically by the `MigrationOrchestrator`. It requires the path to the DBB Git Migration Modeler configuration file.
 
 The use of the DBB Scanner (controlled via `SCAN_DATASET_MEMBERS` variable) can be used to automatically identify the language and type of a file (Cobol, PLI, etc...). When enabled, each file is scanned to identify its language and file type, and these criteria are used first when identifying which *repository path* the file should be assigned to.
 When disabled, types and low-level qualifiers of the containing dataset are used, in this order.
@@ -77,12 +73,14 @@ When disabled, types and low-level qualifiers of the containing dataset are used
 Execution of the command:
 
 ```
-./src/scripts/utils/1-extractApplications.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
+./Migration-Modeler-Start.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config
 ```
+
+Output log for the Extract Applications phase:
 
 Output log:
 ~~~~  
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/extractApplications.groovy 		--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 		--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/1-extractApplications.log
+[PHASE] Extract applications from Applications Mapping files
 2026-02-02 10:16:15.357 ** Script configuration:
 2026-02-02 10:16:15.403 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration
 2026-02-02 10:16:15.405 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
@@ -243,18 +241,21 @@ Output log:
 
 ### Migrating the members from MVS datasets to USS folders
 
-The [Run Migrations script (2-runMigrations.sh)](../src/scripts/utils/2-runMigrations.sh) only requires the path to the DBB Git Migration Modeler Configuration file as parameter, to locate the work directories (controlled via `DBB_MODELER_APPLICATION_DIR`).
-It will search for all the DBB Migration mapping files located in the *work-configs* directory, and will process them in sequence.
+The **Run Migrations** phase (`MigrateDatasets` Java class) only requires the path to the DBB Git Migration Modeler Configuration file as parameter, to locate the work directories (controlled via `DBB_MODELER_APPLICATION_DIR`).
+It will search for all the DBB Migration mapping files located in the `DBB_MODELER_APPCONFIG_DIR` directory, and will process them in sequence.
 
 <details>
-  <summary>Output example for a single application (CBSA)</summary>
+  <summary>Output example for application GenApp</summary>
 Execution of the command:
 
-`./src/scripts/utils/2-runMigrations.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
+`./Migration-Modeler-Start.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
-Output log:  
+Output log for the Run Migrations phase:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /usr/lpp/dbb/v3r0/migration/bin/migrate.groovy -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/2-GenApp.migration.log -le UTF-8 -np info -r /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration/GenApp.mapping
+[PHASE] Execute migrations using DBB Migration mapping files
+*******************************************************************
+Running DBB Migration Utility for 'GenApp'
+*******************************************************************
 Messages will be saved in '/u/mdalbin/Migration-Modeler-MDLB-work/logs/2-GenApp.migration.log' with encoding 'UTF-8'
 Non-printable scan level is info
 Local GIT repository: /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp
@@ -299,22 +300,24 @@ Copying [DBEHM.MIG.COBOL, LGUPDB01] to /u/mdalbin/Migration-Modeler-MDLB-work/re
 
 ### Assessing the usage of Include Files and Programs
 
-The [Classification script (3-classify.sh)](../src/scripts/utils/3-classify.sh) only requires the path to the DBB Git Migration Modeler Configuration file as parameter, to locate the work directories.
+The **Classify and Assess** phase (`ScanApplication` and `AssessUsage` Java classes) only requires the path to the DBB Git Migration Modeler Configuration file as parameter, to locate the work directories.
 
-It will search for all DBB Migration mapping files located in the `DBB_MODELER_APPCONFIG_DIR` folder and will process applications' definitions found in this folder.
-This script works in 2 phases:
-1. The first phase is a scan of all the files found in the applications' subfolders,
-2. The second phase is an analysis of how the different Include Files and Programs are used by all known applications. 
+It will iterate over all application directories found in the `DBB_MODELER_APPLICATION_DIR` folder and processes them in 2 sub-phases:
+1. The first sub-phase is a scan of all the files found in the applications' subfolders,
+2. The second sub-phase is an analysis of how the different Include Files and Programs are used by all known applications.
 
 <details>
-  <summary>Output example for a single application (CBSA)</summary>
+  <summary>Output example for application GenApp</summary>
 Execution of the command:
 
-`./src/scripts/utils/3-classify.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
+`./Migration-Modeler-Start.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
-Output log:
+Output log for the Classify and Assess phase:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/scanApplication.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 				--application GenApp 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-scan.log
+[PHASE] Assess usage and perform classification
+*******************************************************************
+Scan application directory 'GenApp'
+*******************************************************************
 2026-02-02 10:16:37.551 ** Script configuration:
 2026-02-02 10:16:37.552 	REPOSITORY_PATH_MAPPING_FILE -> /u/mdalbin/Migration-Modeler-MDLB-work/config/repositoryPathsMapping.yaml
 2026-02-02 10:16:37.552 	SCAN_CONTROL_TRANSFERS -> true
@@ -366,7 +369,9 @@ Output log:
 2026-02-02 10:16:37.974 	Scanning file GenApp/GenApp/src/cobol/lgstsq.cbl 
 2026-02-02 10:16:37.978 	Scanning file GenApp/GenApp/src/cobol/lgwebst5.cbl 
 2026-02-02 10:16:37.991 ** Storing results in the 'GenApp-main' DBB Collection.
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/assessUsage.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 				--application GenApp 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/3-GenApp-assessUsage.log
+*******************************************************************
+Assess Include files & Programs usage for 'GenApp'
+*******************************************************************
 2026-02-02 10:16:42.772 ** Script configuration:
 2026-02-02 10:16:42.772 	DBB_MODELER_APPCONFIG_DIR -> /u/mdalbin/Migration-Modeler-MDLB-work/work/migration-configuration
 2026-02-02 10:16:42.772 	MOVE_FILES_FLAG -> true
@@ -498,24 +503,27 @@ Output log:
 
 ### Generating Property files
 
-The [Property Generation script (4-generateProperties.sh)](../src/scripts/utils/4-generateProperties.sh) requires the path to the DBB Git Migration Modeler configuration file as parameter.
+The **Generate Build Properties** phase (`GenerateZBuilderProperties` Java class) requires the path to the DBB Git Migration Modeler configuration file as parameter.
 
-The script will search for all the applications' subfolders in the `DBB_MODELER_APPLICATION_DIR` folder and will process application definitions found in this folder.
+The phase will search for all the applications' subfolders in the `DBB_MODELER_APPLICATION_DIR` folder and will process application definitions found in this folder.
 For each application found, it will search for the artifacts of type 'Program', and, for each of them, will check if a Language Configuration exists, based on the *type* information.
-If the Language Configuration doesn't exist, the script will create it.
+If the Language Configuration doesn't exist, it will create it.
 
-This script will also generate application's related configuration, stored in a `config` subfolder when using DBB zBuilder or in a custom `application-conf` subfolder when using zAppBuild.
+This phase will also generate application's related configuration, stored in a `config` subfolder when using DBB zBuilder.
 If configuration was changed, an *INFO* message is shown, explaining that a manual task must be performed to enable the use of the Language Configuration mapping for a given application.
 
 <details>
   <summary>Output example for a single application (GenApp)</summary>
 Execution of the command:
 	
-`./src/scripts/utils/4-generateProperties.sh  -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
+`./Migration-Modeler-Start.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
-Output log:
+Output log for the Generate Build Properties phase:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/generateZBuilderProperties.groovy 				--configFile /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config 				--application GenApp 				--logFile /u/mdalbin/Migration-Modeler-MDLB-work/logs/4-GenApp-generateProperties.log
+[PHASE] Generate build configuration
+*******************************************************************
+Generate properties for application 'GenApp'
+*******************************************************************
 2026-02-02 10:16:46.488 ** Script configuration:
 2026-02-02 10:16:46.488 	application -> GenApp
 2026-02-02 10:16:46.488 	configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
@@ -542,7 +550,7 @@ Output log:
 
 ### Initializing Application Git Repositories
 
-The [Init Application Repositories script (5-initApplicationRepositories.sh)](../src/scripts/utils/5-initApplicationRepositories.sh) requires the path to the DBB Git Migration Modeler configuration file as parameter, to locate the work directories.
+The **Initialize Application Repositories** phase (`InitApplicationRepository` Java class) requires the path to the DBB Git Migration Modeler configuration file as parameter, to locate the work directories.
 
 It will search for all applications located in the `DBB_MODELER_APPLICATION_DIR` folder and will process application definitions found in this folder.
 
@@ -550,23 +558,19 @@ It will search for all applications located in the `DBB_MODELER_APPLICATION_DIR`
   <summary> Output example for a single application (CBSA)</summary>
 Execution of command:
 	
-`./src/scripts/utils/5-initApplicationRepositories.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
+`./Migration-Modeler-Start.sh -c /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config`
 
+Output log for the Initialize Application Repositories phase:
 ~~~~
-[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/metadataStoreUtility.groovy -c /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config --deleteBuildGroup --buildGroup GenApp-main -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
-2026-02-02 10:17:09.501 ** Script configuration:
-2026-02-02 10:17:09.501    deleteBuildGroup -> true
-2026-02-02 10:17:09.501    buildGroup -> GenApp-main
-2026-02-02 10:17:09.501    configurationFilePath -> /u/mdalbin/Migration-Modeler-MDLB/config/DBB_GIT_MIGRATION_MODELER-2026-02-02.093836.config
-2026-02-02 10:17:09.502    logFile -> /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
-2026-02-02 10:17:09.502 ** Deleting DBB BuildGroup GenApp-main
-2026-02-02 10:17:09.509 ** Deleting legacy collections in DBB BuildGroup dbb_default
+[PHASE] Initialize application repositories
+*******************************************************************
+Initialize repository for 'GenApp'
+*******************************************************************
 [CMD] git init --initial-branch=main
 Initialized empty Git repository in /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/.git/
 [CMD] rm .gitattributes
 [CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/config/default-app-repo-config-files/.gitattributes .gitattributes
 [CMD] cp /u/mdalbin/Migration-Modeler-MDLB-work/config/default-app-repo-config-files/zapp_template.yaml zapp.yaml
-[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/mdalbin/Migration-Modeler-MDLB/src/groovy/utils/zappUtils.groovy 					-z /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/zapp.yaml 					-a /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/applicationDescriptor.yml 					-b /var/dbb/dbb-zappbuild -l /u/mdalbin/Migration-Modeler-MDLB-work/logs/5-GenApp-initApplicationRepository.log
 [CMD] cp /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/azure-pipelines.yml /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/
 [CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/deployment/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/deployment/
 [CMD] cp -R /u/mdalbin/dbb-MD/Templates/AzureDevOpsPipeline/templates/tagging/*.yml /u/mdalbin/Migration-Modeler-MDLB-work/repositories/GenApp/tagging/
@@ -652,15 +656,15 @@ To reflect these changes, the **Application Descriptor** file needs to be refres
 
 Additionally, if applications are already migrated to Git and use pipelines, but don't have an Application Descriptor file yet, and the development teams want to leverage its benefits, this creation process should be followed.
 
-A second command is shipped for this workflow. The [Refresh Application Descriptor script](../src/scripts/Refresh-Application-Descriptor-Files.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications. The refresh of the Application Descriptor files must occur on the entire code base like on the initial assessment process.
+A second command is shipped for this workflow. The [Refresh Application Descriptor script](../Refresh-Application-Descriptor-Files.sh) facilitates the refresh process by rescanning the source code, initializing new or resetting the Application Descriptor files, and performing the assessment phase for all applications. The refresh of the Application Descriptor files must occur on the entire code base like on the initial assessment process.
 
 Like the other scripts, it requires the path to the DBB Git Migration Modeler configuration file as parameter. This configuration file can be created with the [Setup](./02-Setup.md#setting-up-the-dbb-git-migration-modeler-configuration) instructions.
 
-An additional parameter can be passed to the [Refresh Application Descriptor script](../src/scripts/Refresh-Application-Descriptor-Files.sh) to specify a list of applications.
+An additional parameter can be passed to the [Refresh Application Descriptor script](../Refresh-Application-Descriptor-Files.sh) to specify a list of applications.
 This list can be used to filter down the applications to process during the migration. Through the `-a` parameter, the user can specify a comma-separated list of applications, for which the migration will be performed.
-This parameter can be used to limit the scope of the refresh process to applications that require an new Application Descriptor file, even if other applications are available in the workspace. This filtering capability can help in a phased migration approach, to successively target individual applications.
+This parameter can be used to limit the scope of the refresh process to applications that require a new Application Descriptor file, even if other applications are available in the workspace. This filtering capability can help in a phased migration approach, to successively target individual applications.
 
-The main script calls three groovy scripts ([scanApplication.groovy](../src/groovy/scanApplication.groovy), [recreateApplicationDescriptor.groovy](../src/groovy/recreateApplicationDescriptor.groovy) and [assessUsage.groovy](../src/groovy/assessUsage.groovy)) to scan the files of the applications using the DBB Scanner, initialize Application Descriptor files based on the files present in the working directories, and assess how Include Files and Programs are used across the applications landscape:
+The script invokes the `RefreshApplicationDescriptorOrchestrator` Java class, which coordinates three phases (`ScanApplication`, `RecreateApplicationDescriptor` and `AssessUsage`) to scan the files of the applications using the DBB Scanner, initialize Application Descriptor files based on the files present in the working directories, and assess how Include Files and Programs are used across the applications landscape:
 
    * For the scanning phase, the script iterates through the files located within applications' subfolder in the `DBB_MODELER_APPLICATION_DIR` folder.
    It uses the DBB Scanner to understand the dependencies for each artifact.
@@ -688,11 +692,11 @@ The recommendation would be to set up a pipeline, that checks out all Git reposi
   <summary>Output example</summary>
 Execution of command:
 	
-`./src/scripts/Refresh-Application-Descriptor-Files.sh -c /u/mdalbin/Migration-Modeler-DBEHM-work/DBB_GIT_MIGRATION_MODELER.config`
+`./Refresh-Application-Descriptor-Files.sh -c /u/mdalbin/Migration-Modeler-DBEHM-work/DBB_GIT_MIGRATION_MODELER.config`
 
 Output log:
 ~~~~
-[INFO] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/scanApplication.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-scan.log
+[INFO] Scan application directory '/u/ibmuser/dbb-git-migration-modeler-work/repositories/CBSA'
 2025-04-09 13:52:36.462 ** Script configuration:
 2025-04-09 13:52:36.505 	PIPELINE_USER -> ADO
 2025-04-09 13:52:36.508 	application -> CBSA
@@ -811,7 +815,7 @@ Output log:
 2025-04-09 13:52:39.201 	Scanning file CBSA/CBSA/src/copy/bnk1tfm.cpy 
 2025-04-09 13:52:39.217 ** Storing results in the 'CBSA-main' DBB Collection.
 2025-04-09 13:52:41.165 ** Setting collection owner to ADO
-[CMD] /usr/lpp/dbb/v3r0/bin/groovyz /u/ibmuser/dbb-git-migration-modeler-work/src/groovy/recreateApplicationDescriptor.groovy 				--configFile /u/ibmuser/dbb-git-migration-modeler-work/DBB_GIT_MIGRATION_MODELER.config 				--application CBSA 				--logFile /u/ibmuser/dbb-git-migration-modeler-work/logs/3-CBSA-createApplicationDescriptor.log
+[CMD] Reset Application Descriptor for CBSA
 2025-04-09 14:03:27.588 ** Script configuration:
 2025-04-09 14:03:27.617 	REPOSITORY_PATH_MAPPING_FILE -> /u/ibmuser/dbb-git-migration-modeler-work/repositoryPathsMapping.yaml
 2025-04-09 14:03:27.620 	application -> CBSA

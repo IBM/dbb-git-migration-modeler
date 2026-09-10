@@ -10,4 +10,4 @@ The documents in this section provide detailed information of the DBB Git Migrat
 
 3. The [Configuration](./03-Configuration.md) page explains how the required DBB Git Migration Modeler Configuration files should be tailored, based on different scenarios. It provides examples and guidance on how to customize the input files.
 
-4. The [Usage](./04-Usage.md) page gives explanations on the different steps of the [Migration-Modeler-Start](../src/scripts/Migration-Modeler-Start.sh) script and the [Refresh Application Descriptor](../src/scripts/Refresh-Application-Descriptor-Files.sh) script.
+4. The [Usage](./04-Usage.md) page gives explanations on the different steps of the [Migration-Modeler-Start](../Migration-Modeler-Start.sh) script and the [Refresh Application Descriptor](../src/scripts/Refresh-Application-Descriptor-Files.sh) script.

@@ -33,11 +33,11 @@
 *.menu zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
 *.skel zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
 *.py zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
-*.java zos-working-tree-encoding=ibm-1047 git-encoding=utf-8
+*.java zos-working-tree-encoding=utf-8 git-encoding=utf-8
 *.yaml zos-working-tree-encoding=utf-8 git-encoding=utf-8
 
-
 # binary files
+*.jar binary
 *.png binary
 *.penu binary
 *.gmlkey binary
