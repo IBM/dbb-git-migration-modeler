@@ -655,7 +655,7 @@ public class InitApplicationRepository {
         if ("db2".equals(metadataStoreType)) {
             command.add("--dbid");
             command.add(configProperties.getProperty("DBB_MODELER_DB2_METADATASTORE_JDBC_ID"));
-            command.add("--dbpw");
+            command.add("--dbpf");
             command.add(configProperties.getProperty("DBB_MODELER_DB2_METADATASTORE_JDBC_PASSWORDFILE"));
         }
         
