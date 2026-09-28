@@ -285,8 +285,11 @@ public class ValidateConfiguration {
      * @throws Exception if validation or directory initialization fails
      */
     public static void initializeWorkDirectory(String configFilePath) throws Exception {
+        // Let configuration validation errors surface directly (no double-wrapping)
+        Properties configProperties = validateAndLoadConfiguration(configFilePath);
+
         ValidationContext ctx = new ValidationContext();
-        initializeWorkDirectory(ctx, configFilePath);
+        initializeWorkDirectory(ctx, configProperties);
         if (ctx.hasErrors()) {
             StringBuilder sb = new StringBuilder();
             for (String error : ctx.errors) {
@@ -296,14 +299,7 @@ public class ValidateConfiguration {
         }
     }
 
-    private static void initializeWorkDirectory(ValidationContext ctx, String configFilePath) {
-        Properties configProperties;
-        try {
-            configProperties = validateAndLoadConfiguration(configFilePath);
-        } catch (Exception e) {
-            ctx.addError(e.getMessage());
-            return;
-        }
+    private static void initializeWorkDirectory(ValidationContext ctx, Properties configProperties) {
 
         String modelerHome = System.getProperty("dbb.modeler.home");
 
