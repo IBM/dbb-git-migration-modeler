@@ -298,14 +298,14 @@ public class InitApplicationRepository {
 
                 // If SCAN_OUTPUTS is enabled: run full build + metadata with languages
                 if ("true".equals(configProperties.getProperty("SCAN_OUTPUTS", "false"))) {
-                    logger.logMessage("** Scanning outputs for application '" + appName + "' started (SCAN_OUTPUTS=true)");
+                    logger.logMessage("** Initializing the DBB MetadataStore for application '" + appName + "' started.");
                     scanOutputs(appRepoDir, appName, defaultBranch, logsDir, logFile, buildGroupName);
 
                     if (exitCode != 0) return;
 
                     // Package and publish artifacts if enabled (requires SCAN_OUTPUTS=true)
                     if ("true".equals(configProperties.getProperty("PUBLISH_ARTIFACTS", "false"))) {
-                        logger.logMessage("** Scanning outputs for application '" + appName + "' started (SCAN_OUTPUTS=true)");
+                        logger.logMessage("** Publishing archive for application '" + appName + "' started.");
                         publishArtifacts(appRepoDir, appName, defaultBranch, logsDir, logFile);
                     }
                 }
@@ -1058,7 +1058,7 @@ public class InitApplicationRepository {
             String logFile) throws IOException {
         if (exitCode != 0) return;
 
-        logger.logMessage("** Creating baseline package of application '" + appName + "' started");
+        logger.logMessage("*** Creating baseline package of application '" + appName + "' started");
 
         File appLogDir = new File(appRepoDir, "logs");
         appLogDir.mkdirs();
@@ -1095,12 +1095,12 @@ public class InitApplicationRepository {
             new File(appLogDir, "packaging-preview-" + appName + ".log").getAbsolutePath());
 
         if (exitCode == 0) {
-            logger.logMessage("** Creation of Baseline Package of application '" + appName +
+            logger.logMessage("*** Creation of Baseline Package of application '" + appName +
                 "' completed successfully. rc=" + exitCode);
         } else {
             logger.logMessage("*! [ERROR] Creation of Baseline Package of application '" + appName +
                 "' failed. rc=" + exitCode);
-            logger.logMessage("** Packaging log available at '" +
+            logger.logMessage("*** Packaging log available at '" +
                 new File(appLogDir, "packaging-preview-" + appName + ".log").getAbsolutePath() + "'");
         }
     }
@@ -1182,13 +1182,13 @@ public class InitApplicationRepository {
                         logger.logMessage("*!   Output not found: " + normalised);
                         missingOutputs.add(normalised);
                     } else {
-                        logger.logSilentMessage("**   Output exists: " + normalised);
+                        logger.logSilentMessage("****   Output exists: " + normalised);
                     }
                 }
             }
 
             if (missingOutputs.isEmpty()) {
-                logger.logMessage("**** All expected output artifacts verified successfully for application '" + appName + "'.");
+                logger.logSilentMessage("**** All expected output artifacts verified successfully for application '" + appName + "'.");
             } else {
                 logger.logMessage("*! [ERROR] " + missingOutputs.size() + " output dataset(s) missing for application '" + appName + "'.");
             }
