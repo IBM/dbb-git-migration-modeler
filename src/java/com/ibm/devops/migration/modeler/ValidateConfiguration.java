@@ -88,8 +88,12 @@ public class ValidateConfiguration {
         validateGitConfiguration(ctx, configProperties);
         validateWorkflowConfiguration(ctx, configProperties);
 
-        String publishArtifacts = configProperties.getProperty("PUBLISH_ARTIFACTS");
-        if ("true".equals(publishArtifacts)) {
+        String scanOutputs     = configProperties.getProperty("SCAN_OUTPUTS", "false");
+        String publishArtifacts = configProperties.getProperty("PUBLISH_ARTIFACTS", "false");
+        if ("true".equals(publishArtifacts) && !"true".equals(scanOutputs)) {
+            ctx.addError("PUBLISH_ARTIFACTS cannot be set to 'true' when SCAN_OUTPUTS is 'false'. Publishing requires scan outputs to be enabled.");
+        }
+        if ("true".equals(publishArtifacts) && "true".equals(scanOutputs)) {
             validateArtifactRepository(ctx, configProperties);
         }
 

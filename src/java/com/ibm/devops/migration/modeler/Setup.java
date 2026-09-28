@@ -189,6 +189,11 @@ public class Setup {
         System.out.println();
         System.out.println("[SETUP] DBB Git Migration Modeler input configuration");
         for (String key : INPUT_KEYS) {
+            // Skip PUBLISH_ARTIFACTS prompt when SCAN_OUTPUTS is false — publishing requires scanning
+            if ("PUBLISH_ARTIFACTS".equals(key) && !"true".equals(config.getProperty("SCAN_OUTPUTS"))) {
+                config.setProperty(key, "false");
+                continue;
+            }
             config.setProperty(key, prompt("Specify input parameter " + key, config.getProperty(key, "")));
             if ("SCAN_OUTPUTS".equals(key) && "true".equals(config.getProperty("SCAN_OUTPUTS"))) {
                 config.setProperty("APPLICATION_ARTIFACTS_HLQ",
@@ -200,7 +205,7 @@ public class Setup {
         // ----------------------------------------------------------------
         // Step 6 – Publishing options (conditional)
         // ----------------------------------------------------------------
-        if ("true".equals(config.getProperty("PUBLISH_ARTIFACTS"))) {
+        if ("true".equals(config.getProperty("SCAN_OUTPUTS")) && "true".equals(config.getProperty("PUBLISH_ARTIFACTS"))) {
             System.out.println();
             System.out.println("[SETUP] Artifact Repository configuration parameters for publishing application baseline packages.");
             for (String key : PUBLISHING_KEYS) {

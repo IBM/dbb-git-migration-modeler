@@ -56,8 +56,9 @@ The purpose of this stage is to prepare the applications' Git repositories. It p
 * Staging of the source files and the customized configuration files (the ZAPP.yaml file and the pipeline definition files)
 * Execution of a first commit
 * Creation of a tag to identify a baseline version
-* Execution of a preview build with zBuilder
-* Creation of a package containing the applications' artifacts into a baseline archive, that can be optionally uploaded to an Artifact Repository server
+* Execution of a DBB metadata lifecycle to scan source-level dependencies
+* When `SCAN_OUTPUTS=true`: execution of a full build lifecycle (in preview mode), verification that all build outputs exist on the system, and a second DBB metadata lifecycle pass with the Languages task enabled to additionally capture output-level dependencies in the DBB MetadataStore
+* When `SCAN_OUTPUTS=true` and `PUBLISH_ARTIFACTS=true`: creation of a baseline archive package containing the applications' artifacts, that can be uploaded to an Artifact Repository server
 
 ## Refreshing the Application Descriptor files
 
