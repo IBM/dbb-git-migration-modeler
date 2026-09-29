@@ -15,19 +15,27 @@ The different phases of the migration workflow are described in [the Migration S
 
 ## How does it work
 
-The DBB Git Migration Modeler comes with 3 main scripts:
+The DBB Git Migration Modeler is a Java application packaged as a JAR file. It must be built first using Gradle, then invoked through the provided shell scripts.
+
+The utility comes with 2 primary scripts:
 
 * The [Setup script](./Setup.sh) is used to define parameters that will be used throughout the migration process with the DBB Git Migration Modeler. It must be executed first and once, to set the defined parameters and create a configuration file that will be used in subsequent steps.
-* The [Migration-Modeler-Start script](./src/scripts/Migration-Modeler-Start.sh) runs the different phases of the migration process.
+* The [Migration-Modeler-Start script](./Migration-Modeler-Start.sh) runs the different phases of the migration process by invoking the `MigrationOrchestrator` Java class.
+
+An additional script is available for refreshing Application Descriptor files for applications already migrated to Git:
 * The [Refresh-Application-Descriptor-Files script](./src/scripts/Refresh-Application-Descriptor-Files.sh) can be used to refresh Application Descriptor files for applications that were already migrated to Git.
+
+## Prerequisites and building the application
+
+For prerequisites and build instructions, see the [Java implementation README](src/java/README.md).
 
 ## Required setup and configuration
 
 The DBB Git Migration Modeler is using two types of configuration information:
-* Environment variables that are set up during the Setup phase.
-* Configuration files, shipped in the [samples directory](./samples/) that must to tailored to meet requirements.
+* A configuration file created during the Setup phase, which is used as input for all migration phases.
+* Configuration files, shipped in the [samples directory](./samples/) that must be tailored to meet requirements.
 
-The environment variables that are populated during the Setup phase are described in [Setting up the DBB Git Migration Modeler configuration](docs/02-Setup.md#setting-up-the-dbb-git-migration-modeler-configuration) section.
+The configuration parameters collected during the Setup phase are described in [Setting up the DBB Git Migration Modeler configuration](docs/02-Setup.md#setting-up-the-dbb-git-migration-modeler-configuration) section.
 The different Configuration files are described in the [Configuring input files](docs/03-Configuration.md#configuring-the-migration-modeler-input-files) section.
 
 
@@ -39,6 +47,12 @@ After the execution of the [Assessment Phase](docs/01-Storyboard.md#the-assessme
 * the other applications that are consuming a service (either an Include File or a Submodule) that the given application provides
 
 The Application Descriptor files are meant to also describe the list of artifacts belonging to their application. Artifacts are classed into groups, each group represent a type of artifact (COBOL programs, COBOL copybooks, BMS maps, etc.).
+
+## Supported build frameworks
+
+The DBB Git Migration Modeler supports only the **DBB zBuilder** build framework. Support for **dbb-zAppBuild** has been removed as of this version.
+
+If you were previously using dbb-zAppBuild, consider moving to **DBB zBuilder** before using this version of the  DBB Git Migration Modeler. Refer to the [IBM DBB zBuilder documentation](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=zbuilder-getting-started) for guidance.
 
 ## Migrations scenarios for the DBB Git Migration Modeler
 

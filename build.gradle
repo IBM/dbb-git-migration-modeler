@@ -1,0 +1,116 @@
+/*
+ * Licensed Materials - Property of IBM
+ * (c) Copyright IBM Corporation 2018, 2024. All Rights Reserved.
+ *
+ * Note to U.S. Government Users Restricted Rights:
+ * Use, duplication or disclosure restricted by GSA ADP Schedule
+ * Contract with IBM Corp.
+ */
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.ibm.dbb'
+def releaseProps = new Properties()
+file('release.properties').withInputStream { releaseProps.load(it) }
+version = releaseProps['Migration-Modeler-release']
+
+// Configure source directories
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/java']
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Apache Commons CLI for command-line parsing
+    implementation 'commons-cli:commons-cli:1.5.0'
+    
+    // SnakeYAML for YAML parsing
+    implementation 'org.yaml:snakeyaml:2.0'
+    
+    // IBM JZOS for z/OS operations
+    // Priority: 1) Local lib/jzos, 2) JZOS_HOME env var, 3) Default z/OS path
+    if (new File('lib/jzos').exists()) {
+        compileOnly fileTree(dir: 'lib/jzos', include: ['**/*.jar'])
+    } else if (System.getenv('JZOS_HOME') && new File(System.getenv('JZOS_HOME')).exists()) {
+        compileOnly fileTree(dir: System.getenv('JZOS_HOME'), include: ['**/*.jar'])
+    }
+    
+    // IBM DBB for build operations
+    // Use local lib/dbb directory which contains DBB JAR files
+    if (new File('lib/dbb').exists()) {
+        compileOnly fileTree(dir: 'lib/dbb', include: ['*.jar'])
+    } else if (System.getenv('DBB_HOME') && new File(System.getenv('DBB_HOME')).exists()) {
+        compileOnly fileTree(dir: System.getenv('DBB_HOME'), include: ['lib/**/*.jar'])
+    }
+    
+    // JUnit for testing
+    testImplementation 'junit:junit:4.13.2'
+}
+
+application {
+    mainClass = 'com.ibm.dbb.migration.MigrationOrchestrator'
+}
+
+// Configure standard JAR task
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.ibm.dbb.migration.MigrationOrchestrator'
+        )
+    }
+}
+
+// Task to display project information
+task info {
+    doLast {
+        println "Project: ${project.name}"
+        println "Version: ${project.version}"
+        println "Java Version: ${sourceCompatibility}"
+        println ""
+        println "Main Orchestrator Class:"
+        println "  - com.ibm.dbb.migration.MigrationOrchestrator (recommended)"
+        println ""
+        println "Individual Phase Classes:"
+        println "  - com.ibm.dbb.migration.ValidateConfiguration"
+        println "  - com.ibm.dbb.migration.ExtractApplications"
+        println "  - com.ibm.dbb.migration.MigrateDatasets"
+        println "  - com.ibm.dbb.migration.ScanApplication"
+        println "  - com.ibm.dbb.migration.AssessUsage"
+        println "  - com.ibm.dbb.migration.GenerateZBuilderProperties"
+        println "  - com.ibm.dbb.migration.InitApplicationRepository"
+        println "  - com.ibm.dbb.migration.CalculateDependenciesOrder"
+        println ""
+        println "Build outputs:"
+        println "  - Thin JAR: build/libs/${project.name}-${project.version}.jar"
+        println "  - Dependencies: build/libs/lib/"
+        println ""
+        println "Note: DBB and JZOS libraries are NOT included in JAR (provided dependencies)"
+        println ""
+        println "Usage (Thin JAR with full classpath):"
+        println "  java -cp \"build/libs/${project.name}-${project.version}.jar:build/libs/lib/*:\$DBB_HOME/lib/*\" \\"
+        println "    com.ibm.dbb.migration.MigrationOrchestrator -c config.properties"
+        println ""
+        println "Usage (Individual phases):"
+        println "  java -cp build/libs/${project.name}-${project.version}.jar:build/libs/lib/* com.ibm.dbb.migration.ExtractApplications [options]"
+    }
+}
+
+// Configure encoding
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+// Clean task configuration
+clean {
+    delete 'build'
+}

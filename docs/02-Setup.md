@@ -19,8 +19,23 @@ When using a file-based MetadataStore, the location of the MetadataStore is spec
 When using a Db2-based MetadataStore, some configuration steps must be executed prior to using the DBB Git Migration Modeler. A Db2 database and the Db2 tables corresponding to the DBB-provided schema must be created.
 Instructions to create a Db2-based MetadataStore with DBB can be found in this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-zos-as-metadata-database) for Db2 z/OS and this [documentation page](https://www.ibm.com/docs/en/dbb/3.0?topic=setup-configuring-db2-luw-as-metadata-database) for Db2 LUW.
 
+### Db2 JDBC driver requirement
+
+The DBB Git Migration Modeler scripts (`Setup.sh`, `Migration-Modeler-Start.sh`, `Refresh-Application-Descriptor-Files.sh`) build the Java classpath at runtime and prepend the value of the `CLASSPATH` environment variable. When using a Db2-based MetadataStore, the **Db2 JDBC driver JARs must be present in the `CLASSPATH` environment variable** before running any of these scripts, otherwise the JVM will fail with `java.lang.ClassNotFoundException: com.ibm.db2.jcc.DB2Driver`.
+
+The required JARs are:
+- `db2jcc4.jar` — the Db2 JDBC Type 4 driver
+- `db2jcc_license_cisuz.jar` — the Db2 JDBC driver license file
+
+These files are provided with the Db2 client installation. Export `CLASSPATH` before running the scripts:
+
+```sh
+export CLASSPATH=/path/to/db2/jdbc/db2jcc4.jar:/path/to/db2/jdbc/db2jcc_license_cisuz.jar
+./Setup.sh
+```
+
 The configuration to access the Db2-based MetadataStore with the DBB Git Migration Modeler is performed through the `DBB_MODELER_DB2_METADATASTORE_CONFIG_FILE`, `DBB_MODELER_DB2_METADATASTORE_ID` and `DBB_MODELER_DB2_METADATASTORE_PASSWORDFILE` properties.
-These required properties are collected during the Setup phase, as described in the next section. 
+These required properties are collected during the Setup phase, as described in the next section.
 Once the Db2 MetadataStore connection is correctly configured and checked, the DBB Git Migration Modeler is ready to be used with a Db2-based MetadataStore.
 
 As part of the Setup process, a validation is performed using the `CheckMetadataStore.sh` script, to verify that the DBB MetadataStore (whether it's a file-based or a Db2-based MetadataStore) can be used.
@@ -40,9 +55,8 @@ This script prompts for the below environment variables and saves them in a conf
 | DBB_MODELER_BUILD_CONFIGURATION  | The working folder where the DBB Git Migration Modeler will create zBuilder Configuration files during [The Property Generation phase](01-Storyboard.md#the-property-generation-phase). | The default value is computed based on the DBB Git Migration Modeler working folder, where a `build-configuration` subfolder is created: `$DBB_MODELER_WORK/build-configuration` | 
 | DBB_MODELER_DEFAULT_APP_REPO_CONFIG  | The configuration folder containing default application repository configurations such as `.gitattributes` and `zapp.yaml` files. | The default value is computed based on the DBB Git Migration Modeler working folder, where a `config/application-repository-configuration` subfolder is created: `$DBB_MODELER_WORK/config/application-repository-configuration` |
 | **DBB Git Migration Modeler Build framework configuration** | | | 
-| BUILD_FRAMEWORK | The type of build framework to be used during [The Property Generation phase](01-Storyboard.md#the-property-generation-phase)  during [The Initialization phase](01-Storyboard.md#the-initialization-phase). Only `zBuilder` or `zAppBuild` are valid values | `zBuilder` |
+| BUILD_FRAMEWORK | The type of build framework to be used during [The Property Generation phase](01-Storyboard.md#the-property-generation-phase). Only `zBuilder` is supported | `zBuilder` |
 | DBB_ZBUILDER | The path to a customized [zBuilder](https://www.ibm.com/docs/en/adffz/dbb/3.0.x?topic=zbuilder-getting-started) on z/OS Unix System Services for baseline builds during [The Initialization phase](01-Storyboard.md#the-initialization-phase). | `/var/dbb/zBuilder` |
-| DBB_ZAPPBUILD | The path to a customized [dbb-zAppBuild repository](https://github.com/IBM/dbb-zappbuild) on z/OS Unix System Services for baseline builds during [The Initialization phase](01-Storyboard.md#the-initialization-phase). | `/var/dbb/dbb-zappbuild` |
 | **DBB Git Migration Modeler MetadataStore configuration** | | | 
 | DBB_MODELER_METADATASTORE_TYPE  | The type of DBB MetadataStore to be used by the DBB Git Migration Modeler. Valid values are `file` or `db2`. | `file` |
 | DBB_MODELER_FILE_METADATA_STORE_DIR  | If a File-based DBB MetadataStore is used, this parameters indicates the location of the File MetadataStore. | The default value is computed based on the DBB Git Migration Modeler working folder, where a `work/dbb-filemetadatastore` subfolder is created: `$DBB_MODELER_WORK/work/dbb-filemetadatastore` |
@@ -53,16 +67,21 @@ This script prompts for the below environment variables and saves them in a conf
 | DBB_MODELER_APPMAPPINGS_DIR  | The configuration folder containing the Applications Mapping file(s) defining the input datasets for applications and their naming conventions. More information can be found in [Configuring the Migration Modeler input files](03-Configuration.md#configuring-the-migration-modeler-input-files). | The default value is computed based on the DBB Git Migration Modeler working folder, where a `config/applications-mappings` subfolder is created: `$DBB_MODELER_WORK/config/applications-mappings` | 
 | REPOSITORY_PATH_MAPPING_FILE  | The path to the Repository Paths Mapping configuration file that maps the various types of members to the folder layout in Git. More information can be found in [Configuring the Migration Modeler input files](03-Configuration.md#configuring-the-migration-modeler-input-files). | The default value is computed based on the DBB Git Migration Modeler working folder: `$DBB_MODELER_WORK/config/repositoryPathsMapping.yaml` | 
 | APPLICATION_MEMBER_TYPE_MAPPING  | The path to the Member to Type mapping configuration file (types.txt). More information can be found in [Configuring the Migration Modeler input files](03-Configuration.md#configuring-the-migration-modeler-input-files). | The default value is computed based on the DBB Git Migration Modeler working folder: `$DBB_MODELER_WORK/config/types/types.txt` | 
-| TYPE_CONFIGURATIONS_FILE | The path to the Type Configuration configuration file, which helps generate zAppBuild Language Configurations to reproduce existing build configurations. More information can be found in [Configuring the Migration Modeler input files](03-Configuration.md#configuring-the-migration-modeler-input-files). | The default value is computed based on the DBB Git Migration Modeler working folder: `$DBB_MODELER_WORK/types/typesConfigurations.yaml` |
+| TYPE_CONFIGURATIONS_FILE | The path to the Type Configuration configuration file, which helps generate DBB zBuilder Language Configurations to reproduce existing build configurations. More information can be found in [Configuring the Migration Modeler input files](03-Configuration.md#configuring-the-migration-modeler-input-files). | The default value is computed based on the DBB Git Migration Modeler working folder: `$DBB_MODELER_WORK/types/typesConfigurations.yaml` |
 | **DBB Git Migration Modeler configuration parameters** | | | 
-| APPLICATION_ARTIFACTS_HLQ | The High-Level Qualifier of the datasets used during the Preview Build. These datasets contain a copy of the artifacts to be packaged as a baseline during [The Initialization phase](01-Storyboard.md#the-initialization-phase). | `DBEHM.MIG` | 
 | SCAN_DATASET_MEMBERS | The flag that determines if [The Framing phase](01-Storyboard.md#the-framing-phase) process should scan each member to identify source type. If set to `true`, the DBB Scanner is used to understand the nature of the artifact (COBOL program, COBOL copybook, etc.) and this information is used first when assigning the artifact to a source group. When set to false, other informations like the type (defined in Types.txt) or the Low-Level Qualifier is used to assign the artifact to the correct source group. | `false` |
 | SCAN_DATASET_MEMBERS_ENCODING | If the flag `SCAN_DATASET_MEMBERS`is set to `true`, this parameter indicated the encoding to be used by the DBB Scanner when determining the artifacts type. | `IBM-1047` |
 | DBB_COMMUNITY_REPO | The path to a customized [DBB community repository](https://github.com/IBM/dbb) on z/OS Unix System Services for baseline packaging during [The Initialization phase](01-Storyboard.md#the-initialization-phase). | `/var/dbb/dbb` |
-| APPLICATION_DEFAULT_BRANCH | The default branch name when initializing Git repositories and scanning files into DBB collections. |  `main` |
-| MOVE_FILES_FLAG | This flag specifies if files should be moved to the owning application during the _Usage Assessment_ phase. |  `true` |
-| INTERACTIVE_RUN | The flag to indicate if the Migration-Modeler-Start script should run interactively (set to `true`) or in batch (set to `false`). | `false` |
-| PUBLISH_ARTIFACTS | The flag to indicate if baseline packages should be uploaded to an Artifact Repository server (set to `true`) or not (set to `false`). | `true` |
+| APPLICATION_DEFAULT_BRANCH | The default branch name used when running `git init` for a new application repository. | `main` |
+| APPLICATION_CURRENT_BRANCH | The branch that files are staged and committed to during [The Initialization phase](01-Storyboard.md#the-initialization-phase). If this value differs from `APPLICATION_DEFAULT_BRANCH`, the repository is initialized on the default branch and `git checkout -b` is used to create and switch to this branch. | `main` |
+| GIT_COMMIT_MESSAGE | The commit message used for the initial commit during [The Initialization phase](01-Storyboard.md#the-initialization-phase). | `Initial Load` |
+| GIT_TAG_RELEASE | When set to `true`, [The Initialization phase](01-Storyboard.md#the-initialization-phase) creates a Git tag and a `release/<version>` maintenance branch after the initial commit. | `true` |
+| CLEAN_REPOSITORIES | When set to `true`, the `DBB_MODELER_APPLICATION_DIR` folder is deleted during the cleanup phase. Set to `false` to preserve existing application repositories across runs. | `true` |
+| MOVE_FILES_FLAG | This flag specifies if files should be moved to the owning application during the _Usage Assessment_ phase. | `true` |
+| INTERACTIVE_RUN | This flag indicates if the Migration-Modeler-Start script should run interactively (set to `true`) or in batch (set to `false`). | `false` |
+| SCAN_OUTPUTS | This flag indicates if the DBB MetadataStore should be initializaed with source and output-levels dependencies. Setting this flag to `true` is required for the `PUBLISH_ARTIFACTS` feature. When `SCAN_OUTPUTS=true`, the `APPLICATION_ARTIFACTS_HLQ` parameter is also prompted. | `false` |
+| APPLICATION_ARTIFACTS_HLQ | The High-Level Qualifier of the datasets used during the DBB MetadataStore initialization. These datasets contain a copy of the artifacts to be packaged as a baseline during [The Initialization phase](01-Storyboard.md#the-initialization-phase). | `DBEHM.MIG` | 
+| PUBLISH_ARTIFACTS | The flag to indicate if baseline packages should be uploaded to an Artifact Repository server (set to `true`) or not (set to `false`). Requires `SCAN_OUTPUTS=true`. | `false` |
 | ARTIFACT_REPOSITORY_SERVER_URL | If the `PUBLISH_ARTIFACTS` parameter is set to `true`, the URL of the Artifact Repository Server when baseline archives are meant to be uploaded. | No default value |
 | ARTIFACT_REPOSITORY_USER | If the `PUBLISH_ARTIFACTS` parameter is set to `true`, the user ID to connect to the Artifact Repository Server. | `admin` |
 | ARTIFACT_REPOSITORY_PASSWORD | If the `PUBLISH_ARTIFACTS` parameter is set to `true`, the password to connect to the Artifact Repository Server. | No default value |

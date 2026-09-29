@@ -20,9 +20,16 @@
             "type": "string",
             "title": "The type of artifacts in the repository",
             "description": "The type of artifacts under this group.",
-            "enum": [
-              "Program",
-              "Include File"
+            "anyOf": [
+              {
+                "enum": [
+                  "Program",
+                  "Include File"
+                ]
+              },
+              {
+                "type": "string"
+              }
             ]
           },
           "sourceGroup": {
@@ -34,12 +41,19 @@
             "type": "string",
             "title": "The programming language used in the repository",
             "description": "Name of the programming language that is used for this group. Used to generate zapp.yaml files.",
-            "enum": [
-              "cobol",
-              "pl1",
-              "hlasm",
-              "rexx",
-              "jcl"
+            "anyOf": [
+              {
+                "enum": [
+                  "cobol",
+                  "pl1",
+                  "hlasm",
+                  "rexx",
+                  "jcl"
+                ]
+              },
+              {
+                "type": "string"
+              }
             ]
           },
           "languageProcessor": {
