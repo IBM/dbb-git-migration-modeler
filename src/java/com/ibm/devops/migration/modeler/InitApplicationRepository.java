@@ -1010,7 +1010,7 @@ public class InitApplicationRepository {
         // Verify that all EXECUTE outputs from the full build exist on the system
         List<String> missingOutputs = verifyBuildOutputs(appRepoDir, appName);
         if (!missingOutputs.isEmpty()) {
-            logger.logMessage("*! [ERROR] The following EXECUTE outputs from the full build were not found. " +
+            logger.logMessage("*! [ERROR] The following build outputs were not found on the provided libraries. Scanning existing build outputs for dependencies cannot be performed. " +
                 "Skipping metadata lifecycle with languages.");
             for (String dsn : missingOutputs) {
                 logger.logMessage("*!   Missing output: " + dsn);
